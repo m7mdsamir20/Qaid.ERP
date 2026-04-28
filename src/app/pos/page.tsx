@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Phone, MapPin, Receipt, ChefHat, Wallet, Store
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -111,6 +111,8 @@ export default function POSPage() {
     const [step, setStep] = useState<'cart' | 'payment'>('cart');
     const [currentShift, setCurrentShift] = useState<any>(null);
     const [showStartShift, setShowStartShift] = useState(false);
+    const [showUnpaidWarning, setShowUnpaidWarning] = useState(false);
+    const [shiftReportData, setShiftReportData] = useState<any>(null);
     const [showEndShift, setShowEndShift] = useState(false);
         const [showDrawerModal, setShowDrawerModal] = useState(false);
     const [showSearchInput, setShowSearchInput] = useState(false);
@@ -564,39 +566,61 @@ export default function POSPage() {
         <>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', fontFamily: CAIRO, background: C.bg }}>
 
+                {/* --- Locked Overlay --- */}
+                {!currentShift && !loading && (
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(244, 244, 245, 0.5)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <button onClick={() => setShowStartShift(true)} style={{ background: '#1e1b4b', color: 'white', border: 'none', padding: '16px 48px', borderRadius: '12px', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)', fontFamily: CAIRO }}>
+                                <Power size={24} /> ابدأ العمل
+                            </button>
+                            <p style={{ marginTop: '16px', color: '#1e1b4b', fontWeight: 700, fontSize: '16px', fontFamily: CAIRO }}>لم يتم بدء العمل بعد</p>
+                            <p style={{ marginTop: '4px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قم بالبدء لرؤية المنتجات أو إنشاء طلب</p>
+                        </div>
+                    </div>
+                )}
+                
                 {/* ══ الجانب الأيسر: المنيو ══ */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderInlineEnd: `1px solid ${C.border}` }}>
 
                     {/* Header المنيو (New Design) */}
-                    <div style={{ padding: '16px 20px', background: C.card, borderBottom: `1px solid ${C.border}`, display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <div style={{ padding: '10px 20px', background: C.card, borderBottom: `1px solid ${C.border}`, display: 'flex', gap: '12px', alignItems: 'center' }}>
                         
-                        {/* Start/End Shift */}
-                        {currentShift ? (
-                            <button onClick={() => setShowEndShift(true)} style={{ height: 40, padding: '0 16px', borderRadius: '10px', border: '1px solid #ef444430', background: '#ef444410', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
-                                <LogOut size={16} /> {t('إنهاء')}
-                            </button>
+                        {/* Exit System */}
+                        <button onClick={() => window.location.href='/'} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.danger}15`, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="الخروج للنظام">
+                            <LogOut size={18} />
+                        </button>
+
+                        <div style={{ flex: 1 }}></div>
+
+                        {/* Search */}
+                        {showSearchInput ? (
+                            <div style={{ position: 'relative', width: '250px', display: 'flex', alignItems: 'center' }}>
+                                <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', color: C.textMuted }} />
+                                <input autoFocus value={search} onChange={e => setSearch(e.target.value)} placeholder={t('ابحث عن صنف...')} style={{ ...IS, paddingInlineStart: '36px', paddingInlineEnd: '36px', height: '40px', fontSize: '13px', width: '100%' }} />
+                                <button onClick={() => { setSearch(''); setShowSearchInput(false); }} style={{ position: 'absolute', insetInlineEnd: '8px', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={16} /></button>
+                            </div>
                         ) : (
-                            <button onClick={() => setShowStartShift(true)} style={{ height: 40, padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.primary}30`, background: `${C.primary}10`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
-                                <User size={16} /> {t('بدء الوردية')}
+                            <button onClick={() => setShowSearchInput(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('بحث')}>
+                                <Search size={16} />
                             </button>
                         )}
 
-                        {/* Refresh */}
-                        <button onClick={load} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="تحديث">
-                            <RefreshCw size={15} />
-                        </button>
-
                         {/* Drawer Ops */}
-                        <button onClick={() => setShowDrawerModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="درج الكاشير">
+                        <button onClick={() => setShowDrawerModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('درج الكاشير')}>
                             <Wallet size={16} color={'#f59e0b'} />
                         </button>
                         
                         {/* Branch Selector Icon */}
-                        <button onClick={() => setShowBranchModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="الفرع">
+                        <button onClick={() => setShowBranchModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('الفرع')}>
                             <Store size={16} color={C.primary} />
                         </button>
 
-                        <div style={{ flex: 1 }}></div>
+                        {/* End Shift */}
+                        {currentShift && (
+                            <button onClick={() => { if (cart.length > 0) setShowUnpaidWarning(true); else setShowEndShift(true); }} style={{ height: 40, padding: '0 24px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>
+                                نهاية العمل <Power size={18} />
+                            </button>
+                        )}
                     </div>
 
                     {/* التصنيفات */}
@@ -1161,51 +1185,82 @@ export default function POSPage() {
             
             {/* Start Shift Modal */}
             {showStartShift && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
-                        <h2 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <User size={20} /> بدء الوردية
-                        </h2>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+                            <Wallet size={48} color={C.textPrimary} style={{ marginBottom: '16px' }} />
+                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>كم لديك من النقود في الدرج؟</h2>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'start' }}>
                             <div>
-                                <label style={LS}>الرصيد الافتتاحي للدرج 💰 <span style={{ color: C.danger }}>*</span></label>
-                                <input type="number" min="0" value={shiftOpeningBalance} onChange={e => setShiftOpeningBalance(e.target.value ? Number(e.target.value) : '')} style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700 }} autoFocus />
+                                <input type="number" min="0" value={shiftOpeningBalance} onChange={e => setShiftOpeningBalance(e.target.value ? Number(e.target.value) : '')} placeholder="الرصيد الافتتاحي للدرج 💰" style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700, textAlign: 'center' }} autoFocus />
                             </div>
                             <div>
-                                <label style={LS}>ملاحظات (اختياري)</label>
-                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={IS} />
+                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} placeholder="ملاحظات (اختياري)" style={{...IS, textAlign: 'center'}} />
                             </div>
                         </div>
-                        <button onClick={handleStartShift} disabled={shiftOpeningBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftOpeningBalance === '' || shiftLoading, false), width: '100%', height: '48px', borderRadius: '12px', marginTop: '24px', fontSize: '15px' }}>
-                            {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'بدء العمل'}
-                        </button>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
+                            <button onClick={() => setShowStartShift(false)} style={{ flex: 1, height: '48px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button onClick={handleStartShift} disabled={shiftOpeningBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftOpeningBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '10px', fontSize: '15px', background: '#3b82f6', border: 'none', fontFamily: CAIRO }}>
+                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'بداية العمل'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
 
             {/* End Shift Modal */}
             {showEndShift && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
+                            <Wallet size={48} color={C.textPrimary} style={{ marginBottom: '16px' }} />
+                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>كم من النقد لديك الآن؟</h2>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'start' }}>
+                            <div>
+                                <input type="number" min="0" value={shiftClosingBalance} onChange={e => setShiftClosingBalance(e.target.value ? Number(e.target.value) : '')} placeholder="الرصيد الفعلي بالدرج 💰" style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700, textAlign: 'center' }} autoFocus />
+                            </div>
+                            <div>
+                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} placeholder="ملاحظات العجز/الزيادة (اختياري)" style={{...IS, textAlign: 'center'}} />
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
+                            <button onClick={() => setShowEndShift(false)} style={{ flex: 1, height: '48px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button onClick={handleEndShift} disabled={shiftClosingBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftClosingBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '10px', fontSize: '15px', background: '#3b82f6', border: 'none', fontFamily: CAIRO }}>
+                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'نهاية العمل'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Branch Modal */}
+            {showBranchModal && (
+                <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', fontFamily: CAIRO }}>
+                    <div style={{ background: C.bg, width: '400px', borderRadius: '16px', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <LogOut size={20} /> إنهاء الوردية
-                            </h2>
-                            <button onClick={() => setShowEndShift(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Store size={20} color={C.primary} />
+                                الفروع
+                            </h3>
+                            <button onClick={() => setShowBranchModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div>
-                                <label style={LS}>الرصيد الفعلي الموجود بالدرج 💰 <span style={{ color: C.danger }}>*</span></label>
-                                <input type="number" min="0" value={shiftClosingBalance} onChange={e => setShiftClosingBalance(e.target.value ? Number(e.target.value) : '')} style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700 }} autoFocus />
-                            </div>
-                            <div>
-                                <label style={LS}>ملاحظات العجز/الزيادة (اختياري)</label>
-                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={IS} />
-                            </div>
+                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {branches.map(br => (
+                                <button key={br.id} onClick={() => { setSelectedBranch(br); setShowBranchModal(false); }} style={{ padding: '16px', borderRadius: '12px', border: `1px solid ${selectedBranch?.id === br.id ? C.primary : C.border}`, background: selectedBranch?.id === br.id ? `${C.primary}10` : C.card, color: selectedBranch?.id === br.id ? C.primary : C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', textAlign: 'start' }}>
+                                    <Store size={20} />
+                                    <div>
+                                        <div style={{ fontWeight: 600, fontSize: '15px' }}>{br.name}</div>
+                                        <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>{br.address || 'بدون عنوان'}</div>
+                                    </div>
+                                </button>
+                            ))}
+                            {branches.length === 0 && (
+                                <div style={{ padding: '20px', textAlign: 'center', color: C.textSecondary, fontSize: '14px' }}>لا توجد فروع متاحة</div>
+                            )}
                         </div>
-                        <button onClick={handleEndShift} disabled={shiftClosingBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftClosingBalance === '' || shiftLoading, false), width: '100%', height: '48px', borderRadius: '12px', marginTop: '24px', fontSize: '15px', background: C.danger, borderColor: C.dangerBorder }}>
-                            {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'تأكيد الإنهاء وإصدار التقرير'}
-                        </button>
                     </div>
                 </div>
             )}
