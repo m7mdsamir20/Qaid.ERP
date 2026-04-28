@@ -112,8 +112,11 @@ export default function POSPage() {
     const [currentShift, setCurrentShift] = useState<any>(null);
     const [showStartShift, setShowStartShift] = useState(false);
     const [showEndShift, setShowEndShift] = useState(false);
-    const [showDrawerModal, setShowDrawerModal] = useState(false);
+        const [showDrawerModal, setShowDrawerModal] = useState(false);
     const [showSearchInput, setShowSearchInput] = useState(false);
+    const [showBranchModal, setShowBranchModal] = useState(false);
+    const [branches, setBranches] = useState<any[]>([]);
+    const [selectedBranch, setSelectedBranch] = useState<any>(null);
     
     const [drawerAmount, setDrawerAmount] = useState<number | ''>('');
     const [drawerNotes, setDrawerNotes] = useState('');
@@ -130,7 +133,7 @@ export default function POSPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes, settingsRes] = await Promise.all([
+            const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes, settingsRes, shiftRes, branchRes] = await Promise.all([
                 fetch('/api/categories'),
                 fetch('/api/items?all=true'),
                 fetch('/api/restaurant/tables'),
@@ -138,9 +141,9 @@ export default function POSPage() {
                 fetch('/api/drivers'),
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
-                fetch('/api/settings'), fetch('/api/restaurant/shifts?status=open')
+                fetch('/api/settings'), fetch('/api/restaurant/shifts?status=open'), fetch('/api/branches')
             ]);
-            const [cats, itms, tbls, mods, drvs, custs, treas, settings, shiftsResData] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json(), settingsRes.json(), shiftRes.json()]);
+            const [cats, itms, tbls, mods, drvs, custs, treas, settings, shiftsResData, branchesData] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json(), settingsRes.json(), shiftRes.json(), branchRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
             setItems(Array.isArray(itms) ? itms : (itms.items || []));
             setTables(Array.isArray(tbls) ? tbls : []);
@@ -149,6 +152,9 @@ export default function POSPage() {
             setCustomers(Array.isArray(custs) ? custs : []);
             setTreasuries(Array.isArray(treas) ? treas : []);
             setRestaurantSettings(settings.restaurantSettings || {});
+            const brArr = Array.isArray(branchesData) ? branchesData : [];
+            setBranches(brArr);
+            if (brArr.length > 0) setSelectedBranch(brArr[0]);
             if (Array.isArray(shiftsResData) && shiftsResData.length > 0) setCurrentShift(shiftsResData[0]); else { setCurrentShift(null); setShowStartShift(true); }
             
             if (settings.company?.taxSettings) {
@@ -265,60 +271,8 @@ export default function POSPage() {
                 arr.forEach((o: any) => modsTotal += (o.price || 0));
             });
         }
-    
-    const handleStartShift = async () => {
-        if (shiftOpeningBalance === '') return;
-        setShiftLoading(true);
-        try {
-            const res = await fetch('/api/restaurant/shifts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ openingBalance: shiftOpeningBalance, notes: shiftNotes }) });
-            if (res.ok) {
-                const shift = await res.json();
-                setCurrentShift(shift);
-                setShowStartShift(false);
-                setSuccessMsg('تم بدء الوردية بنجاح');
-                setTimeout(() => setSuccessMsg(''), 3000);
-            }
-        } catch {} finally { setShiftLoading(false); }
+        return (item.unitPrice + modsTotal) * item.quantity;
     };
-
-    const handleEndShift = async () => {
-        if (shiftClosingBalance === '' || !currentShift) return;
-        setShiftLoading(true);
-        try {
-            const res = await fetch('/api/restaurant/shifts', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: currentShift.id, closingBalance: shiftClosingBalance, notes: shiftNotes }) });
-            if (res.ok) {
-                const data = await res.json();
-                setCurrentShift(null);
-                setShowEndShift(false);
-                setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoney(data.difference));
-                setTimeout(() => setSuccessMsg(''), 5000);
-                setShowStartShift(true);
-            }
-        } catch {} finally { setShiftLoading(false); }
-    };
-
-    const handleDrawerOperation = async () => {
-        if (!drawerAmount || !currentShift || !selectedTreasury) {
-            setErrorMsg('تأكد من اختيار الخزنة وإدخال المبلغ');
-            setTimeout(() => setErrorMsg(''), 3000);
-            return;
-        }
-        setShiftLoading(true);
-        try {
-            const res = await fetch('/api/restaurant/shifts/drawer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shiftId: currentShift.id, treasuryId: selectedTreasury, type: drawerType, amount: drawerAmount, notes: drawerNotes }) });
-            if (res.ok) {
-                setShowDrawerModal(false);
-                setDrawerAmount('');
-                setDrawerNotes('');
-                setSuccessMsg(drawerType === 'in' ? 'تم إضافة المبلغ للدرج' : 'تم سحب المبلغ من الدرج');
-                setTimeout(() => setSuccessMsg(''), 3000);
-            }
-        } catch {} finally { setShiftLoading(false); }
-    };
-
-    return (item.unitPrice + modsTotal) * item.quantity;
-    };
-
     const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
     const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
     const baseForTax = Math.max(0, subtotal - discount - couponDiscount);
@@ -556,6 +510,56 @@ export default function POSPage() {
         finally { setSubmitting(false); }
     };
 
+    const handleStartShift = async () => {
+        if (shiftOpeningBalance === '') return;
+        setShiftLoading(true);
+        try {
+            const res = await fetch('/api/restaurant/shifts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ openingBalance: shiftOpeningBalance, notes: shiftNotes }) });
+            if (res.ok) {
+                const shift = await res.json();
+                setCurrentShift(shift);
+                setShowStartShift(false);
+                setSuccessMsg('تم بدء الوردية بنجاح');
+                setTimeout(() => setSuccessMsg(''), 3000);
+            }
+        } catch {} finally { setShiftLoading(false); }
+    };
+
+    const handleEndShift = async () => {
+        if (shiftClosingBalance === '' || !currentShift) return;
+        setShiftLoading(true);
+        try {
+            const res = await fetch('/api/restaurant/shifts', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: currentShift.id, closingBalance: shiftClosingBalance, notes: shiftNotes }) });
+            if (res.ok) {
+                const data = await res.json();
+                setCurrentShift(null);
+                setShowEndShift(false);
+                setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoney(data.difference));
+                setTimeout(() => setSuccessMsg(''), 5000);
+                setShowStartShift(true);
+            }
+        } catch {} finally { setShiftLoading(false); }
+    };
+
+    const handleDrawerOperation = async () => {
+        if (!drawerAmount || !currentShift || !selectedTreasury) {
+            setErrorMsg('تأكد من اختيار الخزنة وإدخال المبلغ');
+            setTimeout(() => setErrorMsg(''), 3000);
+            return;
+        }
+        setShiftLoading(true);
+        try {
+            const res = await fetch('/api/restaurant/shifts/drawer', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shiftId: currentShift.id, treasuryId: selectedTreasury, type: drawerType, amount: drawerAmount, notes: drawerNotes }) });
+            if (res.ok) {
+                setShowDrawerModal(false);
+                setDrawerAmount('');
+                setDrawerNotes('');
+                setSuccessMsg(drawerType === 'in' ? 'تم إضافة المبلغ للدرج' : 'تم سحب المبلغ من الدرج');
+                setTimeout(() => setSuccessMsg(''), 3000);
+            }
+        } catch {} finally { setShiftLoading(false); }
+    };
+
     return (
         <>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', fontFamily: CAIRO, background: C.bg }}>
@@ -566,39 +570,7 @@ export default function POSPage() {
                     {/* Header المنيو (New Design) */}
                     <div style={{ padding: '16px 20px', background: C.card, borderBottom: `1px solid ${C.border}`, display: 'flex', gap: '12px', alignItems: 'center' }}>
                         
-                        {/* Search Icon / Bar */}
-                        {showSearchInput ? (
-                            <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <div style={{ position: 'relative', flex: 1 }}>
-                                    <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                    <input autoFocus ref={searchRef} value={search} onChange={e => setSearch(e.target.value)} placeholder={t('ابحث عن صنف...')} style={{ ...IS, paddingInlineStart: '36px', height: '40px', fontSize: '13px' }} />
-                                </div>
-                                <button onClick={() => setShowSearchInput(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
-                            </div>
-                        ) : (
-                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <button onClick={() => setShowSearchInput(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Search size={18} />
-                                </button>
-                                
-                                {/* Branch Selector */}
-                                <button style={{ height: 40, padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                    <Store size={16} color={C.primary} />
-                                    <span>{t('الفرع الرئيسي')}</span>
-                                </button>
-
-                                {/* Drawer Ops */}
-                                <button onClick={() => setShowDrawerModal(true)} style={{ height: 40, padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                    <Wallet size={16} color={'#f59e0b'} />
-                                    <span>{t('درج الكاشير')}</span>
-                                </button>
-                            </div>
-                        )}
-
-                        <button onClick={load} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <RefreshCw size={15} />
-                        </button>
-                        
+                        {/* Start/End Shift */}
                         {currentShift ? (
                             <button onClick={() => setShowEndShift(true)} style={{ height: 40, padding: '0 16px', borderRadius: '10px', border: '1px solid #ef444430', background: '#ef444410', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
                                 <LogOut size={16} /> {t('إنهاء')}
@@ -608,6 +580,23 @@ export default function POSPage() {
                                 <User size={16} /> {t('بدء الوردية')}
                             </button>
                         )}
+
+                        {/* Refresh */}
+                        <button onClick={load} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="تحديث">
+                            <RefreshCw size={15} />
+                        </button>
+
+                        {/* Drawer Ops */}
+                        <button onClick={() => setShowDrawerModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="درج الكاشير">
+                            <Wallet size={16} color={'#f59e0b'} />
+                        </button>
+                        
+                        {/* Branch Selector Icon */}
+                        <button onClick={() => setShowBranchModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="الفرع">
+                            <Store size={16} color={C.primary} />
+                        </button>
+
+                        <div style={{ flex: 1 }}></div>
                     </div>
 
                     {/* التصنيفات */}
@@ -1253,8 +1242,7 @@ export default function POSPage() {
                 </div>
             )}
             
-            <style>{`@keyframes spin`;
- { to { transform: rotate(360deg); } }`}</style>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </>
     );
 }
