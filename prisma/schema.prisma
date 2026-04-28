@@ -618,6 +618,7 @@ model Invoice {
   taxEnabled          Boolean         @default(false)
   taxRate             Float           @default(0)
   taxAmount           Float           @default(0)
+  serviceAmount       Float           @default(0)
   taxInclusive        Boolean         @default(false)
   taxLabel            String?
   total               Float           @default(0)
@@ -1025,6 +1026,7 @@ model PosOrder {
   subtotal        Float            @default(0)
   discount        Float            @default(0)
   taxAmount       Float            @default(0)
+  serviceAmount   Float            @default(0)
   total           Float            @default(0)
   paidAmount      Float            @default(0)
   paymentMethod   String? // cash | card | mixed

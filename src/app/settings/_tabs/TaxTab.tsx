@@ -28,11 +28,12 @@ interface TaxTabProps {
     isSaving: boolean;
     handleCancel: () => void;
     saveSettings: (action: string, data: any) => void;
+    isRestaurants?: boolean;
 }
 
 export default function TaxTab({
     isEditMode, setIsEditMode, taxForm, setTaxForm, savedTaxForm,
-    isSaving, handleCancel, saveSettings
+    isSaving, handleCancel, saveSettings, isRestaurants
 }: TaxTabProps) {
     const { t } = useTranslation();
 
@@ -132,6 +133,53 @@ export default function TaxTab({
                         </div>
 
                     </div>
+                )}
+
+                {/* ── Service Charge Toggle ── */}
+                {isRestaurants && (
+                    <>
+                        <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: taxForm.hasServiceCharge ? '#3b82f620' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: taxForm.hasServiceCharge ? '#3b82f6' : C.textMuted }}>
+                            <Receipt size={20} />
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفعيل رسوم الخدمة')}</div>
+                            <div style={{ fontSize: '11px', color: C.textMuted }}>{t('عند تفعيله سيتم إضافة حقل رسوم الخدمة في الكاشير والفواتير')}</div>
+                        </div>
+                    </div>
+                    <Toggle
+                        checked={taxForm.hasServiceCharge ?? false}
+                        onChange={v => setTaxForm((p: any) => ({ ...p, hasServiceCharge: v }))}
+                        disabled={!isEditMode}
+                    />
+                </div>
+
+                {taxForm.hasServiceCharge && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', animation: 'fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+                        {/* Service Charge Rate */}
+                        <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
+                            <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '12px', fontFamily: CAIRO }}>{t('نسبة رسوم الخدمة (%)')}</label>
+                            {!isEditMode ? (
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{taxForm.serviceChargeRate}%</div>
+                            ) : (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <input
+                                        type="number"
+                                        value={taxForm.serviceChargeRate ?? 0}
+                                        onChange={e => setTaxForm((p: any) => ({ ...p, serviceChargeRate: parseFloat(e.target.value) || 0 }))}
+                                        style={{
+                                            width: '100px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`,
+                                            background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 12px',
+                                            fontSize: '15px', fontWeight: 600, outline: 'none'
+                                        }}
+                                    />
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.primary }}>%</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    </>
                 )}
             </div>
         </div>

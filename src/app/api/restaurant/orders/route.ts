@@ -75,8 +75,9 @@ export const POST = withProtection(async (request, session, body) => {
 
         const subtotal = (body.lines as any[]).reduce((s: number, l: any) => s + (l.quantity * l.unitPrice - (l.discount ?? 0)), 0);
         const taxAmount = body.taxAmount ?? 0;
+        const serviceAmount = body.serviceAmount ?? 0;
         const discount = body.discount ?? 0;
-        const total = subtotal - discount + taxAmount;
+        const total = subtotal - discount + taxAmount + serviceAmount;
 
         // Prepare payments with treasuryId
         const paymentsData = body.payments && body.payments.length > 0
@@ -102,6 +103,7 @@ export const POST = withProtection(async (request, session, body) => {
                 subtotal,
                 discount,
                 taxAmount,
+                serviceAmount,
                 total,
                 paidAmount: body.paidAmount || 0,
                 paymentMethod: body.paymentMethod,
@@ -174,6 +176,7 @@ export const POST = withProtection(async (request, session, body) => {
                         taxEnabled: taxAmount > 0,
                         taxRate: body.taxRate || 0,
                         taxAmount,
+                        serviceAmount,
                         total,
                         paidAmount: body.paidAmount,
                         remaining: total - body.paidAmount,
@@ -274,9 +277,19 @@ export const POST = withProtection(async (request, session, body) => {
                             where: { companyId, OR: [{ code: '2201' }, { name: { contains: 'ضريبة' } }] }
                         });
                         if (taxAccount) {
-                            // Adjust: Sales credit is subtotal only, tax goes to liability
-                            lines[1].credit = subtotal - discount; // Net sales
+                            lines[0].credit -= taxAmount;
                             lines.push({ accountId: taxAccount.id, debit: 0, credit: taxAmount, description: `ضريبة قيمة مضافة - طلب #${orderNumber}` });
+                        }
+                    }
+
+                    // If there's service amount, add service revenue entry
+                    if (serviceAmount > 0) {
+                        const serviceAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '4102' }, { name: { contains: 'رسوم خدمة' } }, { name: { contains: 'خدمات' } }] }
+                        });
+                        if (serviceAccount) {
+                            lines[0].credit -= serviceAmount;
+                            lines.push({ accountId: serviceAccount.id, debit: 0, credit: serviceAmount, description: `رسوم خدمة - طلب #${orderNumber}` });
                         }
                     }
 

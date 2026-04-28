@@ -98,12 +98,16 @@ function SettingsContent() {
         type: 'VAT',
         rate: 14,
         isInclusive: false,
+        hasServiceCharge: false,
+        serviceChargeRate: 0,
     });
     const [savedTaxForm, setSavedTaxForm] = useState({
         enabled: false,
         type: 'VAT',
         rate: 14,
         isInclusive: false,
+        hasServiceCharge: false,
+        serviceChargeRate: 0,
     });
     interface NewUserForm {
         name: string;
@@ -561,6 +565,8 @@ function SettingsContent() {
                                 type: tax.type || 'VAT',
                                 rate: tax.rate ?? 14,
                                 isInclusive: tax.isInclusive ?? false,
+                                hasServiceCharge: tax.hasServiceCharge ?? false,
+                                serviceChargeRate: tax.serviceChargeRate ?? 0,
                             };
                             setTaxForm(tForm);
                             setSavedTaxForm(tForm);
@@ -877,6 +883,7 @@ function SettingsContent() {
                                 fetchData={fetchData}
                                 hasInstallmentsAccess={hasPage('installments', '/installments')}
                                 isServices={isServices}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 
@@ -890,6 +897,7 @@ function SettingsContent() {
                                 isSaving={isSaving}
                                 handleCancel={handleCancel}
                                 saveSettings={saveSettings}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 
