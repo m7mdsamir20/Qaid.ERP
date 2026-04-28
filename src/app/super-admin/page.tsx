@@ -207,7 +207,7 @@ export default function SuperAdminPage() {
                         <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                             <tr>
                                 {['معلومات الشركة', 'النشاط', 'الباقة والمستخدمين', 'تاريخ الانتهاء', 'حالة الحساب', 'إجراءات'].map((h, i) => (
-                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i === 5 ? 'center' : 'start' }}>{h}</th>
+                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i >= 2 ? 'center' : 'start' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -243,7 +243,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Plan & Users */}
-                                        <td style={{ padding: '16px', }}>
+                                        <td style={{ padding: '16px', textAlign: 'center' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                                                 <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 600 }}>
                                                     {plan.label}
@@ -255,7 +255,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Subscription End Date */}
-                                        <td style={{ padding: '16px', }}>
+                                        <td style={{ padding: '16px', textAlign: 'center' }}>
                                             {sub ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                     <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
@@ -266,12 +266,12 @@ export default function SuperAdminPage() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجدشتراك</span>
+                                                <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجد اشتراك</span>
                                             )}
                                         </td>
 
                                         {/* Status */}
-                                        <td style={{ padding: '16px', }}>
+                                        <td style={{ padding: '16px', textAlign: 'center' }}>
                                             <button onClick={() => handleToggle(c.id, c.isActive)}
                                                 style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${c.isActive ? C.success : C.danger}40`, background: c.isActive ? `${C.success}15` : `${C.danger}15`, color: c.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                                                 {c.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
@@ -279,7 +279,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Actions */}
-                                        <td style={{ padding: '16px', }}>
+                                        <td style={{ padding: '16px', textAlign: 'center' }}>
                                             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                                 <button onClick={() => router.push(`/super-admin/edit/${c.id}`)}
                                                     style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.primary}10`, color: C.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
