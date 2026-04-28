@@ -178,8 +178,9 @@ export default function TaxTab({
                                 </div>
                             )}
                         </div>
-                    )}
-                    </>
+                    </div>
+                )}
+                </>
                 )}
             </div>
         </div>

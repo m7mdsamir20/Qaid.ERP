@@ -10,7 +10,7 @@ export const POST = withProtection(async (request, session) => {
         // 1. Get Notification Settings
         const company = await prisma.company.findFirst({
             where: { id: companyId },
-            select: { notificationSettings: true, subscription: true },
+            select: { notificationSettings: true, subscription: true, businessType: true },
         });
 
         if (!company) {
@@ -33,8 +33,13 @@ export const POST = withProtection(async (request, session) => {
 
         // ① Low Stock Notifications
         if (settings.lowStock?.enabled) {
+            const isRestaurants = company.businessType === 'RESTAURANTS';
             const items = await prisma.item.findMany({
-                where: { companyId, minLimit: { gte: 0 }, type: 'raw' },
+                where: { 
+                    companyId, 
+                    minLimit: { gte: 0 },
+                    ...(isRestaurants ? { type: 'raw' } : { type: { not: 'service' } })
+                },
                 include: {
                     stocks: true,
                 },
