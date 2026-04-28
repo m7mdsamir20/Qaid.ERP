@@ -100,7 +100,10 @@ export default function POSPage() {
     const [orderNotes, setOrderNotes] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [discount, setDiscount] = useState(0);
+    const [hasTax, setHasTax] = useState(false);
     const [taxRate, setTaxRate] = useState(0);
+    const [hasServiceCharge, setHasServiceCharge] = useState(false);
+    const [serviceChargeRate, setServiceChargeRate] = useState(0);
     const [step, setStep] = useState<'cart' | 'payment'>('cart');
 
     const searchRef = useRef<HTMLInputElement>(null);
@@ -127,6 +130,16 @@ export default function POSPage() {
             setCustomers(Array.isArray(custs) ? custs : []);
             setTreasuries(Array.isArray(treas) ? treas : []);
             setRestaurantSettings(settings.restaurantSettings || {});
+            
+            if (settings.company?.taxSettings) {
+                try {
+                    const ts = typeof settings.company.taxSettings === 'string' ? JSON.parse(settings.company.taxSettings) : settings.company.taxSettings;
+                    setHasTax(ts.enabled ?? false);
+                    if (ts.enabled) setTaxRate(ts.rate ?? 0);
+                    setHasServiceCharge(ts.hasServiceCharge ?? false);
+                    if (ts.hasServiceCharge) setServiceChargeRate(ts.serviceChargeRate ?? 0);
+                } catch(e) {}
+            }
         } finally {
             setLoading(false);
         }
@@ -180,7 +193,7 @@ export default function POSPage() {
     };
 
     const removeFromCart = (itemId: string) => setCart(prev => prev.filter(c => c.itemId !== itemId));
-    const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setSelectedCustomer(''); setDeliveryName(''); setDeliveryPhone(''); setDeliveryAddress(''); setOrderNotes(''); setDiscount(0); setTaxRate(0); };
+    const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setSelectedCustomer(''); setDeliveryName(''); setDeliveryPhone(''); setDeliveryAddress(''); setOrderNotes(''); setDiscount(0); };
 
     const openModifiersModal = (index: number) => {
         setActiveModifierCartIndex(index);
@@ -222,8 +235,9 @@ export default function POSPage() {
     };
 
     const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
-    const taxAmount = taxRate > 0 ? Math.round((subtotal - discount) * taxRate / 100) : 0;
-    const total = Math.max(0, subtotal - discount + taxAmount);
+    const taxAmount = hasTax && taxRate > 0 ? Math.round((subtotal - discount) * taxRate / 100) : 0;
+    const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round((subtotal - discount) * serviceChargeRate / 100) : 0;
+    const total = Math.max(0, subtotal - discount + taxAmount + serviceAmount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
@@ -261,6 +275,8 @@ export default function POSPage() {
                 </div>
                 <div class="total">
                     ${finalDiscount > 0 ? `<div class="line"><span>خصم:</span><span>${finalDiscount}</span></div>` : ''}
+                    ${orderData.serviceAmount > 0 ? `<div class="line"><span>رسوم الخدمة:</span><span>${orderData.serviceAmount}</span></div>` : ''}
+                    ${orderData.taxAmount > 0 ? `<div class="line"><span>الضريبة:</span><span>${orderData.taxAmount}</span></div>` : ''}
                     <div class="line"><span>الإجمالي:</span><span>${finalTotal}</span></div>
                 </div>
                 <div class="footer">
@@ -394,7 +410,7 @@ export default function POSPage() {
                     paidAmount: (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') ? 0 : total,
                     discount,
                     taxAmount,
-                    taxRate,
+                    serviceAmount,
                     payments: paymentsArray,
                     lines: cart.map(c => ({ ...c })),
                 }),
@@ -625,12 +641,24 @@ export default function POSPage() {
                         {/* ملاحظات */}
                         <input value={orderNotes} onChange={e => setOrderNotes(e.target.value)} placeholder={t('ملاحظات الطلب...')} style={{ ...IS, height: '36px', fontSize: '12px' }} />
 
-                        {/* خصم + ضريبة */}
+                        {/* خصم + ضريبة + خدمة */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('خصم')}</label>
                             <input type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, flex: 1 }} />
-                            <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('ضريبة %')}</label>
-                            <input type="number" min="0" max="100" value={taxRate || ''} onChange={e => setTaxRate(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, width: '60px' }} />
+                            
+                            {hasTax && (
+                                <>
+                                    <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('ضريبة %')}</label>
+                                    <input type="number" min="0" max="100" value={taxRate || ''} onChange={e => setTaxRate(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, width: '50px' }} />
+                                </>
+                            )}
+                            
+                            {hasServiceCharge && orderType === 'dine-in' && (
+                                <>
+                                    <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('خدمة %')}</label>
+                                    <input type="number" min="0" max="100" value={serviceChargeRate || ''} onChange={e => setServiceChargeRate(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, width: '50px' }} />
+                                </>
+                            )}
                         </div>
 
                         {/* اختيار الخزنة */}
@@ -659,6 +687,12 @@ export default function POSPage() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
                                     <span>{t('ضريبة')} ({taxRate}%)</span>
                                     <span style={{ fontFamily: OUTFIT }}>+ {fMoney(taxAmount)}</span>
+                                </div>
+                            )}
+                            {serviceAmount > 0 && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#3b82f6' }}>
+                                    <span>{t('رسوم خدمة')} ({serviceChargeRate}%)</span>
+                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoney(serviceAmount)}</span>
                                 </div>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 700, color: C.textPrimary, borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
