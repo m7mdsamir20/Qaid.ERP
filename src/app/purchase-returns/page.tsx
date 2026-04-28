@@ -124,11 +124,11 @@ export default function PurchaseReturnsListPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px' }}>
+                        <div style={{ padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
                             <RotateCcw size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مرتجعات مشتريات')}</p>
                         </div>
