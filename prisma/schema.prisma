@@ -82,6 +82,8 @@ model Company {
   Driver                  Driver[]
   // 🔑 API Integration
   apiKeys                 ApiKey[]
+  // 🎟️ Marketing & Promos
+  coupons                 Coupon[]
 }
 
 model ApiKey {
@@ -96,6 +98,27 @@ model ApiKey {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Coupon {
+  id                String    @id @default(cuid())
+  code              String
+  type              String    // "percentage" | "fixed"
+  value             Float
+  maxDiscountAmount Float?
+  minOrderValue     Float?
+  startDate         DateTime?
+  endDate           DateTime?
+  usageLimit        Int?
+  usedCount         Int       @default(0)
+  isActive          Boolean   @default(true)
+  companyId         String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, code])
 }
 
 model Branch {
@@ -615,6 +638,8 @@ model Invoice {
   supplierId          String?
   subtotal            Float           @default(0)
   discount            Float           @default(0)
+  couponCode          String?
+  couponDiscount      Float           @default(0)
   taxEnabled          Boolean         @default(false)
   taxRate             Float           @default(0)
   taxAmount           Float           @default(0)
@@ -1025,6 +1050,8 @@ model PosOrder {
   notes           String?
   subtotal        Float            @default(0)
   discount        Float            @default(0)
+  couponCode      String?
+  couponDiscount  Float            @default(0)
   taxAmount       Float            @default(0)
   serviceAmount   Float            @default(0)
   total           Float            @default(0)

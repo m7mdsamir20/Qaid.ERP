@@ -178,11 +178,10 @@ export default function EditCompanyPage() {
 
             let section = { ...s };
 
-            // تعديلات ديناميكية للمسميات بناءً على نوع النشاط
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
-                    section.links = section.links.map((l: any) => {
+                    section.links = section.links.filter((l: any) => l.id !== '/coupons').map((l: any) => {
                         if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
                         if (l.label === 'مرتجع مبيعات') return { ...l, label: 'مرتجع خدمات' };
                         return l;
@@ -202,6 +201,10 @@ export default function EditCompanyPage() {
                         if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير الخدمات' };
                         return l;
                     });
+                }
+            } else if (form.businessType !== 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.links = section.links.filter((l: any) => l.id !== '/coupons');
                 }
             }
 
