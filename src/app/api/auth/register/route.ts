@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { navSections } from '@/constants/navigation';
 import bcrypt from 'bcryptjs';
 import { seedDefaultAccounts } from '@/app/api/accounts/seed/route';
 import { withProtection } from '@/lib/apiHandler';
@@ -47,6 +48,15 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             });
 
+            // ✅ بناء موديولات الاشتراك التفصيلية بدون صفحة تسوية الديون
+            const featuresObject: Record<string, string[]> = {};
+            activeModules.forEach((key: string) => {
+                const section = navSections.find((s: any) => s.featureKey === key);
+                if (section && section.links) {
+                    featuresObject[key] = section.links.map((l: any) => l.id).filter((id: string) => id !== '/settlements');
+                }
+            });
+
             // إنشاء اشتراك تجريبي 14 يوم
             const endDate = new Date();
             endDate.setDate(endDate.getDate() + 14);
@@ -59,7 +69,7 @@ export const POST = withProtection(async (request, session, body) => {
                     isActive: true,
                     maxUsers: 3,
                     maxBranches: 1,
-                    features: JSON.stringify(activeModules),
+                    features: JSON.stringify(featuresObject),
                     notes: 'فترة تجريبية 14 يوم',
                 }
             });

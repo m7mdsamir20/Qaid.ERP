@@ -56,7 +56,6 @@ export const navSections = [
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
             { id: '/customers', href: '/customers', label: 'العملاء' },
-            { id: '/settlements', href: '/settlements', label: 'تسوية ديون (حوالة)' },
         ],
     },
     {
@@ -111,6 +110,7 @@ export const navSections = [
             { id: '/treasuries', href: '/treasuries', label: 'الخزن والبنوك' },
             { id: '/other-income', href: '/other-income', label: 'الإيرادات' },
             { id: '/expenses', href: '/expenses', label: 'المصروفات' },
+            { id: '/settlements', href: '/settlements', label: 'تسوية ديون (حوالة)' },
         ],
     },
     {
