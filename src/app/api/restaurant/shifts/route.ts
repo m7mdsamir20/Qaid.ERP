@@ -59,6 +59,9 @@ export const PUT = withProtection(async (request, session, body) => {
         const companyId = (session.user as any).companyId;
         if (!body.id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
+        const shift = await prisma.shift.findUnique({ where: { id: body.id, companyId } });
+        if (!shift) return NextResponse.json({ error: 'Shift not found' }, { status: 404 });
+
         // Calculate total sales from orders in this shift
         const agg = await prisma.posOrder.aggregate({
             where: { shiftId: body.id, companyId, status: { not: 'cancelled' } },
@@ -69,7 +72,7 @@ export const PUT = withProtection(async (request, session, body) => {
         const totalSales = agg._sum.total ?? 0;
         const totalOrders = agg._count.id;
         const closingBalance = (body.closingBalance ?? 0);
-        const expectedBalance = (body.openingBalance ?? 0) + totalSales;
+        const expectedBalance = shift.openingBalance + totalSales + shift.cashAdded - shift.cashWithdrawn;
         const difference = closingBalance - expectedBalance;
 
         // Count cancelled orders

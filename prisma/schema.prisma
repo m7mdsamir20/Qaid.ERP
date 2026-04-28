@@ -969,9 +969,11 @@ model Shift {
   shiftNumber     Int
   openedAt        DateTime   @default(now())
   closedAt        DateTime?
-  openingBalance  Float      @default(0) // عهدة فتح الدرج
-  closingBalance  Float? // العهدة عند الإغلاق
-  expectedBalance Float? // المبلغ المتوقع (محسوب من المبيعات)
+  openingBalance  Float      @default(0) // رصيد بداية الدرج
+  closingBalance  Float? // الرصيد الفعلي عند الإغلاق
+  expectedBalance Float? // الرصيد المتوقع (من النظام)
+  cashAdded       Float      @default(0) // إيداع نقدي للدرج
+  cashWithdrawn   Float      @default(0) // مسحوبات نقدية من الدرج
   difference      Float? // العجز أو الزيادة
   totalSales      Float      @default(0)
   totalOrders     Int        @default(0)
