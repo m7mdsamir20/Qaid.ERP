@@ -53,7 +53,7 @@ interface CartItem {
 export default function POSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fMoney } = useCurrency();
+    const { fMoney, symbol: cSymbol } = useCurrency();
 
     // Data
     const [categories, setCategories] = useState<any[]>([]);
@@ -157,7 +157,7 @@ export default function POSPage() {
             const brArr = Array.isArray(branchesData) ? branchesData : [];
             setBranches(brArr);
             if (brArr.length > 0) setSelectedBranch(brArr[0]);
-            if (Array.isArray(shiftsResData) && shiftsResData.length > 0) setCurrentShift(shiftsResData[0]); else { setCurrentShift(null); setShowStartShift(true); }
+            if (Array.isArray(shiftsResData) && shiftsResData.length > 0) setCurrentShift(shiftsResData[0]); else setCurrentShift(null);
             
             if (settings.company?.taxSettings) {
                 try {
@@ -516,7 +516,7 @@ export default function POSPage() {
         if (shiftOpeningBalance === '') return;
         setShiftLoading(true);
         try {
-            const res = await fetch('/api/restaurant/shifts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ openingBalance: shiftOpeningBalance, notes: shiftNotes }) });
+            const res = await fetch('/api/restaurant/shifts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ openingBalance: Number(shiftOpeningBalance), notes: shiftNotes }) });
             if (res.ok) {
                 const shift = await res.json();
                 setCurrentShift(shift);
@@ -531,14 +531,13 @@ export default function POSPage() {
         if (shiftClosingBalance === '' || !currentShift) return;
         setShiftLoading(true);
         try {
-            const res = await fetch('/api/restaurant/shifts', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: currentShift.id, closingBalance: shiftClosingBalance, notes: shiftNotes }) });
+            const res = await fetch('/api/restaurant/shifts', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: currentShift.id, closingBalance: Number(shiftClosingBalance), notes: shiftNotes }) });
             if (res.ok) {
                 const data = await res.json();
                 setCurrentShift(null);
                 setShowEndShift(false);
                 setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoney(data.difference));
                 setTimeout(() => setSuccessMsg(''), 5000);
-                setShowStartShift(true);
             }
         } catch {} finally { setShiftLoading(false); }
     };
@@ -568,13 +567,18 @@ export default function POSPage() {
 
                 {/* --- Locked Overlay --- */}
                 {!currentShift && !loading && (
-                    <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(244, 244, 245, 0.5)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <button onClick={() => setShowStartShift(true)} style={{ background: '#1e1b4b', color: 'white', border: 'none', padding: '16px 48px', borderRadius: '12px', fontSize: '18px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.2)', fontFamily: CAIRO }}>
-                                <Power size={24} /> ابدأ العمل
-                            </button>
-                            <p style={{ marginTop: '16px', color: '#1e1b4b', fontWeight: 700, fontSize: '16px', fontFamily: CAIRO }}>لم يتم بدء العمل بعد</p>
-                            <p style={{ marginTop: '4px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قم بالبدء لرؤية المنتجات أو إنشاء طلب</p>
+                    <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <button onClick={() => window.location.href='/'} style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO }}>
+                                    <LogOut size={18} /> عودة للنظام
+                                </button>
+                                <button onClick={() => setShowStartShift(true)} style={{ background: C.primary, color: 'white', border: 'none', padding: '12px 32px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', fontFamily: CAIRO }}>
+                                    <Power size={18} /> ابدأ العمل
+                                </button>
+                            </div>
+                            <p style={{ marginTop: '16px', color: 'white', fontWeight: 700, fontSize: '16px', fontFamily: CAIRO }}>لم يتم بدء العمل بعد</p>
+                            <p style={{ marginTop: '4px', color: '#e5e7eb', fontSize: '13px', fontFamily: CAIRO }}>قم بالبدء لرؤية المنتجات أو إنشاء طلب</p>
                         </div>
                     </div>
                 )}
@@ -1185,25 +1189,31 @@ export default function POSPage() {
             
             {/* Start Shift Modal */}
             {showStartShift && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
-                            <Wallet size={48} color={C.textPrimary} style={{ marginBottom: '16px' }} />
-                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>كم لديك من النقود في الدرج؟</h2>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'start' }}>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
+                        <h2 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <User size={20} /> بدء الوردية
+                        </h2>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
-                                <input type="number" min="0" value={shiftOpeningBalance} onChange={e => setShiftOpeningBalance(e.target.value ? Number(e.target.value) : '')} placeholder="الرصيد الافتتاحي للدرج 💰" style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700, textAlign: 'center' }} autoFocus />
+                                <label style={LS}>الرصيد الافتتاحي للدرج <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative' }}>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontWeight: 700, fontSize: '15px' }}>
+                                        {cSymbol || 'ر.س'}
+                                    </span>
+                                    <input type="text" value={shiftOpeningBalance === '' ? '' : shiftOpeningBalance.toString().split('.').map((p, i) => i === 0 ? p.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : p).join('.')} onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (raw === '') setShiftOpeningBalance(''); else if (!isNaN(Number(raw))) setShiftOpeningBalance(raw as any); }} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT, fontSize: shiftOpeningBalance === '' ? '15px' : '18px', fontWeight: shiftOpeningBalance === '' ? 500 : 700, textAlign: 'center', paddingInlineStart: '45px', paddingInlineEnd: '45px' }} autoFocus />
+                                </div>
                             </div>
                             <div>
-                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} placeholder="ملاحظات (اختياري)" style={{...IS, textAlign: 'center'}} />
+                                <label style={LS}>ملاحظات (اختياري)</label>
+                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={{ ...IS, textAlign: 'center' }} />
                             </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
-                            <button onClick={() => setShowStartShift(false)} style={{ flex: 1, height: '48px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
-                            <button onClick={handleStartShift} disabled={shiftOpeningBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftOpeningBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '10px', fontSize: '15px', background: '#3b82f6', border: 'none', fontFamily: CAIRO }}>
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+                            <button onClick={handleStartShift} disabled={shiftOpeningBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftOpeningBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '12px', fontSize: '15px' }}>
                                 {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'بداية العمل'}
                             </button>
+                            <button onClick={() => setShowStartShift(false)} style={{ flex: 1, height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </div>
                 </div>
@@ -1211,25 +1221,34 @@ export default function POSPage() {
 
             {/* End Shift Modal */}
             {showEndShift && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
-                            <Wallet size={48} color={C.textPrimary} style={{ marginBottom: '16px' }} />
-                            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>كم من النقد لديك الآن؟</h2>
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <LogOut size={20} /> إنهاء الوردية
+                            </h2>
+                            <button onClick={() => setShowEndShift(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', textAlign: 'start' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
-                                <input type="number" min="0" value={shiftClosingBalance} onChange={e => setShiftClosingBalance(e.target.value ? Number(e.target.value) : '')} placeholder="الرصيد الفعلي بالدرج 💰" style={{ ...IS, fontFamily: OUTFIT, fontSize: '18px', fontWeight: 700, textAlign: 'center' }} autoFocus />
+                                <label style={LS}>الرصيد الفعلي الموجود بالدرج <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative' }}>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontWeight: 700, fontSize: '15px' }}>
+                                        {cSymbol || 'ر.س'}
+                                    </span>
+                                    <input type="text" value={shiftClosingBalance === '' ? '' : shiftClosingBalance.toString().split('.').map((p, i) => i === 0 ? p.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : p).join('.')} onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (raw === '') setShiftClosingBalance(''); else if (!isNaN(Number(raw))) setShiftClosingBalance(raw as any); }} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT, fontSize: shiftClosingBalance === '' ? '15px' : '18px', fontWeight: shiftClosingBalance === '' ? 500 : 700, textAlign: 'center', paddingInlineStart: '45px', paddingInlineEnd: '45px' }} autoFocus />
+                                </div>
                             </div>
                             <div>
-                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} placeholder="ملاحظات العجز/الزيادة (اختياري)" style={{...IS, textAlign: 'center'}} />
+                                <label style={LS}>ملاحظات العجز/الزيادة (اختياري)</label>
+                                <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={{ ...IS, textAlign: 'center' }} />
                             </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px', marginTop: '32px' }}>
-                            <button onClick={() => setShowEndShift(false)} style={{ flex: 1, height: '48px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
-                            <button onClick={handleEndShift} disabled={shiftClosingBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftClosingBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '10px', fontSize: '15px', background: '#3b82f6', border: 'none', fontFamily: CAIRO }}>
-                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'نهاية العمل'}
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+                            <button onClick={handleEndShift} disabled={shiftClosingBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftClosingBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '12px', fontSize: '15px', background: C.danger, borderColor: C.dangerBorder }}>
+                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'تأكيد الإنهاء وإصدار التقرير'}
                             </button>
+                            <button onClick={() => setShowEndShift(false)} style={{ flex: 1, height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </div>
                 </div>
