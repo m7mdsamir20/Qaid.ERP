@@ -102,6 +102,8 @@ export const POST = withProtection(async (request, session, body) => {
                 notes: body.notes,
                 subtotal,
                 discount,
+                couponCode: body.couponCode ?? null,
+                couponDiscount: body.couponDiscount ?? 0,
                 taxAmount,
                 serviceAmount,
                 total,
@@ -137,6 +139,14 @@ export const POST = withProtection(async (request, session, body) => {
             await prisma.restaurantTable.updateMany({
                 where: { id: body.tableId, companyId },
                 data: { status: 'occupied' },
+            });
+        }
+
+        // Update Coupon Usage
+        if (body.couponCode) {
+            await prisma.coupon.updateMany({
+                where: { companyId, code: body.couponCode },
+                data: { usedCount: { increment: 1 } }
             });
         }
 

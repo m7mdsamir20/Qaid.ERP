@@ -104,6 +104,10 @@ export default function POSPage() {
     const [taxRate, setTaxRate] = useState(0);
     const [hasServiceCharge, setHasServiceCharge] = useState(false);
     const [serviceChargeRate, setServiceChargeRate] = useState(0);
+    const [couponCode, setCouponCode] = useState('');
+    const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+    const [couponError, setCouponError] = useState('');
+    const [couponLoading, setCouponLoading] = useState(false);
     const [step, setStep] = useState<'cart' | 'payment'>('cart');
 
     const searchRef = useRef<HTMLInputElement>(null);
@@ -185,6 +189,21 @@ export default function POSPage() {
         });
     };
 
+    const clearCart = () => { 
+        setCart([]); 
+        setPaymentMethod('cash');
+        setDiscount(0);
+        setCouponCode('');
+        setAppliedCoupon(null);
+        setOrderNotes('');
+        setStep('cart');
+        setSelectedTable(''); 
+        setSelectedCustomer(''); 
+        setDeliveryName(''); 
+        setDeliveryPhone(''); 
+        setDeliveryAddress(''); 
+    };
+
     const updateQty = (itemId: string, delta: number) => {
         setCart(prev => prev.map(c => c.itemId === itemId
             ? { ...c, quantity: Math.max(0, c.quantity + delta) }
@@ -193,7 +212,6 @@ export default function POSPage() {
     };
 
     const removeFromCart = (itemId: string) => setCart(prev => prev.filter(c => c.itemId !== itemId));
-    const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setSelectedCustomer(''); setDeliveryName(''); setDeliveryPhone(''); setDeliveryAddress(''); setOrderNotes(''); setDiscount(0); };
 
     const openModifiersModal = (index: number) => {
         setActiveModifierCartIndex(index);
@@ -235,10 +253,44 @@ export default function POSPage() {
     };
 
     const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
-    const taxAmount = hasTax && taxRate > 0 ? Math.round((subtotal - discount) * taxRate / 100) : 0;
-    const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round((subtotal - discount) * serviceChargeRate / 100) : 0;
-    const total = Math.max(0, subtotal - discount + taxAmount + serviceAmount);
+    const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
+    const baseForTax = Math.max(0, subtotal - discount - couponDiscount);
+    const taxAmount = hasTax && taxRate > 0 ? Math.round(baseForTax * taxRate / 100) : 0;
+    const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round(baseForTax * serviceChargeRate / 100) : 0;
+    const total = Math.max(0, baseForTax + taxAmount + serviceAmount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setCouponLoading(true);
+        setCouponError('');
+        try {
+            const res = await fetch(`/api/coupons/validate?code=${encodeURIComponent(couponCode)}&subtotal=${subtotal}`);
+            const data = await res.json();
+            if (data.valid) {
+                setAppliedCoupon({ ...data.coupon, discount: data.discount });
+                setSuccessMsg('تم تطبيق الكوبون بنجاح');
+                setTimeout(() => setSuccessMsg(''), 3000);
+            } else {
+                setCouponError(data.error || 'كود غير صحيح');
+            }
+        } catch (e) {
+            setCouponError('خطأ في التحقق من الكوبون');
+        } finally {
+            setCouponLoading(false);
+        }
+    };
+    
+    // Recalculate coupon discount when subtotal changes
+    useEffect(() => {
+        if (appliedCoupon && subtotal > 0) {
+            handleApplyCoupon();
+        } else if (subtotal === 0) {
+            setAppliedCoupon(null);
+            setCouponCode('');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [subtotal]);
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
         const html = `
@@ -402,15 +454,19 @@ export default function POSPage() {
                     tableId: selectedTable || null,
                     driverId: selectedDriver || null,
                     customerId: selectedCustomer || null,
-                    deliveryName: deliveryName || null,
-                    deliveryPhone: deliveryPhone || null,
-                    deliveryAddress: deliveryAddress || null,
+                    deliveryName,
+                    deliveryPhone,
+                    deliveryAddress,
                     notes: finalNotes.trim(),
-                    paymentMethod,
-                    paidAmount: (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') ? 0 : total,
+                    subtotal,
                     discount,
+                    couponCode: appliedCoupon?.code || null,
+                    couponDiscount: appliedCoupon?.discount || 0,
                     taxAmount,
                     serviceAmount,
+                    total,
+                    paymentMethod,
+                    paidAmount: (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') ? 0 : total,
                     payments: paymentsArray,
                     lines: cart.map(c => ({ ...c })),
                 }),
@@ -660,6 +716,27 @@ export default function POSPage() {
                                 </>
                             )}
                         </div>
+
+                        {/* كود الخصم (Coupon) */}
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <input value={couponCode} onChange={e => setCouponCode(e.target.value.toUpperCase())} placeholder={t('كود الخصم')} style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, flex: 1, border: couponError ? `1px solid ${C.dangerBorder}` : appliedCoupon ? `1px solid ${C.primary}50` : `1px solid ${C.border}` }} disabled={!!appliedCoupon || couponLoading} />
+                            
+                            {!appliedCoupon ? (
+                                <button onClick={handleApplyCoupon} disabled={!couponCode || couponLoading || cart.length === 0} style={{ height: '36px', padding: '0 12px', borderRadius: '10px', border: 'none', background: couponCode && cart.length > 0 ? C.primary : `${C.primary}40`, color: '#fff', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO, cursor: couponCode && cart.length > 0 ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', gap: '6px', transition: '0.2s' }}>
+                                    {couponLoading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : t('تطبيق')}
+                                </button>
+                            ) : (
+                                <button onClick={() => { setAppliedCoupon(null); setCouponCode(''); setCouponError(''); }} style={{ height: '36px', width: '36px', borderRadius: '10px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                                    <X size={14} />
+                                </button>
+                            )}
+                        </div>
+                        {couponError && <div style={{ fontSize: '11px', color: C.danger, fontFamily: CAIRO, marginTop: '-6px' }}>{couponError}</div>}
+                        {appliedCoupon && (
+                            <div style={{ fontSize: '11px', color: C.primary, fontFamily: CAIRO, marginTop: '-6px', fontWeight: 600 }}>
+                                {t('تم تطبيق خصم الكوبون:')} {fMoney(appliedCoupon.discount)}
+                            </div>
+                        )}
 
                         {/* اختيار الخزنة */}
                         {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (

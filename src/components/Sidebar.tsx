@@ -124,7 +124,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             if (businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
-                    section.links = section.links?.map((l: any) => {
+                    section.links = section.links?.filter((l: any) => l.id !== '/coupons').map((l: any) => {
                         if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
                         if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
                         return l;
@@ -139,14 +139,18 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                         return l;
                     });
                 }
+            } else if (businessType !== 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.links = section.links?.filter((l: any) => l.id !== '/coupons');
+                }
             }
 
             if (businessType === 'RESTAURANTS') {
                 if (section.featureKey === 'installments') return null;
                 
                 if (section.featureKey === 'sales') {
-                    section.title = 'إدارة العملاء';
-                    section.links = section.links?.filter((l: any) => l.id === '/customers');
+                    section.title = 'العملاء والتسويق';
+                    section.links = section.links?.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = 'المنيو والمخزون';
