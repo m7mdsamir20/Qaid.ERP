@@ -311,7 +311,7 @@ export default function SuperAdminPage() {
                 <div onClick={() => !deleting && setDeleteTarget(null)}
                     style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}>
                     <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'}
-                        style={{ width: '100%', maxWidth: '440px', background: C.bg, border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+                        style={{ width: '100%', maxWidth: '440px', background: C.bg, border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', textAlign: 'center' }}>
 
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: `${C.danger}15`, border: `1px solid ${C.danger}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: C.danger }}>
                             <Trash2 size={32} />
