@@ -38,6 +38,7 @@ function VerifyContent() {
 
     const handleKeyDown = (idx: number, e: React.KeyboardEvent) => {
         if (e.key === 'Backspace' && !otp[idx] && idx > 0) inputs.current[idx - 1]?.focus();
+        if (e.key === 'Enter') handleVerify();
     };
 
     const handlePaste = (e: React.ClipboardEvent) => {

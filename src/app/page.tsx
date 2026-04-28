@@ -16,6 +16,7 @@ import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
+import { navSections } from '@/constants/navigation';
 
 const toEnDigits = (str: string) => str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
 // Local fmt removed in favor of fMoney
@@ -183,8 +184,19 @@ export default function DashboardPage() {
     try {
       const sub = (session?.user as any)?.subscription;
       if (!sub?.features) return {};
-      const parsed = sub.features;
-      if (typeof parsed === 'string') return JSON.parse(parsed);
+      const parsed = typeof sub.features === 'string' ? JSON.parse(sub.features) : sub.features;
+      if (Array.isArray(parsed)) {
+        const obj: Record<string, string[]> = {};
+        parsed.forEach((key: string) => {
+          const sections = navSections.filter((s: any) => s.featureKey === key);
+          sections.forEach((section: any) => {
+            if (section && section.links) {
+              obj[key] = [...(obj[key] || []), ...section.links.map((l: any) => l.id)];
+            }
+          });
+        });
+        return obj;
+      }
       return parsed;
     } catch { return {}; }
   })();
