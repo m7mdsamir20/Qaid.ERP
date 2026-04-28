@@ -143,7 +143,7 @@ export default function PaymentVouchersPage() {
                             <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t("جاري تحميل البيانات...")}</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج') : t('لا توجد سندات صرف')}</p>
                         </div>

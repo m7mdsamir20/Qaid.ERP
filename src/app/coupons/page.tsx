@@ -1,6 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
+import CustomSelect from '@/components/CustomSelect';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -56,6 +57,21 @@ export default function CouponsPage() {
         isActive: true
     });
 
+    const handleAmountChange = (key: string, val: string, format: boolean = true) => {
+        let cleaned = val.replace(/[^0-9.]/g, '');
+        const parts = cleaned.split('.');
+        if (parts.length > 2) cleaned = parts[0] + '.' + parts.slice(1).join('');
+        
+        if (format && cleaned) {
+            if (!cleaned.includes('.')) {
+                cleaned = parseInt(cleaned, 10).toLocaleString('en-US');
+            } else {
+                cleaned = (parseInt(parts[0] || '0', 10).toLocaleString('en-US')) + '.' + parts[1];
+            }
+        }
+        setForm(f => ({ ...f, [key]: cleaned }));
+    };
+
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
@@ -80,9 +96,9 @@ export default function CouponsPage() {
             const payload = {
                 code: form.code.toUpperCase(),
                 type: form.type,
-                value: parseFloat(form.value) || 0,
-                maxDiscountAmount: form.maxDiscountAmount ? parseFloat(form.maxDiscountAmount) : null,
-                minOrderValue: form.minOrderValue ? parseFloat(form.minOrderValue) : null,
+                value: parseFloat(String(form.value).replace(/,/g, '')) || 0,
+                maxDiscountAmount: form.maxDiscountAmount ? parseFloat(String(form.maxDiscountAmount).replace(/,/g, '')) : null,
+                minOrderValue: form.minOrderValue ? parseFloat(String(form.minOrderValue).replace(/,/g, '')) : null,
                 startDate: form.startDate ? new Date(form.startDate).toISOString() : null,
                 endDate: form.endDate ? new Date(form.endDate).toISOString() : null,
                 usageLimit: form.usageLimit ? parseInt(form.usageLimit) : null,
@@ -133,9 +149,9 @@ export default function CouponsPage() {
         setForm({
             code: c.code,
             type: c.type,
-            value: String(c.value),
-            maxDiscountAmount: c.maxDiscountAmount ? String(c.maxDiscountAmount) : '',
-            minOrderValue: c.minOrderValue ? String(c.minOrderValue) : '',
+            value: c.type === 'fixed' ? Number(c.value).toLocaleString('en-US') : String(c.value),
+            maxDiscountAmount: c.maxDiscountAmount ? Number(c.maxDiscountAmount).toLocaleString('en-US') : '',
+            minOrderValue: c.minOrderValue ? Number(c.minOrderValue).toLocaleString('en-US') : '',
             startDate: c.startDate ? c.startDate.substring(0, 16) : '',
             endDate: c.endDate ? c.endDate.substring(0, 16) : '',
             usageLimit: c.usageLimit ? String(c.usageLimit) : '',
@@ -226,11 +242,11 @@ export default function CouponsPage() {
                 {/* Table */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px' }}>
+                        <div style={{ padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Ticket size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج مطابقة') : t('لا توجد كوبونات خصم حالياً')}</p>
                         </div>
@@ -315,10 +331,16 @@ export default function CouponsPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>{t('الحالة')}</label>
-                                    <select value={form.isActive ? '1' : '0'} onChange={e => setForm({ ...form, isActive: e.target.value === '1' })} style={IS} onFocus={focusIn} onBlur={focusOut}>
-                                        <option value="1">{t('مفعل')}</option>
-                                        <option value="0">{t('معطل')}</option>
-                                    </select>
+                                    <CustomSelect
+                                        value={form.isActive ? '1' : '0'}
+                                        onChange={val => setForm({ ...form, isActive: val === '1' })}
+                                        options={[
+                                            { value: '1', label: t('مفعل') },
+                                            { value: '0', label: t('معطل') }
+                                        ]}
+                                        hideSearch={true}
+                                        style={{ height: '42px', fontSize: '13px', width: '100%', minWidth: '100%' }}
+                                    />
                                 </div>
                             </div>
 
@@ -326,26 +348,37 @@ export default function CouponsPage() {
                                 <div>
                                     <label style={LS}>{t('نوع الخصم')} <span style={{ color: C.danger }}>*</span></label>
                                     <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                        <button type="button" onClick={() => setForm({ ...form, type: 'percentage' })} style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s', background: form.type === 'percentage' ? C.primary : 'transparent', color: form.type === 'percentage' ? '#fff' : C.textSecondary }}>% {t('نسبة')}</button>
-                                        <button type="button" onClick={() => setForm({ ...form, type: 'fixed' })} style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s', background: form.type === 'fixed' ? C.primary : 'transparent', color: form.type === 'fixed' ? '#fff' : C.textSecondary }}>{cSymbol} {t('مبلغ ثابت')}</button>
+                                        <button type="button" onClick={() => setForm({ ...form, type: 'percentage', value: form.type === 'fixed' ? form.value.replace(/,/g, '') : form.value })} style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s', background: form.type === 'percentage' ? C.primary : 'transparent', color: form.type === 'percentage' ? '#fff' : C.textSecondary }}>{t('نسبة')} %</button>
+                                        <button type="button" onClick={() => {
+                                            const newVal = form.value ? parseFloat(form.value.replace(/,/g, '')).toLocaleString('en-US') : '';
+                                            setForm({ ...form, type: 'fixed', value: newVal });
+                                        }} style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s', background: form.type === 'fixed' ? C.primary : 'transparent', color: form.type === 'fixed' ? '#fff' : C.textSecondary }}>{t('مبلغ ثابت')}</button>
                                     </div>
                                 </div>
                                 <div>
                                     <label style={LS}>{t('قيمة الخصم')} <span style={{ color: C.danger }}>*</span></label>
-                                    <input required type="number" step="any" min="0" value={form.value} onChange={e => setForm({ ...form, value: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'percentage' ? '20' : '50'} />
+                                    <input required type="text" value={form.value} onChange={e => handleAmountChange('value', e.target.value, form.type === 'fixed')} style={{ ...IS, fontFamily: OUTFIT, textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'percentage' ? '20' : '50'} />
                                 </div>
                             </div>
 
-                            {form.type === 'percentage' && (
-                                <div>
-                                    <label style={LS}>{t('الحد الأقصى للخصم (مبلغ اختياري)')}</label>
-                                    <input type="number" step="any" min="0" value={form.maxDiscountAmount} onChange={e => setForm({ ...form, maxDiscountAmount: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: 100')} />
-                                </div>
-                            )}
+                            <div style={{ display: 'grid', gridTemplateColumns: form.type === 'percentage' ? '1fr 1fr' : '1fr', gap: '12px' }}>
+                                {form.type === 'percentage' && (
+                                    <div>
+                                        <label style={LS}>{t('الحد الأقصى للخصم (مبلغ اختياري)')}</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <span style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontSize: '12px', pointerEvents: 'none' }}>{cSymbol}</span>
+                                            <input type="text" value={form.maxDiscountAmount} onChange={e => handleAmountChange('maxDiscountAmount', e.target.value, true)} style={{ ...IS, fontFamily: OUTFIT, paddingInlineEnd: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                        </div>
+                                    </div>
+                                )}
 
-                            <div>
-                                <label style={LS}>{t('الحد الأدنى لقيمة الطلب (اختياري)')}</label>
-                                <input type="number" step="any" min="0" value={form.minOrderValue} onChange={e => setForm({ ...form, minOrderValue: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={t('الحد الأدنى لاستخدام الكوبون')} />
+                                <div>
+                                    <label style={LS}>{t('الحد الأدنى لقيمة الطلب (اختياري)')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontSize: '12px', pointerEvents: 'none' }}>{cSymbol}</span>
+                                        <input type="text" value={form.minOrderValue} onChange={e => handleAmountChange('minOrderValue', e.target.value, true)} style={{ ...IS, fontFamily: OUTFIT, paddingInlineEnd: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    </div>
+                                </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
