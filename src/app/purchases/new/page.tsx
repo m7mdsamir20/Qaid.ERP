@@ -178,7 +178,7 @@ export default function NewPurchasePage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
+        if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
         if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد أولاً');
         if (!entryItemId) errors.entryItemId = t('يرجى اختيار الصنف');
         if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = t('الكمية؟');
@@ -277,7 +277,7 @@ export default function NewPurchasePage() {
         const errors: Record<string, string> = {};
 
         if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد');
-        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن');
+        if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن');
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -419,7 +419,7 @@ export default function NewPurchasePage() {
 
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#256af4' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
-                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px' : '100px 1.2fr 1fr 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
@@ -464,15 +464,17 @@ export default function NewPurchasePage() {
                                         </div>
                                     )}
                                 </div>
-                                <div>
-                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الاستلام')}</label>
+                                {!isServices && (
+                                    <div>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الاستلام')}</label>
+                                        </div>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} hideSearch={true} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
+                                            <InlineError field="warehouseId" />
+                                        </div>
                                     </div>
-                                    <div style={{ position: 'relative' }}>
-                                        <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} hideSearch={true} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
-                                        <InlineError field="warehouseId" />
-                                    </div>
-                                </div>
+                                )}
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>

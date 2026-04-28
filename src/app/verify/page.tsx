@@ -145,7 +145,8 @@ function VerifyContent() {
                                     border: `1px solid ${digit ? C.primary : C.border}`, 
                                     background: digit ? `${C.primary}05` : C.inputBg, 
                                     color: C.textPrimary, outline: 'none', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                                    boxShadow: digit ? `0 0 15px ${C.primary}15` : 'none'
+                                    boxShadow: digit ? `0 0 15px ${C.primary}15` : 'none',
+                                    textAlign: 'center'
                                 }}
                             />
                         ))}
