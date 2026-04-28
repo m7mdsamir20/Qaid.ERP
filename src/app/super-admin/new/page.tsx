@@ -249,8 +249,8 @@ export default function NewCompanyPage() {
 
             if (form.businessType === 'RESTAURANTS') {
                 if (section.featureKey === 'sales') {
-                    section.title = 'إدارة العملاء';
-                    section.links = section.links.filter((l: any) => l.id === '/customers');
+                    section.title = 'العملاء والتسويق';
+                    section.links = section.links.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = 'المنيو والمخزون';
@@ -599,8 +599,8 @@ export default function NewCompanyPage() {
                                                     <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
-                                                        {(form.features[fk] || []).length} / {section.links.length}
+                                                    <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                        {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
                                                     </div>
                                                 </div>
                                                 <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}

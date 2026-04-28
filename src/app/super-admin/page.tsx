@@ -201,7 +201,7 @@ export default function SuperAdminPage() {
             {loading ? (
                 <div style={{ padding: '100px 0', color: C.textSecondary }}>
                     <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
-                    <div style={{ fontSize: '13px', fontWeight: 600 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
+                    <div style={{ fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>جاري استخراج بيانات الشركات والأنشطة...</div>
                 </div>
             ) : (
                 <div className="scroll-table" style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
