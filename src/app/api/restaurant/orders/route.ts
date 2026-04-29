@@ -24,7 +24,7 @@ export const GET = withProtection(async (request, session) => {
                 table: { select: { id: true, name: true } },
                 invoice: { select: { invoiceNumber: true } },
                 shift: { select: { user: { select: { name: true } } } },
-                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true } }
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true } }
             },
             orderBy: { createdAt: 'desc' },
             take: limit,
@@ -137,7 +137,7 @@ export const POST = withProtection(async (request, session, body) => {
             include: { 
                 lines: true, 
                 table: true,
-                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true } },
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true } },
                 shift: { select: { user: { select: { name: true } } } }
             },
         });

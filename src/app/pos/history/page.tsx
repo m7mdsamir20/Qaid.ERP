@@ -98,6 +98,18 @@ export default function OrdersHistoryPage() {
                           orderData.type === 'takeaway' ? 'تيك أواي' : 
                           orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
+        let footerHtml = `<p>شكراً لزيارتكم ❤️</p><p>نتمنى رؤيتكم قريباً!</p>`;
+        if (orderData.company?.restaurantSettings) {
+            try {
+                const parsed = typeof orderData.company.restaurantSettings === 'string' 
+                    ? JSON.parse(orderData.company.restaurantSettings) 
+                    : orderData.company.restaurantSettings;
+                if (parsed.receiptFooter) {
+                    footerHtml = parsed.receiptFooter.split('-').map((line: string) => `<p>${line.trim()}</p>`).join('');
+                }
+            } catch(e) {}
+        }
+
         const html = `
             <!DOCTYPE html>
             <html lang="ar" dir="rtl">
@@ -235,8 +247,7 @@ export default function OrdersHistoryPage() {
                 <div class="dashed-line"></div>
 
                 <div class="footer">
-                    <p>شكراً لزيارتكم ❤️</p>
-                    <p>نتمنى رؤيتكم قريباً!</p>
+                    ${footerHtml}
                 </div>
             </body>
             </html>
@@ -402,50 +413,71 @@ export default function OrdersHistoryPage() {
                     headerActions={null}
                 >
                     {selectedOrder && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
                             {/* Action Badges in Modal Header */}
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px', alignItems: 'center' }}>
-                                {selectedOrder.status === 'preparing' && <span style={{ padding: '6px 12px', border: '1px solid #fcd34d', background: '#fffbeb', color: '#f59e0b', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }}></span> معالجة</span>}
-                                {selectedOrder.status === 'ready' && <span style={{ padding: '6px 12px', border: '1px solid #93c5fd', background: '#eff6ff', color: '#3b82f6', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3b82f6' }}></span> جاهز</span>}
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px', alignItems: 'center' }}>
+                                {selectedOrder.status && STATUS_INFO[selectedOrder.status] && (
+                                    <span style={{ 
+                                        padding: '6px 14px', 
+                                        background: `${STATUS_INFO[selectedOrder.status].color}15`, 
+                                        color: STATUS_INFO[selectedOrder.status].color, 
+                                        border: `1px solid ${STATUS_INFO[selectedOrder.status].color}30`,
+                                        borderRadius: '8px', fontSize: '13px', fontWeight: 700, 
+                                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                        fontFamily: CAIRO
+                                    }}>
+                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: STATUS_INFO[selectedOrder.status].color, boxShadow: `0 0 8px ${STATUS_INFO[selectedOrder.status].color}` }}></span> 
+                                        {STATUS_INFO[selectedOrder.status].label}
+                                    </span>
+                                )}
 
                                 <div style={{ flex: 1 }}></div>
 
-                                <button onClick={() => {
-                                    handlePrint(selectedOrder);
-                                }} style={{ width: '32px', height: '32px', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Printer size={16} />
+                                <button onClick={() => handlePrint(selectedOrder)} 
+                                    style={{ 
+                                        width: '36px', height: '36px', background: 'transparent', 
+                                        border: `1px solid ${C.border}`, color: C.textPrimary, 
+                                        borderRadius: '10px', cursor: 'pointer', display: 'flex', 
+                                        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' 
+                                    }}
+                                    onMouseEnter={e => { e.currentTarget.style.background = C.primaryBg; e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
+                                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textPrimary; }}
+                                >
+                                    <Printer size={18} />
                                 </button>
                             </div>
 
                             {/* Order Info Grid */}
-                            <div style={{ padding: '0 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', textAlign: 'center' }}>
+                            <div style={{ padding: '10px 14px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px' }}>
                                 <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>نوع الخدمة</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type}</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>نوع الخدمة</p>
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type}</p>
+                                </div>
+                                <div style={{ borderInlineStart: `1px solid ${C.border}`, borderInlineEnd: `1px solid ${C.border}` }}>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>الكاشير</p>
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{selectedOrder.shift?.user?.name || '-'}</p>
                                 </div>
                                 <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>الكاشير</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{selectedOrder.shift?.user?.name || '-'}</p>
-                                </div>
-                                <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>المجموع</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontFamily: OUTFIT }}>{fMoney(selectedOrder.total)}</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>المجموع</p>
+                                    <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoney(selectedOrder.total)}</p>
                                 </div>
                             </div>
 
                             {/* Order Items List */}
-                            <div style={{ padding: '0 0' }}>
-                                <h3 style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px' }}>عناصر الطلب</h3>
-                                <div style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div>
+                                <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <ShoppingBag size={14} color={C.primary} /> عناصر الطلب
+                                </h3>
+                                <div className="custom-scrollbar" style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '8px', display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(255,255,255,0.01)', maxHeight: '160px', overflowY: 'auto' }}>
                                     {selectedOrder.lines?.map((line: any) => (
-                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, borderRadius: '8px', border: `1px solid ${C.border}` }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <span style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary }}>{line.itemName}</span>
+                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: C.card, borderRadius: '8px', border: `1px solid ${C.border}`, boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{line.itemName}</span>
                                             </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-                                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>x {line.quantity}</span>
-                                                <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '14px', minWidth: '80px', textAlign: isRtl ? 'left' : 'right' }}>{fMoney(line.total)}</span>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                                <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.04)', padding: '2px 8px', borderRadius: '4px' }}>x {line.quantity}</span>
+                                                <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '13px', minWidth: '70px', textAlign: isRtl ? 'left' : 'right' }}>{fMoney(line.total)}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -453,57 +485,60 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Summary */}
-                            <div style={{ padding: '0 0' }}>
-                                <h3 style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px' }}>ملخص الطلب</h3>
-                                <div style={{ background: C.bg, borderRadius: '12px', padding: '16px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                            <div>
+                                <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <FileText size={14} color={C.primary} /> ملخص الطلب
+                                </h3>
+                                <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '12px 16px', border: `1px solid ${C.border}` }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>المجموع الفرعي</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.subtotal)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.subtotal)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>تخفيض</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>الخدمة</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.serviceAmount || 0)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.serviceAmount || 0)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>ضريبة</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.taxAmount)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.taxAmount)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
+                                    <div style={{ height: '1px', background: C.border, margin: '8px 0' }}></div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
                                         <span>المجموع</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.total)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoney(selectedOrder.total)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '12px', color: C.textPrimary, fontWeight: 700 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <span>دفع</span>
                                             {selectedOrder.paidAmount >= selectedOrder.total && selectedOrder.total > 0 ? (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#d1fae5', color: '#059669', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontFamily: OUTFIT }}>Paid <CheckCircle2 size={12} /></span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.success}15`, color: C.success, border: `1px solid ${C.success}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800 }}>Paid <CheckCircle2 size={12} /></span>
                                             ) : (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#fee2e2', color: '#dc2626', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontFamily: OUTFIT }}>Unpaid <XCircle size={12} /></span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800 }}>Unpaid <XCircle size={12} /></span>
                                             )}
                                         </div>
-                                        <button style={{ background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', padding: '4px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>طريقة الدفع</button>
+                                        <button style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>طريقة الدفع</button>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
                                         <span>المتبقي</span>
-                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Modal Footer Actions */}
-                            <div style={{ padding: '16px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <div style={{ padding: '12px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '2px', display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
                                 
-                                <button style={{ padding: '10px 20px', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                    <RotateCcw size={16} /> إرجاع
+                                <button style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                                    <RotateCcw size={18} /> إرجاع
                                 </button>
                                 
                                 {selectedOrder.status !== 'cancelled' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'cancelled')} style={{ padding: '10px 20px', background: '#ef4444', color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                        <X size={16} /> إلغاء
+                                    <button onClick={() => updateStatus(selectedOrder.id, 'cancelled')} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
+                                        <X size={18} /> إلغاء
                                     </button>
                                 )}
 
@@ -511,33 +546,33 @@ export default function OrdersHistoryPage() {
 
                                 {/* Order progression actions */}
                                 {selectedOrder.status === 'pending' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'preparing')} style={{ padding: '10px 24px', background: '#10b981', color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                    <button onClick={() => updateStatus(selectedOrder.id, 'preparing')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
                                         <CheckCircle2 size={18} /> معالجة
                                     </button>
                                 )}
                                 
                                 {selectedOrder.status === 'preparing' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: '#3b82f6', color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                    <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.primary}20`, color: C.primary, border: `1px solid ${C.primary}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.primary}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.primary}20`}>
                                         <CheckCircle2 size={18} /> جاهز
                                     </button>
                                 )}
                                 
                                 {selectedOrder.status === 'ready' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'delivered')} style={{ padding: '10px 24px', background: '#10b981', color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                    <button onClick={() => updateStatus(selectedOrder.id, 'delivered')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
                                         <CheckCircle2 size={18} /> تم التسليم
                                     </button>
                                 )}
 
                                 {/* Pay action if unpaid */}
                                 {selectedOrder.paidAmount < selectedOrder.total && selectedOrder.total > 0 && selectedOrder.status !== 'cancelled' && (
-                                    <button onClick={() => handlePay(selectedOrder)} style={{ padding: '10px 24px', background: '#10b981', color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                    <button onClick={() => handlePay(selectedOrder)} style={{ padding: '10px 24px', background: C.success, color: '#fff', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, boxShadow: `0 4px 12px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
                                         دفع
                                     </button>
                                 )}
 
                                 {(selectedOrder.status === 'delivered' && selectedOrder.paidAmount >= selectedOrder.total) && (
-                                    <div style={{ padding: '10px 20px', background: C.bg, color: C.textSecondary, borderRadius: '8px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                        <Check size={16} /> مكتمل
+                                    <div style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
+                                        <Check size={18} /> مكتمل
                                     </div>
                                 )}
                             </div>
