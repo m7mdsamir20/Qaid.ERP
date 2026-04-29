@@ -18,11 +18,12 @@ const TYPE_ICONS: Record<string, React.ReactNode> = {
 const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك اوي', 'delivery': 'توصيل', 'online': 'أونلاين' };
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
-    pending:    { label: 'معالجة',     color: '#f59e0b', bg: '#fef3c7' },
-    preparing:  { label: 'طلبات الانتظار', color: '#8b5cf6', bg: '#ede9fe' },
-    ready:      { label: 'جاهز',       color: '#3b82f6', bg: '#dbeafe' },
-    delivered:  { label: 'مكتمل',      color: '#10b981', bg: '#d1fae5' },
+    pending:    { label: 'مكتمل',       color: '#10b981', bg: '#dbeafe' }, // mapped to completed for old orders
+    preparing:  { label: 'تحت التحضير', color: '#8b5cf6', bg: '#ede9fe' },
+    ready:      { label: 'مكتمل',       color: '#10b981', bg: '#dbeafe' },
+    delivered:  { label: 'مكتمل',      color: '#10b981', bg: '#d1fae5' }, // fallback
     cancelled:  { label: 'ألغيت',       color: '#ef4444', bg: '#fee2e2' },
+    returned:   { label: 'مرتجع',       color: '#ef4444', bg: '#fee2e2' },
 };
 
 export default function OrdersHistoryPage() {
@@ -58,28 +59,52 @@ export default function OrdersHistoryPage() {
 
     const updateStatus = async (id: string, status: string) => {
         let revertInventory = false;
-        if (status === 'cancelled') {
-            if (!confirm(t('هل أنت متأكد من إلغاء هذا الطلب؟'))) return;
+        let cancelReason = '';
+        
+        if (status === 'cancelled' || status === 'returned') {
+            const reason = prompt(t('يرجى كتابة سبب الإلغاء/الإرجاع (سيتم تسجيله في ملاحظات الطلب):'));
+            if (reason === null) return; // User cancelled prompt
+            cancelReason = reason.trim();
+            
             revertInventory = confirm(t('هل تريد إرجاع مكونات هذا الطلب إلى المخزن (إلغاء الاستهلاك)؟\n\n- اضغط OK (موافق) للإرجاع.\n- اضغط Cancel (إلغاء) لاعتباره هالك (Waste).'));
         }
+        
+        const updateData: any = { id, status, revertInventory };
+        if (cancelReason) {
+            updateData.cancelReason = cancelReason;
+        }
+
         await fetch('/api/restaurant/orders', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, status, revertInventory }),
+            body: JSON.stringify(updateData),
         });
         
         if (selectedOrder && selectedOrder.id === id) {
-            setSelectedOrder({ ...selectedOrder, status });
+            setSelectedOrder({ 
+                ...selectedOrder, 
+                status, 
+                notes: cancelReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${cancelReason}]` : `[السبب: ${cancelReason}]`) : selectedOrder.notes 
+            });
         }
         load();
     };
 
     const handlePay = async (order: any) => {
-        // Here you would trigger the payment logic or open a payment modal.
-        // For simplicity, we just mark it as paid.
-        if (confirm(t('هل تريد تأكيد دفع هذا الطلب بالكامل؟'))) {
-            // Update order paidAmount via API (this needs an endpoint, but we simulate it here by changing status to delivered if we want or just closing payment)
-            alert('يتم تحويلك لشاشة الدفع...');
+        if (confirm(t('هل تريد تأكيد دفع هذا الطلب بالكامل نقداً؟'))) {
+            await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: order.id,
+                    action: 'pay_and_close',
+                    paymentMethod: 'cash'
+                }),
+            });
+            if (selectedOrder && selectedOrder.id === order.id) {
+                setSelectedOrder({ ...selectedOrder, paidAmount: selectedOrder.total, status: 'ready' });
+            }
+            load();
         }
     };
 
@@ -292,7 +317,7 @@ export default function OrdersHistoryPage() {
                 {/* Filters & Search */}
                 <div style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                        {[{ value: '', label: 'كل الحالات' }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: s.label }))].map(s => (
+                        {[{ value: '', label: 'كل الحالات' }, { value: 'preparing', label: 'تحت التحضير' }, { value: 'ready', label: 'مكتمل' }, { value: 'cancelled', label: 'ألغيت' }].map(s => (
                             <button key={s.value} onClick={() => setFilterStatus(s.value)}
                                 style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
                                 {s.label}
@@ -463,6 +488,14 @@ export default function OrdersHistoryPage() {
                                     <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoney(selectedOrder.total)}</p>
                                 </div>
                             </div>
+                            
+                            {/* Notes Display */}
+                            {selectedOrder.notes && (
+                                <div style={{ padding: '10px 14px', background: `${C.danger}15`, border: `1px dashed ${C.danger}40`, borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                                    <AlertCircle size={16} color={C.danger} style={{ marginTop: '2px' }} />
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.danger, fontWeight: 700, whiteSpace: 'pre-wrap' }}>{selectedOrder.notes}</p>
+                                </div>
+                            )}
 
                             {/* Order Items List */}
                             <div>
@@ -532,11 +565,11 @@ export default function OrdersHistoryPage() {
                             {/* Modal Footer Actions */}
                             <div style={{ padding: '12px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '2px', display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
                                 
-                                <button style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                                <button onClick={() => updateStatus(selectedOrder.id, 'returned')} style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
                                     <RotateCcw size={18} /> إرجاع
                                 </button>
                                 
-                                {selectedOrder.status !== 'cancelled' && (
+                                {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
                                     <button onClick={() => updateStatus(selectedOrder.id, 'cancelled')} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
                                         <X size={18} /> إلغاء
                                     </button>
@@ -545,21 +578,9 @@ export default function OrdersHistoryPage() {
                                 <div style={{ flex: 1 }}></div>
 
                                 {/* Order progression actions */}
-                                {selectedOrder.status === 'pending' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'preparing')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
-                                        <CheckCircle2 size={18} /> معالجة
-                                    </button>
-                                )}
-                                
                                 {selectedOrder.status === 'preparing' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.primary}20`, color: C.primary, border: `1px solid ${C.primary}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.primary}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.primary}20`}>
+                                    <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
                                         <CheckCircle2 size={18} /> جاهز
-                                    </button>
-                                )}
-                                
-                                {selectedOrder.status === 'ready' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'delivered')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
-                                        <CheckCircle2 size={18} /> تم التسليم
                                     </button>
                                 )}
 
@@ -570,7 +591,7 @@ export default function OrdersHistoryPage() {
                                     </button>
                                 )}
 
-                                {(selectedOrder.status === 'delivered' && selectedOrder.paidAmount >= selectedOrder.total) && (
+                                {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
                                     <div style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
                                         <Check size={18} /> مكتمل
                                     </div>
