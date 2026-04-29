@@ -23,7 +23,8 @@ export const GET = withProtection(async (request, session) => {
                 lines: true,
                 table: { select: { id: true, name: true } },
                 invoice: { select: { invoiceNumber: true } },
-                shift: { select: { user: { select: { name: true } } } }
+                shift: { select: { user: { select: { name: true } } } },
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true } }
             },
             orderBy: { createdAt: 'desc' },
             take: limit,
@@ -133,7 +134,12 @@ export const POST = withProtection(async (request, session, body) => {
                     }
                 })
             },
-            include: { lines: true, table: true },
+            include: { 
+                lines: true, 
+                table: true,
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true } },
+                shift: { select: { user: { select: { name: true } } } }
+            },
         });
 
         // Update table status to occupied
