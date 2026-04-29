@@ -87,26 +87,80 @@ export default function OrdersHistoryPage() {
         const lines = orderData.lines || [];
         const finalDiscount = orderData.discount || 0;
         const finalTotal = orderData.total || 0;
+        const subtotal = orderData.subtotal || 0;
+        const taxAmount = orderData.taxAmount || 0;
+        const paidAmount = orderData.paidAmount || finalTotal;
+        const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
+        const formatMoney = (m: number) => Number(m).toFixed(2);
+        
+        const typeLabel = orderData.type === 'dine-in' ? 'Dine-in' : 
+                          orderData.type === 'takeaway' ? 'Takeaway' : 
+                          orderData.type === 'delivery' ? 'Delivery' : 'Online';
+
         const html = `
-            <html dir="rtl">
+            <!DOCTYPE html>
+            <html lang="en">
             <head>
-                <title>فاتورة كاشير</title>
+                <meta charset="UTF-8">
+                <title>Receipt #${orderData.orderNumber}</title>
                 <style>
-                    body { font-family: sans-serif; width: 300px; margin: 0 auto; padding: 20px; font-size: 14px; }
-                    .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-                    .line { display: flex; justify-content: space-between; margin-bottom: 5px; }
-                    .total { border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 16px; }
+                    @page { margin: 0; }
+                    body {
+                        font-family: 'Courier New', Courier, monospace;
+                        width: 280px; /* Perfect for 80mm printers */
+                        margin: 0 auto;
+                        padding: 10px 0;
+                        font-size: 13px;
+                        color: #000;
+                        background: #fff;
+                    }
+                    .text-center { text-align: center; }
+                    .dashed-line { 
+                        border-top: 1px dashed #000; 
+                        margin: 10px 0; 
+                    }
+                    .flex-between { 
+                        display: flex; 
+                        justify-content: space-between; 
+                        align-items: flex-start;
+                    }
+                    .header h2 { margin: 5px 0; font-size: 18px; letter-spacing: 1px; }
+                    .header p { margin: 2px 0; font-size: 12px; }
+                    .meta p { margin: 3px 0; font-size: 13px; display: flex; }
+                    .meta p span:first-child { width: 85px; display: inline-block; }
+                    .item { margin-top: 8px; }
+                    .item-main { font-weight: bold; }
+                    .modifier { 
+                        font-size: 12px; 
+                        padding-left: 20px; 
+                        color: #333; 
+                        margin-top: 2px; 
+                    }
+                    .totals { margin-top: 10px; }
+                    .totals .flex-between { margin: 4px 0; }
+                    .grand-total { font-weight: bold; font-size: 15px; margin: 6px 0; }
                     .footer { text-align: center; margin-top: 20px; font-size: 12px; }
                 </style>
             </head>
             <body>
-                <div class="header">
-                    <h2>فاتورة مطعم</h2>
-                    <p>الطلب رقم: ${orderData.invoice?.invoiceNumber ? `#${orderData.invoice.invoiceNumber}` : `#${orderData.orderNumber}`}</p>
-                    <p>نوع الطلب: ${TYPE_LABELS[orderData.type] ?? orderData.type}</p>
-                    <p>التاريخ: ${new Date(orderData.createdAt || Date.now()).toLocaleString('ar-EG')}</p>
+                <div class="header text-center">
+                    <h2>🍔 RESTAURANT</h2>
+                    <p>01234567890 - City</p>
                 </div>
+                
+                <div class="dashed-line"></div>
+                
+                <div class="meta">
+                    <p><span>Order #</span>: ${orderData.orderNumber.toString().padStart(4, '0')}</p>
+                    <p><span>Type</span>: ${typeLabel}</p>
+                    ${orderData.type === 'dine-in' ? `<p><span>Table</span>: ${orderData.table?.name || '-'}</p>` : ''}
+                    <p><span>Date</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })}</p>
+                    <p><span>Cashier</span>: ${orderData.shift?.user?.name || '-'}</p>
+                </div>
+
+                <div class="dashed-line"></div>
+
                 <div class="items">
                     ${lines.map((l: any) => {
                         let mods = '';
@@ -114,30 +168,71 @@ export default function OrdersHistoryPage() {
                             try {
                                 const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
                                 mods = Object.values(parsed).flat().map((m: any) => `
-                                    <div class="line" style="font-size: 12px; color: #555;">
-                                        <span>- ${m.name}</span>
-                                        <span>${m.price || 0}</span>
+                                    <div class="flex-between modifier">
+                                        <span>+ ${m.name}</span>
+                                        <span>${formatMoney(m.price || 0)}</span>
                                     </div>
                                 `).join('');
                             } catch(e) {}
                         }
                         return `
-                            <div class="line">
-                                <span>${l.itemName || 'صنف'} (x${l.quantity})</span>
-                                <span>${l.total || (Number(l.price) * l.quantity)}</span>
+                            <div class="item">
+                                <div class="flex-between item-main">
+                                    <span style="flex: 1; padding-right: 10px;">${l.quantity}x ${l.itemName || 'Item'}</span>
+                                    <span>${formatMoney(l.total || (Number(l.price) * l.quantity))}</span>
+                                </div>
+                                ${mods}
                             </div>
-                            ${mods}
                         `;
                     }).join('')}
                 </div>
-                <div class="total">
-                    ${finalDiscount > 0 ? `<div class="line"><span>خصم:</span><span>${finalDiscount}</span></div>` : ''}
-                    ${orderData.serviceAmount > 0 ? `<div class="line"><span>رسوم الخدمة:</span><span>${orderData.serviceAmount}</span></div>` : ''}
-                    ${orderData.taxAmount > 0 ? `<div class="line"><span>الضريبة:</span><span>${orderData.taxAmount}</span></div>` : ''}
-                    <div class="line"><span>الإجمالي:</span><span>${finalTotal}</span></div>
+
+                <div class="dashed-line"></div>
+
+                <div class="totals">
+                    <div class="flex-between">
+                        <span>Subtotal</span>
+                        <span>${formatMoney(subtotal)}</span>
+                    </div>
+                    ${finalDiscount > 0 ? `
+                    <div class="flex-between">
+                        <span>Discount</span>
+                        <span>${formatMoney(finalDiscount)}</span>
+                    </div>` : ''}
+                    ${orderData.serviceAmount > 0 ? `
+                    <div class="flex-between">
+                        <span>Service</span>
+                        <span>${formatMoney(orderData.serviceAmount)}</span>
+                    </div>` : ''}
+                    ${taxAmount > 0 ? `
+                    <div class="flex-between">
+                        <span>Tax</span>
+                        <span>${formatMoney(taxAmount)}</span>
+                    </div>` : ''}
                 </div>
+
+                <div class="dashed-line"></div>
+
+                <div class="totals">
+                    <div class="flex-between grand-total">
+                        <span>TOTAL</span>
+                        <span>${formatMoney(finalTotal)}</span>
+                    </div>
+                    <div class="flex-between">
+                        <span>Paid (${orderData.paymentMethod || 'Cash'})</span>
+                        <span>${formatMoney(paidAmount)}</span>
+                    </div>
+                    <div class="flex-between">
+                        <span>Change</span>
+                        <span>${formatMoney(change)}</span>
+                    </div>
+                </div>
+
+                <div class="dashed-line"></div>
+
                 <div class="footer">
-                    <p>شكراً لزيارتكم!</p>
+                    <p>Thank You ❤️</p>
+                    <p>Visit us again!</p>
                 </div>
             </body>
             </html>
@@ -163,7 +258,7 @@ export default function OrdersHistoryPage() {
     const filteredOrders = orders.filter(o => {
         if (!searchQuery) return true;
         const q = searchQuery.toLowerCase();
-        const num = (o.invoice?.invoiceNumber || o.orderNumber).toString();
+        const num = (o.orderNumber).toString();
         const phone = o.deliveryPhone || '';
         const name = o.deliveryName || '';
         return num.includes(q) || phone.includes(q) || name.toLowerCase().includes(q);
@@ -245,7 +340,7 @@ export default function OrdersHistoryPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
                                                     <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: C.primary, fontSize: '14px' }}>
-                                                        {order.invoice?.invoiceNumber ? `#${order.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${order.orderNumber.toString().padStart(4, '0')}`}
+                                                        {`#${order.orderNumber.toString().padStart(4, '0')}`}
                                                     </span>
                                                     <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{formatDate(order.createdAt)}</span>
                                                 </div>
@@ -292,7 +387,7 @@ export default function OrdersHistoryPage() {
                     title={selectedOrder ? (
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, lineHeight: 1 }}>
-                                {selectedOrder.invoice?.invoiceNumber ? `#${selectedOrder.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${selectedOrder.orderNumber.toString().padStart(4, '0')}`}
+                                {`#${selectedOrder.orderNumber.toString().padStart(4, '0')}`}
                             </span>
                             <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT, marginTop: '4px', fontWeight: 600 }}>
                                 {formatDate(selectedOrder.createdAt)}

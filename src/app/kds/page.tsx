@@ -145,8 +145,10 @@ export default function KDSPage() {
                 </button>
             </div>
 
-            {/* Content */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px' }}>
+            {/* Split Layout Container */}
+            <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+                {/* Content */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px' }}>
                 {loading && orders.length === 0 ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
@@ -168,11 +170,24 @@ export default function KDSPage() {
                             const isPendingExternal = isExternal && order.status === 'pending';
 
                             return (
-                                <div key={order.id} style={{ background: C.card, border: `2px solid ${isPendingExternal ? '#f59e0b50' : isLate ? '#ef444450' : isPreparing ? C.primary : C.border}`, borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.1)' }}>
-                                    
+                                <div key={order.id} style={{ 
+                                    position: 'relative',
+                                    background: isLate ? 'linear-gradient(to right, rgba(239, 68, 68, 0.03), rgba(239, 68, 68, 0.08))' : isPreparing ? 'linear-gradient(to right, rgba(37, 106, 244, 0.03), rgba(37, 106, 244, 0.08))' : C.card,
+                                    border: `1px solid ${isLate ? '#ef444450' : isPreparing ? `${C.primary}50` : C.border}`,
+                                    borderRadius: '14px', 
+                                    padding: '16px',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    gap: '12px',
+                                    boxShadow: isPreparing ? `0 4px 20px -5px ${C.primary}20` : '0 4px 15px -5px rgba(0,0,0,0.1)',
+                                    overflow: 'hidden'
+                                }}>
+                                    {/* Left/Right Accent line */}
+                                    <div style={{ position: 'absolute', top: 0, bottom: 0, [isRtl ? 'right' : 'left']: 0, width: '4px', background: isLate ? '#ef4444' : isPreparing ? C.primary : C.border }} />
+
                                     {/* External Order Banner */}
                                     {isExternal && (
-                                        <div style={{ padding: '8px 16px', background: isPendingExternal ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.08)', borderBottom: `1px solid ${isPendingExternal ? '#f59e0b30' : '#3b82f630'}`, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: isPendingExternal ? '#f59e0b' : '#3b82f6' }}>
+                                        <div style={{ margin: '-16px -16px 0 -16px', padding: '8px 16px', background: isPendingExternal ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.08)', borderBottom: `1px solid ${isPendingExternal ? '#f59e0b30' : '#3b82f630'}`, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: isPendingExternal ? '#f59e0b' : '#3b82f6' }}>
                                             <Globe size={14} />
                                             🌐 {sourceLabel}
                                             {isPendingExternal && <span style={{ marginInlineStart: 'auto', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: '#f59e0b20', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>بانتظار الموافقة</span>}
@@ -180,86 +195,86 @@ export default function KDSPage() {
                                     )}
 
                                     {/* Order Header */}
-                                    <div style={{ padding: '12px', background: isLate ? '#ef444415' : isPreparing ? `${C.primary}15` : C.bg, display: 'flex', flexDirection: 'column', gap: '8px', borderBottom: `1px solid ${C.border}` }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', gap: '8px', color: C.textPrimary }}>
-                                                #{order.orderNumber}
+                                                {`#${order.orderNumber.toString().padStart(4, '0')}`}
                                             </h3>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: isLate ? '#ef4444' : C.primary, fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT }}>
-                                                <Clock size={16} /> {formatElapsedTime(order.createdAt)}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: isLate ? '#ef4444' : C.primary, fontSize: '13px', fontWeight: 800, fontFamily: OUTFIT, background: isLate ? '#ef444415' : `${C.primary}15`, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${isLate ? '#ef444430' : `${C.primary}30`}` }}>
+                                                <Clock size={13} /> {formatElapsedTime(order.createdAt)}
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 600, color: C.textSecondary }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <span style={{ padding: '2px 8px', borderRadius: '6px', background: '#00000010', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 700 }}>
-                                                    {order.type === 'dine-in' ? 'صالة' : order.type === 'takeaway' ? 'تيك أواي' : order.type === 'delivery' ? 'توصيل' : 'أونلاين'}
-                                                </span>
-                                                <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>{new Date(order.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</span>
-                                            </div>
-                                            {order.table && <span>الطاولة: <strong style={{ color: C.primary }}>{order.table.name}</strong></span>}
-                                        </div>
+                                        <span style={{ fontSize: '12px', fontFamily: OUTFIT, color: C.textMuted, fontWeight: 600 }}>
+                                            {new Date(order.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                                        </span>
                                     </div>
 
-                                    {/* External Customer Info */}
-                                    {isExternal && (order.deliveryName || order.deliveryPhone || order.deliveryAddress) && (
-                                        <div style={{ padding: '10px 16px', background: 'rgba(59,130,246,0.04)', borderBottom: `1px solid ${C.border}`, display: 'flex', flexWrap: 'wrap', gap: '12px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
-                                            {order.deliveryName && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} style={{ color: '#3b82f6' }} /> {order.deliveryName}</span>}
-                                            {order.deliveryPhone && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={12} style={{ color: '#10b981' }} /> <span dir="ltr">{order.deliveryPhone}</span></span>}
-                                            {order.deliveryAddress && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} style={{ color: '#f59e0b' }} /> {order.deliveryAddress}</span>}
+                                    {/* Order Lines */}
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', paddingInlineStart: '4px', marginTop: '4px', flex: 1 }}>
+                                        {order.lines?.map((line: any) => (
+                                            <div key={line.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                                    <span style={{ color: C.textPrimary, fontSize: '14px', fontWeight: 700 }}>{line.itemName}</span>
+                                                    <span style={{ color: isLate ? '#ef4444' : C.primary, fontSize: '14px', fontWeight: 800, fontFamily: OUTFIT, textAlign: isRtl ? 'left' : 'right' }}>x{line.quantity}</span>
+                                                </div>
+                                                {line.modifiers && (
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingInlineStart: '8px' }}>
+                                                        {Object.values(JSON.parse(line.modifiers)).flat().map((m: any, i: number) => (
+                                                            <span key={i} style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 600 }}>+ {m.name}</span>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                {line.notes && <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600, paddingInlineStart: '8px' }}>📝 {line.notes}</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Order Notes */}
+                                    {order.notes && (
+                                        <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px', border: `1px dashed rgba(245, 158, 11, 0.3)`, fontSize: '12px', color: '#f59e0b', fontWeight: 600 }}>
+                                            <AlertCircle size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                                            ملاحظة: {order.notes}
                                         </div>
                                     )}
 
-                                    {/* Order Lines */}
-                                    <div style={{ padding: '12px', flex: 1 }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                            {order.lines?.map((line: any) => (
-                                                <div key={line.id} style={{ display: 'flex', gap: '10px', borderBottom: `1px solid ${C.border}`, paddingBottom: '10px' }}>
-                                                    <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '14px', flexShrink: 0 }}>
-                                                        {line.quantity}
-                                                    </div>
-                                                    <div>
-                                                        <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary }}>{line.itemName}</p>
-                                                        {line.modifiers && (
-                                                            <div style={{ marginTop: '4px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                                                                {Object.values(JSON.parse(line.modifiers)).flat().map((m: any, i: number) => (
-                                                                    <span key={i} style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 600 }}>+ {m.name}</span>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                        {line.notes && <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>📝 {line.notes}</p>}
-                                                    </div>
-                                                </div>
-                                            ))}
+                                    {/* External Customer Info */}
+                                    {isExternal && (order.deliveryName || order.deliveryPhone || order.deliveryAddress) && (
+                                        <div style={{ padding: '8px', background: 'rgba(59,130,246,0.04)', border: `1px solid rgba(59,130,246,0.1)`, borderRadius: '8px', display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
+                                            {order.deliveryName && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><User size={10} style={{ color: '#3b82f6' }} /> {order.deliveryName}</span>}
+                                            {order.deliveryPhone && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={10} style={{ color: '#10b981' }} /> <span dir="ltr">{order.deliveryPhone}</span></span>}
+                                            {order.deliveryAddress && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={10} style={{ color: '#f59e0b' }} /> {order.deliveryAddress}</span>}
                                         </div>
-                                        {order.notes && (
-                                            <div style={{ marginTop: '16px', padding: '12px', background: C.bg, borderRadius: '8px', border: `1px dashed ${C.border}`, fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
-                                                <AlertCircle size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px', color: '#f59e0b' }} />
-                                                ملاحظة الطلب: {order.notes}
-                                            </div>
-                                        )}
-                                    </div>
+                                    )}
 
-                                    {/* Actions */}
-                                    <div style={{ padding: '12px', display: 'flex', gap: '10px', background: C.bg, borderTop: `1px solid ${C.border}` }}>
-                                        {isPendingExternal ? (
-                                            /* Accept/Reject for external pending orders */
-                                            <>
-                                                <button onClick={() => acceptOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '38px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.3)' }}>
-                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> قبول الطلب</>}
+                                    {/* Metadata & Actions */}
+                                    <div style={{ marginTop: 'auto', paddingTop: '12px', borderTop: `1px dashed ${isLate ? '#ef444430' : isPreparing ? `${C.primary}30` : C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '3px 8px', borderRadius: '6px' }}>
+                                                {order.type === 'dine-in' ? 'صالة' : order.type === 'takeaway' ? 'تيك أواي' : order.type === 'delivery' ? 'توصيل' : 'أونلاين'}
+                                            </span>
+                                            {order.table && <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الطاولة: <strong style={{ color: C.primary }}>{order.table.name}</strong></span>}
+                                        </div>
+
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            {isPendingExternal ? (
+                                                <>
+                                                    <button onClick={() => acceptOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                                        {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> قبول</>}
+                                                    </button>
+                                                    <button onClick={() => rejectOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#ef4444', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                                        {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><XCircle size={16} /> رفض</>}
+                                                    </button>
+                                                </>
+                                            ) : isPreparing ? (
+                                                <button onClick={() => markAsReady(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}>
+                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> جاهز</>}
                                                 </button>
-                                                <button onClick={() => rejectOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '38px', borderRadius: '10px', background: '#ef4444', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(239,68,68,0.3)' }}>
-                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><XCircle size={16} /> رفض</>}
+                                            ) : (
+                                                <button onClick={() => markAsPreparing(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: C.primary, border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: `0 4px 10px ${C.primary}20` }}>
+                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'بدء التحضير'}
                                                 </button>
-                                            </>
-                                        ) : isPreparing ? (
-                                            <button onClick={() => markAsReady(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '38px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.3)' }}>
-                                                {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> جاهز للتسليم</>}
-                                            </button>
-                                        ) : (
-                                            <button onClick={() => markAsPreparing(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '38px', borderRadius: '10px', background: C.primary, border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: `0 4px 10px ${C.primary}40` }}>
-                                                {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'بدء التحضير'}
-                                            </button>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -268,85 +283,77 @@ export default function KDSPage() {
                 )}
             </div>
 
-            {/* Completed Orders Sidebar Overlay */}
-            {showCompletedPanel && (
-                <div onClick={() => setShowCompletedPanel(false)} style={{ position: 'absolute', top: '79px', left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.4)', zIndex: 99, backdropFilter: 'blur(2px)' }} />
-            )}
+            {/* Completed Orders Sidebar (Split layout) */}
             <div style={{
-                position: 'absolute',
-                top: '79px',
-                bottom: 0,
-                [isRtl ? 'left' : 'right']: showCompletedPanel ? 0 : '-400px',
-                width: '400px',
+                width: showCompletedPanel ? '280px' : '0px',
                 background: C.card,
-                boxShadow: '0 0 20px rgba(0,0,0,0.1)',
-                transition: '0.3s ease-in-out',
-                zIndex: 100,
+                boxShadow: showCompletedPanel ? '-4px 0 20px rgba(0,0,0,0.05)' : 'none',
+                transition: 'width 0.3s ease-in-out, border 0.3s ease-in-out',
                 display: 'flex',
                 flexDirection: 'column',
-                borderInlineStart: `1px solid ${C.border}`
+                borderInlineStart: showCompletedPanel ? `1px solid ${C.border}` : 'none',
+                overflow: 'hidden',
+                flexShrink: 0
             }}>
-                <div style={{ padding: '24px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg }}>
-                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <CheckCircle2 size={20} color="#10b981" /> الطلبات المكتملة
+                <div style={{ padding: '20px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg, minWidth: '280px' }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <CheckCircle2 size={18} color="#10b981" /> الطلبات المكتملة
                     </h3>
-                    <button onClick={() => setShowCompletedPanel(false)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', borderRadius: '8px' }} onMouseEnter={e => e.currentTarget.style.background = C.border} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                        <XCircle size={20} />
-                    </button>
                 </div>
-                <div style={{ flex: 1, overflowY: 'auto', padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '280px' }}>
                     {completedOrders.length === 0 ? (
-                        <p style={{ textAlign: 'center', color: C.textMuted, fontSize: '14px', marginTop: '40px', fontWeight: 600 }}>لا توجد طلبات مكتملة حديثاً</p>
+                        <p style={{ textAlign: 'center', color: C.textMuted, fontSize: '13px', marginTop: '40px', fontWeight: 600 }}>لا توجد طلبات مكتملة حديثاً</p>
                     ) : (
                         completedOrders.map(o => (
                             <div key={o.id} style={{ 
                                 position: 'relative',
                                 background: 'linear-gradient(to right, rgba(16, 185, 129, 0.03), rgba(16, 185, 129, 0.08))', 
                                 border: '1px solid rgba(16, 185, 129, 0.15)', 
-                                borderRadius: '14px', 
-                                padding: '16px',
+                                borderRadius: '12px', 
+                                padding: '12px',
                                 display: 'flex', 
                                 flexDirection: 'column', 
-                                gap: '12px',
+                                gap: '10px',
                                 overflow: 'hidden',
-                                boxShadow: '0 4px 15px -5px rgba(0,0,0,0.1)'
                             }}>
                                 {/* Left/Right Accent line */}
                                 <div style={{ position: 'absolute', top: 0, bottom: 0, [isRtl ? 'right' : 'left']: 0, width: '4px', background: '#10b981' }} />
                                 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>
-                                            #{o.orderNumber}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>
+                                            {`#${o.orderNumber.toString().padStart(4, '0')}`}
                                         </h3>
-                                        <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, padding: '3px 10px', background: '#10b98115', borderRadius: '20px', border: '1px solid #10b98130' }}>
+                                        <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 700, padding: '2px 8px', background: '#10b98115', borderRadius: '12px', border: '1px solid #10b98130' }}>
                                             {o.status === 'delivered' ? 'تم التسليم' : 'جاهز'}
                                         </span>
                                     </div>
-                                    <span style={{ fontSize: '12px', fontFamily: OUTFIT, color: C.textMuted, fontWeight: 600 }}>
+                                    <span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted, fontWeight: 600 }}>
                                         {new Date(o.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingInlineStart: '4px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingInlineStart: '4px' }}>
                                     {o.lines?.map((l: any, i: number) => (
-                                        <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                                            <span style={{ color: '#10b981', fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, minWidth: '20px' }}>{l.quantity}x</span>
-                                            <span style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600 }}>{l.itemName}</span>
+                                        <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                            <span style={{ color: C.textPrimary, fontSize: '12px', fontWeight: 600 }}>{l.itemName}</span>
+                                            <span style={{ color: '#10b981', fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, textAlign: isRtl ? 'left' : 'right' }}>x{l.quantity}</span>
                                         </div>
                                     ))}
                                 </div>
                                 
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', paddingTop: '12px', borderTop: '1px dashed rgba(16, 185, 129, 0.2)' }}>
-                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '3px 8px', borderRadius: '6px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', paddingTop: '10px', borderTop: '1px dashed rgba(16, 185, 129, 0.2)' }}>
+                                    <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '2px 8px', borderRadius: '4px' }}>
                                         {o.type === 'dine-in' ? 'صالة' : o.type === 'takeaway' ? 'تيك أواي' : o.type === 'delivery' ? 'توصيل' : 'أونلاين'}
                                     </span>
-                                    {o.table && <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الطاولة: <strong style={{ color: C.primary }}>{o.table.name}</strong></span>}
+                                    {o.table && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>الطاولة: <strong style={{ color: C.primary }}>{o.table.name}</strong></span>}
                                 </div>
                             </div>
                         ))
                     )}
                 </div>
+            </div>
+            {/* End Split Layout Container */}
             </div>
 
             <style>{`@keyframes spin { to { transform: rotate(360deg); } } @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>

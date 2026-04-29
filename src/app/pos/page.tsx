@@ -407,7 +407,12 @@ export default function POSPage() {
             const res = await fetch('/api/restaurant/orders');
             if (res.ok) {
                 const data = await res.json();
-                setOpenOrders(data.filter((o: any) => o.status !== 'delivered' && o.status !== 'cancelled'));
+                setOpenOrders(data.filter((o: any) => 
+                    o.type === 'dine-in' && 
+                    o.status !== 'delivered' && 
+                    o.status !== 'cancelled' && 
+                    (o.total - o.paidAmount > 0)
+                ));
             }
         } catch {}
     };
@@ -674,7 +679,9 @@ export default function POSPage() {
                                                 </div>
                                             )}
                                             <div style={{ fontSize: '36px', marginBottom: '10px', display: 'flex', justifyContent: 'center', width: '100%' }}>
-                                                {item.imageUrl ? <img src={item.imageUrl} style={{ width: '100%', height: 80, borderRadius: '12px', objectFit: 'cover' }} /> : '🍽️'}
+                                                {item.imageUrl ? (
+                                                    <img src={item.imageUrl} onError={(e) => { e.currentTarget.style.display = 'none'; if(e.currentTarget.parentElement) { const fallback = document.createElement('span'); fallback.innerText = '🍽️'; e.currentTarget.parentElement.appendChild(fallback); } }} style={{ width: '100%', height: 80, borderRadius: '12px', objectFit: 'cover' }} />
+                                                ) : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
                                             <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.sellPrice ?? item.price ?? 0)}</p>
@@ -846,9 +853,9 @@ export default function POSPage() {
                         </div>
                         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {openOrders.length === 0 ? (
-                                <div style={{ textAlign: 'center', color: C.textMuted, padding: '40px', fontSize: '14px', fontFamily: CAIRO }}>
-                                    <Clock size={40} style={{ opacity: 0.3, marginBottom: '10px' }} />
-                                    <br/>لا توجد طلبات مفتوحة
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: C.textMuted, padding: '40px', minHeight: '200px', fontSize: '15px', fontFamily: CAIRO }}>
+                                    <Clock size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
+                                    <span style={{ fontWeight: 600 }}>{t('لا توجد طلبات مفتوحة')}</span>
                                 </div>
                             ) : openOrders.map(o => (
                                 <div key={o.id} style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg }}>
