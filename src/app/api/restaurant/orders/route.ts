@@ -422,7 +422,7 @@ export const PUT = withProtection(async (request, session, body) => {
             // Update POS Order
             await prisma.posOrder.update({
                 where: { id: order.id },
-                data: { paidAmount: order.total, status: 'delivered', paymentMethod: body.paymentMethod || 'cash' }
+                data: { paidAmount: order.total, status: 'ready', paymentMethod: body.paymentMethod || 'cash' }
             });
             
             // Free the table
@@ -499,8 +499,20 @@ export const PUT = withProtection(async (request, session, body) => {
             },
         });
 
-        // If delivered/cancelled, free the table
-        if (body.status === 'delivered' || body.status === 'cancelled') {
+        // Add cancel reason to notes if provided
+        if (body.cancelReason) {
+            const currentOrder = await prisma.posOrder.findUnique({ where: { id: body.id } });
+            if (currentOrder) {
+                const newNotes = currentOrder.notes ? `${currentOrder.notes}\n[السبب: ${body.cancelReason}]` : `[السبب: ${body.cancelReason}]`;
+                await prisma.posOrder.update({
+                    where: { id: body.id },
+                    data: { notes: newNotes }
+                });
+            }
+        }
+
+        // If ready/cancelled/returned, free the table
+        if (body.status === 'ready' || body.status === 'cancelled' || body.status === 'returned') {
             const order = await prisma.posOrder.findUnique({ 
                 where: { id: body.id }, 
                 include: { lines: true } 
@@ -512,8 +524,8 @@ export const PUT = withProtection(async (request, session, body) => {
                 });
             }
 
-            // Inventory Reversion for Cancellation
-            if (body.status === 'cancelled' && body.revertInventory && order) {
+            // Inventory Reversion for Cancellation / Return
+            if ((body.status === 'cancelled' || body.status === 'returned') && body.revertInventory && order) {
                 const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
                 if (defaultWarehouse) {
                     for (const line of order.lines) {

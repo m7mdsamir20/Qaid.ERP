@@ -22,7 +22,7 @@ export default function KDSPage() {
             const res = await fetch('/api/restaurant/orders?limit=100');
             const data = await res.json();
             if (Array.isArray(data)) {
-                setOrders(data.filter(o => o.status === 'pending' || o.status === 'preparing'));
+                setOrders(data.filter(o => o.status === 'preparing' || (o.status === 'pending' && o.source && o.source !== 'pos')));
                 setCompletedOrders(data.filter(o => o.status === 'ready' || o.status === 'delivered').slice(0, 50));
             }
         } finally {
@@ -325,7 +325,7 @@ export default function KDSPage() {
                                             {`#${o.orderNumber.toString().padStart(4, '0')}`}
                                         </h3>
                                         <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 700, padding: '2px 8px', background: '#10b98115', borderRadius: '12px', border: '1px solid #10b98130' }}>
-                                            {o.status === 'delivered' ? 'تم التسليم' : 'جاهز'}
+                                            مكتمل
                                         </span>
                                     </div>
                                     <span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted, fontWeight: 600 }}>
