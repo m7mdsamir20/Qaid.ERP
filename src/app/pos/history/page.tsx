@@ -35,7 +35,11 @@ export default function OrdersHistoryPage() {
     const [loading, setLoading]     = useState(true);
     const [filterStatus, setFilterStatus] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [actionPrompt, setActionPrompt] = useState<{ type: 'cancel' | 'return' | 'pay' | null }>({ type: null });
+    const [cancelReasonInput, setCancelReasonInput] = useState('');
+    const [revertInventoryCheck, setRevertInventoryCheck] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -57,55 +61,69 @@ export default function OrdersHistoryPage() {
         return str.replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م');
     };
 
-    const updateStatus = async (id: string, status: string) => {
-        let revertInventory = false;
-        let cancelReason = '';
-        
-        if (status === 'cancelled' || status === 'returned') {
-            const reason = prompt(t('يرجى كتابة سبب الإلغاء/الإرجاع (سيتم تسجيله في ملاحظات الطلب):'));
-            if (reason === null) return; // User cancelled prompt
-            cancelReason = reason.trim();
-            
-            revertInventory = confirm(t('هل تريد إرجاع مكونات هذا الطلب إلى المخزن (إلغاء الاستهلاك)؟\n\n- اضغط OK (موافق) للإرجاع.\n- اضغط Cancel (إلغاء) لاعتباره هالك (Waste).'));
-        }
-        
-        const updateData: any = { id, status, revertInventory };
-        if (cancelReason) {
-            updateData.cancelReason = cancelReason;
+    const updateStatus = async (id: string, status: string, customReason?: string, doRevert?: boolean) => {
+        setActionLoading(true);
+        const updateData: any = { id, status, revertInventory: doRevert || false };
+        if (customReason) {
+            updateData.cancelReason = customReason;
         }
 
-        await fetch('/api/restaurant/orders', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updateData),
-        });
-        
-        if (selectedOrder && selectedOrder.id === id) {
-            setSelectedOrder({ 
-                ...selectedOrder, 
-                status, 
-                notes: cancelReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${cancelReason}]` : `[السبب: ${cancelReason}]`) : selectedOrder.notes 
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updateData),
             });
+            if (!res.ok) {
+                const data = await res.json();
+                alert('حدث خطأ: ' + (data.error || 'غير معروف'));
+                return;
+            }
+            
+            if (selectedOrder && selectedOrder.id === id) {
+                setSelectedOrder({ 
+                    ...selectedOrder, 
+                    status, 
+                    notes: customReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${customReason}]` : `[السبب: ${customReason}]`) : selectedOrder.notes 
+                });
+            }
+            load();
+            setActionPrompt({ type: null });
+            setCancelReasonInput('');
+        } catch (err: any) {
+            alert('حدث خطأ في الاتصال: ' + err.message);
+        } finally {
+            setActionLoading(false);
         }
-        load();
     };
 
     const handlePay = async (order: any) => {
-        if (confirm(t('هل تريد تأكيد دفع هذا الطلب بالكامل نقداً؟'))) {
-            await fetch('/api/restaurant/orders', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id: order.id,
-                    action: 'pay_and_close',
-                    paymentMethod: 'cash'
-                }),
-            });
-            if (selectedOrder && selectedOrder.id === order.id) {
-                setSelectedOrder({ ...selectedOrder, paidAmount: selectedOrder.total, status: 'ready' });
+        setActionLoading(true);
+        try {
+                const res = await fetch('/api/restaurant/orders', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: order.id,
+                        action: 'pay_and_close',
+                        paymentMethod: 'cash'
+                    }),
+                });
+                if (!res.ok) {
+                    const data = await res.json();
+                    alert('حدث خطأ أثناء الدفع: ' + (data.error || 'غير معروف'));
+                    return;
+                }
+                if (selectedOrder && selectedOrder.id === order.id) {
+                    setSelectedOrder({ ...selectedOrder, paidAmount: selectedOrder.total, status: 'ready' });
+                }
+                load();
+                setActionPrompt({ type: null });
+            } catch (err: any) {
+                alert('حدث خطأ في الاتصال: ' + err.message);
+            } finally {
+                setActionLoading(false);
             }
-            load();
-        }
     };
 
     const handlePrint = (orderData: any) => {
@@ -563,37 +581,82 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Modal Footer Actions */}
-                            <div style={{ padding: '12px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '2px', display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <div style={{ padding: '12px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 
-                                <button onClick={() => updateStatus(selectedOrder.id, 'returned')} style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
-                                    <RotateCcw size={18} /> إرجاع
-                                </button>
-                                
-                                {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'cancelled')} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
-                                        <X size={18} /> إلغاء
-                                    </button>
-                                )}
+                                {actionPrompt.type ? (
+                                    <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, width: '100%' }}>
+                                        {actionPrompt.type === 'pay' ? (
+                                            <>
+                                                <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>هل أنت متأكد من دفع المبلغ المتبقي نقداً؟</h4>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    <button onClick={() => handlePay(selectedOrder)} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: C.success, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer', opacity: actionLoading ? 0.7 : 1 }}>
+                                                        {actionLoading ? 'جاري الدفع...' : 'تأكيد الدفع'}
+                                                    </button>
+                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>تراجع</button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: actionPrompt.type === 'cancel' ? C.danger : C.primary, fontFamily: CAIRO }}>
+                                                    {actionPrompt.type === 'cancel' ? 'إلغاء الطلب' : 'إرجاع الطلب'}
+                                                </h4>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="اكتب السبب هنا..." 
+                                                    value={cancelReasonInput}
+                                                    onChange={e => setCancelReasonInput(e.target.value)}
+                                                    style={{ width: '100%', padding: '10px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimary, marginBottom: '10px', fontFamily: CAIRO, fontSize: '13px' }}
+                                                />
+                                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>
+                                                    <input type="checkbox" checked={revertInventoryCheck} onChange={e => setRevertInventoryCheck(e.target.checked)} />
+                                                    إرجاع المكونات إلى المخزن (إلغاء الاستهلاك)
+                                                </label>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    <button 
+                                                        onClick={() => updateStatus(selectedOrder.id, actionPrompt.type === 'cancel' ? 'cancelled' : 'returned', cancelReasonInput, revertInventoryCheck)} 
+                                                        disabled={actionLoading || !cancelReasonInput.trim()} 
+                                                        style={{ flex: 1, padding: '10px', background: actionPrompt.type === 'cancel' ? C.danger : C.primary, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: cancelReasonInput.trim() ? 'pointer' : 'not-allowed', opacity: (actionLoading || !cancelReasonInput.trim()) ? 0.7 : 1 }}
+                                                    >
+                                                        {actionLoading ? 'جاري التنفيذ...' : 'تأكيد'}
+                                                    </button>
+                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>تراجع</button>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap', width: '100%', alignItems: 'center' }}>
+                                        <button onClick={() => { setActionPrompt({ type: 'return' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                                            <RotateCcw size={18} /> إرجاع
+                                        </button>
+                                        
+                                        {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
+                                            <button onClick={() => { setActionPrompt({ type: 'cancel' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
+                                                <X size={18} /> إلغاء
+                                            </button>
+                                        )}
 
-                                <div style={{ flex: 1 }}></div>
+                                        <div style={{ flex: 1 }}></div>
 
-                                {/* Order progression actions */}
-                                {selectedOrder.status === 'preparing' && (
-                                    <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
-                                        <CheckCircle2 size={18} /> جاهز
-                                    </button>
-                                )}
+                                        {/* Order progression actions */}
+                                        {selectedOrder.status === 'preparing' && (
+                                            <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
+                                                <CheckCircle2 size={18} /> جاهز
+                                            </button>
+                                        )}
 
-                                {/* Pay action if unpaid */}
-                                {selectedOrder.paidAmount < selectedOrder.total && selectedOrder.total > 0 && selectedOrder.status !== 'cancelled' && (
-                                    <button onClick={() => handlePay(selectedOrder)} style={{ padding: '10px 24px', background: C.success, color: '#fff', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, boxShadow: `0 4px 12px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-                                        دفع
-                                    </button>
-                                )}
+                                        {/* Pay action if unpaid */}
+                                        {selectedOrder.paidAmount < selectedOrder.total && selectedOrder.total > 0 && selectedOrder.status !== 'cancelled' && (
+                                            <button onClick={() => setActionPrompt({ type: 'pay' })} style={{ padding: '10px 24px', background: C.success, color: '#fff', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, boxShadow: `0 4px 12px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
+                                                دفع
+                                            </button>
+                                        )}
 
-                                {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
-                                    <div style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
-                                        <Check size={18} /> مكتمل
+                                        {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
+                                            <div style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
+                                                <Check size={18} /> مكتمل
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
