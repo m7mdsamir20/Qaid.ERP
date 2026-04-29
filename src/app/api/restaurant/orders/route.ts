@@ -22,7 +22,8 @@ export const GET = withProtection(async (request, session) => {
             include: {
                 lines: true,
                 table: { select: { id: true, name: true } },
-                invoice: { select: { invoiceNumber: true } }
+                invoice: { select: { invoiceNumber: true } },
+                shift: { select: { user: { select: { name: true } } } }
             },
             orderBy: { createdAt: 'desc' },
             take: limit,
