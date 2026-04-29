@@ -94,7 +94,7 @@ export const POST = withProtection(async (request, session, body) => {
             data: {
                 orderNumber,
                 type: body.type ?? 'dine-in',
-                status: 'pending',
+                status: (body.source && body.source !== 'pos') ? 'pending' : 'preparing',
                 tableId: body.tableId ?? null,
                 shiftId: activeShift?.id ?? null,
                 customerId: body.customerId ?? null,
