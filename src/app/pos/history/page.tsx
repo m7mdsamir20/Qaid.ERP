@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
+import AppModal from '@/components/AppModal';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
@@ -14,7 +15,7 @@ const TYPE_ICONS: Record<string, React.ReactNode> = {
     'delivery': <Truck size={14} />,
     'online': <Globe size={14} />
 };
-const TYPE_LABELS: Record<string, string> = { 'dine-in': 'محلي', 'takeaway': 'سفري', 'delivery': 'توصيل', 'online': 'أونلاين' };
+const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك اوي', 'delivery': 'توصيل', 'online': 'أونلاين' };
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
     pending:    { label: 'معالجة',     color: '#f59e0b', bg: '#fef3c7' },
@@ -82,8 +83,81 @@ export default function OrdersHistoryPage() {
         }
     };
 
-    const handlePrint = (order: any) => {
-        alert(t('جاري الطباعة للطلب رقم') + ' ' + (order.invoice?.invoiceNumber || order.orderNumber));
+    const handlePrint = (orderData: any) => {
+        const lines = orderData.lines || [];
+        const finalDiscount = orderData.discount || 0;
+        const finalTotal = orderData.total || 0;
+        
+        const html = `
+            <html dir="rtl">
+            <head>
+                <title>فاتورة كاشير</title>
+                <style>
+                    body { font-family: sans-serif; width: 300px; margin: 0 auto; padding: 20px; font-size: 14px; }
+                    .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+                    .line { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                    .total { border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 16px; }
+                    .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>فاتورة مطعم</h2>
+                    <p>الطلب رقم: ${orderData.invoice?.invoiceNumber ? `#${orderData.invoice.invoiceNumber}` : `#${orderData.orderNumber}`}</p>
+                    <p>نوع الطلب: ${TYPE_LABELS[orderData.type] ?? orderData.type}</p>
+                    <p>التاريخ: ${new Date(orderData.createdAt || Date.now()).toLocaleString('ar-EG')}</p>
+                </div>
+                <div class="items">
+                    ${lines.map((l: any) => {
+                        let mods = '';
+                        if (l.modifiers) {
+                            try {
+                                const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                mods = Object.values(parsed).flat().map((m: any) => `
+                                    <div class="line" style="font-size: 12px; color: #555;">
+                                        <span>- ${m.name}</span>
+                                        <span>${m.price || 0}</span>
+                                    </div>
+                                `).join('');
+                            } catch(e) {}
+                        }
+                        return `
+                            <div class="line">
+                                <span>${l.itemName || 'صنف'} (x${l.quantity})</span>
+                                <span>${l.total || (Number(l.price) * l.quantity)}</span>
+                            </div>
+                            ${mods}
+                        `;
+                    }).join('')}
+                </div>
+                <div class="total">
+                    ${finalDiscount > 0 ? `<div class="line"><span>خصم:</span><span>${finalDiscount}</span></div>` : ''}
+                    ${orderData.serviceAmount > 0 ? `<div class="line"><span>رسوم الخدمة:</span><span>${orderData.serviceAmount}</span></div>` : ''}
+                    ${orderData.taxAmount > 0 ? `<div class="line"><span>الضريبة:</span><span>${orderData.taxAmount}</span></div>` : ''}
+                    <div class="line"><span>الإجمالي:</span><span>${finalTotal}</span></div>
+                </div>
+                <div class="footer">
+                    <p>شكراً لزيارتكم!</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '-10000px';
+        iframe.style.bottom = '-10000px';
+        document.body.appendChild(iframe);
+        
+        iframe.contentDocument?.open();
+        iframe.contentDocument?.write(html);
+        iframe.contentDocument?.close();
+        
+        setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+        }, 500);
     };
 
     const filteredOrders = orders.filter(o => {
@@ -106,12 +180,12 @@ export default function OrdersHistoryPage() {
                 />
 
                 {/* Filters & Search */}
-                <div style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}>
+                <div style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         {[{ value: '', label: 'كل الحالات' }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: s.label }))].map(s => (
                             <button key={s.value} onClick={() => setFilterStatus(s.value)}
-                                style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : '#e2e8f0'}`, background: filterStatus === s.value ? `${C.primary}12` : '#fff', color: filterStatus === s.value ? C.primary : '#64748b', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                {s.label} <ChevronDown size={14} style={{ opacity: 0.5 }} />
+                                style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
+                                {s.label}
                             </button>
                         ))}
                     </div>
@@ -135,26 +209,23 @@ export default function OrdersHistoryPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
                 ) : (
-                    <div style={{ padding: '0 24px' }}>
-                        <div style={TABLE_STYLE.container}>
+                    <div style={TABLE_STYLE.container}>
                             <table style={TABLE_STYLE.table}>
                             <thead style={TABLE_STYLE.thead}>
                                 <tr>
                                     <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>فاتورة</th>
                                     <th style={TABLE_STYLE.th(false)}>العملاء</th>
-                                    <th style={TABLE_STYLE.th(false)}>المصدر</th>
                                     <th style={TABLE_STYLE.th(false)}>نوع الخدمة</th>
-                                    <th style={TABLE_STYLE.th(false)}>رقم الطاولة</th>
-                                    <th style={TABLE_STYLE.th(false)}>اسم أمين الصندوق</th>
+                                    <th style={TABLE_STYLE.th(false)}>الكاشير</th>
                                     <th style={TABLE_STYLE.th(false)}>المجموع</th>
-                                    <th style={TABLE_STYLE.th(false)}>المدفوعات</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'left' : 'right' }}>حالة</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المدفوعات</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>حالة</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredOrders.length === 0 && (
                                     <tr>
-                                        <td colSpan={9} style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
+                                        <td colSpan={7} style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
                                             <History size={40} style={{ opacity: 0.3, display: 'block', margin: '0 auto 12px' }} />
                                             {t("لا توجد طلبات")}
                                         </td>
@@ -162,51 +233,47 @@ export default function OrdersHistoryPage() {
                                 )}
                                 {filteredOrders.map((order, i) => {
                                     const st = STATUS_INFO[order.status] ?? STATUS_INFO.pending;
-                                    const invoiceNo = order.invoice?.invoiceNumber ? `#${order.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${order.orderNumber.toString().padStart(4, '0')}`;
                                     const isPaid = order.paidAmount >= order.total && order.total > 0;
-                                    const cashierName = order.shift?.user?.name || '-';
                                     
                                     return (
                                         <tr key={order.id} 
-                                            onClick={() => setSelectedOrder(order)}
-                                            style={{ ...TABLE_STYLE.row(i === filteredOrders.length - 1), cursor: 'pointer' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                            onClick={() => setSelectedOrder(order)} 
+                                            style={{ ...TABLE_STYLE.row(i === filteredOrders.length - 1), cursor: 'pointer' }} 
+                                            onMouseEnter={e => e.currentTarget.style.background = C.hover} 
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}>
-                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: isRtl ? 'flex-start' : 'flex-end' }}>
-                                                    <span style={{ fontFamily: OUTFIT, fontWeight: 800, fontSize: '14px', color: C.textPrimary }}>{invoiceNo}</span>
-                                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT }}>{formatDate(order.createdAt)}</span>
+                                            <td style={TABLE_STYLE.td(false)}>
+                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: C.primary, fontSize: '14px' }}>
+                                                        {order.invoice?.invoiceNumber ? `#${order.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${order.orderNumber.toString().padStart(4, '0')}`}
+                                                    </span>
+                                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{formatDate(order.createdAt)}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary }}>
-                                                {order.deliveryName || order.customerId || 'لا زبون'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
-                                                {order.source === 'website' ? 'تطبيق المطعم' : order.source === 'qr' ? 'QR' : 'الكاشير'}
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>
+                                                {order.customer?.name || 'عميل عام'}
+                                                {order.customer?.phone && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, display: 'inline-block', marginInlineStart: '6px' }}>{order.customer.phone}</span>}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
-                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                                    {TYPE_ICONS[order.type]} {TYPE_LABELS[order.type] ?? order.type}
-                                                </span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
-                                                {order.table?.name || '-'}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                    {order.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : order.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : order.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />}
+                                                    {TYPE_LABELS[order.type] ?? order.type}
+                                                </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
-                                                {cashierName}
+                                                {order.shift?.user?.name || '-'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, fontSize: '14px', color: C.textPrimary }}>
                                                 {fMoney(order.total)}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
-                                                    {isPaid ? 'Paid' : 'Unpaid'} 
+                                                    {isPaid ? 'مدفوع' : 'غير مدفوع'} 
                                                     {isPaid ? <CheckCircle2 size={16} color="#10b981" /> : <XCircle size={16} color="#ef4444" />}
                                                 </span>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'left' : 'right' }}>
-                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: `1px solid ${st.color}50`, background: C.card, borderRadius: '20px', padding: '4px 12px', fontSize: '12px', fontWeight: 700, color: st.color }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: `1px solid ${st.color}50`, background: C.card, borderRadius: '20px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>
                                                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: st.color }}></span> {st.label}
                                                 </span>
                                             </td>
@@ -215,74 +282,71 @@ export default function OrdersHistoryPage() {
                                 })}
                             </tbody>
                         </table>
-                        </div>
                     </div>
                 )}
 
                 {/* Modal for Order Details */}
-                {selectedOrder && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setSelectedOrder(null)}>
-                        <div style={{ background: C.card, borderRadius: '16px', width: '100%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }} onClick={e => e.stopPropagation()}>
-                            
-                            {/* Modal Header */}
-                            <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <div style={{ textAlign: isRtl ? 'right' : 'left' }}>
-                                    <h2 style={{ margin: 0, fontFamily: OUTFIT, fontWeight: 800, fontSize: '20px', color: C.textPrimary }}>
-                                        {selectedOrder.invoice?.invoiceNumber ? `#${selectedOrder.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${selectedOrder.orderNumber.toString().padStart(4, '0')}`}
-                                    </h2>
-                                    <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{formatDate(selectedOrder.createdAt)}</p>
-                                </div>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <button onClick={() => setSelectedOrder(null)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: C.textMuted }}><X size={20} /></button>
-                                </div>
-                            </div>
+                <AppModal 
+                    show={!!selectedOrder} 
+                    onClose={() => setSelectedOrder(null)} 
+                    title={selectedOrder ? (
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, lineHeight: 1 }}>
+                                {selectedOrder.invoice?.invoiceNumber ? `#${selectedOrder.invoice.invoiceNumber.toString().padStart(4, '0')}` : `#${selectedOrder.orderNumber.toString().padStart(4, '0')}`}
+                            </span>
+                            <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT, marginTop: '4px', fontWeight: 600 }}>
+                                {formatDate(selectedOrder.createdAt)}
+                            </span>
+                        </div>
+                    ) : ''}
+                    maxWidth="800px"
+                    headerActions={null}
+                >
+                    {selectedOrder && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                             {/* Action Badges in Modal Header */}
-                            <div style={{ padding: '16px 24px', display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button onClick={() => handlePrint(selectedOrder)} style={{ padding: '6px 12px', background: C.bg, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}><FileText size={14} /> طباعة الفاتورة</button>
-                                    <button style={{ padding: '6px 12px', background: C.bg, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}><Printer size={14} /> طباعة تفاصيل الطلب</button>
-                                </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    {selectedOrder.status === 'preparing' && <span style={{ padding: '6px 12px', border: '1px solid #fcd34d', background: '#fffbeb', color: '#f59e0b', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }}></span> معالجة</span>}
-                                    {selectedOrder.status === 'ready' && <span style={{ padding: '6px 12px', border: '1px solid #93c5fd', background: '#eff6ff', color: '#3b82f6', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3b82f6' }}></span> جاهز</span>}
-                                </div>
+                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px', alignItems: 'center' }}>
+                                {selectedOrder.status === 'preparing' && <span style={{ padding: '6px 12px', border: '1px solid #fcd34d', background: '#fffbeb', color: '#f59e0b', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#f59e0b' }}></span> معالجة</span>}
+                                {selectedOrder.status === 'ready' && <span style={{ padding: '6px 12px', border: '1px solid #93c5fd', background: '#eff6ff', color: '#3b82f6', borderRadius: '6px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#3b82f6' }}></span> جاهز</span>}
+
+                                <div style={{ flex: 1 }}></div>
+
+                                <button onClick={() => {
+                                    handlePrint(selectedOrder);
+                                }} style={{ width: '32px', height: '32px', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Printer size={16} />
+                                </button>
                             </div>
 
                             {/* Order Info Grid */}
-                            <div style={{ padding: '0 24px 20px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', textAlign: 'center' }}>
-                                <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>المجموع</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontFamily: OUTFIT }}>{fMoney(selectedOrder.total)}</p>
-                                </div>
-                                <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>اسم أمين الصندوق</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{selectedOrder.shift?.user?.name || '-'}</p>
-                                </div>
+                            <div style={{ padding: '0 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', textAlign: 'center' }}>
                                 <div>
                                     <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>نوع الخدمة</p>
                                     <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type}</p>
                                 </div>
                                 <div>
-                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>المصدر</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{selectedOrder.source === 'website' ? 'تطبيق المطعم' : selectedOrder.source === 'qr' ? 'QR' : 'الكاشير'}</p>
+                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>الكاشير</p>
+                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{selectedOrder.shift?.user?.name || '-'}</p>
+                                </div>
+                                <div>
+                                    <p style={{ margin: '0 0 6px', fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>المجموع</p>
+                                    <p style={{ margin: 0, fontSize: '14px', color: C.textSecondary, fontFamily: OUTFIT }}>{fMoney(selectedOrder.total)}</p>
                                 </div>
                             </div>
 
                             {/* Order Items List */}
-                            <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-                                <h3 style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px' }}>عنصر الطلب</h3>
+                            <div style={{ padding: '0 0' }}>
+                                <h3 style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px' }}>عناصر الطلب</h3>
                                 <div style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {selectedOrder.lines?.map((line: any) => (
-                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px', background: C.bg, borderRadius: '8px' }}>
+                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: C.bg, borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: '18px', height: '18px', borderRadius: '4px', border: `1px solid ${C.border}`, background: C.card }}></div>
                                                 <span style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary }}>{line.itemName}</span>
                                             </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                                                <span style={{ fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{line.quantity}</span>
-                                                <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px', minWidth: '80px', textAlign: isRtl ? 'left' : 'right' }}>{fMoney(line.total)}</span>
-                                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 'bold' }}>C</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>x {line.quantity}</span>
+                                                <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '14px', minWidth: '80px', textAlign: isRtl ? 'left' : 'right' }}>{fMoney(line.total)}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -290,7 +354,7 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Summary */}
-                            <div style={{ padding: '0 24px 24px' }}>
+                            <div style={{ padding: '0 0' }}>
                                 <h3 style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px' }}>ملخص الطلب</h3>
                                 <div style={{ background: C.bg, borderRadius: '12px', padding: '16px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
@@ -300,6 +364,10 @@ export default function OrdersHistoryPage() {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>تخفيض</span>
                                         <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
+                                        <span>الخدمة</span>
+                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(selectedOrder.serviceAmount || 0)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>ضريبة</span>
@@ -318,7 +386,7 @@ export default function OrdersHistoryPage() {
                                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: '#fee2e2', color: '#dc2626', padding: '2px 8px', borderRadius: '12px', fontSize: '11px', fontFamily: OUTFIT }}>Unpaid <XCircle size={12} /></span>
                                             )}
                                         </div>
-                                        <button style={{ background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, border: 'none', borderRadius: '6px', padding: '4px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>طريقة الدفع</button>
+                                        <button style={{ background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', padding: '4px 12px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>طريقة الدفع</button>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>المتبقي</span>
@@ -328,9 +396,9 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Modal Footer Actions */}
-                            <div style={{ padding: '16px 24px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: '12px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
+                            <div style={{ padding: '16px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '20px', display: 'flex', gap: '12px', justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center' }}>
                                 
-                                <button style={{ padding: '10px 20px', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                <button style={{ padding: '10px 20px', background: C.card, border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                     <RotateCcw size={16} /> إرجاع
                                 </button>
                                 
@@ -375,8 +443,8 @@ export default function OrdersHistoryPage() {
                                 )}
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </AppModal>
             </div>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
