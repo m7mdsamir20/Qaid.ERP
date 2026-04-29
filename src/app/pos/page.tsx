@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -82,6 +82,7 @@ export default function POSPage() {
     const [customerSearchQuery, setCustomerSearchQuery] = useState('');
     const [searchedCustomerObj, setSearchedCustomerObj] = useState<any>(null);
     const [showNewCustomerForm, setShowNewCustomerForm] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     // Open Orders Modal
     const [showOpenOrders, setShowOpenOrders] = useState(false);
@@ -343,7 +344,7 @@ export default function POSPage() {
                     ${lines.map(l => `
                         <div class="line">
                             <span>${l.itemName} (x${l.quantity})</span>
-                            <span>${l.unitPrice * l.quantity}</span>
+                            <span>${(Number(l.unitPrice) || 0) * l.quantity}</span>
                         </div>
                         ${l.modifiers ? Object.values(l.modifiers).flat().map((m: any) => `
                             <div class="line" style="font-size: 12px; color: #555;">
@@ -626,14 +627,14 @@ export default function POSPage() {
 
                         {/* End Shift */}
                         {currentShift && (
-                            <button onClick={() => { if (cart.length > 0) setShowUnpaidWarning(true); else setShowEndShift(true); }} style={{ height: 40, padding: '0 24px', borderRadius: '10px', border: 'none', background: '#1e1b4b', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>
-                                نهاية العمل <Power size={18} />
+                            <button onClick={() => { if (cart.length > 0) setShowUnpaidWarning(true); else setShowEndShift(true); }} title={t('نهاية العمل')} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.primary}40`, background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Power size={18} />
                             </button>
                         )}
                     </div>
 
                     {/* التصنيفات */}
-                    <div style={{ display: 'flex', gap: '8px', padding: '12px 20px', overflowX: 'auto', background: C.card, borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
+                    <div style={{ display: 'flex', gap: '8px', padding: '12px 20px', overflowX: 'auto', flexShrink: 0 }}>
                         <button onClick={() => setSelectedCategory('')}
                             style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${!selectedCategory ? C.primary : C.border}`, background: !selectedCategory ? `${C.primary}15` : 'transparent', color: !selectedCategory ? C.primary : C.textSecondary, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', fontFamily: CAIRO }}>
                             الكل
@@ -647,7 +648,7 @@ export default function POSPage() {
                     </div>
 
                     {/* الأصناف */}
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '6px 20px 16px' }}>
                         {loading ? (
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: C.textMuted }}>
                                 <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
@@ -688,8 +689,8 @@ export default function POSPage() {
                 <div style={{ width: '380px', display: 'flex', flexDirection: 'column', background: C.card, flexShrink: 0 }}>
 
                     {/* نوع الطلب */}
-                    <div style={{ padding: '16px', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <div style={{ padding: '10px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', minHeight: '60px', boxSizing: 'border-box' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                             <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{t('الطلب الحالي')}</h3>
                             <button onClick={() => { fetchOpenOrders(); setShowOpenOrders(true); }} style={{ padding: '6px 10px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, fontSize: '12px', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <Clock size={14} /> {t('الطلبات المفتوحة')}
@@ -758,15 +759,15 @@ export default function POSPage() {
                             </button>
                         </div>
 
-
-                        {/* اختيار الخزنة */}
+                        {/* زر تحديد طريقة الدفع */}
                         {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (
-                            <CustomSelect
-                                value={selectedTreasury}
-                                onChange={v => setSelectedTreasury(v)}
-                                options={treasuries.map(t => ({ value: t.id, label: t.name }))}
-                                placeholder={t('اختر الخزنة')}
-                            />
+                            <button onClick={() => setShowPaymentModal(true)} style={{ height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s', width: '100%' }}>
+                                <Wallet size={16} />
+                                <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>
+                                    {paymentMethod === 'cash' ? 'نقدي' : paymentMethod === 'card' ? 'شبكة' : 'مختلط'}
+                                    {selectedTreasury ? ` • ${treasuries.find(t => t.id === selectedTreasury)?.name || ''}` : ''}
+                                </span>
+                            </button>
                         )}
 
                         {/* الإجمالي */}
@@ -798,18 +799,6 @@ export default function POSPage() {
                                 <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoney(total)}</span>
                             </div>
                         </div>
-
-                        {/* طريقة الدفع */}
-                        {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
-                                {(['cash', 'card', 'mixed'] as const).map(pm => (
-                                    <button key={pm} onClick={() => setPaymentMethod(pm)}
-                                        style={{ height: '36px', borderRadius: '10px', border: `1px solid ${paymentMethod === pm ? C.primary + '50' : C.border}`, background: paymentMethod === pm ? `${C.primary}12` : 'transparent', color: paymentMethod === pm ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
-                                        {pm === 'cash' ? '💵 نقدي' : pm === 'card' ? '💳 شبكة' : '🔀 مختلط'}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
 
                         {/* رسائل */}
                         {errorMsg && (
@@ -1109,12 +1098,12 @@ export default function POSPage() {
                             <button onClick={() => { setShowCustomerModal(false); setShowNewCustomerForm(false); setSearchedCustomerObj(null); setCustomerSearchQuery(''); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         <div style={{ display: 'flex', gap: '8px' }}>
-                            <input value={customerSearchQuery} onChange={e => setCustomerSearchQuery(e.target.value)} placeholder={t('رقم الهاتف أو الاسم')} style={{ ...IS, height: '42px', flex: 1 }} />
+                            <input value={customerSearchQuery} onChange={e => setCustomerSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { const found = customers.find((c: any) => (c.phone && c.phone === customerSearchQuery) || c.name.includes(customerSearchQuery)); if (found) { setSearchedCustomerObj(found); setShowNewCustomerForm(false); } else { setSearchedCustomerObj(null); setShowNewCustomerForm(true); } } }} placeholder={t('رقم الهاتف أو الاسم')} style={{ ...IS, height: '42px', flex: 1 }} autoFocus />
                             <button onClick={() => {
                                 const found = customers.find((c: any) => (c.phone && c.phone === customerSearchQuery) || c.name.includes(customerSearchQuery));
                                 if (found) { setSearchedCustomerObj(found); setShowNewCustomerForm(false); }
                                 else { setSearchedCustomerObj(null); setShowNewCustomerForm(true); }
-                            }} style={{ ...BTN_PRIMARY(false, false), width: '60px', height: '42px', borderRadius: '10px' }}><Search size={18} /></button>
+                            }} style={{ ...BTN_PRIMARY(false, false), width: '42px', height: '42px', borderRadius: '10px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Search size={16} /></button>
                         </div>
 
                         {searchedCustomerObj && (
@@ -1123,7 +1112,7 @@ export default function POSPage() {
                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{searchedCustomerObj.name}</div>
                                     <div style={{ fontSize: '12px', color: C.textSecondary }}>{searchedCustomerObj.phone}</div>
                                 </div>
-                                <button onClick={() => { setSelectedCustomer(searchedCustomerObj.id); setShowCustomerModal(false); setShowNewCustomerForm(false); setSearchedCustomerObj(null); setCustomerSearchQuery(''); }} style={{ ...BTN_PRIMARY(false, false), padding: '6px 12px', borderRadius: '8px', fontSize: '12px', height: 'auto' }}>{t('اختيار')}</button>
+                                <button onClick={() => { setSelectedCustomer(searchedCustomerObj.id); setShowCustomerModal(false); setShowNewCustomerForm(false); setSearchedCustomerObj(null); setCustomerSearchQuery(''); }} style={{ padding: '4px 12px', borderRadius: '6px', fontSize: '11px', height: '26px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('اختيار')}</button>
                             </div>
                         )}
 
@@ -1217,6 +1206,47 @@ export default function POSPage() {
                 </div>
             )}
 
+            {/* Payment Method & Treasury Modal */}
+            {showPaymentModal && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('طريقة الدفع')}</h2>
+                            <button onClick={() => setShowPaymentModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+
+                        {/* طرق الدفع */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                            {([
+                                { key: 'cash', label: 'نقدي' },
+                                { key: 'card', label: 'شبكة' },
+                                { key: 'mixed', label: 'مختلط' },
+                            ] as const).map(pm => {
+                                const isActive = paymentMethod === pm.key;
+                                return (
+                                    <button key={pm.key} onClick={() => setPaymentMethod(pm.key as any)}
+                                        style={{ padding: '12px 8px', borderRadius: '12px', border: `2px solid ${isActive ? C.primary : C.border}`, background: isActive ? `${C.primary}12` : 'transparent', color: isActive ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                        {pm.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {/* اختيار الخزنة */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('الخزنة')}</label>
+                            <CustomSelect
+                                value={selectedTreasury}
+                                onChange={v => setSelectedTreasury(v)}
+                                options={treasuries.map(t => ({ value: t.id, label: t.name }))}
+                                placeholder={t('— اختر الخزنة —')}
+                            />
+                        </div>
+
+                        <button onClick={() => setShowPaymentModal(false)} style={{ ...BTN_PRIMARY(false, false), height: '44px', borderRadius: '12px' }}>{t('تم')}</button>
+                    </div>
+                </div>
+            )}
 
             {/* Start Shift Modal */}
             {showStartShift && (
