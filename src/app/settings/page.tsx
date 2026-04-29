@@ -752,7 +752,7 @@ function SettingsContent() {
 
     // Filter tabs based on permissionHierarchy
     const filteredTabs = [
-        { id: 'company', icon: Building2, label: t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
+        { id: 'company', icon: Building2, label: isRestaurants ? t('بيانات المطعم') : t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
         { id: 'general', icon: Globe, label: t('الإعدادات العامة'), featureKey: 'settings', pageId: '/settings/general' },
         { id: 'branches', icon: Store, label: t('الفروع'), featureKey: 'settings', pageId: '/settings/branches' },
         { id: 'notifications', icon: Bell, label: t('الإشعارات'), featureKey: 'settings', pageId: '/settings/notifications' },
@@ -854,6 +854,7 @@ function SettingsContent() {
                                 handleCancel={handleCancel}
                                 saveSettings={saveSettings}
                                 showToast={showToast}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 

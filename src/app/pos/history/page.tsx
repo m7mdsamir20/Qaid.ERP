@@ -94,13 +94,13 @@ export default function OrdersHistoryPage() {
         
         const formatMoney = (m: number) => Number(m).toFixed(2);
         
-        const typeLabel = orderData.type === 'dine-in' ? 'Dine-in' : 
-                          orderData.type === 'takeaway' ? 'Takeaway' : 
-                          orderData.type === 'delivery' ? 'Delivery' : 'Online';
+        const typeLabel = orderData.type === 'dine-in' ? 'صالة' : 
+                          orderData.type === 'takeaway' ? 'تيك أواي' : 
+                          orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
         const html = `
             <!DOCTYPE html>
-            <html lang="en">
+            <html lang="ar" dir="rtl">
             <head>
                 <meta charset="UTF-8">
                 <title>Receipt #${orderData.orderNumber}</title>
@@ -125,15 +125,16 @@ export default function OrdersHistoryPage() {
                         justify-content: space-between; 
                         align-items: flex-start;
                     }
-                    .header h2 { margin: 5px 0; font-size: 18px; letter-spacing: 1px; }
+                    .header h2 { margin: 5px 0; font-size: 18px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+                    .header img { max-width: 40px; max-height: 40px; object-fit: contain; }
                     .header p { margin: 2px 0; font-size: 12px; }
                     .meta p { margin: 3px 0; font-size: 13px; display: flex; }
-                    .meta p span:first-child { width: 85px; display: inline-block; }
+                    .meta p span:first-child { width: 85px; display: inline-block; font-weight: bold; }
                     .item { margin-top: 8px; }
                     .item-main { font-weight: bold; }
                     .modifier { 
                         font-size: 12px; 
-                        padding-left: 20px; 
+                        padding-right: 20px; 
                         color: #333; 
                         margin-top: 2px; 
                     }
@@ -145,18 +146,21 @@ export default function OrdersHistoryPage() {
             </head>
             <body>
                 <div class="header text-center">
-                    <h2>🍔 RESTAURANT</h2>
-                    <p>01234567890 - City</p>
+                    <h2>
+                        ${orderData.company?.logo ? `<img src="${orderData.company.logo}" alt="Logo"/>` : ''}
+                        ${orderData.company?.name || 'مطعم قيد'}
+                    </h2>
+                    <p>${orderData.company?.phone || '01234567890'} ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `- ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}` : ''}</p>
                 </div>
                 
                 <div class="dashed-line"></div>
                 
                 <div class="meta">
-                    <p><span>Order #</span>: ${orderData.orderNumber.toString().padStart(4, '0')}</p>
-                    <p><span>Type</span>: ${typeLabel}</p>
-                    ${orderData.type === 'dine-in' ? `<p><span>Table</span>: ${orderData.table?.name || '-'}</p>` : ''}
-                    <p><span>Date</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })}</p>
-                    <p><span>Cashier</span>: ${orderData.shift?.user?.name || '-'}</p>
+                    <p><span>طلب رقم</span>: ${orderData.orderNumber.toString().padStart(4, '0')}</p>
+                    <p><span>نوع الطلب</span>: ${typeLabel}</p>
+                    ${orderData.type === 'dine-in' ? `<p><span>الطاولة</span>: ${orderData.table?.name || '-'}</p>` : ''}
+                    <p><span>التاريخ</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</p>
+                    <p><span>الكاشير</span>: ${orderData.shift?.user?.name || '-'}</p>
                 </div>
 
                 <div class="dashed-line"></div>
@@ -178,7 +182,7 @@ export default function OrdersHistoryPage() {
                         return `
                             <div class="item">
                                 <div class="flex-between item-main">
-                                    <span style="flex: 1; padding-right: 10px;">${l.quantity}x ${l.itemName || 'Item'}</span>
+                                    <span style="flex: 1; padding-left: 10px;">${l.quantity}x ${l.itemName || 'صنف'}</span>
                                     <span>${formatMoney(l.total || (Number(l.price) * l.quantity))}</span>
                                 </div>
                                 ${mods}
@@ -191,22 +195,22 @@ export default function OrdersHistoryPage() {
 
                 <div class="totals">
                     <div class="flex-between">
-                        <span>Subtotal</span>
+                        <span>الإجمالي الفرعي</span>
                         <span>${formatMoney(subtotal)}</span>
                     </div>
                     ${finalDiscount > 0 ? `
                     <div class="flex-between">
-                        <span>Discount</span>
+                        <span>خصم</span>
                         <span>${formatMoney(finalDiscount)}</span>
                     </div>` : ''}
                     ${orderData.serviceAmount > 0 ? `
                     <div class="flex-between">
-                        <span>Service</span>
+                        <span>رسوم الخدمة</span>
                         <span>${formatMoney(orderData.serviceAmount)}</span>
                     </div>` : ''}
                     ${taxAmount > 0 ? `
                     <div class="flex-between">
-                        <span>Tax</span>
+                        <span>الضريبة</span>
                         <span>${formatMoney(taxAmount)}</span>
                     </div>` : ''}
                 </div>
@@ -215,15 +219,15 @@ export default function OrdersHistoryPage() {
 
                 <div class="totals">
                     <div class="flex-between grand-total">
-                        <span>TOTAL</span>
+                        <span>الإجمالي</span>
                         <span>${formatMoney(finalTotal)}</span>
                     </div>
                     <div class="flex-between">
-                        <span>Paid (${orderData.paymentMethod || 'Cash'})</span>
+                        <span>المدفوع (${orderData.paymentMethod === 'card' ? 'شبكة' : orderData.paymentMethod === 'mixed' ? 'مختلط' : 'نقدي'})</span>
                         <span>${formatMoney(paidAmount)}</span>
                     </div>
                     <div class="flex-between">
-                        <span>Change</span>
+                        <span>المتبقي</span>
                         <span>${formatMoney(change)}</span>
                     </div>
                 </div>
@@ -231,8 +235,8 @@ export default function OrdersHistoryPage() {
                 <div class="dashed-line"></div>
 
                 <div class="footer">
-                    <p>Thank You ❤️</p>
-                    <p>Visit us again!</p>
+                    <p>شكراً لزيارتكم ❤️</p>
+                    <p>نتمنى رؤيتكم قريباً!</p>
                 </div>
             </body>
             </html>

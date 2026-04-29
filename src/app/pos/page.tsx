@@ -323,46 +323,143 @@ export default function POSPage() {
     }, [subtotal]);
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
+        const formatMoney = (m: number) => Number(m).toFixed(2);
+        const subtotal = finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) + finalDiscount;
+        const paidAmount = orderData.paidAmount || finalTotal;
+        const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
+        
+        const typeLabel = orderData.type === 'dine-in' ? 'صالة' : 
+                          orderData.type === 'takeaway' ? 'تيك أواي' : 
+                          orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
+
         const html = `
-            <html dir="rtl">
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
             <head>
-                <title>فاتورة كاشير</title>
+                <meta charset="UTF-8">
+                <title>Receipt #${orderData.orderNumber}</title>
                 <style>
-                    body { font-family: sans-serif; width: 300px; margin: 0 auto; padding: 20px; font-size: 14px; }
-                    .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
-                    .line { display: flex; justify-content: space-between; margin-bottom: 5px; }
-                    .total { border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 16px; }
+                    @page { margin: 0; }
+                    body {
+                        font-family: 'Courier New', Courier, monospace;
+                        width: 280px;
+                        margin: 0 auto;
+                        padding: 10px 0;
+                        font-size: 13px;
+                        color: #000;
+                        background: #fff;
+                    }
+                    .text-center { text-align: center; }
+                    .dashed-line { border-top: 1px dashed #000; margin: 10px 0; }
+                    .flex-between { display: flex; justify-content: space-between; align-items: flex-start; }
+                    .header h2 { margin: 5px 0; font-size: 18px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+                    .header img { max-width: 40px; max-height: 40px; object-fit: contain; }
+                    .header p { margin: 2px 0; font-size: 12px; }
+                    .meta p { margin: 3px 0; font-size: 13px; display: flex; }
+                    .meta p span:first-child { width: 85px; display: inline-block; font-weight: bold; }
+                    .item { margin-top: 8px; }
+                    .item-main { font-weight: bold; }
+                    .modifier { font-size: 12px; padding-right: 20px; color: #333; margin-top: 2px; }
+                    .totals { margin-top: 10px; }
+                    .totals .flex-between { margin: 4px 0; }
+                    .grand-total { font-weight: bold; font-size: 15px; margin: 6px 0; }
                     .footer { text-align: center; margin-top: 20px; font-size: 12px; }
                 </style>
             </head>
             <body>
-                <div class="header">
-                    <h2>فاتورة مطعم</h2>
-                    <p>نوع الطلب: ${orderType === 'dine-in' ? 'صالة' : orderType === 'takeaway' ? 'تيك أواي' : 'توصيل'}</p>
-                    <p>التاريخ: ${new Date().toLocaleString('ar-EG')}</p>
+                <div class="header text-center">
+                    <h2>
+                        ${orderData.company?.logo ? `<img src="${orderData.company.logo}" alt="Logo"/>` : ''}
+                        ${orderData.company?.name || 'فاتورة مطعم'}
+                    </h2>
+                    <p>${orderData.company?.phone || ''} ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `- ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}` : ''}</p>
                 </div>
+                
+                <div class="dashed-line"></div>
+                
+                <div class="meta">
+                    <p><span>طلب رقم</span>: ${orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----'}</p>
+                    <p><span>نوع الطلب</span>: ${typeLabel}</p>
+                    ${orderData.type === 'dine-in' ? `<p><span>الطاولة</span>: ${orderData.table?.name || '-'}</p>` : ''}
+                    <p><span>التاريخ</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</p>
+                    <p><span>الكاشير</span>: ${orderData.shift?.user?.name || '-'}</p>
+                </div>
+
+                <div class="dashed-line"></div>
+
                 <div class="items">
-                    ${lines.map(l => `
-                        <div class="line">
-                            <span>${l.itemName} (x${l.quantity})</span>
-                            <span>${(Number(l.unitPrice) || 0) * l.quantity}</span>
-                        </div>
-                        ${l.modifiers ? Object.values(l.modifiers).flat().map((m: any) => `
-                            <div class="line" style="font-size: 12px; color: #555;">
-                                <span>- ${m.name}</span>
-                                <span>${m.price || 0}</span>
+                    ${lines.map((l: any) => {
+                        let mods = '';
+                        if (l.modifiers) {
+                            try {
+                                const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                mods = Object.values(parsed).flat().map((m: any) => `
+                                    <div class="flex-between modifier">
+                                        <span>+ ${m.name}</span>
+                                        <span>${formatMoney(m.price || 0)}</span>
+                                    </div>
+                                `).join('');
+                            } catch(e) {}
+                        }
+                        const rowTotal = l.total !== undefined ? l.total : (Number(l.unitPrice) * l.quantity);
+                        return `
+                            <div class="item">
+                                <div class="flex-between item-main">
+                                    <span style="flex: 1; padding-left: 10px;">${l.quantity}x ${l.itemName || 'صنف'}</span>
+                                    <span>${formatMoney(rowTotal)}</span>
+                                </div>
+                                ${mods}
                             </div>
-                        `).join('') : ''}
-                    `).join('')}
+                        `;
+                    }).join('')}
                 </div>
-                <div class="total">
-                    ${finalDiscount > 0 ? `<div class="line"><span>خصم:</span><span>${finalDiscount}</span></div>` : ''}
-                    ${orderData.serviceAmount > 0 ? `<div class="line"><span>رسوم الخدمة:</span><span>${orderData.serviceAmount}</span></div>` : ''}
-                    ${orderData.taxAmount > 0 ? `<div class="line"><span>الضريبة:</span><span>${orderData.taxAmount}</span></div>` : ''}
-                    <div class="line"><span>الإجمالي:</span><span>${finalTotal}</span></div>
+
+                <div class="dashed-line"></div>
+
+                <div class="totals">
+                    <div class="flex-between">
+                        <span>الإجمالي الفرعي</span>
+                        <span>${formatMoney(subtotal)}</span>
+                    </div>
+                    ${finalDiscount > 0 ? `
+                    <div class="flex-between">
+                        <span>خصم</span>
+                        <span>${formatMoney(finalDiscount)}</span>
+                    </div>` : ''}
+                    ${orderData.serviceAmount > 0 ? `
+                    <div class="flex-between">
+                        <span>رسوم الخدمة</span>
+                        <span>${formatMoney(orderData.serviceAmount)}</span>
+                    </div>` : ''}
+                    ${orderData.taxAmount > 0 ? `
+                    <div class="flex-between">
+                        <span>الضريبة</span>
+                        <span>${formatMoney(orderData.taxAmount)}</span>
+                    </div>` : ''}
                 </div>
+
+                <div class="dashed-line"></div>
+
+                <div class="totals">
+                    <div class="flex-between grand-total">
+                        <span>الإجمالي</span>
+                        <span>${formatMoney(finalTotal)}</span>
+                    </div>
+                    <div class="flex-between">
+                        <span>المدفوع (${orderData.paymentMethod === 'card' ? 'شبكة' : orderData.paymentMethod === 'mixed' ? 'مختلط' : 'نقدي'})</span>
+                        <span>${formatMoney(paidAmount)}</span>
+                    </div>
+                    <div class="flex-between">
+                        <span>المتبقي</span>
+                        <span>${formatMoney(change)}</span>
+                    </div>
+                </div>
+
+                <div class="dashed-line"></div>
+
                 <div class="footer">
-                    <p>شكراً لزيارتكم!</p>
+                    <p>شكراً لزيارتكم ❤️</p>
+                    <p>نتمنى رؤيتكم قريباً!</p>
                 </div>
             </body>
             </html>
