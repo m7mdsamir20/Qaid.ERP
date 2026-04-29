@@ -97,7 +97,7 @@ export default function PayrollStatementPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
                 ) : !data || data.records.length === 0 ? (
-                    <div style={{ textAlign: 'start', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <DollarSign size={60} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مسيرات رواتب لهذا الشهر')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('تأكد من اختيار الشهر الصحيح أو ترحيل الرواتب أولاً.')}</p>

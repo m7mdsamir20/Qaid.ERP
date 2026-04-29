@@ -95,7 +95,7 @@ export default function ModifiersPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /></div>
                 ) : modifiers.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted, fontFamily: CAIRO }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted, fontFamily: CAIRO }}>
                         <Settings2 size={40} style={{ opacity: 0.2, display: 'block', margin: '0 auto 12px' }} />
                         <p style={{ margin: 0 }}>لا توجد إضافات — ابدأ بإضافة مجموعة</p>
                     </div>

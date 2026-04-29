@@ -111,7 +111,7 @@ export default function OrdersHistoryPage() {
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {orders.length === 0 && (
-                            <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '60px', color: C.textMuted }}>
                                 <History size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 12px' }} />
                                 <p>لا توجد طلبات</p>
                             </div>

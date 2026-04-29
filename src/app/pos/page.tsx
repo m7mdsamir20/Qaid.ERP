@@ -88,6 +88,7 @@ export default function POSPage() {
     const [showOpenOrders, setShowOpenOrders] = useState(false);
     const [openOrders, setOpenOrders] = useState<any[]>([]);
     const [payingOrder, setPayingOrder] = useState<any>(null);
+    const [cashPaid, setCashPaid] = useState('');
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -885,7 +886,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('دفع وإخلاء الطاولة')}</h2>
-                            <button onClick={() => setPayingOrder(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => { setPayingOrder(null); setCashPaid(''); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         
                         <div style={{ textAlign: 'center', padding: '16px', background: `${C.primary}10`, borderRadius: '16px', border: `1px dashed ${C.primary}40` }}>
@@ -916,10 +917,35 @@ export default function POSPage() {
                             </div>
                         </div>
 
+                        {/* المبلغ المدفوع */}
+                        {paymentMethod === 'cash' && (() => {
+                            const requiredAmount = payingOrder.total - payingOrder.paidAmount;
+                            const paidVal = parseFloat(cashPaid) || 0;
+                            const change = paidVal - requiredAmount;
+                            return (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    <label style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t('المبلغ المدفوع:')}</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        value={cashPaid}
+                                        onChange={e => setCashPaid(e.target.value)}
+                                        placeholder={String(requiredAmount)}
+                                        style={{ ...IS, height: '44px', fontSize: '18px', fontWeight: 700, textAlign: 'center', fontFamily: OUTFIT }}
+                                        onFocus={e => e.target.select()}
+                                    />
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', borderRadius: '12px', background: change >= 0 && paidVal > 0 ? `${C.success || '#22c55e'}10` : `${C.danger}10`, border: `1px solid ${change >= 0 && paidVal > 0 ? (C.success || '#22c55e') + '30' : C.danger + '30'}` }}>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('الباقي:')}</span>
+                                        <span style={{ fontSize: '18px', fontWeight: 700, color: change >= 0 ? (C.success || '#22c55e') : C.danger, fontFamily: OUTFIT }}>{paidVal > 0 ? (change >= 0 ? change.toFixed(2) : '0') : '—'}</span>
+                                    </div>
+                                </div>
+                            );
+                        })()}
+
                         <button onClick={() => payOpenOrder(payingOrder)} style={{ padding: '14px', borderRadius: '16px', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'pointer', marginTop: '8px', fontFamily: CAIRO, boxShadow: `0 8px 16px ${C.primary}40`, transition: 'all 0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                            {t('تأكيد الدفع والإخلاء')}
+                            {t('دفع')}
                         </button>
                     </div>
                 </div>

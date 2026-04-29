@@ -37,7 +37,7 @@ export const POST = withProtection(async (request, session) => {
             const items = await prisma.item.findMany({
                 where: { 
                     companyId, 
-                    minLimit: { gte: 0 },
+                    minLimit: { gt: 0 },
                     ...(isRestaurants ? { type: 'raw' } : { type: { not: 'service' } })
                 },
                 include: {

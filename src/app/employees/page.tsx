@@ -199,7 +199,7 @@ export default function EmployeesPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ margin: 0, color: C.textMuted, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
