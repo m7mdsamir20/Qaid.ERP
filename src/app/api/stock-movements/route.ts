@@ -11,7 +11,7 @@ export const GET = withProtection(async (request, session) => {
         const warehouseId = searchParams.get('warehouseId');
         const type        = searchParams.get('type');
 
-        const where: any = { companyId };
+        const where: any = { companyId, item: { type: 'raw' } };
         if (itemId)      where.itemId      = itemId;
         if (warehouseId) where.warehouseId = warehouseId;
         if (type)        where.type        = type;

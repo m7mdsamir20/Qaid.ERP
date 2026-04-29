@@ -552,22 +552,8 @@ export const PUT = withProtection(async (request, session, body) => {
                                     }
                                 });
                             }
-                        } else if (item.type !== 'service') {
-                            // 2. Return Standard Product
-                            const qty = line.quantity;
-                            await prisma.stock.upsert({
-                                where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
-                                create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: qty },
-                                update: { quantity: { increment: qty } }
-                            });
-                            await prisma.stockMovement.create({
-                                data: {
-                                    type: 'in', date: new Date(), itemId: item.id, warehouseId: defaultWarehouse.id,
-                                    quantity: qty, reference: `CANCEL-${order.orderNumber}`,
-                                    notes: `مرتجع كاشير (بدون وصفة)`, companyId
-                                }
-                            });
                         }
+                        // المنتجات التامة بدون وصفة لا يتم إرجاعها لأنها أصلاً لا تُخصم من المخزون عند البيع
 
                         // 3. Return Modifiers
                         if (line.modifiers) {
