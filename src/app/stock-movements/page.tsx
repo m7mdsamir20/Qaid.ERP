@@ -27,17 +27,23 @@ export default function StockMovementsPage() {
     const [movements, setMovements] = useState<StockMovement[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
 
     const fetchData = useCallback(async () => {
         try {
-            const res = await fetch('/api/stock-movements');
+            const params = new URLSearchParams();
+            if (dateFrom) params.set('from', dateFrom);
+            if (dateTo) params.set('to', dateTo);
+            const url = `/api/stock-movements${params.toString() ? '?' + params.toString() : ''}`;
+            const res = await fetch(url);
             if (res.ok) {
                 setMovements(await res.json());
             }
         } catch { } finally {
             setLoading(false);
         }
-    }, []);
+    }, [dateFrom, dateTo]);
 
     useEffect(() => {
         fetchData();
@@ -112,19 +118,30 @@ export default function StockMovementsPage() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
-                        <input
-                            placeholder={t("ابحث باسم الصنف، رقم المرجع، أو المخزن...")}
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            style={{ 
-                                ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                outline: 'none', fontFamily: CAIRO, fontWeight: 500 
-                            }}
-                        />
+                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
+                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <input
+                                placeholder={t("ابحث باسم الصنف، رقم المرجع، أو المخزن...")}
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
+                                    borderRadius: '12px', border: `1px solid ${C.border}`, 
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                                    outline: 'none', fontFamily: CAIRO, fontWeight: 500 
+                                }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <label style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('من')}</label>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: OUTFIT }} />
+                            <label style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('إلى')}</label>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: OUTFIT }} />
+                            {(dateFrom || dateTo) && (
+                                <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ height: '42px', padding: '0 14px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('مسح')}</button>
+                            )}
+                        </div>
                     </div>
 
                     {loading ? (
