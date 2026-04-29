@@ -18,12 +18,12 @@ const TYPE_ICONS: Record<string, React.ReactNode> = {
 const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك اوي', 'delivery': 'توصيل', 'online': 'أونلاين' };
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
-    pending:    { label: 'مكتمل',       color: '#10b981', bg: '#dbeafe' }, // mapped to completed for old orders
-    preparing:  { label: 'تحت التحضير', color: '#8b5cf6', bg: '#ede9fe' },
-    ready:      { label: 'مكتمل',       color: '#10b981', bg: '#dbeafe' },
-    delivered:  { label: 'مكتمل',      color: '#10b981', bg: '#d1fae5' }, // fallback
-    cancelled:  { label: 'ألغيت',       color: '#ef4444', bg: '#fee2e2' },
-    returned:   { label: 'مرتجع',       color: '#ef4444', bg: '#fee2e2' },
+    pending: { label: 'مكتمل', color: '#10b981', bg: '#dbeafe' }, // mapped to completed for old orders
+    preparing: { label: 'تحت التحضير', color: '#8b5cf6', bg: '#ede9fe' },
+    ready: { label: 'مكتمل', color: '#10b981', bg: '#dbeafe' },
+    delivered: { label: 'مكتمل', color: '#10b981', bg: '#d1fae5' }, // fallback
+    cancelled: { label: 'ألغيت', color: '#ef4444', bg: '#fee2e2' },
+    returned: { label: 'مرتجع', color: '#ef4444', bg: '#fee2e2' },
 };
 
 export default function OrdersHistoryPage() {
@@ -31,8 +31,8 @@ export default function OrdersHistoryPage() {
     const isRtl = lang === 'ar';
     const { fMoney } = useCurrency();
 
-    const [orders, setOrders]       = useState<any[]>([]);
-    const [loading, setLoading]     = useState(true);
+    const [orders, setOrders] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -54,9 +54,9 @@ export default function OrdersHistoryPage() {
 
     // Use en-GB to enforce western arabic numerals (0-9) then replace am/pm
     const formatDate = (d: string) => {
-        let str = new Date(d).toLocaleString('en-GB', { 
-            year: 'numeric', month: 'short', day: '2-digit', 
-            hour: '2-digit', minute: '2-digit', hour12: true 
+        let str = new Date(d).toLocaleString('en-GB', {
+            year: 'numeric', month: 'short', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', hour12: true
         });
         return str.replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م');
     };
@@ -79,12 +79,12 @@ export default function OrdersHistoryPage() {
                 alert('حدث خطأ: ' + (data.error || 'غير معروف'));
                 return;
             }
-            
+
             if (selectedOrder && selectedOrder.id === id) {
-                setSelectedOrder({ 
-                    ...selectedOrder, 
-                    status, 
-                    notes: customReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${customReason}]` : `[السبب: ${customReason}]`) : selectedOrder.notes 
+                setSelectedOrder({
+                    ...selectedOrder,
+                    status,
+                    notes: customReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${customReason}]` : `[السبب: ${customReason}]`) : selectedOrder.notes
                 });
             }
             load();
@@ -100,30 +100,30 @@ export default function OrdersHistoryPage() {
     const handlePay = async (order: any) => {
         setActionLoading(true);
         try {
-                const res = await fetch('/api/restaurant/orders', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id: order.id,
-                        action: 'pay_and_close',
-                        paymentMethod: 'cash'
-                    }),
-                });
-                if (!res.ok) {
-                    const data = await res.json();
-                    alert('حدث خطأ أثناء الدفع: ' + (data.error || 'غير معروف'));
-                    return;
-                }
-                if (selectedOrder && selectedOrder.id === order.id) {
-                    setSelectedOrder({ ...selectedOrder, paidAmount: selectedOrder.total, status: 'ready' });
-                }
-                load();
-                setActionPrompt({ type: null });
-            } catch (err: any) {
-                alert('حدث خطأ في الاتصال: ' + err.message);
-            } finally {
-                setActionLoading(false);
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: order.id,
+                    action: 'pay_and_close',
+                    paymentMethod: 'cash'
+                }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                alert('حدث خطأ أثناء الدفع: ' + (data.error || 'غير معروف'));
+                return;
             }
+            if (selectedOrder && selectedOrder.id === order.id) {
+                setSelectedOrder({ ...selectedOrder, paidAmount: selectedOrder.total, status: 'ready' });
+            }
+            load();
+            setActionPrompt({ type: null });
+        } catch (err: any) {
+            alert('حدث خطأ في الاتصال: ' + err.message);
+        } finally {
+            setActionLoading(false);
+        }
     };
 
     const handlePrint = (orderData: any) => {
@@ -134,23 +134,23 @@ export default function OrdersHistoryPage() {
         const taxAmount = orderData.taxAmount || 0;
         const paidAmount = orderData.paidAmount || finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
-        
+
         const formatMoney = (m: number) => Number(m).toFixed(2);
-        
-        const typeLabel = orderData.type === 'dine-in' ? 'صالة' : 
-                          orderData.type === 'takeaway' ? 'تيك أواي' : 
-                          orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
+
+        const typeLabel = orderData.type === 'dine-in' ? 'صالة' :
+            orderData.type === 'takeaway' ? 'تيك أواي' :
+                orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
         let footerHtml = `<p>شكراً لزيارتكم ❤️</p><p>نتمنى رؤيتكم قريباً!</p>`;
         if (orderData.company?.restaurantSettings) {
             try {
-                const parsed = typeof orderData.company.restaurantSettings === 'string' 
-                    ? JSON.parse(orderData.company.restaurantSettings) 
+                const parsed = typeof orderData.company.restaurantSettings === 'string'
+                    ? JSON.parse(orderData.company.restaurantSettings)
                     : orderData.company.restaurantSettings;
                 if (parsed.receiptFooter) {
                     footerHtml = parsed.receiptFooter.split('-').map((line: string) => `<p>${line.trim()}</p>`).join('');
                 }
-            } catch(e) {}
+            } catch (e) { }
         }
 
         const html = `
@@ -214,7 +214,7 @@ export default function OrdersHistoryPage() {
                     <p><span>طلب رقم</span>: ${orderData.orderNumber.toString().padStart(4, '0')}</p>
                     <p><span>نوع الطلب</span>: ${typeLabel}</p>
                     ${orderData.type === 'dine-in' ? `<p><span>الطاولة</span>: ${orderData.table?.name || '-'}</p>` : ''}
-                    <p><span>التاريخ</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</p>
+                    <p><span>التاريخ</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</p>
                     <p><span>الكاشير</span>: ${orderData.shift?.user?.name || '-'}</p>
                 </div>
 
@@ -222,19 +222,19 @@ export default function OrdersHistoryPage() {
 
                 <div class="items">
                     ${lines.map((l: any) => {
-                        let mods = '';
-                        if (l.modifiers) {
-                            try {
-                                const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
-                                mods = Object.values(parsed).flat().map((m: any) => `
+            let mods = '';
+            if (l.modifiers) {
+                try {
+                    const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                    mods = Object.values(parsed).flat().map((m: any) => `
                                     <div class="flex-between modifier">
                                         <span>+ ${m.name}</span>
                                         <span>${formatMoney(m.price || 0)}</span>
                                     </div>
                                 `).join('');
-                            } catch(e) {}
-                        }
-                        return `
+                } catch (e) { }
+            }
+            return `
                             <div class="item">
                                 <div class="flex-between item-main">
                                     <span style="flex: 1; padding-left: 10px;">${l.quantity}x ${l.itemName || 'صنف'}</span>
@@ -243,7 +243,7 @@ export default function OrdersHistoryPage() {
                                 ${mods}
                             </div>
                         `;
-                    }).join('')}
+        }).join('')}
                 </div>
 
                 <div class="dashed-line"></div>
@@ -301,11 +301,11 @@ export default function OrdersHistoryPage() {
         iframe.style.right = '-10000px';
         iframe.style.bottom = '-10000px';
         document.body.appendChild(iframe);
-        
+
         iframe.contentDocument?.open();
         iframe.contentDocument?.write(html);
         iframe.contentDocument?.close();
-        
+
         setTimeout(() => {
             iframe.contentWindow?.focus();
             iframe.contentWindow?.print();
@@ -342,15 +342,15 @@ export default function OrdersHistoryPage() {
                             </button>
                         ))}
                     </div>
-                    
+
                     <div style={{ position: 'relative', width: '280px' }}>
                         <Search size={16} color={C.textMuted} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', [isRtl ? 'right' : 'left']: '14px' }} />
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             placeholder={t("بحث...")}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{ 
+                            style={{
                                 ...IS, width: '100%', height: '40px', padding: isRtl ? '0 40px 0 14px' : '0 14px 0 40px',
                                 borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card,
                                 color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
@@ -363,7 +363,7 @@ export default function OrdersHistoryPage() {
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
-                            <table style={TABLE_STYLE.table}>
+                        <table style={TABLE_STYLE.table}>
                             <thead style={TABLE_STYLE.thead}>
                                 <tr>
                                     <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>فاتورة</th>
@@ -387,12 +387,12 @@ export default function OrdersHistoryPage() {
                                 {filteredOrders.map((order, i) => {
                                     const st = STATUS_INFO[order.status] ?? STATUS_INFO.pending;
                                     const isPaid = order.paidAmount >= order.total && order.total > 0;
-                                    
+
                                     return (
-                                        <tr key={order.id} 
-                                            onClick={() => setSelectedOrder(order)} 
-                                            style={{ ...TABLE_STYLE.row(i === filteredOrders.length - 1), cursor: 'pointer' }} 
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover} 
+                                        <tr key={order.id}
+                                            onClick={() => setSelectedOrder(order)}
+                                            style={{ ...TABLE_STYLE.row(i === filteredOrders.length - 1), cursor: 'pointer' }}
+                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={TABLE_STYLE.td(false)}>
@@ -421,7 +421,7 @@ export default function OrdersHistoryPage() {
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
-                                                    {isPaid ? 'مدفوع' : 'غير مدفوع'} 
+                                                    {isPaid ? 'مدفوع' : 'غير مدفوع'}
                                                     {isPaid ? <CheckCircle2 size={16} color="#10b981" /> : <XCircle size={16} color="#ef4444" />}
                                                 </span>
                                             </td>
@@ -439,9 +439,9 @@ export default function OrdersHistoryPage() {
                 )}
 
                 {/* Modal for Order Details */}
-                <AppModal 
-                    show={!!selectedOrder} 
-                    onClose={() => setSelectedOrder(null)} 
+                <AppModal
+                    show={!!selectedOrder}
+                    onClose={() => setSelectedOrder(null)}
                     title={selectedOrder ? (
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, lineHeight: 1 }}>
@@ -461,28 +461,28 @@ export default function OrdersHistoryPage() {
                             {/* Action Badges in Modal Header */}
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px', alignItems: 'center' }}>
                                 {selectedOrder.status && STATUS_INFO[selectedOrder.status] && (
-                                    <span style={{ 
-                                        padding: '6px 14px', 
-                                        background: `${STATUS_INFO[selectedOrder.status].color}15`, 
-                                        color: STATUS_INFO[selectedOrder.status].color, 
+                                    <span style={{
+                                        padding: '6px 14px',
+                                        background: `${STATUS_INFO[selectedOrder.status].color}15`,
+                                        color: STATUS_INFO[selectedOrder.status].color,
                                         border: `1px solid ${STATUS_INFO[selectedOrder.status].color}30`,
-                                        borderRadius: '8px', fontSize: '13px', fontWeight: 700, 
+                                        borderRadius: '8px', fontSize: '13px', fontWeight: 700,
                                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                                         fontFamily: CAIRO
                                     }}>
-                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: STATUS_INFO[selectedOrder.status].color, boxShadow: `0 0 8px ${STATUS_INFO[selectedOrder.status].color}` }}></span> 
+                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: STATUS_INFO[selectedOrder.status].color, boxShadow: `0 0 8px ${STATUS_INFO[selectedOrder.status].color}` }}></span>
                                         {STATUS_INFO[selectedOrder.status].label}
                                     </span>
                                 )}
 
                                 <div style={{ flex: 1 }}></div>
 
-                                <button onClick={() => handlePrint(selectedOrder)} 
-                                    style={{ 
-                                        width: '36px', height: '36px', background: 'transparent', 
-                                        border: `1px solid ${C.border}`, color: C.textPrimary, 
-                                        borderRadius: '10px', cursor: 'pointer', display: 'flex', 
-                                        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' 
+                                <button onClick={() => handlePrint(selectedOrder)}
+                                    style={{
+                                        width: '36px', height: '36px', background: 'transparent',
+                                        border: `1px solid ${C.border}`, color: C.textPrimary,
+                                        borderRadius: '10px', cursor: 'pointer', display: 'flex',
+                                        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
                                     }}
                                     onMouseEnter={e => { e.currentTarget.style.background = C.primaryBg; e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
                                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textPrimary; }}
@@ -506,7 +506,7 @@ export default function OrdersHistoryPage() {
                                     <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoney(selectedOrder.total)}</p>
                                 </div>
                             </div>
-                            
+
                             {/* Notes Display */}
                             {selectedOrder.notes && (
                                 <div style={{ padding: '10px 14px', background: `${C.danger}15`, border: `1px dashed ${C.danger}40`, borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -582,7 +582,7 @@ export default function OrdersHistoryPage() {
 
                             {/* Modal Footer Actions */}
                             <div style={{ padding: '12px 0 0', borderTop: `1px solid ${C.border}`, marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                
+
                                 {actionPrompt.type ? (
                                     <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, width: '100%' }}>
                                         {actionPrompt.type === 'pay' ? (
@@ -600,9 +600,9 @@ export default function OrdersHistoryPage() {
                                                 <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: actionPrompt.type === 'cancel' ? C.danger : C.primary, fontFamily: CAIRO }}>
                                                     {actionPrompt.type === 'cancel' ? 'إلغاء الطلب' : 'إرجاع الطلب'}
                                                 </h4>
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="اكتب السبب هنا..." 
+                                                <input
+                                                    type="text"
+                                                    placeholder="اكتب السبب هنا..."
                                                     value={cancelReasonInput}
                                                     onChange={e => setCancelReasonInput(e.target.value)}
                                                     style={{ width: '100%', padding: '10px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimary, marginBottom: '10px', fontFamily: CAIRO, fontSize: '13px' }}
@@ -612,9 +612,9 @@ export default function OrdersHistoryPage() {
                                                     إرجاع المكونات إلى المخزن (إلغاء الاستهلاك)
                                                 </label>
                                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                                    <button 
-                                                        onClick={() => updateStatus(selectedOrder.id, actionPrompt.type === 'cancel' ? 'cancelled' : 'returned', cancelReasonInput, revertInventoryCheck)} 
-                                                        disabled={actionLoading || !cancelReasonInput.trim()} 
+                                                    <button
+                                                        onClick={() => updateStatus(selectedOrder.id, actionPrompt.type === 'cancel' ? 'cancelled' : 'returned', cancelReasonInput, revertInventoryCheck)}
+                                                        disabled={actionLoading || !cancelReasonInput.trim()}
                                                         style={{ flex: 1, padding: '10px', background: actionPrompt.type === 'cancel' ? C.danger : C.primary, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: cancelReasonInput.trim() ? 'pointer' : 'not-allowed', opacity: (actionLoading || !cancelReasonInput.trim()) ? 0.7 : 1 }}
                                                     >
                                                         {actionLoading ? 'جاري التنفيذ...' : 'تأكيد'}
@@ -629,7 +629,7 @@ export default function OrdersHistoryPage() {
                                         <button onClick={() => { setActionPrompt({ type: 'return' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
                                             <RotateCcw size={18} /> إرجاع
                                         </button>
-                                        
+
                                         {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
                                             <button onClick={() => { setActionPrompt({ type: 'cancel' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
                                                 <X size={18} /> إلغاء
