@@ -104,7 +104,7 @@ export default function RestaurantReportsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'center', color: C.textMuted }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل التقرير...')}</p>
                     </div>

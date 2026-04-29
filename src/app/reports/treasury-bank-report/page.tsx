@@ -154,12 +154,12 @@ export default function TreasuryBankReportPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'start'}}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center'}}>
                         <Loader2 size={40} className="animate-spin" style={{ color: PC }} />
                         <p style={{ marginTop: '20px', color: '#64748b' }}>{t('جاري استخراج كشف الحساب...')}</p>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '80px', textAlign: 'start', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px' }} />
                         <h3 style={{ color: '#64748b', fontSize: '15px' , fontFamily: CAIRO}}>{t('يرجى اختيار الخزينة وتحديد الفترة لعرض التقرير')}</h3>
                     </div>

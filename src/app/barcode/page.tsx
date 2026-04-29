@@ -118,7 +118,7 @@ export default function BarcodePage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
                 ) : tables.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted }}>
                         <QrCode size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 16px' }} />
                         <p style={{ margin: 0, fontSize: '15px' }}>لا توجد طاولات — أضف طاولات أولاً من صفحة خريطة الطاولات</p>
                     </div>

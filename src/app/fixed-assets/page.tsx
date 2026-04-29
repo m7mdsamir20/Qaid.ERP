@@ -246,7 +246,7 @@ export default function FixedAssetsPage() {
                             </thead>
                             <tbody>
                                 {loading ? (
-                                    <tr><td colSpan={9} style={{ padding: '100px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
+                                    <tr><td colSpan={9} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                                 ) : filtered.length === 0 ? (
                                     <tr><td colSpan={9} style={{ padding: '80px', color: C.textMuted, textAlign: 'center' }}>
                                         <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />

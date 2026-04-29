@@ -168,7 +168,7 @@ export default function ApiTab() {
 
             {/* ── Keys List ── */}
             {loading ? (
-                <div style={{ padding: '60px', textAlign: 'center', color: C.textMuted }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center', color: C.textMuted }}>
                     <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
                 </div>
             ) : keys.length === 0 ? (

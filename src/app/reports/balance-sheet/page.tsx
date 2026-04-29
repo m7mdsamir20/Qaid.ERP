@@ -244,7 +244,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.balance} /></span>
                                                 </div>
                                             ))}
-                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
+                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

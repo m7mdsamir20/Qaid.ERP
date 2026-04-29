@@ -115,7 +115,7 @@ export default function ShiftSalesReportPage() {
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t("جاري استخراج بيانات الورديات...")}</span>
                     </div>
                 ) : !data || data.shifts.length === 0 ? (
-                    <div className="no-print" style={{ textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div className="no-print" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Clock size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px', display: 'inline-block' }} />
                         <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t("لا توجد ورديات متاحة")}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '13px', color: C.textMuted, maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t("برجاء تعديل الفلاتر أو التاريخ لعرض الورديات المطلوبة.")}</p>

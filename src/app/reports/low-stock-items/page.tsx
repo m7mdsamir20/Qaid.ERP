@@ -97,7 +97,7 @@ export default function LowStockReportPage() {
                                 <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري فحص النواقص...')}</span>
                             </div>
                         ) : filtered.length === 0 ? (
-                            <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>

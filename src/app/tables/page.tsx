@@ -147,7 +147,7 @@ export default function TablesPage() {
                             );
                         })}
                         {filtered.length === 0 && !loading && (
-                            <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: C.textMuted }}>
+                            <div style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '60px', color: C.textMuted }}>
                                 <Table2 size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 12px' }} />
                                 <p>{t('لا توجد طاولات — أضف طاولة جديدة')}</p>
                             </div>
