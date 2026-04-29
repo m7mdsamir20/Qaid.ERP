@@ -6,12 +6,13 @@ import { useTranslation } from '@/lib/i18n';
 interface AppModalProps {
     show: boolean;
     onClose: () => void;
-    title: string;
+    title: React.ReactNode;
     icon?: LucideIcon;
     children?: React.ReactNode;
     maxWidth?: string;
     footer?: React.ReactNode;
     variant?: 'default' | 'danger';
+    headerActions?: React.ReactNode;
     // New Deletion Props
     isDelete?: boolean;
     itemName?: string;
@@ -32,6 +33,7 @@ const AppModal: React.FC<AppModalProps> = ({
     maxWidth = '480px' ,
     footer,
     variant = 'default',
+    headerActions,
     isDelete = false,
     itemName,
     description,
@@ -108,28 +110,30 @@ const AppModal: React.FC<AppModalProps> = ({
                             </h2>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            width: '30px', height: '30px', borderRadius: '6px',
-                            border: `1px solid ${C.border}`, background: 'transparent',
-                            color: C.textMuted, cursor: 'pointer', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s',
-                            flexShrink: 0
-                        }}
-                        onMouseEnter={e => {
-                            e.currentTarget.style.color = C.danger;
-                            e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
-                            e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
-                        }}
-                        onMouseLeave={e => {
-                            e.currentTarget.style.color = C.textMuted;
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.borderColor = C.border;
-                        }}
-                    >
-                        <X size={16} />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                        {headerActions}
+                        <button
+                            onClick={onClose}
+                            style={{
+                                width: '30px', height: '30px', borderRadius: '6px',
+                                border: `1px solid ${C.border}`, background: 'transparent',
+                                color: C.textMuted, cursor: 'pointer', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s'
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.color = C.danger;
+                                e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
+                                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.color = C.textMuted;
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.borderColor = C.border;
+                            }}
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Body */}
