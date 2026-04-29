@@ -332,6 +332,18 @@ export default function POSPage() {
                           orderData.type === 'takeaway' ? 'تيك أواي' : 
                           orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
+        let footerHtml = `<p>شكراً لزيارتكم ❤️</p><p>نتمنى رؤيتكم قريباً!</p>`;
+        if (orderData.company?.restaurantSettings) {
+            try {
+                const parsed = typeof orderData.company.restaurantSettings === 'string' 
+                    ? JSON.parse(orderData.company.restaurantSettings) 
+                    : orderData.company.restaurantSettings;
+                if (parsed.receiptFooter) {
+                    footerHtml = parsed.receiptFooter.split('-').map((line: string) => `<p>${line.trim()}</p>`).join('');
+                }
+            } catch(e) {}
+        }
+
         const html = `
             <!DOCTYPE html>
             <html lang="ar" dir="rtl">
@@ -458,8 +470,7 @@ export default function POSPage() {
                 <div class="dashed-line"></div>
 
                 <div class="footer">
-                    <p>شكراً لزيارتكم ❤️</p>
-                    <p>نتمنى رؤيتكم قريباً!</p>
+                    ${footerHtml}
                 </div>
             </body>
             </html>
