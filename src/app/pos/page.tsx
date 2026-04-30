@@ -560,6 +560,15 @@ export default function POSPage() {
             </html>
         `;
 
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+            (window as any).electronAPI.silentPrint({
+                html: html,
+                printerName: restaurantSettings.receiptPrinterName,
+                copies: 1
+            });
+            return;
+        }
+
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
         iframe.style.right = '-10000px';
@@ -656,6 +665,15 @@ export default function POSPage() {
             </body>
             </html>
         `;
+
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+            (window as any).electronAPI.silentPrint({
+                html: html,
+                printerName: restaurantSettings.kitchenPrinterName,
+                copies: restaurantSettings.kitchenCopyCount || 1
+            });
+            return;
+        }
 
         const iframe = document.createElement('iframe');
         iframe.style.position = 'fixed';
