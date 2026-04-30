@@ -154,7 +154,7 @@ export default function POSPage() {
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
                 fetch('/api/settings'), fetch('/api/restaurant/shifts?status=open'), fetch('/api/branches'),
-                fetch('/api/restaurant/orders')
+                fetch('/api/restaurant/orders?limit=200')
             ]);
             const [cats, itms, tbls, mods, drvs, custs, treas, settings, shiftsResData, branchesData] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json(), settingsRes.json(), shiftRes.json(), branchRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
@@ -175,7 +175,7 @@ export default function POSPage() {
             
             const ordersResData = await ordersRes.json();
             if (Array.isArray(ordersResData)) {
-                setOpenOrders(ordersResData.filter((o: any) => o.type === 'dine-in' && o.status !== 'delivered' && o.status !== 'cancelled' && (o.total - o.paidAmount > 0)));
+                setOpenOrders(ordersResData.filter((o: any) => (o.type === 'dine-in' || o.type === 'delivery') && o.status !== 'cancelled' && (o.total - o.paidAmount > 0)));
             }
             
             if (settings.company?.taxSettings) {
@@ -360,7 +360,7 @@ export default function POSPage() {
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
         const formatMoney = (m: number) => Number(m).toFixed(2);
         const subtotal = finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) + finalDiscount;
-        const paidAmount = orderData.paidAmount || finalTotal;
+        const paidAmount = orderData.paidAmount ?? finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
         const typeLabel = orderData.type === 'dine-in' ? 'صالة' : 
@@ -440,7 +440,7 @@ export default function POSPage() {
                     <tr><td>اسم العميل</td><td>: ${orderData.deliveryName || orderData.customer?.name || '-'}</td></tr>
                     <tr><td>رقم الهاتف</td><td>: ${orderData.deliveryPhone || orderData.customer?.phone || '-'}</td></tr>
                     ${orderData.deliveryAddress || orderData.customer?.address ? `<tr><td>العنوان</td><td>: ${orderData.deliveryAddress || orderData.customer?.address}</td></tr>` : ''}
-                    ${orderData.deliveryAgent ? `<tr><td>المندوب</td><td>: ${orderData.deliveryAgent?.name}</td></tr>` : ''}
+                    ${orderData.driver ? `<tr><td>المندوب</td><td>: ${orderData.driver.name}</td></tr>` : ''}
                 </table>
                 ` : ''}
 
@@ -717,12 +717,11 @@ export default function POSPage() {
 
     const fetchOpenOrders = async () => {
         try {
-            const res = await fetch('/api/restaurant/orders');
+            const res = await fetch('/api/restaurant/orders?limit=200');
             if (res.ok) {
                 const data = await res.json();
                 setOpenOrders(data.filter((o: any) => 
-                    o.type === 'dine-in' && 
-                    o.status !== 'delivered' && 
+                    (o.type === 'dine-in' || o.type === 'delivery') && 
                     o.status !== 'cancelled' && 
                     (o.total - o.paidAmount > 0)
                 ));
@@ -762,7 +761,7 @@ export default function POSPage() {
     const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
         
-        const isPostPay = orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay';
+        const isPostPay = (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery';
         
         if (orderType === 'dine-in' && restaurantSettings.requireTableForDineIn !== false && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
         if (!isPostPay && !selectedTreasury && paymentMethod !== 'mixed') { setErrorMsg('اختر الخزنة أولاً'); return; }
@@ -820,19 +819,19 @@ export default function POSPage() {
                     serviceAmount,
                     total,
                     paymentMethod,
-                    paidAmount: (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') ? 0 : total,
+                    paidAmount: ((orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery') ? 0 : total,
                     payments: paymentsArray,
                     lines: cart.map(c => ({ ...c })),
                 }),
             });
             if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || 'فشل'); setSubmitting(false); return; }
             
-            const isPostPay = orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay';
+            const isPostPay = (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery';
             
             const savedOrder = await res.json();
             
-            if (!isPostPay) {
-                // Print Receipt only if paid (pre-pay or other types)
+            if (!isPostPay || orderType === 'delivery') {
+                // Print Receipt only if paid (pre-pay or other types) AND always for delivery
                 printReceipt(savedOrder, cart, total, discount);
             }
             
@@ -1207,7 +1206,7 @@ export default function POSPage() {
                                     <span style={{ fontWeight: 600 }}>{t('لا توجد طلبات مفتوحة')}</span>
                                 </div>
                             ) : openOrders.map(o => (
-                                <div key={o.id} style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg }}>
+                                <div key={o.id} style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg, flexShrink: 0 }}>
                                     <div>
                                         <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>
                                             {o.table?.name ? `طاولة: ${o.table.name}` : `طلب #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})

@@ -405,11 +405,21 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     to { opacity: 1; transform: translateY(0) scale(1); }
                 }
                 .custom-select-list::-webkit-scrollbar {
-                    display: none;
+                    width: 6px;
+                }
+                .custom-select-list::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-select-list::-webkit-scrollbar-thumb {
+                    background: rgba(150, 150, 150, 0.2);
+                    border-radius: 10px;
+                }
+                .custom-select-list::-webkit-scrollbar-thumb:hover {
+                    background: rgba(150, 150, 150, 0.4);
                 }
                 .custom-select-list {
-                    -ms-overflow-style: none;
-                    scrollbar-width: none;
+                    scrollbar-width: thin;
+                    scrollbar-color: rgba(150, 150, 150, 0.2) transparent;
                 }
             `}</style>
         </div>

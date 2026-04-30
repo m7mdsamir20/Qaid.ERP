@@ -148,7 +148,7 @@ export default function KDSPage() {
             {/* Split Layout Container */}
             <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
                 {/* Content */}
-                <div style={{ flex: 1, overflowY: 'auto', padding: '24px 32px' }}>
+                <div className="custom-scroll" style={{ flex: 1, overflowY: 'auto', padding: '24px 32px' }}>
                 {loading && orders.length === 0 ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
@@ -295,12 +295,12 @@ export default function KDSPage() {
                 overflow: 'hidden',
                 flexShrink: 0
             }}>
-                <div style={{ padding: '20px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg, minWidth: '280px' }}>
+                <div style={{ padding: '20px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', minWidth: '280px' }}>
                     <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <CheckCircle2 size={18} color="#10b981" /> الطلبات المكتملة
                     </h3>
                 </div>
-                <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '280px' }}>
+                <div className="custom-scroll" style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '280px' }}>
                     {completedOrders.length === 0 ? (
                         <p style={{ textAlign: 'center', color: C.textMuted, fontSize: '13px', marginTop: '40px', fontWeight: 600 }}>لا توجد طلبات مكتملة حديثاً</p>
                     ) : (
@@ -315,6 +315,7 @@ export default function KDSPage() {
                                 flexDirection: 'column', 
                                 gap: '10px',
                                 overflow: 'hidden',
+                                flexShrink: 0
                             }}>
                                 {/* Left/Right Accent line */}
                                 <div style={{ position: 'absolute', top: 0, bottom: 0, [isRtl ? 'right' : 'left']: 0, width: '4px', background: '#10b981' }} />
@@ -335,9 +336,18 @@ export default function KDSPage() {
                                 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingInlineStart: '4px' }}>
                                     {o.lines?.map((l: any, i: number) => (
-                                        <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                                            <span style={{ color: C.textPrimary, fontSize: '12px', fontWeight: 600 }}>{l.itemName}</span>
-                                            <span style={{ color: '#10b981', fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, textAlign: isRtl ? 'left' : 'right' }}>x{l.quantity}</span>
+                                        <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                            <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                                                <span style={{ color: C.textPrimary, fontSize: '12px', fontWeight: 600 }}>{l.itemName}</span>
+                                                <span style={{ color: '#10b981', fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, textAlign: isRtl ? 'left' : 'right' }}>x{l.quantity}</span>
+                                            </div>
+                                            {l.modifiers && (
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingInlineStart: '6px' }}>
+                                                    {Object.values(JSON.parse(l.modifiers)).flat().map((m: any, idx: number) => (
+                                                        <span key={idx} style={{ fontSize: '11px', color: '#f59e0b', fontWeight: 600 }}>+ {m.name}</span>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
@@ -356,7 +366,28 @@ export default function KDSPage() {
             {/* End Split Layout Container */}
             </div>
 
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } } @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } } 
+                @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+                
+                .custom-scroll::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scroll::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scroll::-webkit-scrollbar-thumb {
+                    background: rgba(150, 150, 150, 0.2);
+                    border-radius: 10px;
+                }
+                .custom-scroll::-webkit-scrollbar-thumb:hover {
+                    background: rgba(150, 150, 150, 0.4);
+                }
+                .custom-scroll {
+                    scrollbar-width: thin;
+                    scrollbar-color: rgba(150, 150, 150, 0.2) transparent;
+                }
+            `}</style>
         </div>
     );
 }

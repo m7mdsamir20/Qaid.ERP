@@ -140,9 +140,11 @@ export default function DriversPage() {
                                 ))}
                                 {drivers.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '60px' }}>
-                                            <Truck size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{t('لا يوجد سائقين مضافين حالياً')}</p>
+                                        <td colSpan={5} style={{ textAlign: 'center', padding: '60px 0', verticalAlign: 'middle' }}>
+                                            <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Truck size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
+                                                <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{t('لا يوجد سائقين مضافين حالياً')}</p>
+                                            </div>
                                         </td>
                                     </tr>
                                 )}

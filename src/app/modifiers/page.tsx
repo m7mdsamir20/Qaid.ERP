@@ -29,7 +29,7 @@ export default function ModifiersPage() {
         try { 
             const [r, i] = await Promise.all([
                 fetch('/api/restaurant/modifiers'),
-                fetch('/api/items?all=true')
+                fetch('/api/items?all=true&type=raw')
             ]);
             
             const rData = await r.json();
