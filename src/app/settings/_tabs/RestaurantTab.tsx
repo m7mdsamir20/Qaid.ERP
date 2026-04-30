@@ -5,6 +5,7 @@ import { C, CAIRO, OUTFIT, IS } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { Printer, Monitor, UtensilsCrossed, ChefHat } from 'lucide-react';
 import { TabHeader, Toggle } from './shared';
+import CustomSelect from '@/components/CustomSelect';
 
 interface RestaurantSettings {
     enableKds: boolean;
@@ -72,7 +73,11 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
         };
         loadSettings();
 
-        if ('navigator' in window && (navigator as any).printing) {
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+            (window as any).electronAPI.getPrinters().then((p: any[]) => {
+                setAvailablePrinters(p.map((pr: any) => pr.name ?? pr));
+            }).catch(() => { });
+        } else if ('navigator' in window && (navigator as any).printing) {
             (navigator as any).printing?.getPrinters?.().then((p: any[]) => {
                 setAvailablePrinters(p.map((pr: any) => pr.name ?? pr));
             }).catch(() => { });
@@ -189,10 +194,16 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
                                         availablePrinters.length > 0 ? (
-                                            <select style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)}>
-                                                <option value="">{t('— الطابعة الافتراضية —')}</option>
-                                                {availablePrinters.map(p => <option key={p} value={p}>{p}</option>)}
-                                            </select>
+                                            <div style={{ padding: '8px 0' }}>
+                                                <CustomSelect
+                                                    value={(form as any)[f.key] || ''}
+                                                    onChange={val => set(f.key as any, val)}
+                                                    options={[
+                                                        { value: '', label: t('— الطابعة الافتراضية —') },
+                                                        ...availablePrinters.map(p => ({ value: p, label: p }))
+                                                    ]}
+                                                />
+                                            </div>
                                         ) : (
                                             <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('اسم الطابعة')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
                                         )

@@ -5,8 +5,9 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import Currency from '@/components/Currency';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
-import { Clock, Plus, Loader2, X, Check, AlertCircle, RefreshCw, TrendingUp, Package, DollarSign } from 'lucide-react';
+import { Clock, Plus, Loader2, X, Check, AlertCircle, RefreshCw, TrendingUp, Package, DollarSign, Printer } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 
 const STATUS_COLOR: Record<string, { color: string; bg: string; label: string }> = {
@@ -36,7 +37,8 @@ export default function ShiftsPage() {
     useEffect(() => { load(); }, [load]);
 
     const activeShift = shifts.find(s => s.status === 'open');
-    const formatDate  = (d: string) => new Date(d).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+    const formatDate  = (d: string) => new Date(d).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م');
+    const arNum = (num: number | string) => num.toString();
 
     const handleOpen = async () => {
         setSaving(true); setError('');
@@ -52,6 +54,67 @@ export default function ShiftsPage() {
         setSaving(false);
     };
 
+    const printShiftReport = (shift: any) => {
+        if (!shift) return;
+        const html = `
+            <html dir="${isRtl ? 'rtl' : 'ltr'}">
+            <head>
+                <style>
+                    @page { margin: 0; }
+                    body { font-family: 'Cairo', sans-serif; width: 280px; margin: 0 auto; padding: 20px 0; font-size: 13px; color: #000; }
+                    .text-center { text-align: center; }
+                    .dashed-line { border-top: 1px dashed #000; margin: 10px 0; }
+                    .flex-between { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                    h2 { margin: 0 0 10px 0; font-size: 18px; }
+                    .bold { font-weight: bold; }
+                </style>
+            </head>
+            <body>
+                <div class="text-center">
+                    <h2>تقرير الوردية #${arNum(shift.shiftNumber)}</h2>
+                    <p>الكاشير: ${shift.user?.name || shift.user?.username || '—'}</p>
+                    <p>وقت الفتح: ${formatDate(shift.openedAt)}</p>
+                    ${shift.closedAt ? `<p>وقت الإغلاق: ${formatDate(shift.closedAt)}</p>` : ''}
+                </div>
+                <div class="dashed-line"></div>
+                <div class="flex-between"><span>عهدة الفتح:</span> <span class="bold">${fMoney(shift.openingBalance)}</span></div>
+                <div class="flex-between"><span>إجمالي المبيعات:</span> <span class="bold">${fMoney(shift.totalSales)}</span></div>
+                <div class="flex-between"><span>المرتجعات:</span> <span class="bold">${fMoney(0)}</span></div>
+                <div class="flex-between"><span>إجمالي الطلبات:</span> <span class="bold">${arNum(shift.totalOrders)}</span></div>
+                <div class="dashed-line"></div>
+                <div class="flex-between"><span>المتوقع في الدرج:</span> <span class="bold">${fMoney(shift.openingBalance + shift.totalSales)}</span></div>
+                ${shift.closedAt ? `
+                <div class="flex-between"><span>الفعلي في الدرج:</span> <span class="bold">${fMoney(shift.closingBalance)}</span></div>
+                <div class="flex-between"><span>الفرق (عجز/زيادة):</span> <span class="bold">${fMoney(shift.difference)}</span></div>
+                ` : ''}
+                <div class="dashed-line"></div>
+                <div class="text-center" style="margin-top: 20px; font-size: 11px;">
+                    <p>تمت الطباعة: ${formatDate(new Date().toISOString())}</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        if (typeof window !== 'undefined' && (window as any).electronAPI) {
+            (window as any).electronAPI.silentPrint({ html: html });
+            return;
+        }
+
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '-10000px';
+        iframe.style.bottom = '-10000px';
+        document.body.appendChild(iframe);
+        iframe.contentDocument?.open();
+        iframe.contentDocument?.write(html);
+        iframe.contentDocument?.close();
+        setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+        }, 500);
+    };
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -60,10 +123,9 @@ export default function ShiftsPage() {
                     subtitle={t('إدارة ورديات الكاشير وتسوية العهدة')}
                     icon={Clock}
                     actions={[
-                        <button key="refresh" onClick={load} style={{ height: '42px', width: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>,
                         !activeShift
                             ? <button key="open" onClick={() => { setError(''); setShowOpen(true); }} style={{ height: '42px', padding: '0 20px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontFamily: CAIRO, whiteSpace: 'nowrap' }}><Plus size={15} /> {t('فتح وردية')}</button>
-                            : <button key="close" onClick={() => { setError(''); setShowClose(activeShift); setCloseForm({ closingBalance: '', notes: '' }); }} style={{ height: '42px', padding: '0 20px', borderRadius: '10px', border: '1px solid #ef444440', background: '#ef444412', color: '#ef4444', fontWeight: 700, cursor: 'pointer', fontSize: '13px', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>🔒 {t('إغلاق الوردية')}</button>
+                            : <button key="close" onClick={() => { setError(''); setShowClose(activeShift); setCloseForm({ closingBalance: '', notes: '' }); }} style={{ height: '42px', padding: '0 20px', borderRadius: '10px', border: '1px solid #ef444440', background: '#ef444412', color: '#ef4444', fontWeight: 700, cursor: 'pointer', fontSize: '13px', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('إغلاق الوردية')}</button>
                     ]}
                 />
 
@@ -72,19 +134,24 @@ export default function ShiftsPage() {
                     <div style={{ background: '#10b98110', border: '2px solid #10b98140', borderRadius: '16px', padding: '16px 20px', marginBottom: '20px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 0 3px #10b98130' }} />
-                            <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>وردية #{activeShift.shiftNumber} — مفتوحة</span>
+                            <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>وردية #{arNum(activeShift.shiftNumber)} — مفتوحة</span>
                         </div>
-                        {[{ label: 'عهدة الفتح', value: fMoney(activeShift.openingBalance), icon: DollarSign }, { label: 'مبيعات', value: fMoney(activeShift.totalSales), icon: TrendingUp }, { label: 'طلبات', value: activeShift.totalOrders, icon: Package }].map(s => {
+                        {[{ label: 'عهدة الفتح', value: activeShift.openingBalance, isMoney: true, icon: DollarSign }, { label: 'مبيعات', value: activeShift.totalSales, isMoney: true, icon: TrendingUp }, { label: 'طلبات', value: arNum(activeShift.totalOrders), isMoney: false, icon: Package }].map(s => {
                             const Icon = s.icon;
                             return (
                                 <div key={s.label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <Icon size={13} color={C.textMuted} />
                                     <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{s.label}:</span>
-                                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                        {s.isMoney ? <Currency amount={s.value as number} /> : s.value}
+                                    </span>
                                 </div>
                             );
                         })}
                         <span style={{ fontSize: '12px', color: C.textMuted, marginInlineStart: 'auto', fontFamily: CAIRO }}>فُتحت: {formatDate(activeShift.openedAt)}</span>
+                        <button onClick={() => printShiftReport(activeShift)} style={{ height: '36px', padding: '0 16px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontFamily: CAIRO, fontWeight: 700 }}>
+                            <Printer size={14} /> طباعة
+                        </button>
                     </div>
                 )}
 
@@ -109,15 +176,29 @@ export default function ShiftsPage() {
                                     const diff = shift.difference;
                                     return (
                                         <tr key={shift.id} style={TABLE_STYLE.row(i === shifts.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(false)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{shift.shiftNumber}</span></td>
+                                            <td style={TABLE_STYLE.td(false)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{arNum(shift.shiftNumber)}</span></td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>{shift.user?.name || shift.user?.username || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{formatDate(shift.openedAt)}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{shift.closedAt ? formatDate(shift.closedAt) : '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{fMoney(shift.openingBalance)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{fMoney(shift.totalSales)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{shift.totalOrders}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: diff == null ? C.textMuted : diff >= 0 ? '#10b981' : '#ef4444' }}>{diff == null ? '—' : (diff >= 0 ? '+' : '') + fMoney(diff)}</td>
-                                            <td style={TABLE_STYLE.td(false)}><span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>{st.label}</span></td>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}><Currency amount={shift.openingBalance} /></td>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}><Currency amount={shift.totalSales} /></td>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{arNum(shift.totalOrders)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: diff == null ? C.textMuted : diff >= 0 ? '#10b981' : '#ef4444' }}>
+                                                {diff == null ? '—' : (
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: 'inherit' }}>
+                                                        {diff > 0 && '+'}
+                                                        <Currency amount={diff} />
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td style={TABLE_STYLE.td(false)}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>{st.label}</span>
+                                                    <button onClick={() => printShiftReport(shift)} style={{ background: 'transparent', border: 'none', color: C.textMuted, cursor: 'pointer', padding: '4px' }} title="طباعة تقرير الوردية">
+                                                        <Printer size={15} />
+                                                    </button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     );
                                 })}
@@ -145,10 +226,12 @@ export default function ShiftsPage() {
             {/* Modal إغلاق وردية */}
             <AppModal show={!!showClose} onClose={() => setShowClose(null)} title={`إغلاق الوردية #${showClose?.shiftNumber}`} maxWidth="520px">
                 <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '10px', padding: '12px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {showClose && [{ label: 'عهدة الفتح', value: fMoney(showClose.openingBalance) }, { label: 'إجمالي المبيعات', value: fMoney(showClose.totalSales) }, { label: 'المتوقع في الدرج', value: fMoney(showClose.openingBalance + showClose.totalSales) }].map(r => (
+                    {showClose && [{ label: 'عهدة الفتح', value: showClose.openingBalance }, { label: 'إجمالي المبيعات', value: showClose.totalSales }, { label: 'المتوقع في الدرج', value: showClose.openingBalance + showClose.totalSales }].map(r => (
                         <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
                             <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{r.label}</span>
-                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{r.value}</span>
+                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>
+                                <Currency amount={r.value} />
+                            </span>
                         </div>
                     ))}
                 </div>
@@ -159,7 +242,7 @@ export default function ShiftsPage() {
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
                     <button onClick={handleClose} disabled={saving} style={{ height: '44px', borderRadius: '10px', background: C.danger, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <>🔒 إغلاق وتسوية</>}
+                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <>إغلاق وتسوية</>}
                     </button>
                     <button onClick={() => setShowClose(null)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
                 </div>
