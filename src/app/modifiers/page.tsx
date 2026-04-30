@@ -7,7 +7,7 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
-import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, Settings2 } from 'lucide-react';
+import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, Settings2, Package, Layers } from 'lucide-react';
 
 interface Option { id?: string; name: string; extraPrice: number; itemId?: string | null; }
 
@@ -100,32 +100,82 @@ export default function ModifiersPage() {
                         <p style={{ margin: 0 }}>لا توجد إضافات — ابدأ بإضافة مجموعة</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
                         {modifiers.map(mod => (
-                            <div key={mod.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px 20px' }}>
-                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '10px' }}>
-                                    <div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{mod.name}</h3>
-                                            {mod.required && <span style={{ background: '#ef444412', border: '1px solid #ef444440', borderRadius: '6px', padding: '2px 8px', fontSize: '11px', fontWeight: 700, color: '#ef4444', fontFamily: CAIRO }}>إجباري</span>}
-                                            {mod.multiSelect && <span style={{ background: `${C.primary}12`, border: `1px solid ${C.primary}40`, borderRadius: '6px', padding: '2px 8px', fontSize: '11px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>متعدد</span>}
+                            <div key={mod.id} style={{ 
+                                background: `linear-gradient(145deg, ${C.card}, ${C.bg})`, 
+                                border: `1px solid ${C.border}`, 
+                                borderRadius: '16px', 
+                                padding: '20px',
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '16px',
+                                transition: 'transform 0.2s',
+                            }} onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'none'}>
+                                
+                                {/* Header */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                        <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: `${C.primary}15`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `inset 0 0 0 1px ${C.primary}30` }}>
+                                            <Layers size={22} />
                                         </div>
-                                        <p style={{ margin: '3px 0 0', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{mod.options?.length} خيار</p>
+                                        <div>
+                                            <h3 style={{ margin: '0 0 6px 0', fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{mod.name}</h3>
+                                            <div style={{ display: 'flex', gap: '6px' }}>
+                                                {mod.required ? 
+                                                    <span style={{ background: '#ef444415', color: '#ef4444', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>إجباري</span> :
+                                                    <span style={{ background: '#10b98115', color: '#10b981', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>اختياري</span>
+                                                }
+                                                {mod.multiSelect ? 
+                                                    <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>متعدد الاختيار</span> :
+                                                    <span style={{ background: '#f59e0b15', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>خيار واحد</span>
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '6px' }}>
-                                        <button onClick={() => openModal(mod)} style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: C.bg, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Edit3 size={13} /></button>
-                                        <button onClick={() => handleDelete(mod.id)} style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={13} /></button>
+                                    {/* Actions */}
+                                    <div style={{ display: 'flex', gap: '4px' }}>
+                                        <button onClick={() => openModal(mod)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background=C.border} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title="تعديل"><Edit3 size={15} /></button>
+                                        <button onClick={() => handleDelete(mod.id)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.danger, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#ef444415'} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title="حذف"><Trash2 size={15} /></button>
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                                    {mod.options?.map((opt: any) => (
-                                        <div key={opt.id} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '6px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                            <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{opt.name}</span>
-                                            {opt.extraPrice > 0 && <span style={{ fontSize: '11px', fontFamily: OUTFIT, fontWeight: 700, color: '#10b981' }}>+{opt.extraPrice}</span>}
-                                            {opt.item && <span style={{ fontSize: '10px', color: C.primary, borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '5px' }}>📦 {opt.item.name}</span>}
-                                        </div>
-                                    ))}
+
+                                {/* Divider */}
+                                <div style={{ height: '1px', background: C.border, opacity: 0.6 }}></div>
+
+                                {/* Options */}
+                                <div>
+                                    <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>الخيارات المتاحة ({mod.options?.length})</p>
+                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                        {mod.options?.map((opt: any) => (
+                                            <div key={opt.id} style={{ 
+                                                background: C.bg, 
+                                                border: `1px solid ${C.border}`, 
+                                                borderRadius: '8px', 
+                                                padding: '6px 12px', 
+                                                display: 'flex', 
+                                                alignItems: 'center', 
+                                                gap: '8px',
+                                                boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                                            }}>
+                                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{opt.name}</span>
+                                                {opt.extraPrice > 0 ? (
+                                                    <span style={{ fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800, color: '#10b981', background: '#10b98115', padding: '2px 6px', borderRadius: '4px' }}>+{opt.extraPrice}</span>
+                                                ) : (
+                                                    <span style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, background: C.border, padding: '2px 6px', borderRadius: '4px', fontFamily: CAIRO }}>مجاني</span>
+                                                )}
+                                                {opt.item && (
+                                                    <span style={{ fontSize: '11px', color: C.primary, display: 'flex', alignItems: 'center', gap: '4px', borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '8px', fontFamily: CAIRO }}>
+                                                        <Package size={11} /> {opt.item.name}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
+                                
                             </div>
                         ))}
                     </div>

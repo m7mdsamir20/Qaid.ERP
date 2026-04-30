@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -301,6 +301,29 @@ export default function POSPage() {
     const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round(baseForTax * serviceChargeRate / 100) : 0;
     const total = Math.max(0, baseForTax + taxAmount + serviceAmount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
+
+    // Broadcast cart updates to Customer Display
+    useEffect(() => {
+        if (!restaurantSettings.enableCustomerDisplay) return;
+        try {
+            const bc = new BroadcastChannel('qaid-customer-display');
+            bc.postMessage({
+                type: 'CART_UPDATE',
+                payload: {
+                    cart,
+                    subtotal,
+                    discount,
+                    couponDiscount,
+                    taxAmount,
+                    serviceAmount,
+                    total,
+                    hasTax,
+                    taxRate
+                }
+            });
+            bc.close();
+        } catch(e) {}
+    }, [cart, subtotal, discount, couponDiscount, taxAmount, serviceAmount, total, hasTax, taxRate, restaurantSettings.enableCustomerDisplay]);
 
     const handleApplyCoupon = async () => {
         if (!couponCode) return;
@@ -819,6 +842,14 @@ export default function POSPage() {
                 }, 1000); // Wait 1s after receipt to avoid print dialog overlap
             }
 
+            if (restaurantSettings.enableCustomerDisplay) {
+                try {
+                    const bc = new BroadcastChannel('qaid-customer-display');
+                    bc.postMessage({ type: 'ORDER_SUCCESS', payload: { orderNumber: savedOrder.orderNumber } });
+                    bc.close();
+                } catch (e) {}
+            }
+
             setSuccessMsg(isPostPay ? '✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)' : '✅ تم حفظ الطلب وإرساله للمطبخ');
             clearCart();
             setDeliveryFloor('');
@@ -911,6 +942,13 @@ export default function POSPage() {
                         <button onClick={() => window.location.href='/'} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.danger}15`, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="الخروج للنظام">
                             <LogOut size={18} />
                         </button>
+
+                        {/* Customer Display Button */}
+                        {restaurantSettings.enableCustomerDisplay && (
+                            <button onClick={() => window.open('/pos/customer', '_blank', 'width=800,height=600')} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="فتح شاشة العميل">
+                                <Monitor size={18} />
+                            </button>
+                        )}
 
                         <div style={{ flex: 1 }}></div>
 
