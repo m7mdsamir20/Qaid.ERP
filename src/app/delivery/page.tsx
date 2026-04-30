@@ -57,11 +57,11 @@ export default function DeliveryPage() {
 
     useEffect(() => { load(); }, [load]);
 
-    const updateStatus = async (id: string, status: string, driver?: string) => {
+    const updateStatus = async (id: string, status: string, driverId?: string) => {
         await fetch('/api/restaurant/orders', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, status, deliveryDriver: driver }),
+            body: JSON.stringify({ id, status, driverId }),
         });
         load();
     };
@@ -114,17 +114,26 @@ export default function DeliveryPage() {
                             </div>
                         </div>
                     ))}
-                    {/* إدارة المناديب (من API) */}
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px 20px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>المناديب</p>
-                            <a href="/restaurant/drivers" style={{ color: C.primary, cursor: 'pointer', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO, textDecoration: 'none' }}>إدارة ←</a>
+                    {/* إدارة المناديب */}
+                    <div style={{
+                        background: `${C.primary}05`, border: `1px solid ${C.primary}22`, borderRadius: '10px',
+                        padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        transition: 'all 0.2s', position: 'relative'
+                    }}>
+                        <div style={{ textAlign: 'start' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: 0, whiteSpace: 'nowrap' }}>المناديب</p>
+                                <a href="/restaurant/drivers" style={{ color: C.primary, fontSize: '10px', fontWeight: 700, fontFamily: CAIRO, textDecoration: 'none' }}>إدارة ←</a>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{drivers.length}</span>
+                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>
+                                    متاح: {drivers.filter(d => d.status === 'available').length}
+                                </span>
+                            </div>
                         </div>
-                        <p style={{ margin: 0, fontSize: '24px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{drivers.length}</p>
-                        <div style={{ marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                            {drivers.slice(0, 3).map(d => (
-                                <span key={d.id} style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '6px', background: d.status === 'available' ? '#10b98112' : '#f59e0b12', color: d.status === 'available' ? '#10b981' : '#f59e0b', border: `1px solid ${d.status === 'available' ? '#10b98130' : '#f59e0b30'}` }}>{d.name}</span>
-                            ))}
+                        <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${C.primary}15`, border: `1px solid ${C.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                            <User size={18} />
                         </div>
                     </div>
                 </div>
@@ -187,39 +196,60 @@ export default function DeliveryPage() {
                                     </div>
 
                                     {isOpen && (
-                                        <div style={{ borderTop: `1px solid ${C.border}`, padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div style={{ borderTop: `1px solid ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px', background: `${C.bg}30` }}>
                                             {/* الأصناف */}
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                {order.lines?.map((line: any) => (
-                                                    <div key={line.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px', color: C.textSecondary }}>
-                                                        <span>{line.quantity}× {line.itemName}</span>
-                                                        <span style={{ fontFamily: OUTFIT }}>{fMoney(line.total)}</span>
-                                                    </div>
-                                                ))}
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
+                                                    <Package size={14} color={C.primary} /> تفاصيل الطلب
+                                                </h4>
+                                                <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                    {order.lines?.map((line: any, idx: number) => (
+                                                        <div key={line.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: C.textPrimary, paddingBottom: idx !== order.lines.length - 1 ? '8px' : 0, borderBottom: idx !== order.lines.length - 1 ? `1px dashed ${C.border}` : 'none' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                                <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: OUTFIT, fontSize: '12px' }}>x{line.quantity}</span>
+                                                                <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{line.itemName}</span>
+                                                            </div>
+                                                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{fMoney(line.total)}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
 
-                                            {/* تعيين مندوب */}
-                                            {order.status !== 'delivered' && order.status !== 'cancelled' && (
-                                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', borderTop: `1px solid ${C.border}`, paddingTop: '12px', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '12px', color: C.textMuted }}>تعيين مندوب:</span>
-                                                    {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
-                                                        <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.name)}
-                                                            style={{ padding: '5px 12px', borderRadius: '8px', border: `1px solid ${order.driverId === d.id ? C.primary : C.border}`, background: order.driverId === d.id ? `${C.primary}15` : 'transparent', color: order.driverId === d.id ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                            🏍️ {d.name}
-                                                        </button>
-                                                    )) : <a href="/restaurant/drivers" style={{ fontSize: '12px', color: C.primary, textDecoration: 'none' }}>أضف مندوبين من إدارة السائقين ←</a>}
-                                                </div>
-                                            )}
+                                            {/* العمليات */}
+                                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                                {/* تعيين مندوب */}
+                                                {order.status !== 'delivered' && order.status !== 'cancelled' && (
+                                                    <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                        <h4 style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>إسناد الطلب لمندوب</h4>
+                                                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                            {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
+                                                                <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.id)}
+                                                                    style={{ padding: '6px 12px', borderRadius: '8px', border: `1px solid ${order.driverId === d.id ? C.primary : C.border}`, background: order.driverId === d.id ? `${C.primary}15` : 'transparent', color: order.driverId === d.id ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.2s' }}
+                                                                    onMouseEnter={e => e.currentTarget.style.background = order.driverId === d.id ? `${C.primary}15` : `${C.primary}05`}
+                                                                    onMouseLeave={e => e.currentTarget.style.background = order.driverId === d.id ? `${C.primary}15` : 'transparent'}
+                                                                >
+                                                                    🏍️ {d.name}
+                                                                </button>
+                                                            )) : <a href="/restaurant/drivers" style={{ fontSize: '12px', color: C.primary, textDecoration: 'none', fontWeight: 600, fontFamily: CAIRO }}>لا يوجد مناديب متاحين ←</a>}
+                                                        </div>
+                                                    </div>
+                                                )}
 
-                                            {/* تغيير الحالة */}
-                                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                                <span style={{ fontSize: '12px', color: C.textMuted, alignSelf: 'center' }}>تغيير الحالة:</span>
-                                                {Object.entries(STATUS_INFO).filter(([s]) => s !== order.status).map(([s, si]) => (
-                                                    <button key={s} onClick={() => updateStatus(order.id, s)}
-                                                        style={{ padding: '5px 14px', borderRadius: '8px', border: `1px solid ${si.color}40`, background: si.bg, color: si.color, fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                        {si.emoji} {si.label}
-                                                    </button>
-                                                ))}
+                                                {/* تغيير الحالة */}
+                                                <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                    <h4 style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>تحديث حالة الطلب</h4>
+                                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                        {Object.entries(STATUS_INFO).filter(([s]) => s !== order.status).map(([s, si]) => (
+                                                            <button key={s} onClick={() => updateStatus(order.id, s)}
+                                                                style={{ padding: '6px 12px', borderRadius: '8px', border: `1px solid ${si.color}40`, background: si.bg, color: si.color, fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.2s' }}
+                                                                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                                                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                                            >
+                                                                {si.emoji} {si.label}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     )}

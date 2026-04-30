@@ -22,6 +22,7 @@ export const GET = withProtection(async (request, session) => {
             include: {
                 lines: true,
                 table: { select: { id: true, name: true } },
+                driver: true,
                 invoice: { select: { invoiceNumber: true } },
                 shift: { select: { user: { select: { name: true } } } },
                 company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } }
@@ -76,7 +77,18 @@ export const POST = withProtection(async (request, session, body) => {
             }
         }
 
-        const subtotal = (body.lines as any[]).reduce((s: number, l: any) => s + (l.quantity * l.unitPrice - (l.discount ?? 0)), 0);
+        const subtotal = (body.lines as any[]).reduce((s: number, l: any) => {
+            let modsTotal = 0;
+            if (l.modifiers) {
+                try {
+                    const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                    Object.values(parsed).forEach((arr: any) => {
+                        arr.forEach((m: any) => modsTotal += (m.price || 0));
+                    });
+                } catch(e) {}
+            }
+            return s + ((l.unitPrice + modsTotal) * l.quantity - (l.discount ?? 0));
+        }, 0);
         const taxAmount = body.taxAmount ?? 0;
         const serviceAmount = body.serviceAmount ?? 0;
         const discount = body.discount ?? 0;
@@ -139,16 +151,27 @@ export const POST = withProtection(async (request, session, body) => {
                 driverId: body.driverId || null,
                 companyId,
                 lines: {
-                    create: (body.lines as any[]).map((l: any) => ({
-                        itemId: l.itemId,
-                        itemName: l.itemName,
-                        quantity: l.quantity,
-                        unitPrice: l.unitPrice,
-                        discount: l.discount ?? 0,
-                        total: l.quantity * l.unitPrice - (l.discount ?? 0),
-                        notes: l.notes,
-                        modifiers: l.modifiers ? JSON.stringify(l.modifiers) : null,
-                    })),
+                    create: (body.lines as any[]).map((l: any) => {
+                        let modsTotal = 0;
+                        if (l.modifiers) {
+                            try {
+                                const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                Object.values(parsed).forEach((arr: any) => {
+                                    arr.forEach((m: any) => modsTotal += (m.price || 0));
+                                });
+                            } catch(e) {}
+                        }
+                        return {
+                            itemId: l.itemId,
+                            itemName: l.itemName,
+                            quantity: l.quantity,
+                            unitPrice: l.unitPrice,
+                            discount: l.discount ?? 0,
+                            total: ((l.unitPrice + modsTotal) * l.quantity) - (l.discount ?? 0),
+                            notes: l.notes,
+                            modifiers: l.modifiers ? JSON.stringify(l.modifiers) : null,
+                        };
+                    }),
                 },
                 ...(paymentsData.length > 0 && {
                     payments: {
@@ -159,6 +182,7 @@ export const POST = withProtection(async (request, session, body) => {
             include: { 
                 lines: true, 
                 table: true,
+                driver: true,
                 company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } },
                 shift: { select: { user: { select: { name: true } } } }
             },
@@ -225,14 +249,25 @@ export const POST = withProtection(async (request, session, body) => {
                         companyId,
                         notes: `فاتورة كاشير - طلب رقم #${orderNumber}`,
                         lines: {
-                            create: (body.lines as any[]).map((l: any) => ({
-                                itemId: l.itemId,
-                                quantity: l.quantity,
-                                price: l.unitPrice,
-                                discount: l.discount ?? 0,
-                                total: l.quantity * l.unitPrice - (l.discount ?? 0),
-                                unit: '',
-                            }))
+                            create: (body.lines as any[]).map((l: any) => {
+                                let modsTotal = 0;
+                                if (l.modifiers) {
+                                    try {
+                                        const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                        Object.values(parsed).forEach((arr: any) => {
+                                            arr.forEach((m: any) => modsTotal += (m.price || 0));
+                                        });
+                                    } catch(e) {}
+                                }
+                                return {
+                                    itemId: l.itemId,
+                                    quantity: l.quantity,
+                                    price: l.unitPrice,
+                                    discount: l.discount ?? 0,
+                                    total: ((l.unitPrice + modsTotal) * l.quantity) - (l.discount ?? 0),
+                                    unit: '',
+                                };
+                            })
                         }
                     }
                 });
@@ -444,8 +479,16 @@ export const PUT = withProtection(async (request, session, body) => {
             // Update POS Order
             await prisma.posOrder.update({
                 where: { id: order.id },
-                data: { paidAmount: order.total, status: 'ready', paymentMethod: body.paymentMethod || 'cash' }
+                data: { paidAmount: order.total, status: order.type === 'delivery' ? 'delivered' : 'ready', paymentMethod: body.paymentMethod || 'cash' }
             });
+            
+            // Free the driver
+            if (order.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'available' }
+                });
+            }
             
             // Free the table
             if (order.tableId) {
@@ -518,6 +561,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 ...(body.kitchenPrinted !== undefined && { kitchenPrinted: body.kitchenPrinted }),
                 ...(body.paidAmount !== undefined && { paidAmount: body.paidAmount }),
                 ...(body.paymentMethod && { paymentMethod: body.paymentMethod }),
+                ...(body.driverId !== undefined && { driverId: body.driverId }),
             },
         });
 
@@ -543,6 +587,21 @@ export const PUT = withProtection(async (request, session, body) => {
                 await prisma.restaurantTable.updateMany({
                     where: { id: order.tableId, companyId },
                     data: { status: 'available' },
+                });
+            }
+
+            // If it's a delivery order and just marked ready, mark driver as busy
+            if (body.status === 'ready' && order?.type === 'delivery' && order?.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'busy' }
+                });
+            }
+            // If it's cancelled/returned and it's delivery, free the driver
+            if ((body.status === 'cancelled' || body.status === 'returned') && order?.type === 'delivery' && order?.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'available' }
                 });
             }
 
