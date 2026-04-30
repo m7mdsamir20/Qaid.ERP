@@ -8,6 +8,7 @@ import AppModal from '@/components/AppModal';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
+import { generateZatcaTLV } from '@/lib/printInvoices';
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
     'dine-in': <Utensils size={14} />,
@@ -55,7 +56,7 @@ export default function OrdersHistoryPage() {
     // Use en-GB to enforce western arabic numerals (0-9) then replace am/pm
     const formatDate = (d: string) => {
         let str = new Date(d).toLocaleString('en-GB', {
-            year: 'numeric', month: 'short', day: '2-digit',
+            year: 'numeric', month: '2-digit', day: '2-digit',
             hour: '2-digit', minute: '2-digit', hour12: true
         });
         return str.replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م');
@@ -141,17 +142,11 @@ export default function OrdersHistoryPage() {
             orderData.type === 'takeaway' ? 'تيك أواي' :
                 orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
-        let footerHtml = `<p>شكراً لزيارتكم ❤️</p><p>نتمنى رؤيتكم قريباً!</p>`;
-        if (orderData.company?.restaurantSettings) {
-            try {
-                const parsed = typeof orderData.company.restaurantSettings === 'string'
-                    ? JSON.parse(orderData.company.restaurantSettings)
-                    : orderData.company.restaurantSettings;
-                if (parsed.receiptFooter) {
-                    footerHtml = parsed.receiptFooter.split('-').map((line: string) => `<p>${line.trim()}</p>`).join('');
-                }
-            } catch (e) { }
-        }
+        let footerHtml = '';
+        if (orderData.type === 'dine-in') footerHtml = '<p>شكراً لزيارتكم ❤️</p><p>نتمنى لكم تجربة سعيدة</p>';
+        else if (orderData.type === 'takeaway') footerHtml = '<p>يرجى الاحتفاظ بالفاتورة</p><p>لاستلام الطلب 🙏</p>';
+        else if (orderData.type === 'delivery') footerHtml = '<p>شكراً لطلبك ❤️</p><p>سيتم التوصيل قريباً</p>';
+        else footerHtml = '<p>شكراً لزيارتكم ❤️</p>';
 
         const html = `
             <!DOCTYPE html>
@@ -183,8 +178,9 @@ export default function OrdersHistoryPage() {
                     .header h2 { margin: 5px 0; font-size: 18px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px; }
                     .header img { max-width: 40px; max-height: 40px; object-fit: contain; }
                     .header p { margin: 2px 0; font-size: 12px; }
-                    .meta p { margin: 3px 0; font-size: 13px; display: flex; }
-                    .meta p span:first-child { width: 85px; display: inline-block; font-weight: bold; }
+                    .meta-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 5px 0; }
+                    .meta-table td { padding: 3px 0; vertical-align: top; }
+                    .meta-table td:first-child { font-weight: bold; width: 95px; white-space: nowrap; }
                     .item { margin-top: 8px; }
                     .item-main { font-weight: bold; }
                     .modifier { 
@@ -201,22 +197,39 @@ export default function OrdersHistoryPage() {
             </head>
             <body>
                 <div class="header text-center">
-                    <h2>
-                        ${orderData.company?.logo ? `<img src="${orderData.company.logo}" alt="Logo"/>` : ''}
-                        ${orderData.company?.name || 'مطعم قيد'}
-                    </h2>
-                    <p>${orderData.company?.phone || '01234567890'} ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `- ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}` : ''}</p>
+                    ${orderData.company?.logo ? `
+                    <div style="text-align: center; margin: 0; padding: 0;">
+                        <img src="${orderData.company.logo}" alt="Logo" style="max-width: 140px; max-height: 140px; object-fit: contain; display: block; margin: 0 auto;"/>
+                    </div>
+                    ` : ''}
+                    ${orderData.company?.phone ? `<p style="margin: 0 0 2px; font-weight: bold;">${orderData.company.phone}</p>` : ''}
+                    ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `<p style="margin: 2px 0;">${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}</p>` : ''}
+                    ${orderData.company?.taxNumber ? `<p style="margin: 2px 0;">الرقم الضريبي: ${orderData.company.taxNumber}</p>` : ''}
                 </div>
                 
                 <div class="dashed-line"></div>
                 
-                <div class="meta">
-                    <p><span>طلب رقم</span>: ${orderData.orderNumber.toString().padStart(4, '0')}</p>
-                    <p><span>نوع الطلب</span>: ${typeLabel}</p>
-                    ${orderData.type === 'dine-in' ? `<p><span>الطاولة</span>: ${orderData.table?.name || '-'}</p>` : ''}
-                    <p><span>التاريخ</span>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</p>
-                    <p><span>الكاشير</span>: ${orderData.shift?.user?.name || '-'}</p>
-                </div>
+                <table class="meta-table">
+                    <tr><td>رقم الطلب</td><td>: ${orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    ${orderData.type === 'dine-in' ? `
+                    <tr><td>رقم الطاولة</td><td>: ${orderData.table?.name || '-'}</td></tr>
+                    ${orderData.guests ? `<tr><td>عدد الأفراد</td><td>: ${orderData.guests}</td></tr>` : ''}
+                    ` : ''}
+                    ${orderData.type === 'takeaway' ? `
+                    <tr><td>رقم الانتظار</td><td>: ${orderData.queueNumber || orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    ` : ''}
+                    <tr><td>التاريخ</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</td></tr>
+                    ${orderData.type !== 'delivery' ? `<tr><td>الكاشير</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                </table>
+                ${orderData.type === 'delivery' && orderData.customer ? `
+                <div class="dashed-line"></div>
+                <table class="meta-table">
+                    <tr><td>اسم العميل</td><td>: ${orderData.customer?.name || '-'}</td></tr>
+                    <tr><td>رقم الهاتف</td><td>: ${orderData.customer?.phone || '-'}</td></tr>
+                    ${orderData.customer?.address ? `<tr><td>العنوان</td><td>: ${orderData.customer?.address}</td></tr>` : ''}
+                    ${orderData.deliveryAgent ? `<tr><td>المندوب</td><td>: ${orderData.deliveryAgent?.name}</td></tr>` : ''}
+                </table>
+                ` : ''}
 
                 <div class="dashed-line"></div>
 
@@ -228,17 +241,19 @@ export default function OrdersHistoryPage() {
                     const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
                     mods = Object.values(parsed).flat().map((m: any) => `
                                     <div class="flex-between modifier">
-                                        <span>+ ${m.name}</span>
+                                        <span>&nbsp;&nbsp;&nbsp;+ ${m.name}</span>
                                         <span>${formatMoney(m.price || 0)}</span>
                                     </div>
                                 `).join('');
                 } catch (e) { }
             }
+            const parsedTotal = Number(l.total);
+            const rowTotal = !isNaN(parsedTotal) && parsedTotal !== 0 ? parsedTotal : (Number(l.unitPrice || l.price || 0) * Number(l.quantity || 1));
             return `
                             <div class="item">
                                 <div class="flex-between item-main">
-                                    <span style="flex: 1; padding-left: 10px;">${l.quantity}x ${l.itemName || 'صنف'}</span>
-                                    <span>${formatMoney(l.total || (Number(l.price) * l.quantity))}</span>
+                                    <span style="flex: 1; padding-left: 10px;">${l.itemName || 'صنف'} x${l.quantity}</span>
+                                    <span>${formatMoney(rowTotal)}</span>
                                 </div>
                                 ${mods}
                             </div>
@@ -258,16 +273,36 @@ export default function OrdersHistoryPage() {
                         <span>خصم</span>
                         <span>${formatMoney(finalDiscount)}</span>
                     </div>` : ''}
-                    ${orderData.serviceAmount > 0 ? `
-                    <div class="flex-between">
-                        <span>رسوم الخدمة</span>
-                        <span>${formatMoney(orderData.serviceAmount)}</span>
-                    </div>` : ''}
-                    ${taxAmount > 0 ? `
-                    <div class="flex-between">
-                        <span>الضريبة</span>
-                        <span>${formatMoney(taxAmount)}</span>
-                    </div>` : ''}
+                    ${(() => {
+                        if (orderData.serviceAmount > 0) {
+                            let rate = '';
+                            try {
+                                const rs = typeof orderData.company?.restaurantSettings === 'string' ? JSON.parse(orderData.company.restaurantSettings) : orderData.company?.restaurantSettings;
+                                if (rs && rs.serviceCharge && rs.serviceCharge.rate) rate = ` (${rs.serviceCharge.rate}%)`;
+                            } catch(e) {}
+                            return `
+                            <div class="flex-between">
+                                <span>رسوم الخدمة${rate}</span>
+                                <span>${formatMoney(orderData.serviceAmount)}</span>
+                            </div>`;
+                        }
+                        return '';
+                    })()}
+                    ${(() => {
+                        if (taxAmount > 0) {
+                            let rate = '';
+                            try {
+                                const ts = typeof orderData.company?.taxSettings === 'string' ? JSON.parse(orderData.company.taxSettings) : orderData.company?.taxSettings;
+                                if (ts && ts.rate) rate = ` (${ts.rate}%)`;
+                            } catch(e) {}
+                            return `
+                            <div class="flex-between">
+                                <span>ضريبة القيمة المضافة${rate}</span>
+                                <span>${formatMoney(taxAmount)}</span>
+                            </div>`;
+                        }
+                        return '';
+                    })()}
                 </div>
 
                 <div class="dashed-line"></div>
@@ -277,21 +312,60 @@ export default function OrdersHistoryPage() {
                         <span>الإجمالي</span>
                         <span>${formatMoney(finalTotal)}</span>
                     </div>
-                    <div class="flex-between">
-                        <span>المدفوع (${orderData.paymentMethod === 'card' ? 'شبكة' : orderData.paymentMethod === 'mixed' ? 'مختلط' : 'نقدي'})</span>
-                        <span>${formatMoney(paidAmount)}</span>
-                    </div>
-                    <div class="flex-between">
-                        <span>المتبقي</span>
-                        <span>${formatMoney(change)}</span>
-                    </div>
+                    ${(() => {
+                        const paidAmount = Number(orderData.paidAmount || 0);
+                        const methodStr = { 'cash': 'نقدي', 'card': 'شبكة', 'mixed': 'مختلط', 'bank': 'تحويل بنكي' }[orderData.paymentMethod as string] || orderData.paymentMethod || 'نقدي';
+                        if (orderData.type === 'delivery') {
+                            if (paidAmount === 0) {
+                                return `
+                                <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
+                                    <span>طريقة الدفع</span>
+                                    <span>الدفع عند الاستلام</span>
+                                </div>`;
+                            }
+                            return `
+                                <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
+                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${formatMoney(paidAmount)}</span>
+                                </div>
+                                <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
+                                    <span>المتبقي</span>
+                                    <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
+                                </div>`;
+                        } else {
+                            if (paidAmount > 0) {
+                                return `
+                                <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
+                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${formatMoney(paidAmount)}</span>
+                                </div>
+                                <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
+                                    <span>المتبقي</span>
+                                    <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
+                                </div>`;
+                            }
+                            return '';
+                        }
+                    })()}
                 </div>
 
                 <div class="dashed-line"></div>
-
+                
                 <div class="footer">
                     ${footerHtml}
                 </div>
+
+                ${orderData.company?.countryCode === 'SA' ? `
+                <div style="text-align: center; margin-top: 15px;">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(generateZatcaTLV(
+                        orderData.company.name || '',
+                        orderData.company.taxNumber || '000000000000000',
+                        new Date(orderData.createdAt || Date.now()).toISOString(),
+                        finalTotal.toFixed(2),
+                        orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
+                    ))}" style="width: 120px; height: 120px; display: inline-block;" alt="ZATCA QR" />
+                </div>
+                ` : ''}
             </body>
             </html>
         `;
@@ -479,13 +553,14 @@ export default function OrdersHistoryPage() {
 
                                 <button onClick={() => handlePrint(selectedOrder)}
                                     style={{
-                                        width: '36px', height: '36px', background: 'transparent',
-                                        border: `1px solid ${C.border}`, color: C.textPrimary,
+                                        width: '36px', height: '36px', background: C.primary,
+                                        border: 'none', color: '#fff',
                                         borderRadius: '10px', cursor: 'pointer', display: 'flex',
-                                        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
+                                        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+                                        boxShadow: `0 4px 12px ${C.primary}40`
                                     }}
-                                    onMouseEnter={e => { e.currentTarget.style.background = C.primaryBg; e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
-                                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textPrimary; }}
+                                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
                                     <Printer size={18} />
                                 </button>
@@ -566,12 +641,16 @@ export default function OrdersHistoryPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <span>دفع</span>
                                             {selectedOrder.paidAmount >= selectedOrder.total && selectedOrder.total > 0 ? (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.success}15`, color: C.success, border: `1px solid ${C.success}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800 }}>Paid <CheckCircle2 size={12} /></span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.success}15`, color: C.success, border: `1px solid ${C.success}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, fontWeight: 800 }}>
+                                                    <CheckCircle2 size={12} /> {selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'}
+                                                </span>
                                             ) : (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800 }}>Unpaid <XCircle size={12} /></span>
+                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, fontWeight: 800 }}>
+                                                    <XCircle size={12} /> {selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'}
+                                                </span>
                                             )}
                                         </div>
-                                        <button style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '6px', padding: '4px 10px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>طريقة الدفع</button>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px' }}>{fMoney(selectedOrder.paidAmount)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
                                         <span>المتبقي</span>
@@ -625,36 +704,36 @@ export default function OrdersHistoryPage() {
                                         )}
                                     </div>
                                 ) : (
-                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'wrap', width: '100%', alignItems: 'center' }}>
-                                        <button onClick={() => { setActionPrompt({ type: 'return' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
-                                            <RotateCcw size={18} /> إرجاع
-                                        </button>
-
+                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-start', flexWrap: 'wrap', width: '100%', alignItems: 'center' }}>
                                         {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
-                                            <button onClick={() => { setActionPrompt({ type: 'cancel' }); setCancelReasonInput(''); }} style={{ padding: '10px 20px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
-                                                <X size={18} /> إلغاء
-                                            </button>
-                                        )}
+                                            <>
+                                                <button onClick={() => { setActionPrompt({ type: 'return' }); setCancelReasonInput(''); }} style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                                                    <RotateCcw size={14} /> إرجاع
+                                                </button>
 
-                                        <div style={{ flex: 1 }}></div>
+                                                <button onClick={() => { setActionPrompt({ type: 'cancel' }); setCancelReasonInput(''); }} style={{ padding: '6px 14px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
+                                                    <X size={14} /> إلغاء
+                                                </button>
+                                            </>
+                                        )}
 
                                         {/* Order progression actions */}
                                         {selectedOrder.status === 'preparing' && (
-                                            <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '10px 24px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '10px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
-                                                <CheckCircle2 size={18} /> جاهز
+                                            <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '6px 14px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
+                                                <CheckCircle2 size={14} /> جاهز
                                             </button>
                                         )}
 
                                         {/* Pay action if unpaid */}
                                         {selectedOrder.paidAmount < selectedOrder.total && selectedOrder.total > 0 && selectedOrder.status !== 'cancelled' && (
-                                            <button onClick={() => setActionPrompt({ type: 'pay' })} style={{ padding: '10px 24px', background: C.success, color: '#fff', border: 'none', borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, boxShadow: `0 4px 12px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
+                                            <button onClick={() => setActionPrompt({ type: 'pay' })} style={{ padding: '6px 14px', background: C.success, color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, boxShadow: `0 2px 8px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
                                                 دفع
                                             </button>
                                         )}
 
                                         {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
-                                            <div style={{ padding: '10px 20px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '10px', fontSize: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
-                                                <Check size={18} /> مكتمل
+                                            <div style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
+                                                <Check size={14} /> مكتمل
                                             </div>
                                         )}
                                     </div>

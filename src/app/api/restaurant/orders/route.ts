@@ -24,7 +24,7 @@ export const GET = withProtection(async (request, session) => {
                 table: { select: { id: true, name: true } },
                 invoice: { select: { invoiceNumber: true } },
                 shift: { select: { user: { select: { name: true } } } },
-                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true } }
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } }
             },
             orderBy: { createdAt: 'desc' },
             take: limit,
@@ -91,6 +91,28 @@ export const POST = withProtection(async (request, session, body) => {
             }))
             : [];
 
+        let finalCustomerId = body.customerId ?? null;
+        if (!finalCustomerId && body.type === 'delivery' && body.deliveryPhone) {
+            const existingCust = await prisma.customer.findFirst({ where: { companyId, phone: body.deliveryPhone } });
+            if (existingCust) {
+                finalCustomerId = existingCust.id;
+                if (!existingCust.addressCity && body.deliveryAddress) {
+                    await prisma.customer.update({ where: { id: existingCust.id }, data: { addressCity: body.deliveryAddress } });
+                }
+                if (!body.deliveryName) body.deliveryName = existingCust.name;
+            } else {
+                const newCust = await prisma.customer.create({
+                    data: {
+                        companyId,
+                        name: body.deliveryName || 'عميل توصيل',
+                        phone: body.deliveryPhone,
+                        addressCity: body.deliveryAddress || ''
+                    }
+                });
+                finalCustomerId = newCust.id;
+            }
+        }
+
         const order = await prisma.posOrder.create({
             data: {
                 orderNumber,
@@ -98,7 +120,7 @@ export const POST = withProtection(async (request, session, body) => {
                 status: (body.source && body.source !== 'pos') ? 'pending' : 'preparing',
                 tableId: body.tableId ?? null,
                 shiftId: activeShift?.id ?? null,
-                customerId: body.customerId ?? null,
+                customerId: finalCustomerId,
                 deliveryName: body.deliveryName,
                 deliveryPhone: body.deliveryPhone,
                 deliveryAddress: body.deliveryAddress,
@@ -137,7 +159,7 @@ export const POST = withProtection(async (request, session, body) => {
             include: { 
                 lines: true, 
                 table: true,
-                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true } },
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } },
                 shift: { select: { user: { select: { name: true } } } }
             },
         });
