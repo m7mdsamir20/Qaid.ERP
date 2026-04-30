@@ -181,7 +181,6 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                         {[
                             { label: t('طابعة المطبخ'), key: 'kitchenPrinterName' },
                             { label: t('طابعة الفاتورة'), key: 'receiptPrinterName' },
-                            { label: t('نص ذيل الفاتورة'), key: 'receiptFooter' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                 <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -189,9 +188,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        f.key === 'receiptFooter' ? (
-                                            <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('نص الذيل')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
-                                        ) : availablePrinters.length > 0 ? (
+                                        availablePrinters.length > 0 ? (
                                             <select style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)}>
                                                 <option value="">{t('— الطابعة الافتراضية —')}</option>
                                                 {availablePrinters.map(p => <option key={p} value={p}>{p}</option>)}
