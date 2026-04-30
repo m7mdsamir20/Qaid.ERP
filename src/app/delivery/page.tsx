@@ -12,11 +12,13 @@ import {
 } from 'lucide-react';
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string; emoji: string }> = {
-    pending:    { label: 'في الانتظار',  color: '#f59e0b', bg: '#f59e0b12', emoji: '⏳' },
-    assigned:   { label: 'تم التعيين',   color: '#6366f1', bg: '#6366f112', emoji: '🏍️' },
-    picked:     { label: 'جاري التوصيل', color: '#3b82f6', bg: '#3b82f612', emoji: '🚚' },
-    delivered:  { label: 'تم التسليم',   color: '#10b981', bg: '#10b98112', emoji: '✅' },
-    cancelled:  { label: 'ملغي',         color: '#ef4444', bg: '#ef444412', emoji: '❌' },
+    pending:    { label: 'بانتظار المطبخ',  color: '#f59e0b', bg: '#f59e0b12', emoji: '⏳' },
+    preparing:  { label: 'قيد التجهيز',    color: '#8b5cf6', bg: '#8b5cf612', emoji: '🍳' },
+    ready:      { label: 'جاهز للاستلام',  color: '#10b981', bg: '#10b98112', emoji: '🎒' },
+    assigned:   { label: 'تم التعيين',     color: '#6366f1', bg: '#6366f112', emoji: '🏍️' },
+    picked:     { label: 'خرج للتوصيل',    color: '#3b82f6', bg: '#3b82f612', emoji: '🚚' },
+    delivered:  { label: 'تم التسليم',     color: '#14b8a6', bg: '#14b8a612', emoji: '✅' },
+    cancelled:  { label: 'ملغي',          color: '#ef4444', bg: '#ef444412', emoji: '❌' },
 };
 
 export default function DeliveryPage() {
@@ -191,8 +193,42 @@ export default function DeliveryPage() {
                                             <Clock size={12} /> {formatTime(order.createdAt)}
                                         </span>
                                         <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color }}>{st.label}</span>
-                                        <span style={{ marginInlineStart: 'auto', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{fMoney(order.total)}</span>
-                                        <ChevronDown size={15} color={C.textMuted} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                                        <div style={{ marginInlineStart: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
+                                            {(!order.driverId && order.status !== 'delivered' && order.status !== 'cancelled') && (
+                                                <select 
+                                                    value="" 
+                                                    onChange={(e) => { if(e.target.value) updateStatus(order.id, 'assigned', e.target.value); }}
+                                                    style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.border}`, background: C.card, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary, outline: 'none', cursor: 'pointer' }}
+                                                >
+                                                    <option value="" disabled>تعيين سريع لمندوب...</option>
+                                                    {drivers.filter(d => d.status === 'available').map(d => (
+                                                        <option key={d.id} value={d.id}>🏍️ {d.name}</option>
+                                                    ))}
+                                                </select>
+                                            )}
+                                            
+                                            {(order.driverId && order.status !== 'picked' && order.status !== 'delivered' && order.status !== 'cancelled') && (
+                                                <button onClick={() => updateStatus(order.id, 'picked', order.driverId)}
+                                                    style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid #3b82f640`, background: '#3b82f612', color: '#3b82f6', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = '#3b82f620'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = '#3b82f612'}
+                                                >
+                                                    🚚 إرسال للتوصيل
+                                                </button>
+                                            )}
+
+                                            {(order.status === 'picked') && (
+                                                <button onClick={() => updateStatus(order.id, 'delivered')}
+                                                    style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid #14b8a640`, background: '#14b8a612', color: '#14b8a6', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = '#14b8a620'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = '#14b8a612'}
+                                                >
+                                                    ✅ تأكيد التسليم
+                                                </button>
+                                            )}
+                                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, marginInlineStart: '8px' }}>{fMoney(order.total)}</span>
+                                            <ChevronDown size={15} color={C.textMuted} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', marginLeft: '4px' }} />
+                                        </div>
                                     </div>
 
                                     {isOpen && (
