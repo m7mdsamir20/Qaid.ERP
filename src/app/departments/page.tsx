@@ -189,7 +189,7 @@ export default function DepartmentsPage() {
                         <p style={{ fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
                 ) : filteredDepartments.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                    <div style={{ textAlign: 'start', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <BuildingIcon size={40} style={{ color: '#475569', marginBottom: '12px', opacity: 0.3 }} />
                         <h3 style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 6px', fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد أقسام مطابقة')}</h3>
                     </div>

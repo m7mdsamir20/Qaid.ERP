@@ -604,7 +604,7 @@ export default function ItemsPage() {
                                                             0
                                                         </div>
                                                     )}
-                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'start', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                                 </div>
                                             </div>
                                         </div>

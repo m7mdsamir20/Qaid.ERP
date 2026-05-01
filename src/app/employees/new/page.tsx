@@ -191,7 +191,7 @@ export default function NewEmployeePage() {
                                                 }} 
                                                 onFocus={focusIn} onBlur={focusOut} 
                                                 placeholder="0.00" 
-                                                style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '16px', fontWeight: 600, padding: '0 16px', fontFamily: OUTFIT, textAlign: 'center' }} 
+                                                style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '16px', fontWeight: 600, padding: '0 16px', fontFamily: OUTFIT, textAlign: 'start' }} 
                                             />
                                             <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                         fontWeight: 600, color: C.textSecondary, fontSize: '13px' }}>{cSymbol}</span>

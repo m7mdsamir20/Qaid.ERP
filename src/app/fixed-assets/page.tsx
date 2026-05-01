@@ -329,7 +329,7 @@ export default function FixedAssetsPage() {
                                     type="number" step="0.01" 
                                     value={form.purchaseCost} 
                                     onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} 
-                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    style={{ ...IS, background: 'transparent', textAlign: 'start', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
                                     onFocus={focusIn} onBlur={focusOut} 
                                     placeholder=""
                                 />

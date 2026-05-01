@@ -604,7 +604,7 @@ export default function DashboardPage() {
                           <tr key={inv.id} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                            <td style={{ padding: '14px 16px' }}>
+                            <td style={{ padding: '14px 16px', textAlign: 'start' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>

@@ -347,7 +347,7 @@ export default function FinancialYearsPage() {
                                                     <th style={TABLE_STYLE.th(false)}>{t('المشتريات')}</th>
                                                     <th style={TABLE_STYLE.th(false)}>{t('صافي الفترة')}</th>
                                                     <th style={TABLE_STYLE.th(false)}>{t('قيود')}</th>
-                                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الحالة')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

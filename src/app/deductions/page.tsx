@@ -235,7 +235,7 @@ export default function DeductionsPage() {
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('سبب الخصم')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'start' }}>{t('الحالة')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -330,7 +330,7 @@ export default function DeductionsPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t('المبلغ')}</label>
-                                <input type="number" step="0.01" style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT }} required value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" style={{ ...IS, textAlign: 'start', fontFamily: OUTFIT }} required value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 

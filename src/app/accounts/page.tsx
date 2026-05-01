@@ -571,7 +571,7 @@ export default function AccountsPage() {
                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                         <AlertTriangle size={32} />
                     </div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO, textAlign: 'center' }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO, textAlign: 'start' }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
                     <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px', textAlign: 'center' }}>
                         {t('سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.')}
                         <br />

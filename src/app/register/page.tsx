@@ -365,7 +365,7 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -391,7 +391,7 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}

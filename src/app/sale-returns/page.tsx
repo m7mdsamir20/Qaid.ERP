@@ -139,9 +139,9 @@ export default function SaleReturnsListPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(true, true)}>{t('رقم المرتجع')}</th>
+                                        <th style={TABLE_STYLE.th(false, false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false, false)}>{t('العميل')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('تم رده')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('المتبقي')}</th>
@@ -158,11 +158,11 @@ export default function SaleReturnsListPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
                                                     RET-{String(r.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, false), fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(r.total)}
                                                 </td>

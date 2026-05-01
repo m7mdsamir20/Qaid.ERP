@@ -225,7 +225,7 @@ export default function NewFixedAssetPage() {
                                         type="number" step="0.01"
                                         value={form.salvageValue} 
                                         onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} 
-                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.border}`, borderRadius: 0 }} 
+                                        style={{ ...IS, background: 'transparent', textAlign: 'start', fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.border}`, borderRadius: 0 }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                         placeholder=""
                                     />
