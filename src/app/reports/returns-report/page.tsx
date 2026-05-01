@@ -44,6 +44,8 @@ export default function ReturnsReportPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [q, setQ] = useState('');
+    const [from, setFrom] = useState('');
+    const [to, setTo] = useState('');
     const [branchId, setBranchId] = useState('all');
     const [returnType, setReturnType] = useState('all');
     const [branches, setBranches] = useState<BranchOption[]>([]);
@@ -59,6 +61,8 @@ export default function ReturnsReportPage() {
         const params = new URLSearchParams();
         if (branchId && branchId !== 'all') params.set('branchId', branchId);
         if (returnType && returnType !== 'all') params.set('type', returnType);
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
         fetch(`/api/reports/returns-report?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => {
@@ -68,7 +72,7 @@ export default function ReturnsReportPage() {
             })
             .catch(() => setError(t('فشل تحميل بيانات المرتجعات')))
             .finally(() => setLoading(false));
-    }, [branchId, returnType]);
+    }, [branchId, returnType, from, to]);
 
     const filtered = data.filter(r => (r.party || '').toLowerCase().includes(q.toLowerCase()) || String(r.invoiceNumber).includes(q));
 
@@ -79,7 +83,8 @@ export default function ReturnsReportPage() {
                     title={t("تقرير مرتجعات البيع والشراء")}
                     subtitle={t("متابعة دقيقة لكافة عمليات المرتجع الصادرة والواردة وتأثيرها المالي على المخزون.")}
                     backTab="sales-purchases"
-                    
+                    printTitle={t("تقرير مرتجعات البيع والشراء")}
+                    printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
 
 
@@ -109,8 +114,8 @@ export default function ReturnsReportPage() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center' }}>
-                        <div style={{ position: 'relative', flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو الطرف الآخر...")}
@@ -123,26 +128,53 @@ export default function ReturnsReportPage() {
                                 }}
                             />
                         </div>
-                        <CustomSelect
-                            value={returnType}
-                            onChange={v => setReturnType(v)}
-                            placeholder={t("كل المرتجعات")}
-                            options={[
-                                { value: 'all', label: t('كل المرتجعات') },
-                                { value: 'sale_return', label: t('مرتجعات المبيعات') },
-                                { value: 'purchase_return', label: t('مرتجعات المشتريات') }
-                            ]}
-                        />
-                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
+                            <input type="date" value={from} onChange={e => setFrom(e.target.value)}
+                                style={{
+                                    ...IS, height: '42px', padding: '0 12px',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
+                            <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
+                            <input type="date" value={to} onChange={e => setTo(e.target.value)}
+                                style={{
+                                    ...IS, height: '42px', padding: '0 12px',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
+                        </div>
+
+                        <div style={{ minWidth: '160px' }}>
                             <CustomSelect
-                                value={branchId}
-                                onChange={v => setBranchId(v)}
-                                placeholder={t("كل الفروع")}
+                                value={returnType}
+                                onChange={v => setReturnType(v)}
+                                placeholder={t("كل المرتجعات")}
                                 options={[
-                                    { value: 'all', label: t('كل الفروع') },
-                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    { value: 'all', label: t('كل المرتجعات') },
+                                    { value: 'sale_return', label: t('مرتجعات المبيعات') },
+                                    { value: 'purchase_return', label: t('مرتجعات المشتريات') }
                                 ]}
                             />
+                        </div>
+
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                            <div style={{ minWidth: '160px' }}>
+                                <CustomSelect
+                                    value={branchId}
+                                    onChange={v => setBranchId(v)}
+                                    placeholder={t("كل الفروع")}
+                                    options={[
+                                        { value: 'all', label: t('كل الفروع') },
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    ]}
+                                />
+                            </div>
                         )}
                     </div>
 
