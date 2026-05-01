@@ -178,12 +178,12 @@ export default function StocktakingsPage() {
 
                 {/* Main Table Content */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل سجلات الجرد...')}</p>
                     </div>
                 ) : stocktakings.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <ClipboardList size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('لا توجد سجلات جرد مسجلة حالياً')}</p>
                     </div>

@@ -216,12 +216,12 @@ export default function DeductionsPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '80px', color: '#64748b' }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
                             {t('جاري التحميل...')}
                         </div>
                     ) : filteredDeductions.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '100px 20px', color: '#475569' }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
                             <ShieldAlert size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{t('لا توجد خصومات مسجلة')}</h3>
                             <p style={{ fontSize: '13px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>

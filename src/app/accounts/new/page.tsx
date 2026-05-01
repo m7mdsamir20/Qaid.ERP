@@ -120,7 +120,7 @@ export default function NewAccountPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ padding: '100px 0', color: C.textMuted, textAlign: 'center' }}>
+                <div style={{ padding: '100px 0', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                     <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري التحميل...')}</p>
                 </div>

@@ -122,7 +122,7 @@ export default function InventoryReportPage() {
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحميل قائمة الخدمات...") : t("جاري تحميل بيانات المخزون...")}</span>
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div style={{ padding: '100px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات مخزون')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>

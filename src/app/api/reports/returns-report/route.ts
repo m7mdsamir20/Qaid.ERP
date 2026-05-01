@@ -13,6 +13,7 @@ export const GET = withProtection(async (request, session) => {
         const branchId = searchParams.get('branchId');
         const from = searchParams.get('from');
         const to = searchParams.get('to');
+        const type = searchParams.get('type');
         const branchFilter = (() => {
             if (branchId && branchId !== 'all') return { branchId };
             const bf = getBranchFilter(session);
@@ -31,7 +32,7 @@ export const GET = withProtection(async (request, session) => {
         const fetchReturns = await prisma.invoice.findMany({
             where: {
                 companyId,
-                type: { in: ['sale_return', 'purchase_return'] },
+                type: type && type !== 'all' ? type : { in: ['sale_return', 'purchase_return'] },
                 ...(from || to ? { date: dateFilter } : {}),
                 ...branchFilter
             },

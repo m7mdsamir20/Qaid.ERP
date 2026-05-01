@@ -95,7 +95,7 @@ function VerifyContent() {
     };
 
     return (
-        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             {/* زخرفة داخلية */}
             <div style={{ position: 'absolute', top: '-20px', insetInlineEnd: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
             
@@ -229,7 +229,7 @@ export default function VerifyPage() {
 
             <div style={{ width: '100%', maxWidth: '440px', position: 'relative', zIndex: 1 }}>
                 <Suspense fallback={
-                    <div style={{ textAlign: 'center', ...THEME.glass.card, borderRadius: '24px', padding: '60px 40px' }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...THEME.glass.card, borderRadius: '24px', padding: '60px 40px' }}>
                         <Loader2 size={40} style={{ color: C.primary, margin: '0 auto', animation: 'spin 1.5s linear infinite' }} />
                         <p style={{ color: C.textSecondary, marginTop: '20px', fontFamily: CAIRO, fontWeight: 700 }}>{t('جاري التحميل...')}</p>
                     </div>
