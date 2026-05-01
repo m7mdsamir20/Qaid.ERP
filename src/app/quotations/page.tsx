@@ -174,7 +174,7 @@ export default function QuotationsPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true, true) }}>{t("رقم العرض")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("الحالة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("إجراءات")}</th>
@@ -194,7 +194,7 @@ export default function QuotationsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false, false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
                                                     {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true) }}>
