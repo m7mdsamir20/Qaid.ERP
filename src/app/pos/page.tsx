@@ -107,6 +107,7 @@ export default function POSPage() {
     const [deliveryAddress, setDeliveryAddress] = useState('');
     const [deliveryFloor, setDeliveryFloor] = useState('');
     const [deliveryApartment, setDeliveryApartment] = useState('');
+    const [deliveryFee, setDeliveryFee] = useState(0);
     const [orderNotes, setOrderNotes] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [discount, setDiscount] = useState(0);
@@ -245,6 +246,9 @@ export default function POSPage() {
         setDeliveryName(''); 
         setDeliveryPhone(''); 
         setDeliveryAddress(''); 
+        setDeliveryFloor('');
+        setDeliveryApartment('');
+        setDeliveryFee(0);
     };
 
     const updateQty = (itemId: string, delta: number) => {
@@ -299,7 +303,8 @@ export default function POSPage() {
     const baseForTax = Math.max(0, subtotal - discount - couponDiscount);
     const taxAmount = hasTax && taxRate > 0 ? Math.round(baseForTax * taxRate / 100) : 0;
     const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round(baseForTax * serviceChargeRate / 100) : 0;
-    const total = Math.max(0, baseForTax + taxAmount + serviceAmount);
+    const df = orderType === 'delivery' ? (Number(deliveryFee) || 0) : 0;
+    const total = Math.max(0, baseForTax + taxAmount + serviceAmount + df);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
     // Broadcast cart updates to Customer Display
@@ -316,6 +321,7 @@ export default function POSPage() {
                     couponDiscount,
                     taxAmount,
                     serviceAmount,
+                    deliveryFee: df,
                     total,
                     hasTax,
                     taxRate
@@ -516,6 +522,11 @@ export default function POSPage() {
                         }
                         return '';
                     })()}
+                    ${orderData.type === 'delivery' && orderData.deliveryFee > 0 ? `
+                    <div class="flex-between">
+                        <span>رسوم التوصيل</span>
+                        <span>${formatMoney(orderData.deliveryFee)}</span>
+                    </div>` : ''}
                 </div>
 
                 <div class="dashed-line"></div>
@@ -817,6 +828,7 @@ export default function POSPage() {
                     couponDiscount: appliedCoupon?.discount || 0,
                     taxAmount,
                     serviceAmount,
+                    deliveryFee: df,
                     total,
                     paymentMethod,
                     paidAmount: ((orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery') ? 0 : total,
@@ -1492,6 +1504,10 @@ export default function POSPage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                                     <input value={deliveryFloor} onChange={e => setDeliveryFloor(e.target.value)} placeholder={t('رقم الطابق')} style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '10px', fontFamily: OUTFIT }} />
                                     <input value={deliveryApartment} onChange={e => setDeliveryApartment(e.target.value)} placeholder={t('رقم الشقة')} style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '10px', fontFamily: OUTFIT }} />
+                                </div>
+                                <div style={{ position: 'relative', marginTop: '6px' }}>
+                                    <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, fontWeight: 600 }}>{t('رسوم التوصيل:')}</span>
+                                    <input type="number" min="0" value={deliveryFee || ''} onChange={e => setDeliveryFee(Number(e.target.value))} placeholder="0.00" style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '90px', fontFamily: OUTFIT, fontWeight: 700, color: C.primary }} />
                                 </div>
                             </div>
                         )}

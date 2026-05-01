@@ -1049,6 +1049,7 @@ model PosOrder {
   deliveryName    String? // اسم العميل في حالة التوصيل
   deliveryPhone   String?
   deliveryAddress String?
+  deliveryFee     Float            @default(0)
   notes           String?
   subtotal        Float            @default(0)
   discount        Float            @default(0)

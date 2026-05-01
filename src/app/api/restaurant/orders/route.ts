@@ -91,8 +91,9 @@ export const POST = withProtection(async (request, session, body) => {
         }, 0);
         const taxAmount = body.taxAmount ?? 0;
         const serviceAmount = body.serviceAmount ?? 0;
-        const discount = body.discount ?? 0;
-        const total = subtotal - discount + taxAmount + serviceAmount;
+        const deliveryFee = body.type === 'delivery' ? (body.deliveryFee || 0) : 0;
+        const discount = (body.discount || 0) + (body.couponDiscount || 0);
+        const total = subtotal - discount + taxAmount + serviceAmount + deliveryFee;
 
         // Prepare payments with treasuryId
         const paymentsData = body.payments && body.payments.length > 0
@@ -143,6 +144,7 @@ export const POST = withProtection(async (request, session, body) => {
                 couponDiscount: body.couponDiscount ?? 0,
                 taxAmount,
                 serviceAmount,
+                deliveryFee,
                 total,
                 paidAmount: body.paidAmount || 0,
                 paymentMethod: body.paymentMethod,

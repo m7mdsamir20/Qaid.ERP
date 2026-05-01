@@ -48,6 +48,9 @@ export const GET = withProtection(async (request, session) => {
             recentPlansRaw,
             chartRawData,
             chartVoucherRawData,
+            posOrdersKpi,
+            recentPosOrdersRaw,
+            chartPosRawData,
         ] = await Promise.all([
             // Counts
             Promise.all([
@@ -169,6 +172,31 @@ export const GET = withProtection(async (request, session) => {
                 },
                 select: { type: true, date: true, amount: true }
             }), []),
+            // ── POS Orders KPI (مبيعات الكاشير) ──
+            safeQuery(() => prisma.posOrder.aggregate({
+                where: { companyId, status: { not: 'cancelled' }, createdAt: { gte: startDate, lte: endDate } },
+                _sum: { total: true },
+                _count: true,
+            }), { _sum: { total: 0 }, _count: 0 }),
+            // ── Recent POS Orders ──
+            safeQuery(() => prisma.posOrder.findMany({
+                where: { companyId, status: { not: 'cancelled' } },
+                select: {
+                    id: true, orderNumber: true, type: true, createdAt: true, total: true,
+                    deliveryName: true,
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 5,
+            }), []),
+            // ── POS Chart Data ──
+            safeQuery(() => prisma.posOrder.findMany({
+                where: {
+                    companyId,
+                    status: { not: 'cancelled' },
+                    createdAt: { gte: chartStart },
+                },
+                select: { createdAt: true, total: true }
+            }), []),
         ]);
 
         // Merge and Sort Recent Transactions
@@ -204,6 +232,13 @@ export const GET = withProtection(async (request, session) => {
             else if (v.type === 'payment') dailySummary[dateKey].expenses += v.amount;
         });
 
+        // ── إضافة مبيعات الكاشير (POS) للرسم البياني ──
+        chartPosRawData.forEach((po: any) => {
+            const dateKey = new Date(po.createdAt).toLocaleDateString('en-US', { weekday: 'short' });
+            if (!dailySummary[dateKey]) dailySummary[dateKey] = { sales: 0, purchases: 0, expenses: 0 };
+            dailySummary[dateKey].sales += po.total;
+        });
+
         const last7DaysLabels = [];
         for (let i = 6; i >= 0; i--) {
             const d = new Date(now);
@@ -216,11 +251,26 @@ export const GET = withProtection(async (request, session) => {
             ...(dailySummary[label] || { sales: 0, purchases: 0, expenses: 0 })
         }));
 
-        const salesTotal = kpis[0]._sum?.total || 0;
+        // ── دمج مبيعات الفواتير + مبيعات الكاشير ──
+        const invoiceSalesTotal = kpis[0]._sum?.total || 0;
+        const posSalesTotal = posOrdersKpi._sum?.total || 0;
+        const salesTotal = invoiceSalesTotal + posSalesTotal;
         const purchasesTotal = kpis[1]._sum?.total || 0;
         const expensesTotal = isServices
             ? (kpis[2]._sum?.debit || 0)
             : (kpis[2]._sum?.total || 0);
+
+        // ── دمج طلبات الكاشير في آخر الحركات ──
+        const posAsInvoices = recentPosOrdersRaw.map((po: any) => ({
+            id: po.id,
+            invoiceNumber: po.orderNumber,
+            type: 'sale' as const,
+            date: po.createdAt,
+            total: po.total,
+            customer: po.deliveryName ? { name: po.deliveryName } : null,
+            supplier: null,
+            _isPosOrder: true,
+        }));
 
         return NextResponse.json({
             customers: counts[0],
@@ -233,10 +283,13 @@ export const GET = withProtection(async (request, session) => {
             purchasesTotal: purchasesTotal,
             lowStockItems,
             topDebtors,
-            recentInvoices,
+            recentInvoices: [...recentInvoices, ...posAsInvoices]
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .slice(0, 10),
             chartData,
             netProfit: isServices ? (salesTotal - expensesTotal) : (salesTotal - purchasesTotal),
             expensesTotal,
+            posOrdersCount: posOrdersKpi._count || 0,
         });
     } catch (error: any) {
         console.error("[Stats API Cache Error]:", error);
