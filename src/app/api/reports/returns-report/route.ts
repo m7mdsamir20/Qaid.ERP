@@ -16,6 +16,7 @@ export const GET = withProtection(async (request, session) => {
         const type = searchParams.get('type');
         const branchFilter = (() => {
             if (branchId && branchId !== 'all') return { branchId };
+            if (branchId === 'all') return {}; // Show everything for the company if 'all' is selected
             const bf = getBranchFilter(session);
             if (bf.branchId) return { branchId: bf.branchId };
             return {};

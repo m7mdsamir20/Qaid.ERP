@@ -217,7 +217,7 @@ export default function ReturnsReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {r.type === 'sale_return' ? 'SLR-' : 'PUR-'}{String(r.invoiceNumber).padStart(4, '0')}
+                                                {r.type === 'sale_return' ? 'RET-' : 'RTN-'}{String(r.invoiceNumber).padStart(5, '0')}
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px' }}>

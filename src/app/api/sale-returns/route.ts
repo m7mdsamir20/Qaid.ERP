@@ -23,6 +23,7 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const branchId = (session.user as any).activeBranchId;
         const isServices = (session.user as any).businessType === 'SERVICES';
         const { customerId, warehouseId, originalInvoiceId, lines, discount, paidAmount, notes, treasuryId, bankId } = body;
 
@@ -79,6 +80,7 @@ export const POST = withProtection(async (request, session, body) => {
                 notes: notes || null,
                 warehouseId: warehouseId || null,
                 companyId,
+                branchId: branchId || null,
                 customerPrevBalance,
                 customerNewBalance,
                 lines: {
