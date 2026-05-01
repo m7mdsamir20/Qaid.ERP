@@ -126,7 +126,7 @@ export default function DuePage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ padding: '100px', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>
@@ -232,7 +232,7 @@ export default function DuePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ padding: '80px', color: C.textMuted }}>
+                                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
                                         <Clock size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد أقساط مستحقة للفترة المختارة')}</p>
                                     </div>

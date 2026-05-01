@@ -167,7 +167,7 @@ export default function FinancialYearsPage() {
                 />
 
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '80px', color: C.primary }}>
+                    <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', padding: '80px', color: C.primary }}>
                         <Loader2 size={32} className="animate-spin" />
                     </div>
                 ) : !activeFY ? (

@@ -89,7 +89,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     if (!invoice) return (
         <DashboardLayout>
-            <div style={{ padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
+            <div style={{ textAlign: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
         </DashboardLayout>
     );
 

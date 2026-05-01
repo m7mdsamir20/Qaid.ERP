@@ -159,12 +159,12 @@ export default function WarehousesPage() {
 
                 {/* Table Content */}
                 {loading ? (
-                    <div style={{ padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل قائمة المخازن...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Warehouse size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد مخازن مسجلة حالياً')}</p>
                     </div>

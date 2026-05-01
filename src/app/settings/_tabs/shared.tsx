@@ -14,7 +14,7 @@ export function Toggle({ checked, onChange, disabled }: { checked: boolean; onCh
 
 export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSaving, hideEditBtn, form, children, t }: any) {
     return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div>
                     <h2 style={{ margin: '0 0 1px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>

@@ -180,12 +180,12 @@ export default function ItemMovementReportPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع سجل الحركات...')}</span>
                     </div>
                 ) : !itemDetails ? (
-                    <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('جاهز للعرض')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء اختيار صنف من القائمة أعلاه لعرض السجل التفصيلي لحركاته.')}</p>
@@ -277,7 +277,7 @@ export default function ItemMovementReportPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'start'}}>
+                                <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'center'}}>
                                     <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
                                     <div style={{ fontSize: '32px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
                                         {formatNumber(itemDetails.totalStock)}

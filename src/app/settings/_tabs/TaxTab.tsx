@@ -52,7 +52,7 @@ export default function TaxTab({
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
 
                 {/* ── Status Toggle ── */}
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div className="mobile-setting-row" style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: taxForm.enabled ? '#10b98120' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: taxForm.enabled ? '#10b981' : C.textMuted }}>
                             <Receipt size={20} />
@@ -70,7 +70,7 @@ export default function TaxTab({
                 </div>
 
                 {taxForm.enabled && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', animation: 'fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+                    <div className="mobile-setting-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', animation: 'fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
 
                         {/* Tax Type */}
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
@@ -119,7 +119,7 @@ export default function TaxTab({
                         </div>
 
                         {/* Inclusive/Exclusive */}
-                        <div style={{ gridColumn: 'span 2', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div className="mobile-setting-row" style={{ gridColumn: 'span 2', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div>
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الأسعار شاملة الضريبة')}</div>
                                 <div style={{ fontSize: '11px', color: C.textMuted }}>{t('عند التفعيل، سيتم اعتبار سلع الفاتورة شاملة لنسبة الضريبة المسجلة')}</div>

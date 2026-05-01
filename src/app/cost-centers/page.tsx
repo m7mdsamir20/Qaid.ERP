@@ -177,7 +177,7 @@ export default function CostCentersPage() {
                         <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Layers size={60} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}</p>
                     </div>

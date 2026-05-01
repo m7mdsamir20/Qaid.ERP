@@ -25,7 +25,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
             {(() => {
                 const sub = (session?.user as any)?.subscription;
                 if (!sub) return (
-                    <div style={{ padding: '60px', background: 'rgba(239,68,68,0.05)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.1)' }}>
+                    <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(239,68,68,0.05)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.1)' }}>
                         <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
                         <h3 style={{ color: '#ef4444', margin: '0 0 8px', fontSize: '13px' }}>{t('لا توجد بيانات اشتراك')}</h3>
                         <p style={{ color: '#64748b', margin: 0, fontSize: '13px' }}>{t('تواصل مع المسؤول لتفعيل اشتراكك')}</p>

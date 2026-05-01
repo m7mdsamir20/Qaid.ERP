@@ -219,7 +219,7 @@ export default function ComprehensiveSettlementPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '60px' }}>
+                    <div style={{ textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '60px' }}>
                         <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, display: 'block', margin: '0 auto' }} />
                         <p style={{ marginTop: '10px', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
@@ -329,7 +329,7 @@ export default function ComprehensiveSettlementPage() {
                         )}
 
                         {filteredSettlements.length === 0 ? (
-                            <div style={{ padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
+                            <div style={{ textAlign: 'center', padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
                                 <div style={{ width: 80, height: 80, borderRadius: '50%', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}><ArrowRightLeft size={36} opacity={0.5} /></div>
                                 <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
                                 <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>

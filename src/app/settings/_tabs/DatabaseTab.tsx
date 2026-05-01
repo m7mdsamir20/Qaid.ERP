@@ -50,15 +50,15 @@ export default function DatabaseTab({
 
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                 {/* JSON Backup */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
+                    <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: C.primary }}><Download size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة كاملة (JSON)')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('مثالي للاستعادة الكاملة')}</div>
                         </div>
                     </div>
-                    <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                         <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                            {t('تصدير كامل قابل للاستعادة — ينصح به كنسخ احتياطي دوري آمن')}
                         </span>
@@ -84,15 +84,15 @@ export default function DatabaseTab({
                 </div>
 
                 {/* Excel */}
-                <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
+                    <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#10b981' }}><FileSpreadsheet size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة Excel')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('للمراجعة والطباعة')}</div>
                         </div>
                     </div>
-                    <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                         <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                             {t('تصدير العملاء، الموردين، الأصناف، والفواتير بصيغة جدولية للمراجعة')}
                         </span>
@@ -119,15 +119,15 @@ export default function DatabaseTab({
 
 
                 {/* استعادة JSON */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#f59e0b' }}><UploadCloud size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('استعادة نسخة')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('من ملف JSON فقط')}</div>
                         </div>
                     </div>
-                    <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                         <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                             {t('استعادة كافة بيانات النظام من نسخة احتياطية سابقة محملة مسبقاً')}
                         </span>
@@ -181,12 +181,12 @@ export default function DatabaseTab({
                     { id: 'suppliers', label: t('الموردين'), icon: <Truck size={15} />, color: '#10b981', desc: t('استيراد قائمة الموردين والمستحقات السابقة') },
                     { id: 'items', label: t('الأصناف'), icon: <Package size={15} />, color: '#a78bfa', desc: t('استيراد الأصناف والأسعار والمخزون الأولي') },
                 ].map((item, i, arr) => (
-                    <div key={item.id} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                        <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                    <div key={item.id} className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                        <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: item.color }}>{item.icon}</div>
                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                         </div>
-                        <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                             <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.desc}</span>
                             <button className="action-btn"
                                 onClick={() => { setImportType(item.id as any); setShowImportModal(true); setImportStep(1); }}

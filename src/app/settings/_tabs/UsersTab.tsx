@@ -77,7 +77,7 @@ export default function UsersTab({
                 t={t}
             />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '20px', alignItems: 'start' }}>
+            <div className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '20px', alignItems: 'start' }}>
 
                 {/* ── فورم المستخدم الجديد ── */}
                 <div>
@@ -291,7 +291,7 @@ export default function UsersTab({
 
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {/* Header */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
+                        <div className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
                             <div>{t('القائمة / الصفحة')}</div>
                             <div style={{ }}></div>
                         </div>
@@ -367,7 +367,7 @@ export default function UsersTab({
                                             };
 
                                             return (
-                                                <div key={page.id} style={{ display: 'grid', gridTemplateColumns: isAccessOnlySection ? '1fr 280px' : '1fr 280px', padding: '10px 20px 10px 50px', borderTop: `1px solid ${C.border}`, alignItems: 'center', transition: 'background 0.1s' }}
+                                                <div key={page.id} className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: isAccessOnlySection ? '1fr 280px' : '1fr 280px', padding: '10px 20px 10px 50px', borderTop: `1px solid ${C.border}`, alignItems: 'center', transition: 'background 0.1s' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
@@ -431,7 +431,7 @@ export default function UsersTab({
                     </div>
                 </div>
 
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                <div className="mobile-setting-table-wrap" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit', fontSize: '13px' }}>
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>

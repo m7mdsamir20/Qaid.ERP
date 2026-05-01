@@ -257,7 +257,7 @@ export default function OpeningBalancesPage() {
                 />
 
                 {!selectedYear ? (
-                    <div style={{ ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
+                    <div style={{ textAlign: 'center', ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
                         </div>
@@ -270,7 +270,7 @@ export default function OpeningBalancesPage() {
                         <span style={{ fontSize: '15px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : accounts.length === 0 ? (
-                    <div style={{ ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
+                    <div style={{ textAlign: 'center', ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>

@@ -57,7 +57,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                         <h3 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تأسيس الدورة المحاسبية')}</h3>
                         <p style={{ margin: '0 0 24px', fontSize: '13px', color: C.textMuted, maxWidth: '440px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.6 }}>{t('يجب عليك تحديد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}</p>
 
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '24px' }}>
+                        <div className="mobile-setting-row" style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '24px' }}>
                             <div style={{ textAlign: 'start' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>{t('تاريخ البداية')}</label>
                                 <input id="fys" type="date" defaultValue={`${new Date().getFullYear()}-01-01`}
@@ -87,7 +87,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                 {/* ── السنة النشطة ── */}
                 {activeFY && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', display: 'flex', alignItems: 'center', gap: '40px', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        <div className="mobile-setting-row" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '32px', display: 'flex', alignItems: 'center', gap: '40px', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                             {/* Circle Progress */}
                             <div style={{ position: 'relative', width: '120px', height: '120px' }}>
                                 <svg width="120" height="120" viewBox="0 0 128 128" style={{ transform: 'rotate(-90deg)' }}>
@@ -111,7 +111,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                     <span style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+                                <div className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
                                     {[
                                         { label: t('تاريخ البداية'), value: fmt(activeFY.startDate), icon: Calendar },
                                         { label: t('تاريخ الاستحقاق'), value: fmt(activeFY.endDate), icon: CalendarCheck },
@@ -141,7 +141,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '20px' }}>
+                            <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '20px' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO, fontWeight: 600 }}>{t('تحديد تاريخ نهاية السنة الجديدة')}</label>
                                     <input id="closeEnd" type="date" min={nextStartStr}
@@ -174,7 +174,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                             <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('الأرشيف الضريبي (الفترات المقفلة)')}</h3>
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        <div className="mobile-setting-table-wrap" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>

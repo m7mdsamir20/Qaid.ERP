@@ -689,8 +689,29 @@ function SettingsContent() {
                 <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
             </div>
                 <style jsx>{`
+                    .settings-layout { display: flex; gap: 24px; align-items: flex-start; }
+                    .settings-sidebar {
+                        padding: 8px; width: 280px; flex-shrink: 0;
+                        background: ${C.card}; border-radius: 20px; border: 1px solid ${C.border};
+                        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); position: sticky; top: 84px;
+                        z-index: 10;
+                    }
+                    .settings-tabs { display: block; }
                     @media (max-width: 1023px) {
-                        .settings-sidebar { position: relative !important; top: 0 !important; }
+                        .settings-layout { flex-direction: column; }
+                        .settings-sidebar { 
+                            position: relative !important; top: 0 !important; 
+                            width: 100% !important; 
+                        }
+                        .settings-tabs { 
+                            display: flex; flex-wrap: nowrap; overflow-x: auto; 
+                            gap: 8px; padding-bottom: 8px;
+                        }
+                        .settings-tabs::-webkit-scrollbar { height: 4px; }
+                        .settings-tabs::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+                        .settings-tabs::-webkit-scrollbar-thumb { background: rgba(37, 106, 244, 0.3); border-radius: 10px; }
+                        .settings-tab-btn { white-space: nowrap; flex: 0 0 auto; width: auto !important; }
+                        .settings-content-area { width: 100% !important; }
                     }
                 `}</style>
                 <style>{`
@@ -707,6 +728,16 @@ function SettingsContent() {
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(37, 106, 244,0.3); borderRadius: 10px; }
+                
+                @media (max-width: 1023px) {
+                    .mobile-setting-row { flex-direction: column !important; align-items: stretch !important; border-bottom: none !important; margin-bottom: 8px; background: rgba(255,255,255,0.01); border-radius: 12px; }
+                    .mobile-setting-label { width: 100% !important; border-inline-start: none !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; padding: 12px 16px !important; }
+                    .mobile-setting-value { width: 100% !important; padding: 12px 16px !important; }
+                    .mobile-setting-grid { grid-template-columns: 1fr !important; }
+                    .mobile-setting-grid-2 { grid-template-columns: 1fr !important; }
+                    .mobile-setting-table-wrap { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
+                    .settings-content-area > div { padding: 16px !important; border-radius: 16px !important; min-height: auto !important; }
+                }
             `}</style>
         </DashboardLayout>
     );
@@ -767,14 +798,9 @@ function SettingsContent() {
                     </div>
                 )}
 
-                <div className="mobile-column" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+                <div className="settings-layout">
                     {/* ── Sidebar ── */}
-                    <div className="settings-sidebar mobile-full" style={{
-                        padding: '8px', width: '280px', flexShrink: 0,
-                        background: C.card, borderRadius: '20px', border: `1px solid ${C.border}`,
-                        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)', position: 'sticky', top: '84px',
-                        zIndex: 10
-                    }}>
+                    <div className="settings-sidebar">
                         <div className="settings-tabs">
                         {filteredTabs.map(tab => {
                             const Icon = tab.icon;
@@ -822,7 +848,7 @@ function SettingsContent() {
                     </div>
 
                     {/* ── Content ── */}
-                    <div style={{ flexGrow: 1, minWidth: 0 }}>
+                    <div className="settings-content-area" style={{ flexGrow: 1, minWidth: 0 }}>
 
                         {activeTab === 'company' && (
                             <CompanyTab
