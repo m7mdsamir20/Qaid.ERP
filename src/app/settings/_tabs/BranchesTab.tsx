@@ -63,7 +63,7 @@ export default function BranchesTab({
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {branches.map((b: any) => (
                     <div key={b.id} style={{
-                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px',
                         padding: '16px 20px', borderRadius: '14px',
                         border: `1px solid ${b.isMain ? C.primary + '40' : C.border}`,
                         background: b.isMain ? C.primary + '08' : 'rgba(255,255,255,0.01)'

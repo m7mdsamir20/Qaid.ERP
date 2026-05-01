@@ -312,7 +312,7 @@ export default function InstallmentsPage() {
                 </div>
 
                     {loading ? (
-                        <div style={{ padding: '60px' }}>
+                        <div style={{ textAlign: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : (
@@ -396,7 +396,7 @@ export default function InstallmentsPage() {
                                 </tbody>
                             </table>
                             {filtered.length === 0 && (
-                                <div style={{ padding: '80px', color: C.textMuted }}>
+                                <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
                                     <CreditCard size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                     <p style={{ fontSize: '15px' }}>{t('لا توجد خطط تقسيط مطابقة للبحث')}</p>
                                 </div>

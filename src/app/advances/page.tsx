@@ -234,12 +234,12 @@ export default function AdvancesPage() {
                 {/* Main Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', color: '#64748b' }}>
+                        <div style={{ textAlign: 'center', padding: '80px', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
                             {t('جاري التحميل...')}
                         </div>
                     ) : filteredAdvances.length === 0 ? (
-                        <div style={{ padding: '100px 20px', color: '#475569' }}>
+                        <div style={{ textAlign: 'center', padding: '100px 20px', color: '#475569' }}>
                             <Banknote size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد سلف مسجلة')}</h3>
                             <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"')}</p>

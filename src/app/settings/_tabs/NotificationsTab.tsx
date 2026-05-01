@@ -48,14 +48,14 @@ export default function NotificationsTab(props: NotificationsTabProps) {
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
                             {/* تفعيل */}
-                            <div style={{ display: 'flex', alignItems: 'center', borderBottom: notificationsForm.lowStock?.enabled ? `1px solid ${C.border}` : 'none' }}>
-                                <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                            <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center', borderBottom: notificationsForm.lowStock?.enabled ? `1px solid ${C.border}` : 'none' }}>
+                                <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted }}>
                                         <Package size={16} />
                                     </div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه انخفاض المخزون')}</span>
                                 </div>
-                                <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span style={{ fontSize: '13px', color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                         {notificationsForm.lowStock?.enabled ? t('مفعّل — نظام التتبع النشط') : t('معطّل')}
                                     </span>
@@ -69,12 +69,12 @@ export default function NotificationsTab(props: NotificationsTabProps) {
 
                             {/* حد التنبيه */}
                             {notificationsForm.lowStock?.enabled && (
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: isEditMode ? C.primary : C.textMuted }}><AlertCircle size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('حد التنبيه')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         {!isEditMode ? (
                                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
                                                 {notificationsForm.lowStock?.threshold || 10} {t('وحدة متوفرة')}
@@ -123,14 +123,14 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     activeColor: '#f59e0b',
                                 },
                             ].map((item, i, arr) => (
-                                <div key={item.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div key={item.key} className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                                    <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted }}>
                                             {item.icon}
                                         </div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <span style={{ fontSize: '13px', color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                             {notificationsForm[item.key]?.enabled ? `${t('مفعّل')} — ${item.desc}` : t('معطّل')}
                                         </span>
@@ -154,14 +154,14 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${isEditMode ? `${C.primary}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                            <div className="mobile-setting-row" style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className="mobile-setting-label" style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted }}>
                                         <AlertTriangle size={16} />
                                     </div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه الديون المتأخرة')}</span>
                                 </div>
-                                <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span style={{ fontSize: '13px', color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                         {notificationsForm.agingDebt?.enabled
                                             ? t('مفعّل — تنبيه بالفواتير المتأخرة أكثر من 60 يوم')

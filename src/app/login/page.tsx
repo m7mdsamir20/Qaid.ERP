@@ -172,7 +172,7 @@ export default function LoginPage() {
                     WebkitBackdropFilter: 'var(--c-auth-card-blur)',
                     borderRadius: '24px', padding: '32px',
                 }}>
-                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 600, color: C.textPrimary }}>{t('تسجيل الدخول')}</h2>
+                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
 
                     {error && (
                         <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', fontWeight: 600 }}>

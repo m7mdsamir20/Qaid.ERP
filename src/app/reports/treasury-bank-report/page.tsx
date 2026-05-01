@@ -159,7 +159,7 @@ export default function TreasuryBankReportPage() {
                         <p style={{ marginTop: '20px', color: '#64748b' }}>{t('جاري استخراج كشف الحساب...')}</p>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '80px', textAlign: 'start', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                    <div style={{ padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px' }} />
                         <h3 style={{ color: '#64748b', fontSize: '15px' , fontFamily: CAIRO}}>{t('يرجى اختيار الخزينة وتحديد الفترة لعرض التقرير')}</h3>
                     </div>

@@ -157,11 +157,11 @@ export default function QuotationsPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px' }}>
+                        <div style={{ textAlign: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '80px' }}>
+                        <div style={{ textAlign: 'center', padding: '80px' }}>
                             <FileText size={48} style={{ color: C.textMuted, opacity: 0.2, margin: '0 auto 15px' }} />
                             <p style={{ fontSize: '13px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>
                                 {searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عروض أسعار مسجلة حالياً')}

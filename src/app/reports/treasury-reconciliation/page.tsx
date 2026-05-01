@@ -217,7 +217,7 @@ export default function TreasuryReconciliationPage() {
 
                         {/* Table */}
                         {loading ? (
-                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                            <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                                 <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                             </div>
                         ) : (
@@ -302,7 +302,7 @@ export default function TreasuryReconciliationPage() {
                         {snapshotsLoading ? (
                             <div style={{ padding: '80px', textAlign: 'start'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
                         ) : filteredSnapshots.length === 0 ? (
-                            <div style={{ padding: '80px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
+                            <div style={{ padding: '80px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                 <FileText size={50} style={{ opacity: 0.1, color: C.primary, marginBottom: '16px' }} />
                                 <p style={{ color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد سجلات جرد محفوظة')}</p>
                             </div>

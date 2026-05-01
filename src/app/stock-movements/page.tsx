@@ -108,12 +108,12 @@ export default function StockMovementsPage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                             <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
                         </div>
                     ) : filteredMovements.length === 0 ? (
-                        <div style={{ padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <div style={{ textAlign: 'center', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                             <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حركات مخزنية')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي عمليات مخزنية تطابق بحثك.')}</p>
