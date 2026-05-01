@@ -285,7 +285,7 @@ export default function AccountsPage() {
                     <div className="expand-cell" style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
                         {hasChildren && !isTableMode ? (
                             <button onClick={(e) => toggleExpand(acc.id, e)} style={{
-                                background: 'transparent', border: 'none', color: C.textMuted,
+                                background: 'transparent', border: 'none', color: C.textSecondary,
                                 cursor: 'pointer', transition: '0.2s',
                                 transform: isExpanded ? 'rotate(90deg)' : (isRtl ? 'rotate(180deg)' : 'none')
                             }}>
@@ -296,7 +296,7 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div className="code-cell" style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
+                    <div className="code-cell" style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textSecondary, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
 
                     <div className="name-cell" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
                         <div className="type-icon" style={{
@@ -307,7 +307,7 @@ export default function AccountsPage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{acc.name}</span>
-                            <span className="mobile-code" style={{ display: 'none', fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{acc.code}</span>
+                            <span className="mobile-code" style={{ display: 'none', fontSize: '10px', color: C.textSecondary, fontFamily: OUTFIT }}>{acc.code}</span>
                         </div>
                     </div>
 
@@ -339,7 +339,7 @@ export default function AccountsPage() {
                     </div>
 
                     <div className="balance-cell" style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 600, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
-                        {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
+                        {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
                     <div className="actions-cell" style={{ width: '100px', display: 'flex', justifyContent: 'center', gap: '6px' }}>
@@ -407,8 +407,8 @@ export default function AccountsPage() {
                             }}>
                                 {s.icon}
                             </div>
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, margin: '0 0 2px', fontFamily: CAIRO }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '10px', fontWeight: 700, color: C.textSecondary, margin: '0 0 2px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</div>
                             </div>
                         </div>
@@ -468,7 +468,7 @@ export default function AccountsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '80px', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ padding: '80px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
                     </div>
@@ -478,11 +478,11 @@ export default function AccountsPage() {
                         <div className="table-header-responsive" style={{
                             display: 'flex', alignItems: 'center', padding: '14px 16px',
                             background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`,
-                            fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
+                            fontSize: '11px', fontWeight: 600, color: C.textSecondary, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
-                            <div className="code-header" style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
-                            <div style={{ flex: 1, textAlign: 'start' }}>{t('اسم الحساب')}</div>
+                            <div className="code-header" style={{ width: '100px', textAlign: 'center' }}>{t('الكود')}</div>
+                            <div style={{ flex: 1, textAlign: 'center' }}>{t('اسم الحساب')}</div>
                             <div className="type-header" style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
                             <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
                             <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
@@ -496,7 +496,7 @@ export default function AccountsPage() {
                                     effectiveAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
-                                <div style={{ padding: '60px', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ padding: '60px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
                                     <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
                                 </div>
@@ -518,7 +518,7 @@ export default function AccountsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px' }}>
                         <div>
                             <label style={LS}>{t('كود الحساب')}</label>
-                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', fontFamily: OUTFIT, fontWeight: 700, color: C.textMuted }} />
+                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }} />
                         </div>
                         <div>
                             <label style={LS}>{t('اسم الحساب بالعربية')} <span style={{ color: C.danger }}>*</span></label>
@@ -572,7 +572,7 @@ export default function AccountsPage() {
                         <AlertTriangle size={32} />
                     </div>
                     <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO, textAlign: 'center' }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
-                    <p style={{ fontSize: '13px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px', textAlign: 'center' }}>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px', textAlign: 'center' }}>
                         {t('سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.')}
                         <br />
                         <span style={{ color: '#ef4444', fontWeight: 600 }}>{t('تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.')}</span>
@@ -594,7 +594,7 @@ export default function AccountsPage() {
                         <button
                             disabled={isResetting}
                             onClick={() => setShowResetModal(false)}
-                            style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                             {t('إلغاء')}
                         </button>
                     </div>

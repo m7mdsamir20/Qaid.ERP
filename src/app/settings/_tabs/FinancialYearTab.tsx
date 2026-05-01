@@ -55,15 +55,15 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                             <CalendarDays size={32} />
                         </div>
                         <h3 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تأسيس الدورة المحاسبية')}</h3>
-                        <p style={{ margin: '0 0 24px', fontSize: '13px', color: C.textMuted, maxWidth: '440px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.6 }}>{t('يجب عليك تحديد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}</p>
+                        <p style={{ margin: '0 0 24px', fontSize: '13px', color: C.textSecondary, maxWidth: '440px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.6 }}>{t('يجب عليك تحديد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}</p>
 
                         <div className="mobile-setting-row" style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '24px' }}>
-                            <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'center' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>{t('تاريخ البداية')}</label>
                                 <input id="fys" type="date" defaultValue={`${new Date().getFullYear()}-01-01`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
                             </div>
-                            <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'center' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>{t('تاريخ النهاية')}</label>
                                 <input id="fye" type="date" defaultValue={`${new Date().getFullYear()}-12-31`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
@@ -100,7 +100,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 </svg>
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <span style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{Math.round(pct)}%</span>
-                                    <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO, textTransform: 'uppercase' }}>{t('مكتمل')}</span>
+                                    <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, textTransform: 'uppercase' }}>{t('مكتمل')}</span>
                                 </div>
                             </div>
 
@@ -122,7 +122,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                                 <item.icon size={12} />
                                                 <span style={{ fontSize: '10px', fontWeight: 600, fontFamily: CAIRO }}>{item.label}</span>
                                             </div>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr', textAlign: 'start', fontFamily: 'monospace' }}>{item.value}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr', textAlign: 'center', fontFamily: 'monospace' }}>{item.value}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -134,7 +134,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                                 <div>
                                     <h4 style={{ margin: '0 0 4px', fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('إغلاق السنة المالية')}</h4>
-                                    <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.5 }}>{t('عند إغلاق السنة، سيتم ترحيل الأرصدة الافتتاحية وفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 600 }}>{fmt(nextStart)}</span></p>
+                                    <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.5 }}>{t('عند إغلاق السنة، سيتم ترحيل الأرصدة الافتتاحية وفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 600 }}>{fmt(nextStart)}</span></p>
                                 </div>
                                 <div style={{ background: `${C.danger}15`, color: C.danger, padding: '6px 14px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', border: `1px solid ${C.danger}30`, fontFamily: CAIRO }}>
                                     <AlertCircle size={14} /> {t('إجراء حساس')}
@@ -170,7 +170,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                 {closedYears.length > 0 && (
                     <div style={{ marginTop: '32px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                            <LockIcon size={14} style={{ color: C.textMuted }} />
+                            <LockIcon size={14} style={{ color: C.textSecondary }} />
                             <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('الأرشيف الضريبي (الفترات المقفلة)')}</h3>
                         </div>
 
@@ -179,7 +179,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         {[t('اسم السنة'), t('من'), t('إلى'), t('إجمالي الأيام'), t('الحالة')].map(h => (
-                                            <th key={h} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textMuted,  fontFamily: CAIRO }}>{h}</th>
+                                            <th key={h} style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -188,10 +188,10 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                         <tr key={fy.id} style={{ borderBottom: i < closedYears.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</td>
-                                            <td style={{ padding: '14px 20px', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
-                                            <td style={{ padding: '14px 20px', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.endDate)}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{calcDays(fy.startDate, fy.endDate)} {t('يوم')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.endDate)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{calcDays(fy.startDate, fy.endDate)} {t('يوم')}</td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{ fontSize: '10px', background: 'rgba(100,116,139,0.1)', color: '#94a3b8', padding: '4px 12px', borderRadius: '20px', fontWeight: 600, border: '1px solid rgba(100,116,139,0.2)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO }}>
                                                     <LockIcon size={12} /> {t('مقفلة')}

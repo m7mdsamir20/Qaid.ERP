@@ -124,7 +124,7 @@ function CustomerStatementReportContent() {
             />
 
             <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('اختر العميل:')}</span>
+                <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('اختر العميل:')}</span>
                 <div style={{ flex: '1', minWidth: '220px', maxWidth: '420px' }}>
                     <CustomSelect
                         value={selectedCustomer}
@@ -161,8 +161,8 @@ function CustomerStatementReportContent() {
 
                 {!loading && !data && (
                     <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                        <FileText size={60} style={{ color: C.textMuted }} />
-                        <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
+                        <FileText size={60} style={{ color: C.textSecondary }} />
+                        <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
                     </div>
                 )}
 
@@ -180,11 +180,11 @@ function CustomerStatementReportContent() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start'}}>
-                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            {i !== 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                            {i !== 0 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -199,19 +199,19 @@ function CustomerStatementReportContent() {
                             <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
                                     <div>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('المنتج')}</div>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('المنتج')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
-                                    <div style={{ textAlign: 'start'}}>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                            {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -219,7 +219,7 @@ function CustomerStatementReportContent() {
                                     <thead>
                                         <tr>
                                             {[t('م'), t('الاستحقاق'), t('المبلغ'), t('المدفوع'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -231,13 +231,13 @@ function CustomerStatementReportContent() {
                                                 <td style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{inst.installmentNo}</td>
                                                 <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.amount)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                    {fmtN(inst.amount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                                 <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                    {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                                 <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                    {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                                 <td style={{ padding: '12px 16px' }}>
                                                     <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>

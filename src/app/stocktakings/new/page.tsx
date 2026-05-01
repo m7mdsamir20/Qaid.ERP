@@ -209,7 +209,7 @@ export default function NewStocktakingPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                     <p style={{ fontWeight: 600 }}>{t('جاري استرجاع البيانات...')}</p>
                 </div>
@@ -316,8 +316,8 @@ export default function NewStocktakingPage() {
 
                         {!form.warehouseId && (
                             <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
-                                <Building2 size={40} style={{ color: C.textMuted, opacity: 0.3, marginBottom: '16px' }} />
-                                <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>{t('يرجى اختيار المخزن أولاً لعرض قائمة الأصناف الحالية')}</p>
+                                <Building2 size={40} style={{ color: C.textSecondary, opacity: 0.3, marginBottom: '16px' }} />
+                                <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600 }}>{t('يرجى اختيار المخزن أولاً لعرض قائمة الأصناف الحالية')}</p>
                             </div>
                         )}
 

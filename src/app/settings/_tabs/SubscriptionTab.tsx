@@ -89,10 +89,10 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                 {/* تاريخ البداية */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                                     <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
-                                        <div style={{ color: C.textMuted }}><Calendar size={15} /></div>
+                                        <div style={{ color: C.textSecondary }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ البداية')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'center' }}>
                                         {new Date(sub.startDate).toLocaleDateString('en-GB')}
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: isExpired ? C.danger : C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ الانتهاء')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'center' }}>
                                         {new Date(sub.endDate).toLocaleDateString('en-GB')}
                                         {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 600, fontFamily: CAIRO }}>{t('انتهى الاشتراك')}</span>}
                                     </div>
@@ -112,7 +112,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                 {/* عدد المستخدمين */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                                     <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
-                                        <div style={{ color: C.textMuted }}><Users size={15} /></div>
+                                        <div style={{ color: C.textSecondary }}><Users size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('عدد المستخدمين')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
@@ -127,7 +127,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الأيام المتبقية')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO }}>
                                             <span style={{ color: barColor, fontWeight: 600 }}>
                                                 {isExpired ? t('انتهت الصلاحية') : `${Math.max(0, daysLeft)} ${t('يوم متبقي')}`}
                                             </span>

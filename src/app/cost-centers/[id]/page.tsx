@@ -70,7 +70,7 @@ export default function CostCenterDetails() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textSecondary }}>
                     <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
                     <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                 </div>
@@ -176,10 +176,10 @@ export default function CostCenterDetails() {
                             {kpi.icon}
                         </div>
                         <div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
+                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
                             <div style={{ fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                 {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0)}
-                                {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>}
+                                {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textSecondary, marginInlineEnd: '4px' }}>{cSymbol}</span>}
                             </div>
                         </div>
                     </div>
@@ -196,7 +196,7 @@ export default function CostCenterDetails() {
                     </div>
                     
                     {(!data.journalLines || data.journalLines.length === 0) ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', color: C.textSecondary }}>
                             <Activity size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                             <p style={{ margin: 0, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد معاملات مسجلة لهذا التصنيف')}</p>
                         </div>
@@ -282,7 +282,7 @@ export default function CostCenterDetails() {
                                             }}
                                         />
                                     </div>
-                                    <div style={{ fontSize: '9px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{monthNames[idx]}</div>
+                                    <div style={{ fontSize: '9px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{monthNames[idx]}</div>
                                 </div>
                             );
                         })}

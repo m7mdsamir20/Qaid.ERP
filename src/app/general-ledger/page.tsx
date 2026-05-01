@@ -214,7 +214,7 @@ export default function GeneralLedgerPage() {
                         ].map((s, i) => (
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px 12px' }}>
                                 <div style={{ fontSize: '11px', color: '#475569', fontWeight: 600, marginBottom: '2px' }}>{s.label}</div>
-                                <div style={{ fontSize: '13px', fontWeight: 600, color: s.color, direction: 'ltr', textAlign: 'start' }}>{s.value}</div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: s.color, direction: 'ltr', textAlign: 'center' }}>{s.value}</div>
                             </div>
                         ))}
                     </div>
@@ -288,7 +288,7 @@ export default function GeneralLedgerPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                                             {/* Date */}
-                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
                                                 {new Date(line.date).toLocaleDateString('en-GB')}
                                             </td>
 
@@ -298,7 +298,7 @@ export default function GeneralLedgerPage() {
                                                     {line.entryNumber}
                                                 </span>
                                                 {line.reference && (
-                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '8px' }}>· {line.reference}</span>
+                                                    <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '8px' }}>· {line.reference}</span>
                                                 )}
                                             </td>
 
@@ -311,7 +311,7 @@ export default function GeneralLedgerPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 {line.costCenter?.name
                                                     ? <span style={{ fontSize: '11px', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '2px 8px', color: '#a78bfa', fontFamily: CAIRO }}>{line.costCenter.name}</span>
-                                                    : <span style={{ color: C.textMuted, fontSize: '12px' }}>—</span>
+                                                    : <span style={{ color: C.textSecondary, fontSize: '12px' }}>—</span>
                                                 }
                                             </td>
 
@@ -346,7 +346,7 @@ export default function GeneralLedgerPage() {
                                 {/* Footer */}
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>
+                                        <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
                                             {t('الإجمالي')} — {filtered.length} {t('حركة')}
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: '#10b981', direction: 'ltr' }}>

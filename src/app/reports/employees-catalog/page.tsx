@@ -79,8 +79,8 @@ export default function EmployeesCatalogPage() {
                                         <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{e.name}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{e.department}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{e.position}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(e.joinDate).toLocaleDateString('en-GB')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{e.phone}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(e.joinDate).toLocaleDateString('en-GB')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{e.phone}</td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <span style={{
                                                 fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px',

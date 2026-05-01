@@ -245,7 +245,7 @@ export default function ClosingEntriesPage() {
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div className="selector-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '20px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ display: 'block', fontSize: '12px', color: C.textMuted, fontWeight: 600, marginBottom: '8px' }}>{t('السنة المالية المراد إقفالها')}</label>
+                                    <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, fontWeight: 600, marginBottom: '8px' }}>{t('السنة المالية المراد إقفالها')}</label>
                                     <CustomSelect
                                         value={selectedYear}
                                         onChange={v => setSelectedYear(v)}
@@ -256,7 +256,7 @@ export default function ClosingEntriesPage() {
                                 </div>
 
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ display: 'block', fontSize: '12px', color: C.textMuted, fontWeight: 600, marginBottom: '8px' }}>{t('حساب تجميع الأرباح/الخسائر')}</label>
+                                    <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, fontWeight: 600, marginBottom: '8px' }}>{t('حساب تجميع الأرباح/الخسائر')}</label>
                                     <CustomSelect
                                         value={targetAccountId}
                                         onChange={v => setTargetAccountId(v)}
@@ -289,7 +289,7 @@ export default function ClosingEntriesPage() {
 
                         {/* Rendering Areas */}
                         {!selectedYear ? (
-                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <Info size={48} style={{ opacity: 0.1, margin: '0 auto 20px' }} />
                                 <h3 style={{ fontSize: '13px', fontWeight: 700 }}>{t('يرجى اختيار السنة المالية للمعاينة')}</h3>
                                 <p style={{ fontSize: '13px', marginTop: '4px' }}>{t('سيتم سحب كافة حسابات الإيرادات والمصروفات لموسم المختارة')}</p>
@@ -297,7 +297,7 @@ export default function ClosingEntriesPage() {
                         ) : loading ? (
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '400px', flexDirection: 'column', gap: '16px', background: C.card, borderRadius: '20px', border: `1px solid ${C.border}` }}>
                                 <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                                <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
+                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
                             </div>
                         ) : alreadyClosed ? (
                             <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -305,7 +305,7 @@ export default function ClosingEntriesPage() {
                                     <CheckCircle2 size={48} />
                                 </div>
                                 <h2 style={{ fontSize: '24px', fontWeight: 600, color: C.textPrimary, marginBottom: '12px' }}>{t('السنة المالية مقفلة محاسبياً')}</h2>
-                                <p style={{ fontSize: '15px', color: C.textMuted, marginBottom: '40px' }}>
+                                <p style={{ fontSize: '15px', color: C.textSecondary, marginBottom: '40px' }}>
                                     {t('تم تدوير الأرصدة وإصدار قيد الإقفال بنجاح')} 
                                     {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 600, marginInlineEnd: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-GB')}</span>}
                                 </p>
@@ -337,7 +337,7 @@ export default function ClosingEntriesPage() {
                                     </div>
                                     <div>
                                         <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#10b981', margin: 0 }}>{t('اكتمل الإقفال بنجاح')}</h2>
-                                        <p style={{ fontSize: '13px', color: C.textMuted, margin: '4px 0 0' }}>{t('تم توليد قيد التصفير وترحيل الأرباح إلى الحساب الختامي.')}</p>
+                                        <p style={{ fontSize: '13px', color: C.textSecondary, margin: '4px 0 0' }}>{t('تم توليد قيد التصفير وترحيل الأرباح إلى الحساب الختامي.')}</p>
                                     </div>
                                 </div>
                                 <div className="result-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
@@ -355,7 +355,7 @@ export default function ClosingEntriesPage() {
                                 </div>
 
                                 {draftCount > 0 && (
-                                    <div style={{ padding: '16px 20px', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <AlertTriangle size={20} style={{ color: '#ef4444' }} />
                                         <span style={{ fontSize: '13px', color: '#ef4444', fontWeight: 600 }}>{t('تنبيه: يوجد')} {draftCount} {t('قيود "مسودة" غير مرحلة تمنع إتمام الإقفال.')}</span>
                                     </div>
@@ -374,7 +374,7 @@ export default function ClosingEntriesPage() {
                         
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '14px' }}>
-                                <HistoryIcon size={18} style={{ color: C.textMuted }} />
+                                <HistoryIcon size={18} style={{ color: C.textSecondary }} />
                                 <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{t('أرشيف السنوات المرحلة')}</span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -390,7 +390,7 @@ export default function ClosingEntriesPage() {
                                 ) : (
                                     <div style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                         <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2, margin: '0 auto' }} />
-                                        <p style={{ color: C.textMuted, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
+                                        <p style={{ color: C.textSecondary, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
                                     </div>
                                 )}
                             </div>
@@ -398,7 +398,7 @@ export default function ClosingEntriesPage() {
 
                         <div style={{ background: 'rgba(37, 106, 244, 0.05)', border: '1px solid rgba(37, 106, 244, 0.15)', borderRadius: '16px', padding: '20px' }}>
                             <h4 style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}><Info size={16}/> {t('ملاحظات محاسبية')}</h4>
-                            <p style={{ fontSize: '12px', color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
+                            <p style={{ fontSize: '12px', color: C.textSecondary, margin: 0, lineHeight: 1.6 }}>
                                 {t('عملية الإقفال تقوم بتصفير حسابات (الإيرادات والمصروفات) ونقل صافي النتيجة إلى حساب الأرباح والخسائر. يرجى مراجعة كافة القيود قبل البدء.')}
                             </p>
                         </div>
@@ -446,8 +446,8 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
             onMouseEnter={e => e.currentTarget.style.background = `${color}15`}
             onMouseLeave={e => e.currentTarget.style.background = `${color}08`}
         >
-            <div style={{ textAlign: 'start' }}>
-                <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{label}</p>
+            <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{label}</p>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                     <Currency 
                         amount={value} 
@@ -471,9 +471,9 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
 function DetailTable({ title, accounts, color, t, currencySign }: any) {
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
-            <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color }}>{title}</span>
-                <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textMuted, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
+                <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textSecondary, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
             </div>
             <div style={{ maxHeight: '420px', overflowY: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -484,10 +484,10 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
                                 <td style={{ padding: '14px 20px' }}>
-                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'start' }}>{acc.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'start' }}>{acc.code}</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>{acc.name}</div>
+                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'center' }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
+                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'end' }}>
                                     <Currency 
                                         amount={acc.balance}
                                         style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
@@ -496,7 +496,7 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={2} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد أرصدة حالياً')}</td>
+                                <td colSpan={2} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد أرصدة حالياً')}</td>
                             </tr>
                         )}
                     </tbody>

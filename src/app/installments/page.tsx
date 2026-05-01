@@ -278,15 +278,15 @@ export default function InstallmentsPage() {
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     {typeof k.value === 'string' && k.suffix ? (
                                         fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
                                     ) : (
                                         <>
                                             <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
+                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
                                         </>
                                     )}
                                 </div>
@@ -346,7 +346,7 @@ export default function InstallmentsPage() {
                                                                 <Package size={14} style={{ opacity: 0.5 }} />
                                                                 <span style={{ fontWeight: 600 }}>{p.productName}</span>
                                                             </div>
-                                                        ) : <span style={{ color: C.textMuted }}>—</span>}
+                                                        ) : <span style={{ color: C.textSecondary }}>—</span>}
                                                     </td>
                                                     <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
                                                     <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
@@ -396,7 +396,7 @@ export default function InstallmentsPage() {
                                 </tbody>
                             </table>
                             {filtered.length === 0 && (
-                                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textMuted }}>
+                                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
                                     <CreditCard size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                     <p style={{ fontSize: '15px' }}>{t('لا توجد خطط تقسيط مطابقة للبحث')}</p>
                                 </div>
@@ -495,7 +495,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('قيمة المنتج الإجمالية')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -538,7 +538,7 @@ export default function InstallmentsPage() {
                                                 }}
                                                 style={{ ...IS, height: '34px', paddingInlineStart: '32px', fontWeight: 600, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
                                             />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -554,7 +554,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('الدفعة المقدمة')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -562,7 +562,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('فائدة سنوية %')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '32px', paddingInlineEnd: '32px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>%</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>%</span>
                                 </div>
                             </div>
 
@@ -590,7 +590,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('مدة التقسيط (شهر)')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" min="1" placeholder="12" value={form.monthsCount} onChange={e => setForm(f => ({ ...f, monthsCount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '42px', textAlign: 'center', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 700, color: C.textMuted }}>{t('شهر')}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 700, color: C.textSecondary }}>{t('شهر')}</span>
                                 </div>
                             </div>
 
@@ -623,7 +623,7 @@ export default function InstallmentsPage() {
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '12px', fontWeight: 600, color: form.paymentType === t_sys.id ? C.primary : C.textSecondary }}>{t_sys.label}</div>
-                                                <div style={{ fontSize: '10px', color: C.textMuted }}>{t_sys.sub}</div>
+                                                <div style={{ fontSize: '10px', color: C.textSecondary }}>{t_sys.sub}</div>
                                             </div>
                                         </div>
                                     ))}
@@ -657,7 +657,7 @@ export default function InstallmentsPage() {
                                             );
                                         })}
                                     </div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, marginTop: '10px' }}>⚠️ {t('سيتم تجاوز الشهور غير المحددة عند توليد جدول الأقساط.')}</p>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, marginTop: '10px' }}>⚠️ {t('سيتم تجاوز الشهور غير المحددة عند توليد جدول الأقساط.')}</p>
                                 </div>
                             )}
 
@@ -700,7 +700,7 @@ export default function InstallmentsPage() {
                                             padding: '8px 4px', 
                                             border: `1px solid ${C.border}` 
                                         }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{inv_item.label}</div>
+                                            <div style={{ fontSize: '10px', color: C.textSecondary, marginBottom: '4px' }}>{inv_item.label}</div>
                                             <div style={{ fontSize: '13.5px', fontWeight: inv_item.bold ? 800 : 700, color: inv_item.color, fontFamily: OUTFIT }}>
                                                 {inv_item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                             </div>
@@ -744,7 +744,7 @@ export default function InstallmentsPage() {
                     >
                         <div style={{ padding: '10px 0' }}>
                             <p style={{ fontWeight: 700, fontSize: '13px', color: C.textPrimary }}>{t('هل أنت متأكد من حذف هذه الخطة نهائياً؟')}</p>
-                            <p style={{ color: C.textMuted, fontSize: '13px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
+                            <p style={{ color: C.textSecondary, fontSize: '13px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
                             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                                 <button onClick={() => setDeleteId(null)} style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer' }}>{t('تراجع')}</button>
                                 <button onClick={handleDelete} disabled={submitting} style={{ flex: 1.5, height: '46px', borderRadius: '12px', background: C.danger, color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -795,7 +795,7 @@ export default function InstallmentsPage() {
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>{t('اسم العميل الجديد')} <span style={{ color: C.danger }}>*</span></label>
                             <div style={{ position: 'relative' }}>
-                                <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
                                 <input name="custName" required placeholder={t("الاسم الكامل للعميل...")} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                             </div>
                         </div>
@@ -803,7 +803,7 @@ export default function InstallmentsPage() {
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>{t('رقم الهاتف')}</label>
                             <div style={{ position: 'relative' }}>
-                                <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
                                 <input name="custPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>

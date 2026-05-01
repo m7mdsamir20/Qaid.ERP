@@ -231,10 +231,10 @@ export default function JournalEntriesPage() {
                         ].map((s, i) => (
                             <div key={i} style={{ ...SC, ...KPI_STYLE(s.color), padding: '16px 20px', justifyContent: 'flex-start' }}>
                                 <div style={KPI_ICON(s.color)}>{s.icon}</div>
-                                <div style={{ textAlign: 'start' }}>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{s.label}</div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '2px' }}>{s.label}</div>
                                     <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                        {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted }}>{s.suffix}</span>}
+                                        {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textSecondary }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +281,7 @@ export default function JournalEntriesPage() {
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{entry.description}</div>
                                                 </td>
                                                 <td style={{...TABLE_STYLE.td(false)}}>
-                                                    {entry.reference ? <span style={{ fontSize: '10px', color: C.textMuted, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
+                                                    {entry.reference ? <span style={{ fontSize: '10px', color: C.textSecondary, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {fMoney(dr)}
@@ -329,7 +329,7 @@ export default function JournalEntriesPage() {
                                                                             <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</td>
                                                                             <td style={{  fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
                                                                             <td style={{  fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
-                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textMuted }}>{line.description || '—'}</td>
+                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.description || '—'}</td>
                                                                         </tr>
                                                                     ))}
                                                                 </tbody>
@@ -377,11 +377,11 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مدين')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('دائن')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('البيان')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('دائن')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('البيان')}</th>
                                                 <th style={{ width: '40px' }}></th>
                                             </tr>
                                         </thead>
@@ -471,24 +471,24 @@ export default function JournalEntriesPage() {
                                 <div style={{ background: C.subtle, borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
+                                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
                                             <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
-                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textSecondary }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
+                                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
                                             <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
-                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textSecondary }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
+                                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
                                             <div style={{ fontSize: '16px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
-                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textSecondary }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                     </div>

@@ -109,7 +109,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                     <User size={20} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('المورد / الشريك')}</p>
+                                    <p style={{ fontSize: '11px', color: C.textSecondary, margin: 0 }}>{t('المورد / الشريك')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.supplier?.name || invoice.customer?.name || '—'}</p>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                     <Building2 size={20} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('مخزن الاستلام')}</p>
+                                    <p style={{ fontSize: '11px', color: C.textSecondary, margin: 0 }}>{t('مخزن الاستلام')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                     <status.icon size={20} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('حالة السداد')}</p>
+                                    <p style={{ fontSize: '11px', color: C.textSecondary, margin: 0 }}>{t('حالة السداد')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
                         {/* ── Items Table ── */}
                         <div style={TABLE_STYLE.container}>
-                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
                                 <div style={STitle}><Package size={14} /> {t('الأصناف المدرجة')}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>
@@ -156,7 +156,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
                                             <td style={{...TABLE_STYLE.td(true)}}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
-                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT }}>{l.item.code}</div>
+                                                <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{l.item.code}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                             <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
@@ -170,7 +170,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
                         {invoice.notes && (
                             <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
-                                <div style={{ ...STitle, fontSize: '11px', color: C.textMuted }}><Info size={12} /> {t('ملاحظات إضافية')}</div>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}><Info size={12} /> {t('ملاحظات إضافية')}</div>
                                 <p style={{ fontSize: '13px', color: C.textSecondary, margin: '8px 0 0', lineHeight: 1.6 }}>{invoice.notes}</p>
                             </div>
                         )}

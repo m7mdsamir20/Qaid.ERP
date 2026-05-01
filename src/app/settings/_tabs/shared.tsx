@@ -18,7 +18,7 @@ export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSavi
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div>
                     <h2 style={{ margin: '0 0 1px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
-                    <p style={{ margin: 0, fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{sub}</p>
+                    <p style={{ margin: 0, fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sub}</p>
                 </div>
             </div>
             {!hideEditBtn && (

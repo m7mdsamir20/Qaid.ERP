@@ -233,11 +233,11 @@ export default function CustomersPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                             onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{s.suffix}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -297,7 +297,7 @@ export default function CustomersPage() {
                         </div>
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px' }}>
-                            <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
+                            <UserX size={36} style={{ color: C.textSecondary, opacity: 0.3, margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عملاء مضافين حالياً')}</p>
                         </div>
                     ) : (
@@ -332,7 +332,7 @@ export default function CustomersPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
@@ -404,19 +404,19 @@ export default function CustomersPage() {
                                 <label style={LS}>{t('العنوان')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
                                         <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[0]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
                                         <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[1]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
                                         <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[2]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
                                         <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[3]} />
                                     </div>
                                 </div>
@@ -440,7 +440,7 @@ export default function CustomersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'center', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
                                 </div>
                                 {form.type === 'company' && (
                                     <div>
@@ -470,7 +470,7 @@ export default function CustomersPage() {
                                         style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             {!editingId && (
@@ -499,7 +499,7 @@ export default function CustomersPage() {
                                             style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
-                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             )}

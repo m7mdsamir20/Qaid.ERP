@@ -219,12 +219,12 @@ export const TABLE_STYLE = {
         background: C.subtle,
         borderBottom: `1px solid ${C.border}`
     },
-    th: (_isFirst: boolean, centered?: boolean) => ({
+    th: (_isFirst: boolean, centered: boolean = true) => ({
         padding: '16px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         fontSize: '12px',
         fontWeight: 700,
-        color: C.textMuted,
+        color: C.textSecondary,
         fontFamily: CAIRO,
         letterSpacing: '0.5px',
         borderBottom: `1px solid ${C.border}`
@@ -235,8 +235,8 @@ export const TABLE_STYLE = {
         transition: 'all var(--transition-normal)',
         cursor: 'default' as 'default'
     }),
-    td: (_isFirst: boolean, centered?: boolean) => ({
-        padding: '16px 20px',
+    td: (_isFirst: boolean, centered: boolean = true) => ({
+        padding: '14px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         verticalAlign: 'middle' as 'middle'
     }),

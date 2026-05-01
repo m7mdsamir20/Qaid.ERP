@@ -229,7 +229,7 @@ export default function NewFixedAssetPage() {
                                         onFocus={focusIn} onBlur={focusOut} 
                                         placeholder=""
                                     />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '10px', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '10px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +251,7 @@ export default function NewFixedAssetPage() {
                                         onClick={() => setForm(f => ({ ...f, depreciationMethod: m.value as any }))}
                                         style={{
                                             padding: '12px 16px', borderRadius: '12px',
-                                            border: '1px solid', textAlign: 'start',
+                                            border: '1px solid', textAlign: 'center',
                                             cursor: 'pointer', transition: 'all 0.15s',
                                             borderColor: form.depreciationMethod === m.value
                                                 ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.07)',
@@ -274,7 +274,7 @@ export default function NewFixedAssetPage() {
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
                             <Building2 size={16} /> {t('الحسابات المحاسبية')}
-                            <span className="hide-mobile" style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginInlineEnd: 'auto' }}>
+                            <span className="hide-mobile" style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, marginInlineEnd: 'auto' }}>
                                 {t('مطلوبة لإنشاء القيود تلقائياً')}
                             </span>
                         </div>
@@ -285,7 +285,7 @@ export default function NewFixedAssetPage() {
                                     icon={Building2}
                                     placeholder={t("اختر حساب الأصل (1xxx)...")}
                                     options={toOpts(assetAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'center' }}>
                                     {t('من حسابات الأصول الثابتة')}
                                 </p>
                             </div>
@@ -295,7 +295,7 @@ export default function NewFixedAssetPage() {
                                     icon={TrendingDown}
                                     placeholder={t("اختر حساب المصروف (5xxx)...")}
                                     options={toOpts(expenseAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'center' }}>
                                     {t('مدين عند تسجيل الإهلاك')}
                                 </p>
                             </div>
@@ -305,7 +305,7 @@ export default function NewFixedAssetPage() {
                                     icon={TrendingDown}
                                     placeholder={t("اختر حساب مجمع الإهلاك...")}
                                     options={toOpts(assetAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'center' }}>
                                     {t('دائن عند تسجيل الإهلاك — حساب مقابل للأصل')}
                                 </p>
                             </div>

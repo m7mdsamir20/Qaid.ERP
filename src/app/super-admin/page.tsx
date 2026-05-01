@@ -157,11 +157,11 @@ export default function SuperAdminPage() {
                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                     >
-                         <div style={{ textAlign: 'start' }}>
-                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                         <div style={{ textAlign: 'center' }}>
+                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                 <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
+                                <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{s.suffix}</span>
                             </div>
                         </div>
                         <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -228,7 +228,7 @@ export default function SuperAdminPage() {
                                                 <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
                                                 </div>
-                                                <div style={{ textAlign: 'start' }}>
+                                                <div style={{ textAlign: 'center' }}>
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
                                                     <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
                                                 </div>
@@ -324,7 +324,7 @@ export default function SuperAdminPage() {
                             {deleteTarget.name}
                         </div>
                         
-                        <div style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                        <div style={{ margin: '0 0 32px', fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                             سيتم مسح كافة البيانات المرتبطة بكل الأنشطة (فواتير، مستخدمين، قيود) من النظام بشكل دائم.
                             <br />
                             <strong style={{ color: C.danger, display: 'block', marginTop: '8px' }}>هذا الإجراء غير قابل للتراجع!</strong>

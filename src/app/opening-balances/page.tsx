@@ -259,15 +259,15 @@ export default function OpeningBalancesPage() {
                 {!selectedYear ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                            <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
+                            <Wallet size={40} style={{ color: C.textSecondary, opacity: 0.5 }} />
                         </div>
                         <p style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
                     </div>
                 ) : loading ? (
                     <div style={{ ...SC, height: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontSize: '15px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
+                        <span style={{ fontSize: '15px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : accounts.length === 0 ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
@@ -275,7 +275,7 @@ export default function OpeningBalancesPage() {
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>
                         <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حسابات تحليلية متاحة')}</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً')}</p>
                     </div>
                 ) : (
                     <>
@@ -313,11 +313,11 @@ export default function OpeningBalancesPage() {
                                     alignItems: 'center', 
                                     justifyContent: 'space-between' 
                                 }}>
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                             <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.sub}</span>
+                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.sub}</span>
                                         </div>
                                     </div>
                                     <div style={{
@@ -372,7 +372,7 @@ export default function OpeningBalancesPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textMuted, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
+                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
                                     ) : filtered.map((account: Account, idx: number) => {
                                         const balance = balances.get(account.id) || { debit: 0, credit: 0 };
                                         const hasDr   = balance.debit  > 0;
@@ -429,9 +429,9 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
@@ -460,7 +460,7 @@ export default function OpeningBalancesPage() {
                         <ArrowRightLeft size={30} />
                     </div>
                     <p style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من ترحيل الأرصدة الختامية؟')}</p>
-                    <p style={{ fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>
                         {t('سيتم استيراد كافة الأرصدة الختامية من السنة المالية السابقة كأرصدة افتتاحية لهذه السنة')} ({curYear?.name}).
                         <br />
                         <span style={{ color: C.warning, fontWeight: 700 }}>{t('ملاحظة: تأكد أن السنة السابقة تم تدقيقها وإقفالها بشكل نهائي.')}</span>

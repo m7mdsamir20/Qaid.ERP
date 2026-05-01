@@ -137,14 +137,14 @@ export default function TreasuryBankReportPage() {
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('من')}</label>
                             <div className="date-input-wrapper" style={{ flex: 1 }}>
                                 <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
-                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start' }} />
+                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'center' }} />
                             </div>
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('إلى')}</label>
                             <div className="date-input-wrapper" style={{ flex: 1 }}>
                                 <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
-                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start' }} />
+                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'center' }} />
                             </div>
                         </div>
                         <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 600, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
@@ -154,7 +154,7 @@ export default function TreasuryBankReportPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'start'}}>
+                    <div style={{ padding: '100px', textAlign: 'center'}}>
                         <Loader2 size={40} className="animate-spin" style={{ color: PC }} />
                         <p style={{ marginTop: '20px', color: '#64748b' }}>{t('جاري استخراج كشف الحساب...')}</p>
                     </div>

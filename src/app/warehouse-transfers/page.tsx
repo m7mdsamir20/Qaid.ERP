@@ -54,7 +54,7 @@ export default function WarehouseTransfersPage() {
                 />
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                         <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تحميل سجل التحويلات...')}</p>
                     </div>
@@ -74,7 +74,7 @@ export default function WarehouseTransfersPage() {
                             <tbody>
                                 {transfers.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} style={{ padding: '80px 0',  color: C.textMuted }}>
+                                        <td colSpan={6} style={{ padding: '80px 0',  color: C.textSecondary }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                                                 <History size={48} style={{ opacity: 0.2 }} />
                                                 <div style={{ fontFamily: CAIRO, fontSize: '13px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
@@ -119,7 +119,7 @@ export default function WarehouseTransfersPage() {
                                                 ))}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '11px', maxWidth: '150px' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '11px', maxWidth: '150px' }}>
                                             {tf.notes || '—'}
                                         </td>
                                     </tr>

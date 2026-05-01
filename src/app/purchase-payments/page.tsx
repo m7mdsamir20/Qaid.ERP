@@ -195,12 +195,12 @@ export default function PurchasePaymentsPage() {
                     {/* Responsive Date Filters */}
                     {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("إلى")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
@@ -233,7 +233,7 @@ export default function PurchasePaymentsPage() {
                         </div>
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
+                            <Receipt size={36} style={{ color: C.textSecondary, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد سندات صرف</p>
                         </div>
                     ) : (
@@ -280,7 +280,7 @@ export default function PurchasePaymentsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
                                                 {v.treasury?.name || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {v.description || '—'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true),  color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>

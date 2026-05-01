@@ -685,7 +685,7 @@ function NewSalePageInner() {
                                 marginBottom: '20px'
                             }}>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'start' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
                                             ref={itemSelectRef}
@@ -792,14 +792,14 @@ function NewSalePageInner() {
                                                 [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{
                                                         textAlign: i === 0 ? 'start' : (i === 4 ? 'center' : 'center'),
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
                                                     }}>{h}</th>
                                                 ))
                                             ) : (
                                                 [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{
                                                         textAlign: i === 0 ? 'start' : (i === 5 ? 'center' : 'center'),
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
                                                     }}>{h}</th>
                                                 ))
                                             )}
@@ -813,7 +813,7 @@ function NewSalePageInner() {
                                             >
                                                 <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
                                                     <div style={{ marginBottom: '2px' }}>{l.itemName}</div>
-                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 400 }}>{l.description}</div>}
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400 }}>{l.description}</div>}
                                                 </td>
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                                     <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
@@ -1197,7 +1197,7 @@ function NewSalePageInner() {
                     <div style={{ marginBottom: '16px' }}>
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
-                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
                             <input name="pName" required placeholder={t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
@@ -1205,8 +1205,8 @@ function NewSalePageInner() {
                     <div style={{ marginBottom: '24px' }}>
                         <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
-                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
+                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 

@@ -145,12 +145,12 @@ export default function UnitsPage() {
 
                 {/* Main Table Content (Directly, No SC) */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Scale size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد وحدات قياس مسجلة حالياً')}</p>
                     </div>
@@ -243,9 +243,9 @@ export default function UnitsPage() {
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code}
-                                    style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: OUTFIT }}
+                                    style={{ ...IS, paddingInlineStart: '42px', color: C.textSecondary, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: OUTFIT }}
                                 />
-                                <Lock size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <Lock size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
                             </div>
                         </div>
 
@@ -273,7 +273,7 @@ export default function UnitsPage() {
                                     <label style={{ ...LS, marginBottom: '2px', display: 'block', color: form.status === 'active' ? '#10b981' : '#fb7185', transition: '0.3s' }}>
                                         {form.status === 'active' ? t('الوحدة نشطة') : t('الوحدة متوقفة')}
                                     </label>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
                                         {form.status === 'active' ? t('سيتم عرض الوحدة في جميع قوائم الاختيار') : t('سيتم إخفاء الوحدة مؤقتاً من الفواتير')}
                                     </span>
                                 </div>

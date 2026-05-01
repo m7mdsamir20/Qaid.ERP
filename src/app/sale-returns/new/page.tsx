@@ -516,10 +516,10 @@ export default function NewReturnPage() {
                                         { label: t('الإجمالي'), value: `${selectedInvoice.total.toLocaleString()} ${cSymbol}`, color: C.textPrimary },
                                         { label: t('الخصم'), value: `${(selectedInvoice.discount || 0).toLocaleString()} ${cSymbol}`, color: C.danger },
                                         { label: t('المحصل'), value: `${selectedInvoice.paidAmount.toLocaleString()} ${cSymbol}`, color: '#10b981' },
-                                        { label: t('المتبقي'), value: `${selectedInvoice.remaining.toLocaleString()} ${cSymbol}`, color: C.textMuted },
+                                        { label: t('المتبقي'), value: `${selectedInvoice.remaining.toLocaleString()} ${cSymbol}`, color: C.textSecondary },
                                     ].map((item, i) => (
                                         <div key={i} style={{ borderRadius: '8px', padding: '10px', border: `1px solid ${C.border}` }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
+                                            <div style={{ fontSize: '10px', color: C.textSecondary, marginBottom: '4px' }}>{item.label}</div>
                                             <div style={{ fontSize: '13px', color: item.color, fontWeight: 700, fontFamily: CAIRO }}>{item.value}</div>
                                         </div>
                                     ))}
@@ -533,20 +533,20 @@ export default function NewReturnPage() {
                                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                         <RotateCcw size={16} /> {isServices ? t('الخدمات المراد إلغاؤها') : t('الأصناف المرتجعة')}
                                     </div>
-                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('بند متاح')}</div>
+                                    <div style={{ fontSize: '10px', color: C.textSecondary }}>{lines.length} {t('بند متاح')}</div>
                                 </div>
                                 <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                                         <thead>
                                             <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '12px', width: '30px', textAlign: 'center' }}>✓</th>
-                                                <th style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم البند')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم البند')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -618,18 +618,18 @@ export default function NewReturnPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{isServices ? t('عدد الخدمات الملغاة') : t('عدد الأصناف المرتجعة')}</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary }}>{isServices ? t('عدد الخدمات الملغاة') : t('عدد الأصناف المرتجعة')}</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('بند')}</span>
                                 </div>
 
 
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '14px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>{t('إجمالي المرتجع')}</span>
+                                        <span style={{ fontSize: '13px', color: C.textSecondary }}>{t('إجمالي المرتجع')}</span>
                                         <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{fMoneyJSX(returnSubtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
+                                        <span style={{ fontSize: '13px', color: C.textSecondary }}>{t('خصم مسترد (-)')}</span>
                                         <span style={{ fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{fMoneyJSX(totalDiscountOnReturn)}</span>
                                     </div>
                                 </div>

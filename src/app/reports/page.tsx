@@ -252,7 +252,7 @@ function ReportsHubPageInner() {
         if (reports.length === 0) {
             return (
                 <div style={{ padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: `1px dashed ${C.border}` }}>
-                    <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('لا تملك صلاحيات لعرض أي تقارير في هذا القسم.')}</p>
+                    <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('لا تملك صلاحيات لعرض أي تقارير في هذا القسم.')}</p>
                 </div>
             );
         }
@@ -296,7 +296,7 @@ function ReportsHubPageInner() {
                                 {report.title.includes('(') ? (
                                     <>
                                         {report.title.split('(')[0]}
-                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, marginInlineStart: '4px' }}>
+                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, marginInlineStart: '4px' }}>
                                             ({report.title.split('(')[1]}
                                         </span>
                                     </>

@@ -144,11 +144,11 @@ export default function DepreciationPage() {
                         onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                         onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
-                                    {!s.isCount && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
+                                    {!s.isCount && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -188,7 +188,7 @@ export default function DepreciationPage() {
                         <span>{t('احسب الإهلاك الآن')}</span>
                     </button>
                     {selectedYear && (
-                        <div style={{ marginInlineEnd: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
+                        <div style={{ marginInlineEnd: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textSecondary, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
                             <InfoIcon size={14} />
                             <span>{t('نطاق السنة')}: {new Date(selectedYear.startDate).toLocaleDateString('en-GB')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-GB')}</span>
                         </div>
@@ -210,9 +210,9 @@ export default function DepreciationPage() {
                 {/* Results Table */}
                 {calculated && lines.length > 0 ? (
                     <div style={TABLE_STYLE.container}>
-                        <div style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
-                            <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
                                 <span>{t('عدد الأصول')}: <b style={{ fontFamily: OUTFIT }}>{lines.length}</b></span>
                                 <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}><Currency amount={totalCalculatedDep} /></b></span>
                             </div>
@@ -236,9 +236,9 @@ export default function DepreciationPage() {
                                         <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.purchaseCost} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}><Currency amount={l.asset.accumulatedDepreciation} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.accumulatedDepreciation} /></td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.danger }}><Currency amount={l.depAmount} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}><Currency amount={l.asset.accumulatedDepreciation + l.depAmount} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.accumulatedDepreciation + l.depAmount} /></td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981' }}><Currency amount={l.netBook} /></td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                             {l.alreadyDone ? (
@@ -256,12 +256,12 @@ export default function DepreciationPage() {
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
                         <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
-                        <p style={{ color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
+                        <p style={{ color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                         <ArrowRightLeft size={48} style={{ color: C.border, margin: '0 auto 16px', opacity: 0.5 }} />
-                        <h2 style={{ fontSize: '15px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
+                        <h2 style={{ fontSize: '15px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
                         <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>{t('سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك')}</p>
                     </div>
                 )}
@@ -282,7 +282,7 @@ export default function DepreciationPage() {
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي مبلغ مصروف الإهلاك')}:</span>
                                 <span style={{ color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {cSymbol}</span>
                             </div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '10px', direction: 'ltr' }}>
+                            <div style={{ fontSize: '11px', color: C.textSecondary, borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '10px', direction: 'ltr' }}>
                                 DEBIT: Dep. Expense Account (5xxx) <br/>
                                 CREDIT: Acc. Dep. Account (1xxx)
                             </div>

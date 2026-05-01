@@ -116,11 +116,11 @@ export default function CapitalPage() {
                         onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                         onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                    {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
+                                    {s.suffix && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -134,13 +134,13 @@ export default function CapitalPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات الرأسمالية...')}</p>
+                        <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات الرأسمالية...')}</p>
                     </div>
                 ) : data.length === 0 ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <DollarSign size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -221,7 +221,7 @@ export default function CapitalPage() {
                                                                 <div style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل حركات رأس المال')}</div>
                                                             </div>
                                                             {changes.length === 0 ? (
-                                                                <div style={{ padding: '10px', color: C.textMuted, fontSize: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
+                                                                <div style={{ padding: '10px', color: C.textSecondary, fontSize: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
                                                             ) : (
                                                                 <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
                                                                     <thead>
@@ -235,7 +235,7 @@ export default function CapitalPage() {
                                                                     <tbody>
                                                                         {changes.map((c, cIdx) => (
                                                                             <tr key={cIdx} style={{ ...TABLE_STYLE.row(cIdx === changes.length - 1), background: 'transparent' }}>
-                                                                                <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
+                                                                                <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
                                                                                     {new Date(c.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
                                                                                 </td>
                                                                                 <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px' }}>
@@ -279,7 +279,7 @@ export default function CapitalPage() {
                 >
                     <form onSubmit={handleSave}>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
+                            <div style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
                             <div style={{ fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
                                 {fMoneyJSX(showModal?.capital || 0)}
                             </div>

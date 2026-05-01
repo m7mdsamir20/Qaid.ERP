@@ -194,12 +194,12 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد المركز المالي...')}</span>
                     </div>
                 ) : !data || (data.assets.length === 0 && data.liabilities.length === 0 && data.equities.length === 0) ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'start'}}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center'}}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Scale size={40} style={{ opacity: 0.2, color: C.textMuted }} />
+                            <Scale size={40} style={{ opacity: 0.2, color: C.textSecondary }} />
                         </div>
                         <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أرصدة متاحة')}</h3>
-                        <p style={{ fontSize: '13px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('المشروع بانتظار استكمال القيد الافتتاحي أو ترحيل الحركات التأسيسية')}</p>
+                        <p style={{ fontSize: '13px', color: C.textSecondary, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('المشروع بانتظار استكمال القيد الافتتاحي أو ترحيل الحركات التأسيسية')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -221,7 +221,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                     {isBalanced ? t('معادلة المركز المالي متزنة') : t('يوجد خلل في توازن المركز المالي')}
                                 </span>
                             </div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
+                            <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>
                                 {t('الأصول = الخصوم + حقوق الملكية')}
                             </div>
                         </div>
@@ -238,7 +238,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                         {data.assets.map(a => (
                                             <div key={a.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <span style={{ fontSize: '10px', fontFamily: OUTFIT, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
+                                                    <span style={{ fontSize: '10px', fontFamily: OUTFIT, color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{a.name}</span>
                                                 </div>
                                                 <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.balance} /></span>
@@ -256,7 +256,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 {/* Liabilities */}
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
-                                    <div style={{ padding: '16px 20px', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#fb7185' }}>
+                                    <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#fb7185' }}>
                                         <Scale size={18} />
                                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
                                     </div>
@@ -268,10 +268,10 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.balance} /></span>
                                                 </div>
                                             ))}
-                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
+                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
                                         </div>
                                     </div>
-                                    <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
                                         <span style={{ fontSize: '13px', fontWeight: 600, color: '#fb7185', fontFamily: OUTFIT }}><Currency amount={data.totalLiabilities} /></span>
                                     </div>
@@ -279,7 +279,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
 
                                 {/* Equities */}
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
-                                    <div style={{ padding: '16px 20px', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
+                                    <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
                                         <Sigma size={18} />
                                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
                                     </div>
@@ -300,7 +300,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                             </div>
                                         </div>
                                     </div>
-                                    <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
                                         <span style={{ fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></span>
                                     </div>
@@ -319,11 +319,11 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                             alignItems: 'center'
                         }}>
                             <div>
-                                <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
+                                <p style={{ fontSize: '12px', color: C.textSecondary, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
                                 <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalLiabilitiesAndEquities} /></h2>
                             </div>
-                            <div className="no-print" style={{ textAlign: 'start'}}>
-                                <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
+                            <div className="no-print" style={{ textAlign: 'center'}}>
+                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
                                 <div style={{ fontWeight: 600, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities)} /></div>
                             </div>
                         </div>

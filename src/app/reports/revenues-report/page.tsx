@@ -81,17 +81,17 @@ export default function RevenuesReportPage() {
                 {/* Filters */}
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('من:')}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('من:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'start', direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'center', direction: 'ltr' }} />
                         </div>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('إلى:')}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('إلى:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'start', direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'center', direction: 'ltr' }} />
                         </div>
                     </div>
                     <button className="update-btn" onClick={fetchReport}
@@ -102,27 +102,27 @@ export default function RevenuesReportPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'start'}}>
+                    <div style={{ padding: '100px', textAlign: 'center'}}>
                         <Loader2 size={40} className="animate-spin" style={{ color: SC }} />
-                        <p style={{ marginTop: '20px', color: C.textMuted, fontFamily: CAIRO }}>{t('جاري استخراج التقرير...')}</p>
+                        <p style={{ marginTop: '20px', color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري استخراج التقرير...')}</p>
                     </div>
                 ) : !data ? (
                     <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: SC }} />
-                        <h3 style={{ color: C.textMuted, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
+                        <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
                     </div>
                 ) : (
                     <>
                         {/* Summary Cards */}
                         <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             <div style={{ background: `${SC}08`, border: `1px solid ${SC}33`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي الإيرادات')}</div>
+                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي الإيرادات')}</div>
                                 <div style={{ fontSize: '22px', fontWeight: 600, color: SC, fontFamily: OUTFIT }}>
                                     {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
+                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
                                 <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
                             </div>
                         </div>
@@ -133,7 +133,7 @@ export default function RevenuesReportPage() {
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل الإيرادات')}</h3>
                             </div>
                             {data.rows.length === 0 ? (
-                                <div style={{ padding: '60px', textAlign: 'start', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد إيرادات في هذه الفترة')}</div>
+                                <div style={{ padding: '60px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>{t('لا توجد إيرادات في هذه الفترة')}</div>
                             ) : (
                                 <div style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -150,11 +150,11 @@ export default function RevenuesReportPage() {
                                                     style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>#{row.entryNumber}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, direction: 'ltr' }}>{new Date(row.date).toLocaleDateString('en-GB')}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>#{row.entryNumber}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, direction: 'ltr' }}>{new Date(row.date).toLocaleDateString('en-GB')}</td>
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.revenueAccountName}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                         <span style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399' }}>
                                                             {row.sourceName}
                                                         </span>
@@ -169,7 +169,7 @@ export default function RevenuesReportPage() {
                                             <tr>
                                                 <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
                                                 <td style={{ padding: '18px 16px',  fontWeight: 600, fontSize: '13px', color: SC, fontFamily: OUTFIT }}>
-                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>
                                         </tfoot>

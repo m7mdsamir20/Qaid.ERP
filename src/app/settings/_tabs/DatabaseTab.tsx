@@ -55,11 +55,11 @@ export default function DatabaseTab({
                         <div style={{ color: C.primary }}><Download size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة كاملة (JSON)')}</div>
-                            <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('مثالي للاستعادة الكاملة')}</div>
+                            <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{t('مثالي للاستعادة الكاملة')}</div>
                         </div>
                     </div>
                     <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                        <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                            {t('تصدير كامل قابل للاستعادة — ينصح به كنسخ احتياطي دوري آمن')}
                         </span>
                         <button className="action-btn"
@@ -89,11 +89,11 @@ export default function DatabaseTab({
                         <div style={{ color: '#10b981' }}><FileSpreadsheet size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة Excel')}</div>
-                            <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('للمراجعة والطباعة')}</div>
+                            <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{t('للمراجعة والطباعة')}</div>
                         </div>
                     </div>
                     <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                        <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                             {t('تصدير العملاء، الموردين، الأصناف، والفواتير بصيغة جدولية للمراجعة')}
                         </span>
                         <button className="action-btn"
@@ -124,11 +124,11 @@ export default function DatabaseTab({
                         <div style={{ color: '#f59e0b' }}><UploadCloud size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('استعادة نسخة')}</div>
-                            <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('من ملف JSON فقط')}</div>
+                            <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{t('من ملف JSON فقط')}</div>
                         </div>
                     </div>
                     <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                        <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                             {t('استعادة كافة بيانات النظام من نسخة احتياطية سابقة محملة مسبقاً')}
                         </span>
                         <label className="action-btn" style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: `1px solid rgba(245,158,11,0.3)`, background: 'rgba(245,158,11,0.08)', color: '#f59e0b', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
@@ -187,7 +187,7 @@ export default function DatabaseTab({
                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                         </div>
                         <div className="mobile-setting-value" style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
-                            <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.desc}</span>
+                            <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{item.desc}</span>
                             <button className="action-btn"
                                 onClick={() => { setImportType(item.id as any); setShowImportModal(true); setImportStep(1); }}
                                 style={{ height: '36px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${item.color}30`, background: `${item.color}10`, color: item.color, fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
@@ -217,7 +217,7 @@ export default function DatabaseTab({
                                 style={{
                                     width: '30px', height: '30px', borderRadius: '6px',
                                     border: `1px solid ${C.border}`, background: 'transparent',
-                                    color: C.textMuted, cursor: importLoading ? 'not-allowed' : 'pointer',
+                                    color: C.textSecondary, cursor: importLoading ? 'not-allowed' : 'pointer',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     transition: 'all 0.15s'
                                 }}
@@ -269,7 +269,7 @@ export default function DatabaseTab({
                                                 <Layers size={16} />
                                             </div>
                                             <div style={{ flex: 1 }}>
-                                                <div style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO, marginBottom: '6px' }}>{t('المخزن المستهدف')}</div>
+                                                <div style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '6px' }}>{t('المخزن المستهدف')}</div>
                                                 {warehouses.length === 0 ? (
                                                     <div style={{ fontSize: '12px', color: '#f59e0b', fontFamily: CAIRO, fontWeight: 700 }}>⚠️ {t('لا يوجد مخازن — أضف مخزناً أولاً من صفحة المخازن')}</div>
                                                 ) : (
@@ -370,7 +370,7 @@ export default function DatabaseTab({
                                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                             <td style={{ padding: '11px 14px', fontFamily: CAIRO, fontWeight: 700, color: C.textPrimary }}>{String(name || String(Object.values(row)[0] || ''))}</td>
-                                                            <td style={{ padding: '11px 14px',  color: C.textMuted, fontSize: '12px' }}>
+                                                            <td style={{ padding: '11px 14px',  color: C.textSecondary, fontSize: '12px' }}>
                                                                 {importType === 'items'
                                                                     ? findT(['وحدة القياس', 'الوحدة', 'وحده', 'القياس', 'unit', 'measure', 'uom'])
                                                                     : findT(['هاتف', 'جوال', 'موبايل', 'phone', 'mobile'])}
@@ -407,7 +407,7 @@ export default function DatabaseTab({
                                             </tbody>
                                         </table>
                                         {importData.length > 20 && (
-                                            <div style={{ padding: '12px 14px', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                            <div style={{ padding: '12px 14px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                                 {t('و')} {importData.length - 20} {t('سجل إضافي سيتم استيرادهم بالكامل')}
                                             </div>
                                         )}
@@ -417,7 +417,7 @@ export default function DatabaseTab({
                                         <button onClick={processImport} style={{ flex: 1, height: '46px', borderRadius: '12px', border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 10px 20px -5px rgba(16,185,129,0.4)', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                             <Save size={16} /> {t('تأكيد وحفظ البيانات')}
                                         </button>
-                                        <button onClick={() => { setImportStep(1); setImportData([]); }} style={{ height: '46px', padding: '0 24px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                                        <button onClick={() => { setImportStep(1); setImportData([]); }} style={{ height: '46px', padding: '0 24px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                                     </div>
                                 </div>
                             )}
@@ -426,7 +426,7 @@ export default function DatabaseTab({
                                 <div style={{ padding: '40px 20px' }}>
                                     <Loader2 size={48} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '24px' }} />
                                     <h3 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
-                                    <p style={{ margin: '0 0 24px', color: C.textMuted, fontFamily: CAIRO }}>
+                                    <p style={{ margin: '0 0 24px', color: C.textSecondary, fontFamily: CAIRO }}>
                                         {t('جاري استيراد السجل')} {currentImportIndex + 1} {t('من')} {importData.length}
                                     </p>
                                     <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>

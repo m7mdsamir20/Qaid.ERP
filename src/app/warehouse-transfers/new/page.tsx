@@ -129,7 +129,7 @@ export default function NewTransferPage() {
         return (
             <DashboardLayout>
                 <div style={PAGE_BASE}>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                         <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تهيئة نموذج التحويل...')}</p>
                     </div>
@@ -158,7 +158,7 @@ export default function NewTransferPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
-                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: OUTFIT, fontWeight: 600 }}
+                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textSecondary, opacity: 0.6, fontSize: '11px', fontFamily: OUTFIT, fontWeight: 600 }}
                                     />
                                     <Lock size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
                                 </div>
@@ -225,7 +225,7 @@ export default function NewTransferPage() {
                                     <tbody>
                                         {lines.length === 0 ? (
                                             <tr>
-                                                <td colSpan={4} style={{ padding: '40px',  color: C.textMuted }}>
+                                                <td colSpan={4} style={{ padding: '40px',  color: C.textSecondary }}>
                                                     <p style={{ fontSize: '12px', fontWeight: 600 }}>{t('لم يتم إضافة أصناف بعد. اضغط على أضف صنف للبدء.')}</p>
                                                 </td>
                                             </tr>

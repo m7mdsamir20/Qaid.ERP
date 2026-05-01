@@ -96,7 +96,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                                         value={notificationsForm.lowStock?.threshold || 10}
                                                         onChange={e => setNotificationsForm((p: any) => ({ ...p, lowStock: { ...p.lowStock, threshold: +e.target.value } }))}
                                                         style={{ width: '80px', height: '34px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.primary}30`, background: `${C.primary}05`, color: C.textPrimary, fontSize: '13px', fontWeight: 600, outline: 'none', fontFamily: CAIRO }} />
-                                                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('وحدة')}</span>
+                                                    <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{t('وحدة')}</span>
                                                 </div>
                                             </>
                                         )}
