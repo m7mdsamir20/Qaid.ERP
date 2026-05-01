@@ -389,12 +389,12 @@ export default function ItemsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
                     </div>
@@ -559,14 +559,14 @@ export default function ItemsPage() {
                                     <div>
                                         <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS,  paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textSecondary, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS,  paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textSecondary, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
@@ -581,7 +581,7 @@ export default function ItemsPage() {
                                                     0
                                                 </div>
                                             )}
-                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent',  fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                             <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
                                         </div>
                                     </div>

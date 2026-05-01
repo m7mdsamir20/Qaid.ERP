@@ -192,7 +192,7 @@ export default function GeneralLedgerPage() {
 
             {!selectedAccount ? (
                 /* No account selected */
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
+                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
                     <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', }} />
                     <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
                     <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('ابحث عن الحساب أعلاه لعرض حركاته')}</p>

@@ -480,7 +480,7 @@ export default function NewPurchasePage() {
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'center', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary,  direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                             </div>
@@ -573,9 +573,9 @@ export default function NewPurchasePage() {
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{l.itemName}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                <td style={{ padding: '12px',  color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
                                                 <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>

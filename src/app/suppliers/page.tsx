@@ -247,7 +247,7 @@ export default function SuppliersPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
@@ -398,7 +398,7 @@ export default function SuppliersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'center', direction: 'ltr', fontFamily: OUTFIT }} placeholder={ph.phone} onFocus={focusIn} onBlur={focusOut} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS,  direction: 'ltr', fontFamily: OUTFIT }} placeholder={ph.phone} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 {form.type === 'company' && (
                                     <div>

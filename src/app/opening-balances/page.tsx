@@ -257,7 +257,7 @@ export default function OpeningBalancesPage() {
                 />
 
                 {!selectedYear ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textSecondary, opacity: 0.5 }} />
                         </div>
@@ -270,7 +270,7 @@ export default function OpeningBalancesPage() {
                         <span style={{ fontSize: '15px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : accounts.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>
@@ -388,7 +388,7 @@ export default function OpeningBalancesPage() {
                                                 <td style={TABLE_STYLE.td(true, true)}>
                                                     <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{account.code}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(true, true), textAlign: 'center', fontWeight: 600 }}>{account.name}</td>
+                                                <td style={{ ...TABLE_STYLE.td(true, true),  fontWeight: 600 }}>{account.name}</td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
                                                     <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
                                                         {typeLabels[account.type]}
@@ -429,9 +429,9 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>

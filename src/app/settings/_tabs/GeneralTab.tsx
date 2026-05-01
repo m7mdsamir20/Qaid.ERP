@@ -144,7 +144,7 @@ export default function GeneralTab({
                                                                 }));
                                                                 setOpenDropdown(null);
                                                             }}
-                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'center', fontFamily: CAIRO }}>
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer',  fontFamily: CAIRO }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                                 <span style={{ fontSize: '13px' }}>{opt.flag}</span>
                                                                 <span>{opt.name}</span>
@@ -242,7 +242,7 @@ export default function GeneralTab({
                                                                 setOpenDropdown(null);
                                                                 setCurrencySearch('');
                                                             }}
-                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'center', fontFamily: CAIRO }}>
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer',  fontFamily: CAIRO }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                                 <span style={{ fontSize: '11px', color: selected ? C.primary : C.textMuted, fontFamily: OUTFIT, opacity: 0.7 }}>{opt.code}</span>
                                                                 <span>{opt.label}</span>
@@ -281,7 +281,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'center', fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr',  fontFamily: OUTFIT }}>
                                     {generalForm.timezone}
                                 </div>
                             ) : (

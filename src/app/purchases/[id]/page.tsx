@@ -67,7 +67,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
     if (!invoice) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
+            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
         </DashboardLayout>
     );
 
@@ -137,7 +137,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
                         {/* ── Items Table ── */}
                         <div style={TABLE_STYLE.container}>
-                            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ padding: '16px 20px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
                                 <div style={STitle}><Package size={14} /> {t('الأصناف المدرجة')}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>

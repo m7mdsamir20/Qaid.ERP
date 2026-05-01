@@ -210,7 +210,7 @@ export default function DepreciationPage() {
                 {/* Results Table */}
                 {calculated && lines.length > 0 ? (
                     <div style={TABLE_STYLE.container}>
-                        <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ padding: '14px 20px',  background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
                             <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
                                 <span>{t('عدد الأصول')}: <b style={{ fontFamily: OUTFIT }}>{lines.length}</b></span>
@@ -253,13 +253,13 @@ export default function DepreciationPage() {
                         </table>
                     </div>
                 ) : calculated ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
                         <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
                         <p style={{ color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                         <ArrowRightLeft size={48} style={{ color: C.border, margin: '0 auto 16px', opacity: 0.5 }} />
                         <h2 style={{ fontSize: '15px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
                         <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>{t('سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك')}</p>

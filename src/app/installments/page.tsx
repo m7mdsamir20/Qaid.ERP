@@ -312,7 +312,7 @@ export default function InstallmentsPage() {
                 </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : (
@@ -396,7 +396,7 @@ export default function InstallmentsPage() {
                                 </tbody>
                             </table>
                             {filtered.length === 0 && (
-                                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
+                                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
                                     <CreditCard size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                     <p style={{ fontSize: '15px' }}>{t('لا توجد خطط تقسيط مطابقة للبحث')}</p>
                                 </div>
@@ -494,7 +494,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('قيمة المنتج الإجمالية')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -553,7 +553,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('الدفعة المقدمة')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('فائدة سنوية %')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '32px', paddingInlineEnd: '32px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '32px', paddingInlineEnd: '32px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>%</span>
                                 </div>
                             </div>

@@ -129,7 +129,7 @@ export default function NewTransferPage() {
         return (
             <DashboardLayout>
                 <div style={PAGE_BASE}>
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                         <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تهيئة نموذج التحويل...')}</p>
                     </div>
@@ -260,7 +260,7 @@ export default function NewTransferPage() {
                                                                 value={line.quantity || ''} 
                                                                 onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value))}
                                                                 style={{ 
-                                                                    ...IS, height: '34px', fontSize: '12px', textAlign: 'center',
+                                                                    ...IS, height: '34px', fontSize: '12px', 
                                                                     borderColor: isOverstock ? C.danger : C.border,
                                                                     background: isOverstock ? 'rgba(251,113,133,0.03)' : 'rgba(255,255,255,0.01)'
                                                                 }}

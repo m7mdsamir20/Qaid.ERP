@@ -127,7 +127,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     if ((val.match(/\./g) || []).length > 1) return;
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
-                                style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 700, color: C.textPrimary, height: '46px', fontSize: '18px', width: '100%', padding: '0 45px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                style={{ ...IS, border: 'none', background: 'transparent',  fontWeight: 700, color: C.textPrimary, height: '46px', fontSize: '18px', width: '100%', padding: '0 45px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                             <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{cSymbol}</span>
                         </div>
                     </div>
@@ -282,12 +282,12 @@ export default function TreasuriesPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ margin: 0, color: C.textSecondary, fontWeight: 700, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري جرد الخزن والبنوك...')}</p>
                     </div>
                 ) : treasuries.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textSecondary, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>

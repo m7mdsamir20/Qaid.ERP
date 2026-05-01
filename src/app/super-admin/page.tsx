@@ -197,7 +197,7 @@ export default function SuperAdminPage() {
 
             {/* Data Grid */}
             {loading ? (
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
+                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
                     <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
                     <div style={{ fontSize: '13px', fontWeight: 600 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
                 </div>
@@ -298,7 +298,7 @@ export default function SuperAdminPage() {
                     </table>
 
                     {filtered.length === 0 && (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
+                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
                             <FileText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
                             <p style={{ margin: 0, fontWeight: 600, fontSize: '13px' }}>لا توجد حسابات مسجلة تطابق البحث</p>
                         </div>

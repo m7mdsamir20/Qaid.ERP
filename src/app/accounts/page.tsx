@@ -468,7 +468,7 @@ export default function AccountsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '80px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ padding: '80px', color: C.textSecondary,  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
                     </div>
@@ -496,7 +496,7 @@ export default function AccountsPage() {
                                     effectiveAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
-                                <div style={{ padding: '60px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ padding: '60px', color: C.textSecondary,  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
                                     <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
                                 </div>

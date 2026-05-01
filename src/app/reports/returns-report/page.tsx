@@ -188,12 +188,12 @@ export default function ReturnsReportPage() {
                     )}
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                             <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع بيانات المرتجعات...')}</span>
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '100px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <div style={{ padding: '100px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                             <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
@@ -205,7 +205,7 @@ export default function ReturnsReportPage() {
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
                                             <th key={i} style={{ 
-                                                padding: '16px 20px', textAlign: 'center', textAlign: 'center', fontSize: '12px', color: C.textSecondary, 
+                                                padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
                                                 textAlign: 'center',
                                                 fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
@@ -218,11 +218,11 @@ export default function ReturnsReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                 {r.type === 'sale_return' ? 'RET-' : 'RTN-'}{String(r.invoiceNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center' }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
@@ -232,9 +232,9 @@ export default function ReturnsReportPage() {
                                                     {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{r.party}</td>
+                                            <td style={{ padding: '14px 20px',   fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{r.itemCount} {t('صنف')}</td>
+                                            <td style={{ padding: '14px 20px',   fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}>
                                                 <Currency amount={r.total} />
                                             </td>
                                         </tr>

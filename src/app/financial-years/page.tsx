@@ -166,7 +166,7 @@ export default function FinancialYearsPage() {
                     icon={CalendarDays}
                 />
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.primary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.primary }}>
                         <Loader2 size={32} className="animate-spin" />
                     </div>
                 ) : !activeFY ? (

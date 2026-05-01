@@ -92,12 +92,12 @@ export default function LowStockReportPage() {
                         )}
 
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                            <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                                 <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                                 <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري فحص النواقص...')}</span>
                             </div>
                         ) : filtered.length === 0 ? (
-                            <div style={{ padding: '100px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                            <div style={{ padding: '100px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>
@@ -121,12 +121,12 @@ export default function LowStockReportPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                                <td style={{ padding: '14px 20px',  }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 700 }}>{item.code}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{item.category}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{item.category}</td>
+                                                <td style={{ padding: '14px 20px',  }}>
                                                     <span style={{
                                                         background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
                                                         color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
@@ -135,10 +135,10 @@ export default function LowStockReportPage() {
                                                         {formatNumber(item.totalStock)}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
                                                     {formatNumber(item.minLimit)}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {formatNumber(item.value)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>

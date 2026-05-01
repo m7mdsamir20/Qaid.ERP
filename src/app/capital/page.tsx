@@ -132,12 +132,12 @@ export default function CapitalPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
                         <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات الرأسمالية...')}</p>
                     </div>
                 ) : data.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <DollarSign size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
@@ -221,7 +221,7 @@ export default function CapitalPage() {
                                                                 <div style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل حركات رأس المال')}</div>
                                                             </div>
                                                             {changes.length === 0 ? (
-                                                                <div style={{ padding: '10px', color: C.textSecondary, fontSize: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
+                                                                <div style={{ padding: '10px', color: C.textSecondary, fontSize: '12px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
                                                             ) : (
                                                                 <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
                                                                     <thead>
@@ -307,7 +307,7 @@ export default function CapitalPage() {
                         </div>
 
                         <div style={{ position: 'relative', marginBottom: '24px' }}>
-                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المبلغ المراد تعديله')}</label>
+                            <label style={{ ...LS,  display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المبلغ المراد تعديله')}</label>
                             <div style={{ position: 'relative' }}>
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
                                     0.00
@@ -316,7 +316,7 @@ export default function CapitalPage() {
                                     type="number" step="any" required 
                                     value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
-                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    style={{ ...IS, background: 'transparent',  fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
                                     onFocus={focusIn} onBlur={focusOut} 
                                     placeholder=""
                                 />

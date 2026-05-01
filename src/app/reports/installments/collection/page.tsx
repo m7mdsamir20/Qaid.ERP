@@ -19,7 +19,7 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => formatNumber(n);
 
 const IS: React.CSSProperties = {
-    height: '38px', padding: '0 12px', textAlign: 'center', direction: 'inherit',
+    height: '38px', padding: '0 12px',  direction: 'inherit',
     borderRadius: '8px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0',
     fontSize: '12px', outline: 'none', boxSizing: 'border-box',
@@ -135,14 +135,14 @@ export default function CollectionReportPage() {
 
                 <div style={{ minHeight: '300px' }}>
                     {loading && (
-                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                             <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>جاري جلب البيانات...</p>
                         </div>
                     )}
 
                     {!loading && !data && (
-                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
+                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                             <BarChart3 size={60} style={{ color: C.textSecondary }} />
                             <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>قم باختيار الفترة ثم اضغط على عرض التقرير</p>
                         </div>
@@ -210,14 +210,14 @@ export default function CollectionReportPage() {
                                             <tr key={inst.id} style={{ borderBottom: idx === ((data.installments?.length || 0) - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
+                                                <td style={{ padding: '16px 20px',  color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
                                                 </td>
-                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#34d399', fontFamily: OUTFIT }}>
                                                         {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>

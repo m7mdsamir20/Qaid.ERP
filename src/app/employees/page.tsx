@@ -199,12 +199,12 @@ export default function EmployeesPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ padding: '80px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
-                        <div style={{ padding: '100px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ padding: '100px 20px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textSecondary }} />
                             </div>

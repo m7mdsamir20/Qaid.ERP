@@ -126,7 +126,7 @@ export default function DuePage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>

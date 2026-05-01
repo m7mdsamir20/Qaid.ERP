@@ -816,10 +816,10 @@ function NewSalePageInner() {
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400 }}>{l.description}</div>}
                                                 </td>
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
-                                                    <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                    <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px',  color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
 
                                                 <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>

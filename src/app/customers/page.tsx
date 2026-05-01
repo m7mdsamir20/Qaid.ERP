@@ -292,7 +292,7 @@ export default function CustomersPage() {
                 {/* ── Table (Suppliers Style) ── */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
@@ -440,7 +440,7 @@ export default function CustomersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'center', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS,  direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
                                 </div>
                                 {form.type === 'company' && (
                                     <div>
@@ -467,7 +467,7 @@ export default function CustomersPage() {
                                             if ((v.match(/\./g) || []).length > 1) return;
                                             setForm({ ...form, creditLimit: v });
                                         }}
-                                        style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
+                                        style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>

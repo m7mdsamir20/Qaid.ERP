@@ -145,12 +145,12 @@ export default function UnitsPage() {
 
                 {/* Main Table Content (Directly, No SC) */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Scale size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد وحدات قياس مسجلة حالياً')}</p>
                     </div>

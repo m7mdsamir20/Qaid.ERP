@@ -81,7 +81,7 @@ export default function DetailedBalanceSheetPage() {
                     subtitle={t("حدث خطأ أثناء محاولة جلب بيانات التقرير.")}
                     backTab="financial" 
                 />
-                <div style={{ padding: '60px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
+                <div style={{ padding: '60px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
                     <AlertCircle size={60} style={{ opacity: 0.2, marginBottom: '20px' }} />
                     <h3 style={{ fontFamily: CAIRO }}>{t('خطأ في تحميل البيانات')}</h3>
                 </div>
@@ -128,7 +128,7 @@ export default function DetailedBalanceSheetPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         {/* Liabilities Table */}
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                            <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#fb7185' }}>
+                            <div style={{ padding: '14px 20px',  background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#fb7185' }}>
                                 <Scale size={18} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
                             </div>
@@ -152,7 +152,7 @@ export default function DetailedBalanceSheetPage() {
 
                         {/* Equity Table */}
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                            <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#256af4' }}>
+                            <div style={{ padding: '14px 20px', textAlign: 'center', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#256af4' }}>
                                 <Sigma size={18} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
                             </div>

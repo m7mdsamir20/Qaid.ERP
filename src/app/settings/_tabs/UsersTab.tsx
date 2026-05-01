@@ -136,7 +136,7 @@ export default function UsersTab({
                                     fontFamily: CAIRO, transition: 'border-color 0.2s'
                                 }}>
                                 <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                <span style={{ flex: 1, textAlign: 'center', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
+                                <span style={{ flex: 1,  fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
                                     {roleLabels[newUserForm.roleId] || newUserForm.roleId}
                                 </span>
                             </button>
@@ -170,7 +170,7 @@ export default function UsersTab({
                                                 borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none',
                                                 background: newUserForm.roleId === opt.value ? `${C.primary}15` : 'transparent',
                                                 color: newUserForm.roleId === opt.value ? C.primary : C.textSecondary,
-                                                fontSize: '12.5px', cursor: 'pointer', textAlign: 'center', fontFamily: CAIRO
+                                                fontSize: '12.5px', cursor: 'pointer',  fontFamily: CAIRO
                                             }}
                                             onMouseEnter={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
                                             onMouseLeave={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'transparent'; }}>
@@ -445,18 +445,18 @@ export default function UsersTab({
                                 <tr key={u.id} style={{ borderBottom: idx < users.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                    <td style={{ padding: '14px 20px',  }}>
                                         <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
                                         <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{u.email}</div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px',  fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                         <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 600, fontFamily: CAIRO }}>
                                             {roleLabels[u.role] || u.role}
                                         </span>
                                     </td>
                                     {branches.length > 1 && (
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center' }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                             {(() => {
                                                 if (u.role === 'admin') {
                                                     return <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontFamily: CAIRO }}>{t('كل الفروع')}</span>;
@@ -471,7 +471,7 @@ export default function UsersTab({
                                             })()}
                                         </td>
                                     )}
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                    <td style={{ padding: '14px 20px',  }}>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <button onClick={() => toggleUserStatus(u.id, u.status)}
                                                 style={{ height: '26px', padding: '0 12px', borderRadius: '20px', border: `1px solid ${u.status === 'active' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, background: u.status === 'active' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: u.status === 'active' ? '#10b981' : C.danger, fontSize: '11px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
@@ -480,7 +480,7 @@ export default function UsersTab({
                                             </button>
                                         </div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                             {u.id !== session?.user?.id && (
                                                 <button onClick={() => editUser(u)}
