@@ -219,7 +219,7 @@ export default function LoginPage() {
                                         paddingLeft: isRtl ? '44px' : '16px',
                                         paddingRight: isRtl ? '16px' : '44px',
                                         direction: isRtl ? 'rtl' : 'ltr',
-                                        textAlign: 'center'
+                                        textAlign: 'start'
                                     }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}

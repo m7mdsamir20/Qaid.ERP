@@ -63,7 +63,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 <input id="fys" type="date" defaultValue={`${new Date().getFullYear()}-01-01`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
                             </div>
-                            <div style={{ textAlign: 'center' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>{t('تاريخ النهاية')}</label>
                                 <input id="fye" type="date" defaultValue={`${new Date().getFullYear()}-12-31`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
@@ -189,7 +189,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
                                             <td style={{ padding: '14px 20px',  fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.endDate)}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{calcDays(fy.startDate, fy.endDate)} {t('يوم')}</td>
                                             <td style={{ padding: '14px 20px' }}>

@@ -222,7 +222,7 @@ export default function CategoriesPage() {
                                 <input
                                     type="text" readOnly
                                     value={form.code}
-                                    style={{ ...IS, height: '42px', background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'not-allowed', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }}
+                                    style={{ ...IS, height: '42px', background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'not-allowed', textAlign: 'start', fontFamily: OUTFIT, fontWeight: 700 }}
                                 />
                             </div>
                             <div>

@@ -401,6 +401,7 @@ export default function NewQuotationPage() {
                                             onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
                                             onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
                                             style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                            textAlign="center"
                                         />
                                         <InlineError field="entryQty" />
                                     </div>
@@ -421,6 +422,7 @@ export default function NewQuotationPage() {
                                                 }
                                             }}
                                             style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                            textAlign="center"
                                         />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -435,8 +437,8 @@ export default function NewQuotationPage() {
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '12px',  fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textSecondary, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textSecondary, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
                                             <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
                                             <th style={{ padding: '12px', width: '80px' }}></th>
                                         </tr>
@@ -451,9 +453,9 @@ export default function NewQuotationPage() {
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, marginTop: '2px' }}>{l.description}</div>}
                                                 </td>
-                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.quantity}</td>
-                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px',  fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.quantity}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{fmt(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                         <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>

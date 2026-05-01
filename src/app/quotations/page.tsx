@@ -172,12 +172,12 @@ export default function QuotationsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم العرض")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true, true) }}>{t("رقم العرض")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("التاريخ")}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الحالة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -188,13 +188,13 @@ export default function QuotationsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
+                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
                                                     {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, false), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true) }}>

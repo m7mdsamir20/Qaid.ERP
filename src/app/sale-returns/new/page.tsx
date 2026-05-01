@@ -123,7 +123,6 @@ export default function NewReturnPage() {
     /* ── Computed ── */
     const partners = [
         ...customers.map(c => ({ ...c, partnerType: 'customer' })),
-        ...suppliers.map(s => ({ ...s, partnerType: 'supplier' })),
     ];
     const selectedPartner = partners.find(p => p.id === (form.customerId || form.supplierId));
     const selectedInvoice = Array.isArray(saleInvoices) ? saleInvoices.find(i => i.id === form.originalInvoiceId) : null;
@@ -400,26 +399,21 @@ export default function NewReturnPage() {
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>{t('العميل / الطرف')} <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('العميل')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
-                                                value={form.customerId || form.supplierId}
+                                                value={form.customerId}
                                                 onChange={v => {
-                                                    const p = partners.find(x => x.id === v);
-                                                    if (p?.partnerType === 'supplier') {
-                                                        setForm((f: any) => ({ ...f, supplierId: v, customerId: '', originalInvoiceId: '' }));
-                                                    } else {
-                                                        setForm((f: any) => ({ ...f, customerId: v, supplierId: '', originalInvoiceId: '' }));
-                                                    }
+                                                    setForm((f: any) => ({ ...f, customerId: v, supplierId: '', originalInvoiceId: '' }));
                                                     setLines([]);
                                                     clearError('customerId');
                                                 }}
                                                 icon={UserCheck}
-                                                placeholder={t("اختر الطرف...")}
+                                                placeholder={t("اختر العميل...")}
                                                 options={partners.map(s => ({
                                                     value: s.id,
                                                     label: s.name,
-                                                    sub: s.partnerType === 'customer' ? t('عميل') : t('مورد')
+                                                    sub: t('عميل')
                                                 }))}
                                             />
                                             <InlineError field="customerId" />
@@ -541,12 +535,12 @@ export default function NewReturnPage() {
                                             <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '12px', width: '30px', textAlign: 'center' }}>✓</th>
                                                 <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم البند')}</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
                                                 <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -563,9 +557,9 @@ export default function NewReturnPage() {
                                                         <td style={{ padding: '12px' }}>
                                                             <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
                                                         </td>
-                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px' }}>{l.unit}</td>
-                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px' }}>{l.originalQty}</td>
-                                                        <td style={{ padding: '12px',  color: C.danger, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{l.alreadyReturned}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.unit}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px' }}>{l.originalQty}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.danger, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{l.alreadyReturned}</td>
                                                         <td style={{ padding: '12px' }}>
                                                             <div style={{
                                                                 display: 'flex', alignItems: 'center',
@@ -588,8 +582,8 @@ export default function NewReturnPage() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{formatNumber(l.price)}</td>
-                                                        <td style={{ padding: '12px',  fontWeight: 700, color: l.selected ? C.primary : C.textMuted, fontFamily: OUTFIT, fontSize: '15px' }}>{formatNumber(l.returnTotal)}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{formatNumber(l.price)}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: l.selected ? C.primary : C.textMuted, fontFamily: OUTFIT, fontSize: '15px' }}>{formatNumber(l.returnTotal)}</td>
                                                     </tr>
                                                 );
                                             })}

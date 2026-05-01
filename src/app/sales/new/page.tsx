@@ -734,6 +734,7 @@ function NewSalePageInner() {
                                             onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
                                             decimals={2}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
+                                            textAlign="center"
                                         />
                                         <InlineError field="entryQty" />
                                     </div>
@@ -754,6 +755,7 @@ function NewSalePageInner() {
                                                 }
                                             }}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
+                                            textAlign="center"
                                         />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -816,10 +818,10 @@ function NewSalePageInner() {
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400 }}>{l.description}</div>}
                                                 </td>
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
-                                                    <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                    <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '12px',  color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
 
                                                 <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
@@ -966,7 +968,7 @@ function NewSalePageInner() {
                                                         discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
                                                     }));
                                                 }}
-                                                style={{ ...IS, height: '34px', fontSize: '13px', textAlign: 'center' }}
+                                                style={{ ...IS, height: '34px', fontSize: '13px', textAlign: 'start' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
@@ -1206,7 +1208,7 @@ function NewSalePageInner() {
                         <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
                             <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 

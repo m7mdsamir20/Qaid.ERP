@@ -309,7 +309,7 @@ export default function CustomersPage() {
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

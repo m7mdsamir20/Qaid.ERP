@@ -239,7 +239,7 @@ export default function EmployeesPage() {
                                                     {emp.code}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'center' }}>{emp.name}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{emp.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'center' }}>{emp.email || '—'}</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

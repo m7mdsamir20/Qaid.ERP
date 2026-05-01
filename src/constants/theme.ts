@@ -219,7 +219,7 @@ export const TABLE_STYLE = {
         background: C.subtle,
         borderBottom: `1px solid ${C.border}`
     },
-    th: (_isFirst: boolean, centered: boolean = true) => ({
+    th: (_isFirst: boolean, centered: boolean = false) => ({
         padding: '16px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         fontSize: '12px',
@@ -235,7 +235,7 @@ export const TABLE_STYLE = {
         transition: 'all var(--transition-normal)',
         cursor: 'default' as 'default'
     }),
-    td: (_isFirst: boolean, centered: boolean = true) => ({
+    td: (_isFirst: boolean, centered: boolean = false) => ({
         padding: '14px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         verticalAlign: 'middle' as 'middle'

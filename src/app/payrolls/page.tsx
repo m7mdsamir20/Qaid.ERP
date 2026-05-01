@@ -244,7 +244,7 @@ export default function PayrollsPage() {
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('عدد الموظفين')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي الصافي')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('العمليات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('العمليات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -228,7 +228,7 @@ export default function SuperAdminPage() {
                                                 <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
                                                 </div>
-                                                <div style={{ textAlign: 'center' }}>
+                                                <div style={{ textAlign: 'start' }}>
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
                                                     <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
                                                 </div>

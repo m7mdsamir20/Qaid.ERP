@@ -523,6 +523,7 @@ export default function NewPurchasePage() {
                                             onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
+                                            textAlign="center"
                                             onFocus={e => e.target.select()}
                                             onKeyDown={e => {
                                                 if (e.key === 'Enter') priceRef.current?.focus();
@@ -540,6 +541,7 @@ export default function NewPurchasePage() {
                                             onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary }}
+                                            textAlign="center"
                                             onFocus={e => e.target.select()}
                                             onKeyDown={e => {
                                                 if (e.key === 'Enter') {
@@ -573,9 +575,9 @@ export default function NewPurchasePage() {
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{l.itemName}</td>
-                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '12px',  color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
                                                 <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -653,7 +655,7 @@ export default function NewPurchasePage() {
                                             />
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', fontSize: '13px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', fontSize: '13px', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
@@ -805,7 +807,7 @@ export default function NewPurchasePage() {
                         <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
                             <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 

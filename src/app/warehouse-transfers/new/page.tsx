@@ -272,7 +272,7 @@ export default function NewTransferPage() {
                                                             )}
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'start' }}>
                                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                                             <button
                                                                 type="button" onClick={() => removeLine(index)}

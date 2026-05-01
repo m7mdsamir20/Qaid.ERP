@@ -255,7 +255,7 @@ export default function AdvancesPage() {
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الأقساط')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('القسط الشهري')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'start' }}>{t('الحالة')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -394,7 +394,7 @@ export default function AdvancesPage() {
                                                     monthlyAmount: inst > 0 ? (Number(val) / inst).toString() : '0'
                                                 });
                                             }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'start' }}
                                             onFocus={focusIn}
                                             onBlur={focusOut}
                                         />
@@ -424,7 +424,7 @@ export default function AdvancesPage() {
                                             type="text" 
                                             readOnly
                                             value={formatWithCommas(formData.monthlyAmount)}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'start' }}
                                         />
                                     </div>
                                 </div>
