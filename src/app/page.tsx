@@ -622,12 +622,12 @@ export default function DashboardPage() {
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '13px', }}>{renderCurrency(inv.total)}</td>
-                            <td style={{ padding: '14px 16px', }}>
+                            <td style={{ padding: '14px 16px', fontSize: '13px', textAlign: 'center' }}>{renderCurrency(inv.total)}</td>
+                            <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                               <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, }}>
-                              {getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
+                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }}>
+                              {inv._isPosOrder ? 'POS-' : getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
                             </td>
                           </tr>
                         );
