@@ -153,14 +153,14 @@ function CustomerStatementReportContent() {
 
             <div style={{ minHeight: '300px' }}>
                 {loading && (
-                    <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                         <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري جلب البيانات وتحليلها...')}</p>
                     </div>
                 )}
 
                 {!loading && !data && (
-                    <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
+                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                         <FileText size={60} style={{ color: C.textSecondary }} />
                         <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
                     </div>

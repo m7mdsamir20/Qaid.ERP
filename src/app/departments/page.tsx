@@ -184,7 +184,7 @@ export default function DepartmentsPage() {
 
                 {/* Departments Grid */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', color: '#64748b' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', color: '#64748b' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
                         <p style={{ fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>

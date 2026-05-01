@@ -201,21 +201,21 @@ export default function NewEmployeePage() {
                                 <div className="allowances-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                                     <Field label={t("بدل سكن")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.housingAllowance)} onChange={e => set('housingAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.housingAllowance)} onChange={e => set('housingAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px',  fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textSecondary, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </Field>
                                     <Field label={t("بدل مواصلات")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.transportAllowance)} onChange={e => set('transportAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.transportAllowance)} onChange={e => set('transportAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px',  fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textSecondary, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </Field>
                                     <Field label={t("بدل غذاء")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.foodAllowance)} onChange={e => set('foodAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.foodAllowance)} onChange={e => set('foodAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px',  fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textSecondary, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
@@ -231,7 +231,7 @@ export default function NewEmployeePage() {
                                     </Field>
                                     <Field label={t("خصم الضرائب")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.taxDeduction)} onChange={e => set('taxDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.taxDeduction)} onChange={e => set('taxDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px',  fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textSecondary, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>

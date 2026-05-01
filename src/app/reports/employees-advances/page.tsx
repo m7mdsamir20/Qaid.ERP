@@ -97,7 +97,7 @@ export default function EmployeesAdvancesPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
                 ) : (
                     <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -113,10 +113,10 @@ export default function EmployeesAdvancesPage() {
                                     const pct = (r.paidAmount / r.totalAmount) * 100;
                                     return (
                                         <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.totalAmount} /></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={r.paidAmount} /></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={r.remainingAmount} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
+                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.totalAmount} /></td>
+                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={r.paidAmount} /></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={r.remainingAmount} /></td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <div style={{ width: '100px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', margin: '0 auto' }}>
                                                     <div style={{ width: `${pct}%`, height: '100%', background: pct === 100 ? '#10b981' : C.primary }} />

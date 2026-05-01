@@ -220,7 +220,7 @@ export default function NewPaymentPage() {
                                                 setForm((f: any) => ({ ...f, paymentType: nextType, treasuryId: nextTrea?.id || '' }));
                                             }}
                                             style={{
-                                                padding: '14px 20px', textAlign: 'center', textAlign: 'center', borderRadius: '12px', border: '1px solid',
+                                                padding: '14px 20px',  borderRadius: '12px', border: '1px solid',
                                                 borderColor: form.paymentType === opt.val ? opt.color : C.border,
                                                 background: form.paymentType === opt.val ? `${opt.color}11` : 'transparent',
                                                 cursor: 'pointer', transition: 'all 0.2s',

@@ -180,7 +180,7 @@ export default function CashFlowReportPage() {
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('التاريخ'), t('النوع'), t('الخزينة'), t('الطرف الآخر'), t('البيان'), t('المبلغ')].map((h, i) => (
                                             <th key={i} style={{
-                                                padding: '16px 20px', textAlign: 'center', textAlign: 'center',
+                                                padding: '16px 20px', 
                                                 fontSize: '12px',
                                                 fontWeight: 600,
                                                 color: C.textSecondary,
@@ -199,8 +199,8 @@ export default function CashFlowReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px',  }}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
@@ -209,10 +209,10 @@ export default function CashFlowReportPage() {
                                                     {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{v.description || '—'}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
                                                 <Currency amount={v.amount} /></td>
                                         </tr>
                                     ))}

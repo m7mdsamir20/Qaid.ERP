@@ -199,7 +199,7 @@ export default function NewFixedAssetPage() {
                         </div>
                         <div className="cost-salvage-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                             <div style={{ position: 'relative' }}>
-                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
+                                <label style={{ ...LS,  display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '1px' }}>
                                         0.00
@@ -208,7 +208,7 @@ export default function NewFixedAssetPage() {
                                         type="number" step="0.01" required
                                         value={form.purchaseCost} 
                                         onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} 
-                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                        style={{ ...IS, background: 'transparent',  fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                         placeholder=""
                                     />
@@ -216,7 +216,7 @@ export default function NewFixedAssetPage() {
                                 </div>
                             </div>
                             <div style={{ position: 'relative' }}>
-                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('قيمة الخردة')}</label>
+                                <label style={{ ...LS,  display: 'block', marginBottom: '12px' }}>{t('قيمة الخردة')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '1px' }}>
                                         0.00
@@ -251,7 +251,7 @@ export default function NewFixedAssetPage() {
                                         onClick={() => setForm(f => ({ ...f, depreciationMethod: m.value as any }))}
                                         style={{
                                             padding: '12px 16px', borderRadius: '12px',
-                                            border: '1px solid', textAlign: 'center',
+                                            border: '1px solid', 
                                             cursor: 'pointer', transition: 'all 0.15s',
                                             borderColor: form.depreciationMethod === m.value
                                                 ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.07)',

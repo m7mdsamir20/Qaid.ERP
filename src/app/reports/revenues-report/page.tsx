@@ -85,13 +85,13 @@ export default function RevenuesReportPage() {
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'center', direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT,  direction: 'ltr' }} />
                         </div>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('إلى:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'center', direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT,  direction: 'ltr' }} />
                         </div>
                     </div>
                     <button className="update-btn" onClick={fetchReport}
@@ -107,7 +107,7 @@ export default function RevenuesReportPage() {
                         <p style={{ marginTop: '20px', color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري استخراج التقرير...')}</p>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{ padding: '80px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: SC }} />
                         <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
                     </div>

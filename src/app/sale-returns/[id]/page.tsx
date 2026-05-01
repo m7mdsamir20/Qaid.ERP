@@ -83,7 +83,7 @@ export default function SaleReturnDetailsPage() {
     if (error || !ret) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#f87171' }}>
+                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#f87171' }}>
                     <AlertCircle size={56} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
                     <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 10px' }}>{t('خطأ في التحميل')}</h3>
                     <p style={{ opacity: 0.8, marginBottom: '20px' }}>{error || t('لم نتمكن من العثور على المرتجع المطلوب')}</p>
@@ -188,7 +188,7 @@ export default function SaleReturnDetailsPage() {
                     {/* Items Table Section */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div className="table-container" style={{ borderRadius: '18px', overflow: 'hidden' }}>
-                            <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ padding: '14px 20px',  borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
                                 <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
                                     <Package size={13} color="#256af4" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                 </h3>

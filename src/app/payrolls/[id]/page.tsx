@@ -478,8 +478,8 @@ ${tableHtml}
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
                                 <th style={{ ...TABLE_STYLE.th(true), width: '120px', textAlign: 'center' }}>كود</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center', width: '150px' }}>الموظف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center', width: '120px' }}>المسمى الوظيفي</th>
+                                <th style={{ ...TABLE_STYLE.th(false),  width: '150px' }}>الموظف</th>
+                                <th style={{ ...TABLE_STYLE.th(false),  width: '120px' }}>المسمى الوظيفي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>الأساسي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>البدلات</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>السلف</th>
@@ -490,7 +490,7 @@ ${tableHtml}
                         <tbody>
                             {payroll.lines.map((line: any, idx: number) => (
                                 <tr key={line.id} style={TABLE_STYLE.row(idx === payroll.lines.length - 1)}>
-                                    <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center', whiteSpace: 'nowrap' }}>
+                                    <td style={{ ...TABLE_STYLE.td(true),  whiteSpace: 'nowrap' }}>
                                         <span style={{ fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), whiteSpace: 'nowrap' }}>
@@ -499,16 +499,16 @@ ${tableHtml}
                                     <td style={{ ...TABLE_STYLE.td(false), whiteSpace: 'nowrap' }}>
                                         <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>{line.employee.position || 'موظف'}</span>
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT,  whiteSpace: 'nowrap' }} dir="ltr">
                                         {formatNumber(line.basicSalary)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT,  whiteSpace: 'nowrap' }} dir="ltr">
                                         +{formatNumber(line.allowances)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         -{formatNumber(line.advances)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT,  whiteSpace: 'nowrap' }} dir="ltr">
                                         -{formatNumber(line.discounts)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">

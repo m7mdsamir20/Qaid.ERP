@@ -184,7 +184,7 @@ export default function CashStatementPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'center', direction: 'inherit',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT
@@ -196,7 +196,7 @@ export default function CashStatementPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'center', direction: 'inherit',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT
@@ -217,7 +217,7 @@ export default function CashStatementPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري سحب كشف الحركة...')}</span>
                     </div>
@@ -264,7 +264,7 @@ export default function CashStatementPage() {
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('التاريخ'), t('البيان والتفاصيل'), t('الرصيد قبل'), t('وارد (+)'), t('صادر (-)'), t('الرصيد بعد')].map((h, i) => (
                                                 <th key={i} style={{ 
-                                                    padding: '16px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '12px', color: C.textSecondary, 
+                                                    padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
                                                      
                                                     fontWeight: 600, fontFamily: CAIRO 
                                                 }}>{h}</th>
@@ -273,28 +273,28 @@ export default function CashStatementPage() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '12.5px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد افتتاحي (قبل الفترة المحددة)')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 600, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(data.openingBalance)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td colSpan={2} style={{ padding: '14px 20px',   fontSize: '12.5px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد افتتاحي (قبل الفترة المحددة)')}</td>
+                                            <td style={{ padding: '14px 20px',   color: C.textSecondary }}>—</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center',  color: C.textSecondary }}>—</td>
+                                            <td style={{ padding: '14px 20px',   color: C.textSecondary }}>—</td>
+                                            <td style={{ padding: '14px 20px',   fontWeight: 600, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(data.openingBalance)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                         {movements.map((m, i: number) => (
                                             <tr key={m.id + i} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: C.textSecondary, fontSize: '11.5px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '11.5px', fontFamily: OUTFIT }}>
                                                     {new Date(m.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{m.party}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, textAlign: 'center', fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary,  fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: C.textSecondary, fontSize: '13.5px', fontFamily: OUTFIT }}>{formatNumber(m.balanceBefore)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'receipt' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'payment' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 600, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT, background: 'rgba(255,255,255,0.01)' }}>{formatNumber(m.balanceAfter)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '13.5px', fontFamily: OUTFIT }}>{formatNumber(m.balanceBefore)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',   color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'receipt' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'payment' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT, background: 'rgba(255,255,255,0.01)' }}>{formatNumber(m.balanceAfter)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>

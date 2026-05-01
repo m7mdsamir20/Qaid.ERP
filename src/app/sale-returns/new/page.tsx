@@ -540,13 +540,13 @@ export default function NewReturnPage() {
                                         <thead>
                                             <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '12px', width: '30px', textAlign: 'center' }}>✓</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم البند')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم البند')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية الأصلية')}</th>
                                                 <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية المرتجع')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر البيع')}</th>
+                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -563,9 +563,9 @@ export default function NewReturnPage() {
                                                         <td style={{ padding: '12px' }}>
                                                             <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
                                                         </td>
-                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.unit}</td>
-                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px' }}>{l.originalQty}</td>
-                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.danger, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{l.alreadyReturned}</td>
+                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px' }}>{l.unit}</td>
+                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px' }}>{l.originalQty}</td>
+                                                        <td style={{ padding: '12px',  color: C.danger, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{l.alreadyReturned}</td>
                                                         <td style={{ padding: '12px' }}>
                                                             <div style={{
                                                                 display: 'flex', alignItems: 'center',
@@ -588,8 +588,8 @@ export default function NewReturnPage() {
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{formatNumber(l.price)}</td>
-                                                        <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: l.selected ? C.primary : C.textMuted, fontFamily: OUTFIT, fontSize: '15px' }}>{formatNumber(l.returnTotal)}</td>
+                                                        <td style={{ padding: '12px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{formatNumber(l.price)}</td>
+                                                        <td style={{ padding: '12px',  fontWeight: 700, color: l.selected ? C.primary : C.textMuted, fontFamily: OUTFIT, fontSize: '15px' }}>{formatNumber(l.returnTotal)}</td>
                                                     </tr>
                                                 );
                                             })}

@@ -81,7 +81,7 @@ export default function CostCenterDetails() {
     if (!data || data.error) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: C.danger, padding: '80px 20px', fontFamily: CAIRO }}>
+                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: C.danger, padding: '80px 20px', fontFamily: CAIRO }}>
                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.5 }} />
                     {t('لم يتم العثور على مركز التكلفة')}
                 </div>

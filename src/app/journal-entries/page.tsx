@@ -423,7 +423,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
+                                                            style={{ ...IS,  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>

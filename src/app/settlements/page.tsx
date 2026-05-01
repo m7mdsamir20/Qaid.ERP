@@ -41,7 +41,7 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                     boxShadow: open ? `0 0 0 2px ${C.primaryBg}` : 'none',
                     background: open ? C.hover : C.inputBg
                 }}>
-                <div style={{ flex: 1, textAlign: 'center', color: selected ? C.textPrimary : C.textMuted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-start' }}>
+                <div style={{ flex: 1,  color: selected ? C.textPrimary : C.textMuted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-start' }}>
                     {Icon && <Icon size={16} style={{ color: selected ? C.primary : C.textMuted }} />}
                     <span style={{ fontWeight: selected ? 700 : 500, fontFamily: CAIRO }}>{selected ? selected.label : placeholder}</span>
                 </div>
@@ -219,7 +219,7 @@ export default function ComprehensiveSettlementPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '60px' }}>
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '60px' }}>
                         <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, display: 'block', margin: '0 auto' }} />
                         <p style={{ marginTop: '10px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
@@ -268,7 +268,7 @@ export default function ComprehensiveSettlementPage() {
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}
+                                                            style={{ ...IS,  paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}
                                                             onFocus={focusIn} onBlur={focusOut}
                                                         />
                                                         <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{currencySign}</span>
@@ -329,7 +329,7 @@ export default function ComprehensiveSettlementPage() {
                         )}
 
                         {filteredSettlements.length === 0 ? (
-                            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
+                            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
                                 <div style={{ width: 80, height: 80, borderRadius: '50%', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}><ArrowRightLeft size={36} opacity={0.5} /></div>
                                 <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
                                 <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>

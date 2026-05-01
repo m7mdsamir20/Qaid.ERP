@@ -289,7 +289,7 @@ export default function ClosingEntriesPage() {
 
                         {/* Rendering Areas */}
                         {!selectedYear ? (
-                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textSecondary,  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <Info size={48} style={{ opacity: 0.1, margin: '0 auto 20px' }} />
                                 <h3 style={{ fontSize: '13px', fontWeight: 700 }}>{t('يرجى اختيار السنة المالية للمعاينة')}</h3>
                                 <p style={{ fontSize: '13px', marginTop: '4px' }}>{t('سيتم سحب كافة حسابات الإيرادات والمصروفات لموسم المختارة')}</p>
@@ -300,7 +300,7 @@ export default function ClosingEntriesPage() {
                                 <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
                             </div>
                         ) : alreadyClosed ? (
-                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <div style={{ width: '96px', height: '96px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                     <CheckCircle2 size={48} />
                                 </div>
@@ -355,7 +355,7 @@ export default function ClosingEntriesPage() {
                                 </div>
 
                                 {draftCount > 0 && (
-                                    <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ padding: '16px 20px',  background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <AlertTriangle size={20} style={{ color: '#ef4444' }} />
                                         <span style={{ fontSize: '13px', color: '#ef4444', fontWeight: 600 }}>{t('تنبيه: يوجد')} {draftCount} {t('قيود "مسودة" غير مرحلة تمنع إتمام الإقفال.')}</span>
                                     </div>
@@ -471,7 +471,7 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
 function DetailTable({ title, accounts, color, t, currencySign }: any) {
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
-            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '16px 20px',  background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color }}>{title}</span>
                 <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textSecondary, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
             </div>
@@ -487,7 +487,7 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>{acc.name}</div>
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'center' }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'end' }}>
+                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                     <Currency 
                                         amount={acc.balance}
                                         style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}

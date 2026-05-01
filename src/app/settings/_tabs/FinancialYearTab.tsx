@@ -122,7 +122,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                                 <item.icon size={12} />
                                                 <span style={{ fontSize: '10px', fontWeight: 600, fontFamily: CAIRO }}>{item.label}</span>
                                             </div>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr', textAlign: 'center', fontFamily: 'monospace' }}>{item.value}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr',  fontFamily: 'monospace' }}>{item.value}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -179,7 +179,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         {[t('اسم السنة'), t('من'), t('إلى'), t('إجمالي الأيام'), t('الحالة')].map(h => (
-                                            <th key={h} style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                            <th key={h} style={{ padding: '16px 20px',  fontSize: '11px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -188,10 +188,10 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                         <tr key={fy.id} style={{ borderBottom: i < closedYears.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.endDate)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{calcDays(fy.startDate, fy.endDate)} {t('يوم')}</td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.startDate)}</td>
+                                            <td style={{ padding: '14px 20px',  fontFamily: 'monospace', fontSize: '12px', color: C.textSecondary }}>{fmt(fy.endDate)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{calcDays(fy.startDate, fy.endDate)} {t('يوم')}</td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{ fontSize: '10px', background: 'rgba(100,116,139,0.1)', color: '#94a3b8', padding: '4px 12px', borderRadius: '20px', fontWeight: 600, border: '1px solid rgba(100,116,139,0.2)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO }}>
                                                     <LockIcon size={12} /> {t('مقفلة')}

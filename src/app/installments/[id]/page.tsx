@@ -147,7 +147,7 @@ export default function InstallmentDetailPage() {
 
     if (!plan) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                 <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                 <p style={{ fontSize: '16px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
                 <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>{t('العودة للقائمة')}</button>

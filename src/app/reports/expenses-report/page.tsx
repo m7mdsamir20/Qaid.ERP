@@ -79,7 +79,7 @@ export default function ExpensesReportPage() {
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                    textAlign: 'center', direction: 'ltr'
+                                     direction: 'ltr'
                                 }}
                             />
                         </div>
@@ -95,7 +95,7 @@ export default function ExpensesReportPage() {
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                    textAlign: 'center', direction: 'ltr'
+                                     direction: 'ltr'
                                 }}
                             />
                         </div>
@@ -121,7 +121,7 @@ export default function ExpensesReportPage() {
                         <p style={{ marginTop: '20px', color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري استخراج التقرير...')}</p>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{ padding: '80px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: C.primary }} />
                         <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
                     </div>

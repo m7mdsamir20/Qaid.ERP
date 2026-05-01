@@ -320,7 +320,7 @@ export default function FixedAssetsPage() {
                         </div>
                         
                         <div style={{ position: 'relative', marginBottom: '24px' }}>
-                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
+                            <label style={{ ...LS,  display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
                             <div style={{ position: 'relative' }}>
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
                                     0.00

@@ -209,7 +209,7 @@ export default function NewStocktakingPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                     <p style={{ fontWeight: 600 }}>{t('جاري استرجاع البيانات...')}</p>
                 </div>
@@ -298,7 +298,7 @@ export default function NewStocktakingPage() {
                                                                 value={line.actualQuantity === 0 && line.systemQuantity === 0 && line.difference === 0 ? '' : line.actualQuantity}
                                                                 onChange={e => updateActualQuantity(index, parseFloat(e.target.value || '0'))}
                                                                 placeholder="0"
-                                                                style={{ ...IS, height: '36px', width: '100px', textAlign: 'center', background: 'rgba(255,255,255,0.03)', fontSize: '12px' }}
+                                                                style={{ ...IS, height: '36px', width: '100px',  background: 'rgba(255,255,255,0.03)', fontSize: '12px' }}
                                                                 onFocus={focusIn} onBlur={focusOut}
                                                             />
                                                         </div>

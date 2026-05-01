@@ -126,14 +126,14 @@ export default function OverdueReportPage() {
 
                 <div style={{ minHeight: '300px' }}>
                     {loading && (
-                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                             <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>جاري تحليل المبيعات المتأخرة...</p>
                         </div>
                     )}
 
                     {!loading && !data && (
-                        <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
+                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                             <AlertTriangle size={60} style={{ color: C.textSecondary }} />
                             <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
                         </div>
@@ -206,8 +206,8 @@ export default function OverdueReportPage() {
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
                                                 </td>
-                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
-                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
+                                                <td style={{ padding: '16px 20px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 600, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                                                         {inst.daysOverdue} يوم تأخير

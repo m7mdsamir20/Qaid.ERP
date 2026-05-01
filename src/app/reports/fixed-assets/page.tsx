@@ -252,16 +252,16 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 600 }}>{a.code}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
+                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
+                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
+                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
+                                                <td style={{ padding: '14px 20px',  }}>
                                                     <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
+                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
                                                         {t(st.label)}

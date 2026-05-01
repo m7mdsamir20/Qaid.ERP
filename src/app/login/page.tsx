@@ -193,7 +193,7 @@ export default function LoginPage() {
                                 style={{
                                     ...IS,
                                     height: '50px',
-                                    textAlign: 'center',
+                                    
                                     direction: isRtl ? 'rtl' : 'ltr'
                                 }}
                                 onFocus={focusIn}
