@@ -126,7 +126,7 @@ export default function OverduePage() {
                         </div>
                     </div>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.danger, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري استخراج بيانات التعثر...')}</p>
                         </div>
@@ -216,7 +216,7 @@ export default function OverduePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textMuted }}>
                                         <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد متأخرات مسجلة حالياً')}</p>
                                     </div>

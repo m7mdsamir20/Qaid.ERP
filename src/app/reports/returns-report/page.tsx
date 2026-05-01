@@ -45,6 +45,7 @@ export default function ReturnsReportPage() {
     const [error, setError] = useState('');
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
+    const [returnType, setReturnType] = useState('all');
     const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
@@ -54,8 +55,10 @@ export default function ReturnsReportPage() {
     }, []);
 
     useEffect(() => {
+        setLoading(true);
         const params = new URLSearchParams();
         if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        if (returnType && returnType !== 'all') params.set('type', returnType);
         fetch(`/api/reports/returns-report?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => {
@@ -65,7 +68,7 @@ export default function ReturnsReportPage() {
             })
             .catch(() => setError(t('فشل تحميل بيانات المرتجعات')))
             .finally(() => setLoading(false));
-    }, [branchId]);
+    }, [branchId, returnType]);
 
     const filtered = data.filter(r => (r.party || '').toLowerCase().includes(q.toLowerCase()) || String(r.invoiceNumber).includes(q));
 
@@ -120,6 +123,16 @@ export default function ReturnsReportPage() {
                                 }}
                             />
                         </div>
+                        <CustomSelect
+                            value={returnType}
+                            onChange={v => setReturnType(v)}
+                            placeholder={t("كل المرتجعات")}
+                            options={[
+                                { value: 'all', label: t('كل المرتجعات') },
+                                { value: 'sale_return', label: t('مرتجعات المبيعات') },
+                                { value: 'purchase_return', label: t('مرتجعات المشتريات') }
+                            ]}
+                        />
                         {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                             <CustomSelect
                                 value={branchId}
@@ -146,7 +159,7 @@ export default function ReturnsReportPage() {
                             <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع بيانات المرتجعات...')}</span>
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <div style={{ padding: '100px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                             <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>

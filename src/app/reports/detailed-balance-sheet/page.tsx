@@ -81,7 +81,7 @@ export default function DetailedBalanceSheetPage() {
                     subtitle={t("حدث خطأ أثناء محاولة جلب بيانات التقرير.")}
                     backTab="financial" 
                 />
-                <div style={{ padding: '60px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
+                <div style={{ padding: '60px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
                     <AlertCircle size={60} style={{ opacity: 0.2, marginBottom: '20px' }} />
                     <h3 style={{ fontFamily: CAIRO }}>{t('خطأ في تحميل البيانات')}</h3>
                 </div>

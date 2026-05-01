@@ -292,7 +292,7 @@ export default function CustomersPage() {
                 {/* ── Table (Suppliers Style) ── */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '60px' }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (

@@ -289,7 +289,7 @@ export default function ClosingEntriesPage() {
 
                         {/* Rendering Areas */}
                         {!selectedYear ? (
-                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted, textAlign: 'center' }}>
+                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <Info size={48} style={{ opacity: 0.1, margin: '0 auto 20px' }} />
                                 <h3 style={{ fontSize: '13px', fontWeight: 700 }}>{t('يرجى اختيار السنة المالية للمعاينة')}</h3>
                                 <p style={{ fontSize: '13px', marginTop: '4px' }}>{t('سيتم سحب كافة حسابات الإيرادات والمصروفات لموسم المختارة')}</p>
@@ -300,7 +300,7 @@ export default function ClosingEntriesPage() {
                                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
                             </div>
                         ) : alreadyClosed ? (
-                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center' }}>
+                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <div style={{ width: '96px', height: '96px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                     <CheckCircle2 size={48} />
                                 </div>
@@ -388,7 +388,7 @@ export default function ClosingEntriesPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center' }}>
+                                    <div style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                         <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2, margin: '0 auto' }} />
                                         <p style={{ color: C.textMuted, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
                                     </div>

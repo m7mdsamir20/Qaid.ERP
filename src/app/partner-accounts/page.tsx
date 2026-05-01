@@ -121,12 +121,12 @@ export default function PartnerAccountsPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px' }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
                         <p style={{ color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
@@ -200,11 +200,11 @@ export default function PartnerAccountsPage() {
                                                     <td colSpan={6} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
                                                         <div style={{ padding: '16px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
                                                             {loadingTx === p.id ? (
-                                                                <div style={{ padding: '20px', textAlign: 'center' }}>
+                                                                <div style={{ padding: '20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                                                     <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
                                                                 </div>
                                                             ) : txs.length === 0 ? (
-                                                                <div style={{ padding: '12px', color: C.textMuted, fontSize: '12px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
+                                                                <div style={{ padding: '12px', color: C.textMuted, fontSize: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
                                                             ) : (
                                                                 <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
                                                                     <thead>

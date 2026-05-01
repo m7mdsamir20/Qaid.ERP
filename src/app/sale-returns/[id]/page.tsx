@@ -83,7 +83,7 @@ export default function SaleReturnDetailsPage() {
     if (error || !ret) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', padding: '100px 20px', color: '#f87171' }}>
+                <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#f87171' }}>
                     <AlertCircle size={56} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
                     <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 10px' }}>{t('خطأ في التحميل')}</h3>
                     <p style={{ opacity: 0.8, marginBottom: '20px' }}>{error || t('لم نتمكن من العثور على المرتجع المطلوب')}</p>

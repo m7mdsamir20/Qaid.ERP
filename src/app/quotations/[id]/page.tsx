@@ -53,7 +53,7 @@ export default function QuotationViewPage() {
 
     if (!quotation) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', padding: '60px' }}>
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
                 <X size={48} style={{ color: C.danger, opacity: 0.3 }} />
                 <p style={{ color: C.textMuted, fontFamily: CAIRO }}>{t('عذراً، لم يتم العثور على عرض السعر المطلوب')}</p>
             </div>
