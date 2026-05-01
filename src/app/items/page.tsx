@@ -319,13 +319,13 @@ export default function ItemsPage() {
                                         boxShadow: isSelected ? `0 4px 15px ${s.color}20` : 'none'
                                     }}
                                 >
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             {s.id === 'value' ? fMoneyJSX(s.val) : (
                                                 <>
                                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
-                                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
+                                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{s.unit}</span>
                                                 </>
                                             )}
                                         </div>
@@ -365,7 +365,7 @@ export default function ItemsPage() {
                             <button onClick={() => setKpiFilter('all')}
                                 style={{
                                     position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)',
-                                    background: 'rgba(255,255,255,0.05)', border: 'none', color: C.textMuted,
+                                    background: 'rgba(255,255,255,0.05)', border: 'none', color: C.textSecondary,
                                     borderRadius: '4px', fontSize: '10px', padding: '2px 6px', cursor: 'pointer'
                                 }}
                             >
@@ -389,12 +389,12 @@ export default function ItemsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
                     </div>
@@ -425,13 +425,13 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'start'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'center'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
                                                 <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
@@ -560,21 +560,21 @@ export default function ItemsPage() {
                                         <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textSecondary, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textSecondary, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                     <div>
-                                        <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
+                                        <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textSecondary, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
                                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                             {!form.minLimit && (
                                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
@@ -590,7 +590,7 @@ export default function ItemsPage() {
                                 {!form.id && (
                                     <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(37, 106, 244,0.03)', border: `1px solid rgba(37, 106, 244,0.15)`, marginTop: '0px' }}>
                                         <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('الرصيد الافتتاحي')}</div>
-                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                             <div>
                                                 <label style={LS}>{t('المخزن')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('مطلوب')}</span>}</label>

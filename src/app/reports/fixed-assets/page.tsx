@@ -120,11 +120,11 @@ export default function FixedAssetsReportPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start'}}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -238,7 +238,7 @@ export default function FixedAssetsReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
+                                        <tr><td colSpan={10} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
                                     ) : filtered.map((a, i) => {
                                         const st = STATUS_MAP[a.status];
                                         const depPctRow = a.purchaseCost > 0
@@ -252,16 +252,16 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 600 }}>{a.code}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
-                                                <td style={{ padding: '14px 20px', }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                                     <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
                                                         {t(st.label)}

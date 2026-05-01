@@ -159,12 +159,12 @@ export default function WarehousesPage() {
 
                 {/* Table Content */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل قائمة المخازن...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Warehouse size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد مخازن مسجلة حالياً')}</p>
                     </div>
@@ -203,7 +203,7 @@ export default function WarehousesPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.purple, }}>
-                                                {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
+                                                {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>

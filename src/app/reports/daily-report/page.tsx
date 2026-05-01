@@ -239,12 +239,12 @@ table{width:100%;border-collapse:collapse}
 
                 <div className="no-print report-filter-bar" style={{ ...SEARCH_STYLE.container, marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <div className="date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '200px' }}>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
                         <div className="date-input-wrapper" style={{ flex: 1 }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('التاريخ')}</span>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
-                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
+                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'center', direction: 'inherit',
                                     borderRadius: '8px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textSecondary, fontSize: '13px',
                                     fontWeight: 500, outline: 'none', fontFamily: OUTFIT
@@ -303,8 +303,8 @@ table{width:100%;border-collapse:collapse}
                                     onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                                     onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                                 >
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <Currency amount={s.value} style={{ fontSize: '16px', color: C.textPrimary }} />
                                         </div>
@@ -327,11 +327,11 @@ table{width:100%;border-collapse:collapse}
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
                                                     <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT, borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalSales} /></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
                                                     <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT, borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.saleReturnsTotal} /></td>
                                                 </tr>
                                                 <tr>
@@ -343,11 +343,11 @@ table{width:100%;border-collapse:collapse}
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
                                                     <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT, borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalPurchases} /></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
                                                     <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT, borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.purchaseReturnsTotal} /></td>
                                                 </tr>
                                                 <tr>
@@ -403,7 +403,7 @@ table{width:100%;border-collapse:collapse}
                                         <Activity size={18} />
                                         <span style={{ fontWeight: 600, fontSize: '12px', fontFamily: CAIRO }}>{t('دليل التقرير اليومي')}</span>
                                     </div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, lineHeight: 1.6, margin: 0, fontFamily: CAIRO }}>
+                                    <p style={{ fontSize: '11px', color: C.textSecondary, lineHeight: 1.6, margin: 0, fontFamily: CAIRO }}>
                                         {t('يقدم هذا التقرير قراءة شاملة للمركز النقدي المنفذ خلال اليوم التاريخ المختار. تعتمد الأرقام على الحركات المالية المسجلة فعلياً.')}
                                     </p>
                                 </div>

@@ -117,7 +117,7 @@ export default function DuePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600 }}>{t('إجمالي المستحق حالياً')}</div>
+                                <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 600 }}>{t('إجمالي المستحق حالياً')}</div>
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fMoneyJSX(totalDue)}
                                 </div>
@@ -126,7 +126,7 @@ export default function DuePage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>
@@ -162,7 +162,7 @@ export default function DuePage() {
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
                                                         <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{inst.customer?.name}</div>
-                                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
+                                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
@@ -232,7 +232,7 @@ export default function DuePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textMuted }}>
+                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
                                         <Clock size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد أقساط مستحقة للفترة المختارة')}</p>
                                     </div>
@@ -253,11 +253,11 @@ export default function DuePage() {
                         <form onSubmit={handleCollect}>
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل')}:</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('العميل')}:</span>
                                     <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600 }}>{collectTarget.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
                                     <span style={{ fontSize: '13px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
                                         {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
@@ -272,7 +272,7 @@ export default function DuePage() {
                                         style={{ ...IS, paddingInlineStart: '45px', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -312,7 +312,7 @@ export default function DuePage() {
                                 {/* Step 2: Specific Dropdown based on Type */}
                                 {((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type) && (
                                     <div style={{ animation: 'fadeIn 0.2s' }}>
-                                        <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', color: C.textSecondary, marginBottom: '6px' }}>
                                             {(collectForm as any).selectedType === 'bank' || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === 'bank' ? t('اختر البنك المقرر الإيداع فيه') : t('اختر الخزينة النقدية المستلمة')}
                                         </label>
                                         <div style={{ position: 'relative', '--surface-50': C.card, '--surface-100': C.inputBg, '--border-subtle': C.border } as any}>
@@ -332,7 +332,7 @@ export default function DuePage() {
                             </div>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>{t('ملاحظات إضافية (اختياري)')}</label>
+                                <label style={{ ...LS, fontSize: '11px', color: C.textSecondary, marginBottom: '6px' }}>{t('ملاحظات إضافية (اختياري)')}</label>
                                 <textarea
                                     placeholder={t("اكتب أي ملاحظات هنا...")}
                                     value={collectForm.notes}

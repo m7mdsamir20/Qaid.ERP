@@ -100,12 +100,12 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 {form.type === 'bank' && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(37, 106, 244,0.02)', border: `1px solid rgba(37, 106, 244,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
                         <div>
-                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('اسم البنك')}</label>
+                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textSecondary }}>{t('اسم البنك')}</label>
                             <input value={form.bankName} onChange={e => setForm(f => ({ ...f, bankName: e.target.value }))}
                                 placeholder={t("مثال: بنك مصر")} style={{ ...IS, fontSize: '12px', height: '42px' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div>
-                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('رقم الحساب / IBAN')}</label>
+                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textSecondary }}>{t('رقم الحساب / IBAN')}</label>
                             <input value={form.accountNumber} onChange={e => setForm(f => ({ ...f, accountNumber: e.target.value }))}
                                 placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '42px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
@@ -128,7 +128,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
                                 style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 700, color: C.textPrimary, height: '46px', fontSize: '18px', width: '100%', padding: '0 45px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
-                            <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{cSymbol}</span>
+                            <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{cSymbol}</span>
                         </div>
                     </div>
                 )}
@@ -264,11 +264,11 @@ export default function TreasuriesPage() {
                         onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                         onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{
@@ -288,11 +288,11 @@ export default function TreasuriesPage() {
                     </div>
                 ) : treasuries.length === 0 ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
-                        <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
+                        <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textSecondary, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>
                         <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 600, fontSize: '18px', fontFamily: CAIRO }}>{t('لا توجد بيانات')}</h3>
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
+                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -420,7 +420,7 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                     </div>
                     <div>
                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{item.name}</div>
-                        <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{item.type === 'cash' ? t('خزينة') : t('بنك')}</div>
+                        <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{item.type === 'cash' ? t('خزينة') : t('بنك')}</div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>

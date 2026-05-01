@@ -465,7 +465,7 @@ export default function EditCompanyPage() {
                             </div>
                             بيانات مدير النظام
                         </h2>
-                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, fontWeight: 500 }}>
+                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textSecondary, fontWeight: 500 }}>
                             يمكنك تحديث بيانات التواصل أو تغيير كلمة مرور المدير من هنا
                         </p>
 
@@ -497,7 +497,7 @@ export default function EditCompanyPage() {
                                         style={{ ...IS, paddingInlineStart: '44px', direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }}
                                     />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)}
-                                        style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted }}>
+                                        style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textSecondary }}>
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -635,12 +635,12 @@ export default function EditCompanyPage() {
                                                     <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
                                                         {(form.features[fk] || []).length} / {section.links.length}
                                                     </div>
                                                 </div>
                                                 <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}
-                                                    style={{ border: 'none', cursor: 'pointer', color: C.textMuted, height: '32px', width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
+                                                    style={{ border: 'none', cursor: 'pointer', color: C.textSecondary, height: '32px', width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
                                                     {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                                                 </button>
                                             </div>
@@ -681,7 +681,7 @@ export default function EditCompanyPage() {
                                     );
                                 })}
                                 {Object.values(form.features).flat().length === 0 && (
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>لم يتم اختيار أي صلاحيات بعد</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary }}>لم يتم اختيار أي صلاحيات بعد</span>
                                 )}
                             </div>
                         </div>

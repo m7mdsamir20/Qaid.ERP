@@ -134,11 +134,11 @@ export default function EmployeesPage() {
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                            <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                            <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -201,15 +201,15 @@ export default function EmployeesPage() {
                     {loading ? (
                         <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ margin: 0, color: C.textMuted, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
+                            <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
                         <div style={{ padding: '100px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                                <UsersIcon size={40} style={{ color: C.textMuted }} />
+                                <UsersIcon size={40} style={{ color: C.textSecondary }} />
                             </div>
                             <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 8px' }}>{t('لا توجد نتائج')}</h3>
-                            <p style={{ fontSize: '13px', color: C.textMuted, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
+                            <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -239,8 +239,8 @@ export default function EmployeesPage() {
                                                     {emp.code}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{emp.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'start' }}>{emp.email || '—'}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'center' }}>{emp.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'center' }}>{emp.email || '—'}</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{emp.position || '—'}</div>

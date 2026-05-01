@@ -96,8 +96,8 @@ export default function EmployeesDeductionsPage() {
                             padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
                             <div>
-                                <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{i !== 1 ? getCurrencyName(currency) : t('جزاء')}</small></span>
+                                <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textSecondary }}>{i !== 1 ? getCurrencyName(currency) : t('جزاء')}</small></span>
                             </div>
                             <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>
                         </div>
@@ -117,20 +117,20 @@ export default function EmployeesDeductionsPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     {[t('الموظف'), t('التاريخ'), t('نوع الخصم'), t('السبب'), t('القيمة')].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {data?.records.filter(r => r.employeeName.includes(q) || r.reason.includes(q)).map((r) => (
                                     <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                        <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                        <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ padding: '14px 20px' }}>
                                             <span style={{ fontSize: '10px', fontWeight: 600, color: typeColors[r.type], fontFamily: CAIRO }}>{typeLabels[r.type]}</span>
                                         </td>
-                                        <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{r.reason}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.amount} /></td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{r.reason}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.amount} /></td>
                                     </tr>
                                 ))}
                             </tbody>

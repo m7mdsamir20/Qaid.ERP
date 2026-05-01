@@ -480,7 +480,7 @@ export default function NewPurchasePage() {
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'start', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'center', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                             </div>
@@ -561,7 +561,7 @@ export default function NewPurchasePage() {
                                             {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     textAlign: i === 0 ? 'start' : 'center', 
-                                                    padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO 
+                                                    padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO 
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
@@ -796,7 +796,7 @@ export default function NewPurchasePage() {
                     <div style={{ marginBottom: '16px' }}>
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
-                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
                             <input name="pName" required placeholder={t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
@@ -804,8 +804,8 @@ export default function NewPurchasePage() {
                     <div style={{ marginBottom: '24px' }}>
                         <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
-                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
+                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 

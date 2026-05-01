@@ -44,7 +44,7 @@ export default function BranchesTab({
                             const sub = (session?.user as any)?.subscription;
                             const max = sub?.maxBranches ?? 1;
                             return (
-                                <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                     {branches.length} / {max === 999 ? '∞' : max} {t('فرع')}
                                 </span>
                             );
@@ -81,7 +81,7 @@ export default function BranchesTab({
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                     {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginInlineEnd: '6px' }}>{t('رئيسي')}</span>}
                                 </div>
-                                <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>
+                                <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
                                     {b.code && <span style={{ marginInlineStart: '12px' }}>{t('كود')}: {b.code}</span>}
                                     {b.address && <span style={{ marginInlineStart: '12px' }}>{b.address}</span>}
                                     {b.phone && <span>{b.phone}</span>}
@@ -106,7 +106,7 @@ export default function BranchesTab({
                     </div>
                 ))}
                 {branches.length === 0 && (
-                    <div style={{ padding: '40px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد فروع بعد')}</div>
+                    <div style={{ padding: '40px', color: C.textSecondary, fontFamily: CAIRO }}>{t('لا توجد فروع بعد')}</div>
                 )}
             </div>
 
@@ -142,7 +142,7 @@ export default function BranchesTab({
                             { key: 'phone', label: t('الهاتف'), placeholder: t('رقم هاتف الفرع') },
                         ].map(f => (
                             <div key={f.key}>
-                                <label style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'block', marginBottom: '6px' }}>{f.label}</label>
+                                <label style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, display: 'block', marginBottom: '6px' }}>{f.label}</label>
                                 <input
                                     value={(branchForm as any)[f.key]}
                                     onChange={e => setBranchForm((p: any) => ({ ...p, [f.key]: e.target.value }))}

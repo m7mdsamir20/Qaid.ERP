@@ -178,12 +178,12 @@ export default function StocktakingsPage() {
 
                 {/* Main Table Content */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل سجلات الجرد...')}</p>
                     </div>
                 ) : stocktakings.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <ClipboardList size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('لا توجد سجلات جرد مسجلة حالياً')}</p>
                     </div>
@@ -249,10 +249,10 @@ export default function StocktakingsPage() {
                                                         }}>
                                                             {l.item?.name} ({l.difference > 0 ? '+' : ''}{l.difference})
                                                         </div>
-                                                    )) : <span style={{ color: C.textMuted, fontSize: '11px' }}>{t('لا يوجد فروقات')}</span>}
+                                                    )) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>{t('لا يوجد فروقات')}</span>}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontSize: '12px', fontWeight: 500, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontWeight: 500, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {st.notes || '—'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

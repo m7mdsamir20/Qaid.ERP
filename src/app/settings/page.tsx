@@ -811,7 +811,7 @@ function SettingsContent() {
                                         handleCancel();
                                     }}
                                         style={{
-                                            width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
+                                            width: '100%', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '12px',
                                             padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
                                             background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
                                             color: active ? C.primary : C.textSecondary,

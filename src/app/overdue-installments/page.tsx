@@ -118,7 +118,7 @@ export default function OverduePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600 }}>{t('إجمالي المتأخرات')}</div>
+                                <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 600 }}>{t('إجمالي المتأخرات')}</div>
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fMoneyJSX(totalOverdue)}
                                 </div>
@@ -126,7 +126,7 @@ export default function OverduePage() {
                         </div>
                     </div>
                     {loading ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.danger, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري استخراج بيانات التعثر...')}</p>
                         </div>
@@ -152,7 +152,7 @@ export default function OverduePage() {
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                                         {inst.plan?.customer?.name}
                                                     </div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.plan?.customer?.phone}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{inst.plan?.customer?.phone}</div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
@@ -216,7 +216,7 @@ export default function OverduePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textMuted }}>
+                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
                                         <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد متأخرات مسجلة حالياً')}</p>
                                     </div>
@@ -237,11 +237,11 @@ export default function OverduePage() {
                         <form onSubmit={handleCollect}>
                             <div style={{ background: 'rgba(251,113,133,0.03)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.danger}20`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل المتعثر')}:</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('العميل المتعثر')}:</span>
                                     <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600 }}>{collectTarget.plan?.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('إجمالي المتأخر')}:</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي المتأخر')}:</span>
                                     <span style={{ fontSize: '15px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>
                                         {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
@@ -249,19 +249,19 @@ export default function OverduePage() {
                             </div>
 
                             <div style={{ marginBottom: '16px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>{t('المبلغ المحصّل حالياً')} <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textSecondary, marginBottom: '6px' }}>{t('المبلغ المحصّل حالياً')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
                                         style={{ ...IS, paddingInlineStart: '45px', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, border: `1px solid ${C.danger}30` }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '10px', display: 'block' }}>{t('جهة توريد المبلغ (خزينة/بنك)')} <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textSecondary, marginBottom: '10px', display: 'block' }}>{t('جهة توريد المبلغ (خزينة/بنك)')} <span style={{ color: C.danger }}>*</span></label>
                                 
                                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                                     {[
@@ -311,7 +311,7 @@ export default function OverduePage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>{t('ملاحظات التسوية (اختياري)')}</label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textSecondary, marginBottom: '6px' }}>{t('ملاحظات التسوية (اختياري)')}</label>
                                 <textarea 
                                     placeholder={t("اكتب أي ملاحظة عن حالة السداد هنا...")} 
                                     value={collectForm.notes} 

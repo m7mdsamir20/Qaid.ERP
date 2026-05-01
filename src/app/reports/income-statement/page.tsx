@@ -105,12 +105,12 @@ export default function IncomeStatementPage() {
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد قائمة الدخل...')}</span>
                     </div>
                 ) : !data || (data.revenues.length === 0 && data.expenses.length === 0) ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'start'}}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center'}}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <PieChart size={40} style={{ opacity: 0.2, color: C.textMuted }} />
+                            <PieChart size={40} style={{ opacity: 0.2, color: C.textSecondary }} />
                         </div>
                         <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات متاحة')}</h3>
-                        <p style={{ fontSize: '13px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي إيرادات أو مصروفات خلال السنة المالية الحالية')}</p>
+                        <p style={{ fontSize: '13px', color: C.textSecondary, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي إيرادات أو مصروفات خلال السنة المالية الحالية')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -126,11 +126,11 @@ export default function IncomeStatementPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                     padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start'}}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -152,12 +152,12 @@ export default function IncomeStatementPage() {
                                 <tbody>
                                     {data.revenues.map(rev => (
                                         <tr key={rev.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{rev.code}</span></td>
+                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{rev.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 600, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{rev.name}</td>
                                             <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={rev.balance} /></td>
                                         </tr>
                                     ))}
-                                    {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
+                                    {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
                                 </tbody>
 
                                 <thead>
@@ -170,12 +170,12 @@ export default function IncomeStatementPage() {
                                 <tbody>
                                     {data.expenses.map(exp => (
                                         <tr key={exp.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{exp.code}</span></td>
+                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{exp.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 600, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{exp.name}</td>
                                             <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={exp.balance} /></td>
                                         </tr>
                                     ))}
-                                    {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
+                                    {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
                                 </tbody>
 
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>

@@ -193,7 +193,7 @@ export default function LoginPage() {
                                 style={{
                                     ...IS,
                                     height: '50px',
-                                    textAlign: 'start',
+                                    textAlign: 'center',
                                     direction: isRtl ? 'rtl' : 'ltr'
                                 }}
                                 onFocus={focusIn}
@@ -219,13 +219,13 @@ export default function LoginPage() {
                                         paddingLeft: isRtl ? '44px' : '16px',
                                         paddingRight: isRtl ? '16px' : '44px',
                                         direction: isRtl ? 'rtl' : 'ltr',
-                                        textAlign: 'start'
+                                        textAlign: 'center'
                                     }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                 />
                                 <button type="button" onClick={() => setShowPass(!showPass)}
-                                    style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                    style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textSecondary, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                     {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>

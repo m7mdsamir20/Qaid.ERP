@@ -172,12 +172,12 @@ export default function CostCentersPage() {
             {/* ── Table View ── */}
             <div style={TABLE_STYLE.container}>
                 {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textSecondary }}>
                         <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
                         <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
                         <Layers size={60} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}</p>
                     </div>
@@ -220,7 +220,7 @@ export default function CostCentersPage() {
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {cc.totalExpenses ? formatNumber(cc.totalExpenses) : '0.00'} 
-                                                <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -267,7 +267,7 @@ export default function CostCentersPage() {
                         <div>
                             <label style={LS}>{t('رمز المركز')}</label>
                             <input readOnly value={form.code}
-                                style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'not-allowed', borderColor: C.border }} />
+                                style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'not-allowed', borderColor: C.border }} />
                         </div>
                         <div>
                             <label style={LS}>{t('اسم المركز')} <span style={{ color: '#f87171' }}>*</span></label>

@@ -108,7 +108,7 @@ function KpiCard({
         {value}
       </div>
       <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t(label)}</div>
-      {sub && <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t(sub)}</div>}
+      {sub && <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{t(sub)}</div>}
     </div>
   );
 }
@@ -383,7 +383,7 @@ export default function DashboardPage() {
             <h1 style={{ fontSize: '21px', fontWeight: 600, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
               {t(greetingKey)}{isRtl ? '،' : ','} <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
             </h1>
-            <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
+            <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
               {(() => {
                 const d = new Date();
                 const str = d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -533,7 +533,7 @@ export default function DashboardPage() {
               action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 600, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {!stats.treasuryList || stats.treasuryList.length === 0 ? (
-                  <div style={{ padding: '30px', color: C.textMuted, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
+                  <div style={{ padding: '30px', color: C.textSecondary, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
                 ) : (
                   stats.treasuryList.map((t: any, i: number) => (
                     <div key={i} style={{
@@ -581,11 +581,11 @@ export default function DashboardPage() {
                 </Link>
               )}>
               <div style={{ padding: '0 10px 10px' }} className="scroll-table">
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {[t('التاريخ والطرف'), t('القيمة'), t('النوع'), t('رقم')].map((h, i) => (
-                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
+                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -599,14 +599,14 @@ export default function DashboardPage() {
                         return true;
                       })
                       .map((inv: any, i: number, arr: any[]) => {
-                        const s = statusLabel[inv.type] || { label: inv.type, color: C.textMuted, bg: C.border };
+                        const s = statusLabel[inv.type] || { label: inv.type, color: C.textSecondary, bg: C.border };
                         return (
                           <tr key={inv.id} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <td style={{ padding: '14px 16px' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
-                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
+                              <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
                             <td style={{ padding: '14px 16px', fontSize: '13px', textAlign: 'center' }}>{renderCurrency(inv.total)}</td>
                             <td style={{ padding: '14px 16px', textAlign: 'center' }}>
@@ -627,7 +627,7 @@ export default function DashboardPage() {
           {hasPage('/customers', 'sales') && (
             <SectionCard title="أكبر مديونيات العملاء" icon={CreditCard}>
               <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                   <Users size={14} /> {t('ذمم العملاء المستحقة')}
                 </div>
                 {stats.topDebtors.map((d: any, i: number) => (

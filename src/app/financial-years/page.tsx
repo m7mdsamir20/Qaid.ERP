@@ -37,9 +37,9 @@ function KpiCard({ icon: Icon, label, value, sub, color }: any) {
                 <Icon size={18} color={color} />
             </div>
             <div>
-                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginBottom: '2px' }}>{label}</div>
+                <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, marginBottom: '2px' }}>{label}</div>
                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{value}</div>
-                {sub && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '1px' }}>{sub}</div>}
+                {sub && <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '1px' }}>{sub}</div>}
             </div>
         </div>
     );
@@ -184,7 +184,7 @@ export default function FinancialYearsPage() {
                         <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
                             {t('تأسيس السنة المالية')}
                         </h3>
-                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7, textAlign: 'center' }}>
+                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textSecondary, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7, textAlign: 'center' }}>
                             {t('حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}
                         </p>
                         <div className="setup-fields" style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
@@ -192,7 +192,7 @@ export default function FinancialYearsPage() {
                                 { label: t('تاريخ البداية'), key: 'startDate' },
                                 { label: t('تاريخ النهاية'), key: 'endDate' },
                             ].map(f => (
-                                <div key={f.key} style={{ textAlign: 'start' }}>
+                                <div key={f.key} style={{ textAlign: 'center' }}>
                                     <label style={LS}>{f.label}</label>
                                     <input type="date"
                                         value={(createForm as any)[f.key]}
@@ -242,20 +242,20 @@ export default function FinancialYearsPage() {
                                                     onChange={e => setEditingName(p => p ? { ...p, name: e.target.value } : null)}
                                                     style={{ ...IS, height: '32px', width: '200px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }} />
                                                 <button type="submit" style={{ background: C.primary, border: 'none', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}><Check size={12} /></button>
-                                                <button type="button" onClick={() => setEditingName(null)} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.border}`, borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.textMuted }}><X size={12} /></button>
+                                                <button type="button" onClick={() => setEditingName(null)} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.border}`, borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.textSecondary }}><X size={12} /></button>
                                             </form>
                                         ) : (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{activeFY.name}</span>
                                                 <button onClick={() => setEditingName({ id: activeFY.id, name: activeFY.name })}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, padding: '2px 4px', display: 'flex', alignItems: 'center', borderRadius: '4px' }}>
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textSecondary, padding: '2px 4px', display: 'flex', alignItems: 'center', borderRadius: '4px' }}>
                                                     <Pencil size={11} />
                                                 </button>
                                             </div>
                                         )}
                                         <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                     </div>
-                                    <span className="fy-dates" style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                    <span className="fy-dates" style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                         {fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} — {fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                     </span>
                                 </div>
@@ -274,7 +274,7 @@ export default function FinancialYearsPage() {
                                         </svg>
                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                             <span style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{Math.round(pct)}%</span>
-                                            <span style={{ fontSize: '9px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('مكتمل')}</span>
+                                            <span style={{ fontSize: '9px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('مكتمل')}</span>
                                         </div>
                                     </div>
 
@@ -305,7 +305,7 @@ export default function FinancialYearsPage() {
                                                 <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('إغلاق السنة وفتح دورة جديدة')}</span>
                                                 <span style={{ fontSize: '10px', color: C.danger, background: `${C.danger}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجراء حساس')}</span>
                                             </div>
-                                            <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
+                                            <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>
                                                 {t('ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: CAIRO }}>{fmt(nextStart, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
                                             </p>
                                         </div>
@@ -372,7 +372,7 @@ export default function FinancialYearsPage() {
                                                                 {fmt(fy.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                             </td>
                                                             {/* الأيام */}
-                                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted }}>
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
                                                                 {formatNumber(calcDays(fy.startDate, fy.endDate))}
                                                             </td>
                                                             {/* المبيعات */}
@@ -380,18 +380,18 @@ export default function FinancialYearsPage() {
                                                                 {s ? (
                                                                     <div>
                                                                         <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(s.salesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{s.salesCount} {t('فاتورة')}</div>
+                                                                        <div style={{ fontSize: '10px', color: C.textSecondary }}>{s.salesCount} {t('فاتورة')}</div>
                                                                     </div>
-                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                                ) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>—</span>}
                                                             </td>
                                                             {/* المشتريات */}
                                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
                                                                 {s ? (
                                                                     <div>
                                                                         <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(s.purchasesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{s.purchasesCount} {t('فاتورة')}</div>
+                                                                        <div style={{ fontSize: '10px', color: C.textSecondary }}>{s.purchasesCount} {t('فاتورة')}</div>
                                                                     </div>
-                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                                ) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>—</span>}
                                                             </td>
                                                             {/* صافي */}
                                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
@@ -400,9 +400,9 @@ export default function FinancialYearsPage() {
                                                                         <div style={{ fontWeight: 600, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
                                                                             {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
                                                                         </div>
-                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
+                                                                        <div style={{ fontSize: '10px', color: C.textSecondary }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
                                                                     </div>
-                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                                ) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>—</span>}
                                                             </td>
                                                             {/* قيود */}
                                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>

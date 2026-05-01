@@ -188,7 +188,7 @@ export default function SaleReturnDetailsPage() {
                     {/* Items Table Section */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div className="table-container" style={{ borderRadius: '18px', overflow: 'hidden' }}>
-                            <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
                                 <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
                                     <Package size={13} color="#256af4" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                 </h3>

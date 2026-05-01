@@ -62,9 +62,9 @@ export default function CompanyTab({
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', textAlign: 'center', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'center', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
@@ -115,8 +115,8 @@ export default function CompanyTab({
                                     })()}
                                     {!companyForm.logo && (
                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', opacity: 0.2 }}>
-                                            <Building2 size={24} style={{ color: C.textMuted }} />
-                                            <span style={{ fontSize: '8px', color: C.textMuted, fontWeight: 700 }}>{t('الشعار')}</span>
+                                            <Building2 size={24} style={{ color: C.textSecondary }} />
+                                            <span style={{ fontSize: '8px', color: C.textSecondary, fontWeight: 700 }}>{t('الشعار')}</span>
                                         </div>
                                     )}
                                     {isSaving && (
@@ -211,9 +211,9 @@ export default function CompanyTab({
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: f.dir as any, textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: f.dir as any, textAlign: 'center', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'center', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
@@ -235,7 +235,7 @@ export default function CompanyTab({
                                             { key: 'addressStreet',   label: addrCfg.labels[3], ph: addrCfg.placeholders[3] },
                                         ].map(f => (
                                             <div key={f.key}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px', fontFamily: CAIRO }}>{f.label}</div>
+                                                <div style={{ fontSize: '10px', color: C.textSecondary, marginBottom: '3px', fontFamily: CAIRO }}>{f.label}</div>
                                                 <input
                                                     value={(companyForm as any)[f.key] || ''}
                                                     onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))}
@@ -251,7 +251,7 @@ export default function CompanyTab({
                                             ? [companyForm.addressRegion, companyForm.addressCity, companyForm.addressDistrict, companyForm.addressStreet].filter(Boolean).map((line, i) => (
                                                 <div key={i} style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line}</div>
                                             ))
-                                            : <span style={{ fontSize: '13px', color: C.textMuted, fontStyle: 'italic', fontFamily: CAIRO }}>{t('لم يُضف بعد')}</span>
+                                            : <span style={{ fontSize: '13px', color: C.textSecondary, fontStyle: 'italic', fontFamily: CAIRO }}>{t('لم يُضف بعد')}</span>
                                         }
                                     </div>
                                 )}
@@ -277,9 +277,9 @@ export default function CompanyTab({
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', textAlign: 'center', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'center', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>

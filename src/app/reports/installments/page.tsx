@@ -193,7 +193,7 @@ export default function InstallmentReportsPage() {
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
                                     color: active ? C.primary : C.textSecondary, transition: 'all 0.2s', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'start'}}>
+                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'center'}}>
                                 <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: active ? C.primaryBg : 'rgba(255,255,255,0.02)', color: active ? C.primary : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <tab.icon size={22} />
                                 </div>
@@ -282,12 +282,12 @@ export default function InstallmentReportsPage() {
                 {/* Results Container */}
                 <div style={{ minHeight: '400px', animation: 'slideUp 0.3s ease-out' }}>
                     {loading ? (
-                        <div style={{ textAlign: 'start', padding: '120px 0', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', padding: '120px 0', color: C.textSecondary }}>
                             <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '16px' }} />
                             <p style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
                         </div>
                     ) : !data ? (
-                        <div style={{ textAlign: 'start', padding: '120px 0', color: C.textMuted }}>
+                        <div style={{ textAlign: 'center', padding: '120px 0', color: C.textSecondary }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />
                             </div>
@@ -311,8 +311,8 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'start'}}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد العمليات الصالحة')}</div>
+                                        <div style={{ textAlign: 'center'}}>
+                                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد العمليات الصالحة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
@@ -324,7 +324,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -333,7 +333,7 @@ export default function InstallmentReportsPage() {
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
                                                             <td style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
+                                                            <td style={{ padding: '16px', color: C.textSecondary }}>{t('قسط رقم')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
                                                             <td style={{ padding: '16px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
                                                         </tr>
@@ -359,8 +359,8 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'start'}}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الأقساط المتعثرة')}</div>
+                                        <div style={{ textAlign: 'center'}}>
+                                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الأقساط المتعثرة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
@@ -372,7 +372,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -381,7 +381,7 @@ export default function InstallmentReportsPage() {
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط')} {inst.installmentNo}</td>
+                                                            <td style={{ padding: '16px', color: C.textSecondary }}>{t('قسط')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
                                                             <td style={{ padding: '16px' }}>
                                                                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 600, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
@@ -413,7 +413,7 @@ export default function InstallmentReportsPage() {
                                                     <s.icon size={16} />
                                                 </div>
                                                 <div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{s.label}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{s.label}</div>
                                                     <div style={{ fontSize: '15px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }}>
                                                         {s.value} <span style={{ fontSize: '11px', opacity: 0.5, fontFamily: CAIRO }}>{s.suffix}</span>
                                                     </div>
@@ -432,7 +432,7 @@ export default function InstallmentReportsPage() {
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                                             <Package size={14} /> {plan.productName || t('غير محدد')}
                                                         </div>
-                                                        <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{plan.monthsCount} {t('شهر')}</div>
+                                                        <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{plan.monthsCount} {t('شهر')}</div>
                                                     </div>
                                                     <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(plan.grandTotal)}
@@ -443,7 +443,7 @@ export default function InstallmentReportsPage() {
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                                    <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>

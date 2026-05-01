@@ -131,7 +131,7 @@ export default function RegisterPage() {
                 style={{
                     ...IS,
                     height: '50px',
-                    textAlign: 'start',
+                    textAlign: 'center',
                     direction: isRtl ? 'rtl' : 'ltr'
                 }}
                 onFocus={focusIn}
@@ -284,11 +284,11 @@ export default function RegisterPage() {
                                                 {filteredCountries.map(c => (
                                                     <button key={c.code} type="button"
                                                         onClick={() => { setSelectedCountry(c); setShowCountries(false); setCountrySearch(''); }}
-                                                        style={{ width: '100%', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px', background: selectedCountry.code === c.code ? `${C.primary}15` : 'transparent', border: 'none', cursor: 'pointer', transition: '0.15s', borderRadius: '10px', textAlign: 'start', color: selectedCountry.code === c.code ? C.primary : C.textSecondary, fontWeight: selectedCountry.code === c.code ? 800 : 500 }}
+                                                        style={{ width: '100%', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px', background: selectedCountry.code === c.code ? `${C.primary}15` : 'transparent', border: 'none', cursor: 'pointer', transition: '0.15s', borderRadius: '10px', textAlign: 'center', color: selectedCountry.code === c.code ? C.primary : C.textSecondary, fontWeight: selectedCountry.code === c.code ? 800 : 500 }}
                                                         onMouseEnter={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = 'transparent'; }}>
                                                         <img src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} alt={t(c.name)} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
-                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'start' }}>{t(c.name)}</span>
+                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'center' }}>{t(c.name)}</span>
                                                         <span style={{ fontSize: '13px', direction: 'ltr', opacity: 0.8 }}>{c.dial}</span>
                                                     </button>
                                                 ))}
@@ -304,7 +304,7 @@ export default function RegisterPage() {
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                                     placeholder={getCountryPlaceholders(selectedCountry.code).phone}
-                                    style={{ ...IS, height: '50px', flex: 1, direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start' }}
+                                    style={{ ...IS, height: '50px', flex: 1, direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                     spellCheck={false}
@@ -324,7 +324,7 @@ export default function RegisterPage() {
                                         style={{ width: '100%', height: '50px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? BUSINESS_TYPES(t).find(b => b.value === form.businessType)?.label || '' : t('اختر نوع النشاط')}</span>
+                                        <span style={{ flex: 1, textAlign: 'center', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? BUSINESS_TYPES(t).find(b => b.value === form.businessType)?.label || '' : t('اختر نوع النشاط')}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showBusinessTypes ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
 
@@ -337,10 +337,10 @@ export default function RegisterPage() {
                                                 {BUSINESS_TYPES(t).map(b => (
                                                     <button key={b.value} type="button"
                                                         onClick={() => { setForm({ ...form, businessType: b.value }); setShowBusinessTypes(false); }}
-                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
+                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'center', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
                                                         onMouseEnter={e => { if (form.businessType !== b.value) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (form.businessType !== b.value) e.currentTarget.style.background = 'transparent'; }}>
-                                                        <span style={{ flex: 1, textAlign: 'start' }}>{b.label}</span>
+                                                        <span style={{ flex: 1, textAlign: 'center' }}>{b.label}</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -365,13 +365,13 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowPass(!showPass)}
-                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textSecondary, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -391,13 +391,13 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowConfirmPass(!showConfirmPass)}
-                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textSecondary, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>

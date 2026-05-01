@@ -134,7 +134,7 @@ export default function OtherIncomePage() {
                             {loading ? (
                                 <tr><td colSpan={6} style={{ padding: '60px', }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filteredAll.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '80px',  color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
+                                <tr><td colSpan={6} style={{ padding: '80px',  color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
                             ) : paginated.map((e, idx) => {
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
@@ -152,7 +152,7 @@ export default function OtherIncomePage() {
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ fontWeight: 600, color: C.textPrimary }}>{creditLine?.account?.name}</div>
-                                            <div style={{ fontSize: '10px', color: C.textMuted }}>{creditLine?.account?.code}</div>
+                                            <div style={{ fontSize: '10px', color: C.textSecondary }}>{creditLine?.account?.code}</div>
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -240,7 +240,7 @@ export default function OtherIncomePage() {
                                     }} 
                                     onFocus={focusIn} onBlur={focusOut}
                                 />
-                                <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>{currencySign}</span>
+                                <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{currencySign}</span>
                             </div>
                         </div>
 

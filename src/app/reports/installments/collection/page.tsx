@@ -19,7 +19,7 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => formatNumber(n);
 
 const IS: React.CSSProperties = {
-    height: '38px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
+    height: '38px', padding: '0 12px', textAlign: 'center', direction: 'inherit',
     borderRadius: '8px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0',
     fontSize: '12px', outline: 'none', boxSizing: 'border-box',
@@ -97,7 +97,7 @@ export default function CollectionReportPage() {
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
                     <div className="date-input-wrapper" style={{ width: '170px' }}>
                         <span className="date-label-mobile" style={{ display: 'none' }}>من:</span>
                         <input type="date" value={form.from}
@@ -109,7 +109,7 @@ export default function CollectionReportPage() {
                             }}
                         />
                     </div>
-                    <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
                     <div className="date-input-wrapper" style={{ width: '170px' }}>
                         <span className="date-label-mobile" style={{ display: 'none' }}>إلى:</span>
                         <input type="date" value={form.to}
@@ -143,8 +143,8 @@ export default function CollectionReportPage() {
 
                     {!loading && !data && (
                         <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                            <BarChart3 size={60} style={{ color: C.textMuted }} />
-                            <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>قم باختيار الفترة ثم اضغط على عرض التقرير</p>
+                            <BarChart3 size={60} style={{ color: C.textSecondary }} />
+                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>قم باختيار الفترة ثم اضغط على عرض التقرير</p>
                         </div>
                     )}
 
@@ -152,15 +152,15 @@ export default function CollectionReportPage() {
                         <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                    <div style={{ textAlign: 'start'}}>
+                                    <div style={{ textAlign: 'center'}}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
                                         {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
-                                    <div style={{ textAlign: 'start'}}>
+                                    <div style={{ textAlign: 'center'}}>
                                         <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>تقرير تحصيل الأقساط</h3>
                                         <div style={{ fontSize: '11px', color: '#000', fontFamily: CAIRO }}>من: {form.from} إلى: {form.to}</div>
                                     </div>
-                                    <div style={{ maxWidth: '150px', textAlign: 'start'}}>
+                                    <div style={{ maxWidth: '150px', textAlign: 'center'}}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                     </div>
                                 </div>
@@ -177,11 +177,11 @@ export default function CollectionReportPage() {
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                         padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                     }}>
-                                        <div style={{ textAlign: 'start'}}>
-                                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ textAlign: 'center'}}>
+                                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                                {i === 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                                {i === 0 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                             </div>
                                         </div>
                                         <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -210,17 +210,17 @@ export default function CollectionReportPage() {
                                             <tr key={inst.id} style={{ borderBottom: idx === ((data.installments?.length || 0) - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
                                                 </td>
-                                                <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#34d399', fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                        {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                     </div>
                                                 </td>
                                             </tr>

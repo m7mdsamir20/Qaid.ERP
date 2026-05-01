@@ -106,7 +106,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 {/* Print Branding (Hidden in Web) */}
                 <div className="print-only" style={{ display: 'none', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
                     <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>{t('كشف حساب تفصيلي')}</h1>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'inherit', textAlign: 'start', fontSize: '13px', color: '#000' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'inherit', textAlign: 'center', fontSize: '13px', color: '#000' }}>
                         <div><strong>{t('اسم العميل:')}</strong> {customer.name}</div>
                         {customer.phone && <div><strong>{t('رقم الهاتف:')}</strong> {customer.phone}</div>}
                         <div><strong>{t('تاريخ الطباعة:')}</strong> {new Date().toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>
@@ -151,7 +151,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-muted)' }}>{card.label}</span>
                                 <div style={{ color: card.color, opacity: 0.8 }}>{card.icon}</div>
                             </div>
-                            <div style={{ fontSize: '20px', fontWeight: 950, color: 'var(--text-primary)', marginBottom: '4px', direction: 'ltr', textAlign: 'start' }}>
+                            <div style={{ fontSize: '20px', fontWeight: 950, color: 'var(--text-primary)', marginBottom: '4px', direction: 'ltr', textAlign: 'center' }}>
                                 {card.value.toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}></span>
                             </div>
                             <div style={{ fontSize: '11px', fontWeight: 850, color: card.color, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -169,7 +169,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                             <thead>
                                 <tr style={{ background: 'var(--surface-100)', borderBottom: '2px solid var(--border-subtle)' }}>
                                     {[t('تاريخ العملية'), t('نوع الحركة'), t('المـرجع'), t('تفاصيل البيان التوضيحي'), t('مديـن (+)'), t('دائـن (-)'), t('الرصيد')].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? 'start' : 'center' }}>{h}</th>
+                                        <th key={i} style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? 'start' : 'center' }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -177,36 +177,36 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 {/* Initial Balance Row */}
                                 {initialBalance !== 0 && (
                                     <tr style={{ background: 'var(--surface-100)', borderBottom: '1px solid var(--border-subtle)' }}>
-                                        <td style={{ padding: '16px 20px',  color: 'var(--text-muted)', fontSize: '12px', fontWeight: 700 }}>—</td>
-                                        <td style={{ padding: '16px 20px', }}>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center',  color: 'var(--text-muted)', fontSize: '12px', fontWeight: 700 }}>—</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', }}>
                                             <span style={{ padding: '3px 10px', borderRadius: '6px', background: 'var(--surface-200)', color: 'var(--text-primary)', fontSize: '11px', fontWeight: 850 }}>{t('رصيد افتتاحي')}</span>
                                         </td>
-                                        <td style={{ padding: '16px 20px',  color: 'var(--text-muted)', fontWeight: 600 }}>—</td>
-                                        <td style={{ padding: '16px 20px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 700 }}>{t('إجمالي رصيد العميل ما قبل فترة البحث المحددة')}</td>
-                                        <td style={{ padding: '16px 20px',  color: initialBalance > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 600, fontSize: '13px' }}>{initialBalance > 0 ? initialBalance.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '16px 20px',  color: initialBalance < 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 600, fontSize: '13px' }}>{initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 950, color: initialBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '15px' }}>{Math.abs(initialBalance).toLocaleString()}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center',  color: 'var(--text-muted)', fontWeight: 600 }}>—</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 700 }}>{t('إجمالي رصيد العميل ما قبل فترة البحث المحددة')}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center',  color: initialBalance > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 600, fontSize: '13px' }}>{initialBalance > 0 ? initialBalance.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center',  color: initialBalance < 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 600, fontSize: '13px' }}>{initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center',  fontWeight: 950, color: initialBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '15px' }}>{Math.abs(initialBalance).toLocaleString()}</td>
                                     </tr>
                                 )}
                                 
                                 {/* Transaction Ledger Rows */}
                                 {ledger.map((row: any, i: number) => (
                                     <tr key={row.id + i} style={{ borderBottom: i < ledger.length - 1 ? '1px solid var(--border-subtle)' : 'none', transition: 'background 0.15s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-100)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={{ padding: '14px 20px',  color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600 }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600 }}>
                                             {new Date(row.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                                         </td>
-                                        <td style={{ padding: '14px 20px', }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(37, 106, 244,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 600 }}>
                                                 {row.type === 'invoice' ? (isServices ? t('فاتورة خدمة') : t('فاتورة مبيعات')) : row.type === 'receipt' ? t('سند تحصيل') : row.type === 'return' ? (isServices ? t('مرتجع خدمة') : t('مرتجع بيع')) : row.type === 'payment' ? t('سند صرف') : row.type === 'refund' ? t('استرداد') : t('حركة محاسبية')}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '14px 20px', }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                             {row.ref ? <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>{row.ref}</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                                         </td>
-                                        <td style={{ padding: '14px 20px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 650 }}>{row.description}</td>
-                                        <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 950, fontSize: '13px' }}>{row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 950, fontSize: '13px' }}>{row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '14px 20px',  fontWeight: 950, color: row.balance > 0 ? '#ef4444' : row.balance < 0 ? '#10b981' : 'var(--text-primary)', direction: 'ltr', fontSize: '15px' }}>{Math.abs(row.balance).toLocaleString()}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 650 }}>{row.description}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: row.debit > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 950, fontSize: '13px' }}>{row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  color: row.credit > 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 950, fontSize: '13px' }}>{row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 950, color: row.balance > 0 ? '#ef4444' : row.balance < 0 ? '#10b981' : 'var(--text-primary)', direction: 'ltr', fontSize: '15px' }}>{Math.abs(row.balance).toLocaleString()}</td>
                                     </tr>
                                 ))}
 

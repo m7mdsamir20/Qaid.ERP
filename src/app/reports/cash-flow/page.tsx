@@ -136,11 +136,11 @@ export default function CashFlowReportPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start'}}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -180,7 +180,7 @@ export default function CashFlowReportPage() {
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('التاريخ'), t('النوع'), t('الخزينة'), t('الطرف الآخر'), t('البيان'), t('المبلغ')].map((h, i) => (
                                             <th key={i} style={{
-                                                padding: '16px 20px',
+                                                padding: '16px 20px', textAlign: 'center', textAlign: 'center',
                                                 fontSize: '12px',
                                                 fontWeight: 600,
                                                 color: C.textSecondary,
@@ -193,14 +193,14 @@ export default function CashFlowReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
+                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
                                     ) : filtered.map((v, i) => (
                                         <tr key={v.id} 
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
@@ -209,10 +209,10 @@ export default function CashFlowReportPage() {
                                                     {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, }}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{v.description || '—'}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
                                                 <Currency amount={v.amount} /></td>
                                         </tr>
                                     ))}

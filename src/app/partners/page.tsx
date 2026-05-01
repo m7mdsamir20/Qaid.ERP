@@ -111,11 +111,11 @@ export default function PartnersPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                             onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                             >
-                                <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -133,7 +133,7 @@ export default function PartnersPage() {
                                 <PieChart size={16} style={{ color: C.primary }} />
                                 {t('توزيع الحصص الفعلي')}
                             </div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('الإجمالي')}: 100%</div>
+                            <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{t('الإجمالي')}: 100%</div>
                         </div>
                         
                         <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden', gap: '2px', background: 'rgba(255,255,255,0.03)' }}>
@@ -161,13 +161,13 @@ export default function PartnersPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
+                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
                     <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -258,7 +258,7 @@ export default function PartnersPage() {
                                         onFocus={focusIn} onBlur={focusOut} 
                                         placeholder="0.00"
                                     />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div>

@@ -169,7 +169,7 @@ function VerifyContent() {
                         {loading ? t('جاري التحقق...') : t('تأكيد الرمز وتفعيل الحساب')}
                     </button>
 
-                    <div style={{ marginTop: '28px', fontSize: '13.5px', color: C.textMuted, fontFamily: CAIRO }}>
+                    <div style={{ marginTop: '28px', fontSize: '13.5px', color: C.textSecondary, fontFamily: CAIRO }}>
                         {t('لم يصلك الرمز؟')}{' '}
                         {countdown > 0 ? (
                             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{t('إعادة الإرسال خلال')} {countdown} {t('ثانية')}</span>
@@ -184,7 +184,7 @@ function VerifyContent() {
                         )}
                     </div>
                     
-                    <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '24px', color: C.textMuted, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
+                    <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '24px', color: C.textSecondary, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
                         {isRtl ? <ArrowRight size={14} /> : <ArrowLeft size={14} />} {t('العودة لإنشاء الحساب')}
                     </Link>
                 </div>

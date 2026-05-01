@@ -132,11 +132,11 @@ export default function DisposalsPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                             onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                             >
-                                <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
+                                        {!s.isCount && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -190,21 +190,21 @@ export default function DisposalsPage() {
                                 {loadingList ? (
                                     <tr><td colSpan={7} style={{ padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                                 ) : filtered.length === 0 ? (
-                                    <tr><td colSpan={7} style={{ padding: '80px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
+                                    <tr><td colSpan={7} style={{ padding: '80px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
                                 ) : filtered.map((d, i) => {
                                     const isG = d.gainLoss > 0;
                                     return (
                                         <tr key={d.id} style={TABLE_STYLE.row(i === filtered.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{d.assetName}</div>
-                                                <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px', textAlign: 'start' }}>{d.assetCode}</div>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{d.assetName}</div>
+                                                <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px', textAlign: 'center' }}>{d.assetCode}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
                                                     {REASON_LABELS[d.reason] || d.reason}
                                                 </span>
                                             </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
                                             <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                                 <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={d.salePrice} /></div>
                                             </td>
@@ -217,7 +217,7 @@ export default function DisposalsPage() {
                                                     <Currency amount={Math.abs(d.gainLoss)} />
                                                 </div>
                                             </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
                                         </tr>
                                     );
                                 })}
@@ -258,7 +258,7 @@ export default function DisposalsPage() {
                                         onFocus={focusIn} onBlur={focusOut} 
                                         placeholder="0.00"
                                     />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                         </div>
@@ -267,10 +267,10 @@ export default function DisposalsPage() {
                             <div style={{ padding: '16px', background: isGain ? '#10b98108' : isLoss ? `${C.danger}08` : 'rgba(255,255,255,0.02)', borderRadius: '16px', border: `1px solid ${isGain ? '#10b98133' : isLoss ? `${C.danger}33` : C.border}`, marginBottom: '24px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px' }}>
                                     <h5 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('معاينة نتائج الاستبعاد')}:</h5>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('الصافي الدفتري الحالي')}: <b style={{ fontFamily: OUTFIT }}>{fmt(selectedAsset.netBookValue)}</b></span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{t('الصافي الدفتري الحالي')}: <b style={{ fontFamily: OUTFIT }}>{fmt(selectedAsset.netBookValue)}</b></span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'center' }}>
                                         <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{isGain ? t('أرباح رأسمالية مٌحققة') : isLoss ? t('خسائر رأسمالية ناتجة') : t('تعادل دفتري')}</div>
                                         <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: OUTFIT }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{cSymbol}</span></div>
                                     </div>
@@ -278,7 +278,7 @@ export default function DisposalsPage() {
                                         {isGain ? <ArrowUpCircle size={28} /> : isLoss ? <ArrowDownCircle size={28} /> : <MinusCircle size={28} />}
                                     </div>
                                 </div>
-                                <div style={{ marginTop: '14px', fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, borderTop: `1px solid ${C.border}`, paddingTop: '10px' }}>
+                                <div style={{ marginTop: '14px', fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, borderTop: `1px solid ${C.border}`, paddingTop: '10px' }}>
                                     {t('سيتم إثبات العائد في {target} وإقفال حساب مجمع الإهلاك وتكلفة الأصل.').replace('{target}', reason === 'sale' ? t('نقدية الصندوق') : t('حسابات المصروفات'))}
                                 </div>
                             </div>

@@ -99,7 +99,7 @@ export default function UsersTab({
                             { label: t('كلمة المرور'), key: 'password', type: 'password', autoComplete: 'new-password', placeholder: '••••••••', dir: 'ltr' },
                         ].map(f => (
                             <div key={f.key}>
-                                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO }}>{f.label}</label>
+                                <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO }}>{f.label}</label>
                                 <input
                                     type={f.type}
                                     autoComplete={f.autoComplete}
@@ -124,7 +124,7 @@ export default function UsersTab({
 
                         {/* الدور ── آخر حاجة */}
                         <div className="custom-dropdown" style={{ position: 'relative' }}>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO }}>{t('الدور الوظيفي')}</label>
+                            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO }}>{t('الدور الوظيفي')}</label>
                             <button type="button"
                                 onClick={() => setOpenDropdown(openDropdown === 'role' ? null : 'role')}
                                 style={{
@@ -136,7 +136,7 @@ export default function UsersTab({
                                     fontFamily: CAIRO, transition: 'border-color 0.2s'
                                 }}>
                                 <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                <span style={{ flex: 1, textAlign: 'start', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
+                                <span style={{ flex: 1, textAlign: 'center', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
                                     {roleLabels[newUserForm.roleId] || newUserForm.roleId}
                                 </span>
                             </button>
@@ -170,11 +170,11 @@ export default function UsersTab({
                                                 borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none',
                                                 background: newUserForm.roleId === opt.value ? `${C.primary}15` : 'transparent',
                                                 color: newUserForm.roleId === opt.value ? C.primary : C.textSecondary,
-                                                fontSize: '12.5px', cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO
+                                                fontSize: '12.5px', cursor: 'pointer', textAlign: 'center', fontFamily: CAIRO
                                             }}
                                             onMouseEnter={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
                                             onMouseLeave={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'transparent'; }}>
-                                            <span style={{ fontSize: '10px', color: C.textMuted }}>{roleDescriptions[opt.value]}</span>
+                                            <span style={{ fontSize: '10px', color: C.textSecondary }}>{roleDescriptions[opt.value]}</span>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 {newUserForm.roleId === opt.value && opt.value !== 'none' && <Check size={13} style={{ color: C.primary }} />}
                                                 <span style={{ fontWeight: newUserForm.roleId === opt.value ? 900 : (opt.value === 'none' ? 600 : 700), opacity: opt.value === 'none' ? 0.7 : 1 }}>{roleLabels[opt.value]}</span>
@@ -189,9 +189,9 @@ export default function UsersTab({
                     {/* تعيين الفروع المسموح بها */}
                     {branches.length > 1 && (
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: C.textMuted, marginBottom: '10px', fontFamily: CAIRO }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: C.textSecondary, marginBottom: '10px', fontFamily: CAIRO }}>
                                 <Store size={13} style={{ color: C.primary }} />
-                                {t('الفروع المسموح بها')} <span style={{ color: C.textMuted, fontSize: '10px', fontWeight: 500 }}>({t('بلا اختيار = يرى كل الفروع')})</span>
+                                {t('الفروع المسموح بها')} <span style={{ color: C.textSecondary, fontSize: '10px', fontWeight: 500 }}>({t('بلا اختيار = يرى كل الفروع')})</span>
                             </label>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {branches.map((b: any) => {
@@ -291,7 +291,7 @@ export default function UsersTab({
 
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {/* Header */}
-                        <div className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
+                        <div className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 600, color: C.textSecondary, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
                             <div>{t('القائمة / الصفحة')}</div>
                             <div style={{ }}></div>
                         </div>
@@ -375,7 +375,7 @@ export default function UsersTab({
                                                         <span style={{ fontSize: '12px', color: perms.view ? C.textSecondary : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                                             {t(page.label)}
                                                         </span>
-                                                        {isAccessOnlySection && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400, opacity: 0.6 }}>({t('وصول فقط')})</span>}
+                                                        {isAccessOnlySection && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 400, opacity: 0.6 }}>({t('وصول فقط')})</span>}
                                                     </div>
 
                                                     {isAccessOnlySection ? (
@@ -436,7 +436,7 @@ export default function UsersTab({
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                 {[t('المستخدم'), t('المعرف'), t('الدور'), ...(branches.length > 1 ? [t('الفرع')] : []), t('الحالة'), ''].map((h, i) => (
-                                    <th key={i} style={{ textAlign: (i >= 2) ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
+                                    <th key={i} style={{ textAlign: (i >= 2) ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -445,18 +445,18 @@ export default function UsersTab({
                                 <tr key={u.id} style={{ borderBottom: idx < users.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ padding: '14px 20px', }}>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                         <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
-                                        <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{u.email}</div>
+                                        <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{u.email}</div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center' }}>
                                         <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 600, fontFamily: CAIRO }}>
                                             {roleLabels[u.role] || u.role}
                                         </span>
                                     </td>
                                     {branches.length > 1 && (
-                                        <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center' }}>
                                             {(() => {
                                                 if (u.role === 'admin') {
                                                     return <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontFamily: CAIRO }}>{t('كل الفروع')}</span>;
@@ -471,7 +471,7 @@ export default function UsersTab({
                                             })()}
                                         </td>
                                     )}
-                                    <td style={{ padding: '14px 20px', }}>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <button onClick={() => toggleUserStatus(u.id, u.status)}
                                                 style={{ height: '26px', padding: '0 12px', borderRadius: '20px', border: `1px solid ${u.status === 'active' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, background: u.status === 'active' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: u.status === 'active' ? '#10b981' : C.danger, fontSize: '11px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
@@ -480,7 +480,7 @@ export default function UsersTab({
                                             </button>
                                         </div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', }}>
+                                    <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                             {u.id !== session?.user?.id && (
                                                 <button onClick={() => editUser(u)}

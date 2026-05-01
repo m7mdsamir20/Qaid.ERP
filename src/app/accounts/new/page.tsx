@@ -120,7 +120,7 @@ export default function NewAccountPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ padding: '100px 0', color: C.textMuted, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ padding: '100px 0', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                     <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري التحميل...')}</p>
                 </div>
@@ -146,11 +146,11 @@ export default function NewAccountPage() {
                                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
-                                        style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, fontFamily: OUTFIT, fontWeight: 700 }}
+                                        style={{ ...IS, paddingInlineStart: '42px', color: C.textSecondary, cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, fontFamily: OUTFIT, fontWeight: 700 }}
                                     />
-                                    <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
+                                    <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: C.textSecondary, opacity: 0.5, pointerEvents: 'none' }} />
                                 </div>
-                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '6px' }}>{t('يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب')}</p>
+                                <p style={{ fontSize: '11px', color: C.textSecondary, marginTop: '6px' }}>{t('يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب')}</p>
                             </div>
 
                             <div>
@@ -179,7 +179,7 @@ export default function NewAccountPage() {
                                             cursor: 'pointer', transition: 'all 0.15s',
                                         }}>
                                         <div style={{ fontSize: '13px', color: form.type === opt.value ? opt.color : C.textSecondary, fontWeight: 700 }}>{opt.label}</div>
-                                        <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '4px', fontWeight: 600 }}>
+                                        <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '4px', fontWeight: 600 }}>
                                             {opt.nature === 'debit' ? t('مدين') : t('دائن')}
                                         </div>
                                     </button>
@@ -204,7 +204,7 @@ export default function NewAccountPage() {
                                                 cursor: 'pointer', transition: 'all 0.15s',
                                             }}>
                                             <div style={{ fontSize: '13px', color: form.accountCategory === opt.val ? opt.color : C.textSecondary, fontWeight: 700 }}>{opt.label}</div>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '3px', fontWeight: 500 }}>{opt.sub}</div>
+                                            <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '3px', fontWeight: 500 }}>{opt.sub}</div>
                                         </button>
                                     ))}
                                 </div>
@@ -226,7 +226,7 @@ export default function NewAccountPage() {
                                         }))}
                                     style={{ minWidth: '100%', height: '42px' }}
                                 />
-                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '6px' }}>{t('اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول')}</p>
+                                <p style={{ fontSize: '11px', color: C.textSecondary, marginTop: '6px' }}>{t('اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول')}</p>
                             </div>
                         </div>
 

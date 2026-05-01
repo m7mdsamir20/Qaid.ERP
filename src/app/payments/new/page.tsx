@@ -220,16 +220,16 @@ export default function NewPaymentPage() {
                                                 setForm((f: any) => ({ ...f, paymentType: nextType, treasuryId: nextTrea?.id || '' }));
                                             }}
                                             style={{
-                                                padding: '14px 20px', borderRadius: '12px', border: '1px solid',
+                                                padding: '14px 20px', textAlign: 'center', textAlign: 'center', borderRadius: '12px', border: '1px solid',
                                                 borderColor: form.paymentType === opt.val ? opt.color : C.border,
                                                 background: form.paymentType === opt.val ? `${opt.color}11` : 'transparent',
                                                 cursor: 'pointer', transition: 'all 0.2s',
-                                                display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'start',
+                                                display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'center',
                                             }}>
                                             <span style={{ color: form.paymentType === opt.val ? opt.color : C.textMuted }}>{opt.icon}</span>
                                             <div>
                                                 <div style={{ fontSize: '13px', color: form.paymentType === opt.val ? C.textPrimary : C.textSecondary, fontWeight: 700 }}>{opt.label}</div>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px' }}>{opt.sub}</div>
+                                                <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>{opt.sub}</div>
                                             </div>
                                             {form.paymentType === opt.val && (
                                                 <div style={{ marginInlineEnd: 'auto', width: '8px', height: '8px', borderRadius: '50%', background: opt.color }} />
@@ -291,7 +291,7 @@ export default function NewPaymentPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '15px', borderTop: `1px dashed ${C.border}` }}>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>الرصيد بعد السند</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>الرصيد بعد السند</span>
                                     {selectedSupplier ? (
                                         <span style={{
                                             fontSize: '15px', fontWeight: 600, fontFamily: CAIRO,
@@ -300,7 +300,7 @@ export default function NewPaymentPage() {
                                             {formatNumber(Math.abs(selectedSupplier.balance - (parseFloat(form.amount) || 0)))} {cSymbol}
                                         </span>
                                     ) : (
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>—</span>
+                                        <span style={{ fontSize: '13px', color: C.textSecondary }}>—</span>
                                     )}
                                 </div>
                             </div>

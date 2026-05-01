@@ -142,7 +142,7 @@ export default function NewReceiptPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
                 </div>
                 <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
@@ -329,7 +329,7 @@ export default function NewReceiptPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '15px', borderTop: `1px dashed ${C.border}` }}>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>الرصيد بعد السند</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>الرصيد بعد السند</span>
                                     {selectedPartner ? (() => {
                                         const amt = parseFloat(form.amount) || 0;
                                         const nextBal = selectedPartner.ptype === 'customer'
@@ -347,7 +347,7 @@ export default function NewReceiptPage() {
                                             </span>
                                         );
                                     })() : (
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>—</span>
+                                        <span style={{ fontSize: '13px', color: C.textSecondary }}>—</span>
                                     )}
                                 </div>
                             </div>

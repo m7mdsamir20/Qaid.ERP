@@ -59,7 +59,7 @@ export default function TaxTab({
                         </div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفعيل النظام الضريبي')}</div>
-                            <div style={{ fontSize: '11px', color: C.textMuted }}>{t('عند تفعيله سيتم إضافة حقول الضريبة في الفواتير والتقسيط')}</div>
+                            <div style={{ fontSize: '11px', color: C.textSecondary }}>{t('عند تفعيله سيتم إضافة حقول الضريبة في الفواتير والتقسيط')}</div>
                         </div>
                     </div>
                     <Toggle
@@ -74,7 +74,7 @@ export default function TaxTab({
 
                         {/* Tax Type */}
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-                            <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '12px', fontFamily: CAIRO }}>{t('نوع الضريبة')}</label>
+                            <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '12px', fontFamily: CAIRO }}>{t('نوع الضريبة')}</label>
                             {!isEditMode ? (
                                 <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t(taxForm.type)}</div>
                             ) : (
@@ -98,7 +98,7 @@ export default function TaxTab({
 
                         {/* Tax Rate */}
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
-                            <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '12px', fontFamily: CAIRO }}>{t('النسبة الافتراضية (%)')}</label>
+                            <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '12px', fontFamily: CAIRO }}>{t('النسبة الافتراضية (%)')}</label>
                             {!isEditMode ? (
                                 <div style={{ fontSize: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{taxForm.rate}%</div>
                             ) : (
@@ -122,7 +122,7 @@ export default function TaxTab({
                         <div className="mobile-setting-row" style={{ gridColumn: 'span 2', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div>
                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الأسعار شاملة الضريبة')}</div>
-                                <div style={{ fontSize: '11px', color: C.textMuted }}>{t('عند التفعيل، سيتم اعتبار سلع الفاتورة شاملة لنسبة الضريبة المسجلة')}</div>
+                                <div style={{ fontSize: '11px', color: C.textSecondary }}>{t('عند التفعيل، سيتم اعتبار سلع الفاتورة شاملة لنسبة الضريبة المسجلة')}</div>
                             </div>
                             <Toggle
                                 checked={taxForm.isInclusive}

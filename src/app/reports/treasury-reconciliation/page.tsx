@@ -185,11 +185,11 @@ export default function TreasuryReconciliationPage() {
                                 { label: t('نسبة الجرد المكتملة'), value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} ${t('من أصل')} ${treasuries.length}` },
                             ].map((s, i) => (
                                 <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ textAlign: 'start'}}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center'}}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.isPercent ? (s.value as number).toFixed(0) : formatNumber(s.value as number)}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.isPercent ? '%' : sym}</span>
+                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.isPercent ? '%' : sym}</span>
                                         </div>
                                         <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
                                     </div>
@@ -227,7 +227,7 @@ export default function TreasuryReconciliationPage() {
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                 {[t('المرجع المالي'), t('النوع'), t('الرصيد الدفتري'), t('الرصيد الفعلي (عَدّ يدوي)'), t('الفارق (عجز/زيادة)'), t('حالة الجرد')].map((h, i) => (
-                                                    <th key={i} style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{h}</th>
+                                                    <th key={i} style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{h}</th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -242,39 +242,39 @@ export default function TreasuryReconciliationPage() {
                                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                         onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                         <td style={{ padding: '14px 20px' }}>
-                                                            <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>{tData.name}</div>
-                                                            <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'start', fontFamily: OUTFIT }}>ID: {tData.id.substring(0, 8)}</div>
+                                                            <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{tData.name}</div>
+                                                            <div style={{ fontSize: '11px', color: C.textSecondary, textAlign: 'center', fontFamily: OUTFIT }}>ID: {tData.id.substring(0, 8)}</div>
                                                         </td>
-                                                        <td style={{ padding: '14px 20px', }}>
+                                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                                             {tData.type === 'bank'
                                                                 ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Landmark size={14} /> {t('بنكي')}</span>
                                                                 : <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: SC, padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary }}>
+                                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary }}>
                                                             {fMoneyJSX(sys)}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px', }}>
+                                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                                             <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-start' }}>
                                                                 <input type="number" placeholder={t("أدخل المبلغ...")}
                                                                     value={physicalBalances[tData.id] || ''}
                                                                     onChange={e => setPhysicalBalances(prev => ({ ...prev, [tData.id]: e.target.value }))}
-                                                                    style={{ width: '140px', height: '36px', textAlign: 'start', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, outline: 'none' }} />
+                                                                    style={{ width: '140px', height: '36px', textAlign: 'center', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, outline: 'none' }} />
                                                             </div>
-                                                            <div className="print-only" style={{ display: 'none', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'start'}}>
+                                                            <div className="print-only" style={{ display: 'none', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center'}}>
                                                                 {hasActual ? fMoneyJSX(act) : '—'}
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>
+                                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center',  fontWeight: 600, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>
                                                             {hasActual ? <>{diff > 0 ? `+${formatNumber(diff)}` : formatNumber(diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px', }}>
+                                                        <td style={{ padding: '14px 20px', textAlign: 'center', textAlign: 'center', textAlign: 'center', }}>
                                                             {hasActual
                                                                 ? diff === 0
                                                                     ? <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> {t('مطابق')}</span>
                                                                     : diff < 0
                                                                         ? <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> {t('عجز')}</span>
                                                                         : <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> {t('زيادة')}</span>
-                                                                : <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
+                                                                : <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
                                                         </td>
                                                     </tr>
                                                 );
@@ -300,11 +300,11 @@ export default function TreasuryReconciliationPage() {
                         </div>
 
                         {snapshotsLoading ? (
-                            <div style={{ padding: '80px', textAlign: 'start'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
+                            <div style={{ padding: '80px', textAlign: 'center'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
                         ) : filteredSnapshots.length === 0 ? (
                             <div style={{ padding: '80px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                 <FileText size={50} style={{ opacity: 0.1, color: C.primary, marginBottom: '16px' }} />
-                                <p style={{ color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد سجلات جرد محفوظة')}</p>
+                                <p style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد سجلات جرد محفوظة')}</p>
                             </div>
                         ) : (
                             <>
@@ -324,7 +324,7 @@ export default function TreasuryReconciliationPage() {
                                                         <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                                             {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                         </div>
-                                                        <div style={{ fontSize: '11.5px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>
+                                                        <div style={{ fontSize: '11.5px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
                                                             {new Date(snap.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
                                                             {snap.notes && ` — ${snap.notes}`}
                                                         </div>
@@ -355,19 +355,19 @@ export default function TreasuryReconciliationPage() {
                                                 { label: t('إجمالي الزيادة'), value: selectedSnapshot.totalSurplus, color: SC, sign: t('زيادة (+)') },
                                             ].map((s, i) => (
                                                 <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px' }}>
-                                                    <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                                    <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)} <span style={{ fontSize: '10px', fontFamily: CAIRO, color: C.textMuted }}>{sym}</span></div>
+                                                    <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                                    <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)} <span style={{ fontSize: '10px', fontFamily: CAIRO, color: C.textSecondary }}>{sym}</span></div>
                                                     <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
                                                 </div>
                                             ))}
                                         </div>
 
                                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <span style={{ fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                                     {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
                                                 </span>
-                                                {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
+                                                {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
                                             </div>
                                             <div style={{ overflowX: 'auto' }}>
                                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -396,7 +396,7 @@ export default function TreasuryReconciliationPage() {
                                                                     {item.status === 'matched' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('مطابق')}</span>}
                                                                     {item.status === 'shortage' && <span style={{ color: DC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('عجز')}</span>}
                                                                     {item.status === 'surplus' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('زيادة')}</span>}
-                                                                    {item.status === 'not_counted' && <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
+                                                                    {item.status === 'not_counted' && <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
                                                                 </td>
                                                             </tr>
                                                         ))}

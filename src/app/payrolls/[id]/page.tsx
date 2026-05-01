@@ -404,11 +404,11 @@ ${tableHtml}
                         onMouseEnter={e => e.currentTarget.style.background = `${stat.color}15`}
                         onMouseLeave={e => e.currentTarget.style.background = `${stat.color}08`}
                         >
-                             <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
+                             <div style={{ textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(stat.val)}</span>
-                                    <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>{formatCurrency(company?.currency)}</span>
+                                    <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500 }}>{formatCurrency(company?.currency)}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${stat.color}15`, border: `1px solid ${stat.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: stat.color }}>
@@ -478,8 +478,8 @@ ${tableHtml}
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
                                 <th style={{ ...TABLE_STYLE.th(true), width: '120px', textAlign: 'center' }}>كود</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '150px' }}>الموظف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '120px' }}>المسمى الوظيفي</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center', width: '150px' }}>الموظف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center', width: '120px' }}>المسمى الوظيفي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>الأساسي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>البدلات</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>السلف</th>

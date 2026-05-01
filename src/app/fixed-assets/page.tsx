@@ -181,11 +181,11 @@ export default function FixedAssetsPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                             onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                             >
-                                <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
+                                        {!s.isCount && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -248,7 +248,7 @@ export default function FixedAssetsPage() {
                                 {loading ? (
                                     <tr><td colSpan={9} style={{ padding: '100px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                                 ) : filtered.length === 0 ? (
-                                    <tr><td colSpan={9} style={{ padding: '80px', color: C.textMuted, textAlign: 'center' }}>
+                                    <tr><td colSpan={9} style={{ padding: '80px', color: C.textSecondary, textAlign: 'center' }}>
                                         <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
                                         <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
                                     </td></tr>
@@ -262,11 +262,11 @@ export default function FixedAssetsPage() {
                                                 <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{a.code}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{a.name}</div>
-                                                {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px', textAlign: 'start' }}>{a.notes}</div>}
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{a.name}</div>
+                                                {a.notes && <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px', textAlign: 'center' }}>{a.notes}</div>}
                                             </td>
                                             <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
                                             <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.purchaseCost} /></div>
                                             </td>
@@ -301,7 +301,7 @@ export default function FixedAssetsPage() {
                         <div className="modal-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('كود الأصل')}</label>
-                                <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontFamily: OUTFIT }} />
+                                <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>{t('اسم الأصل')} *</label>
@@ -342,7 +342,7 @@ export default function FixedAssetsPage() {
                                 <label style={LS}>{t('قيمة الخردة')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, paddingInlineEnd: '45px', fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div>

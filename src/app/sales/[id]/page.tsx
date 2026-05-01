@@ -214,7 +214,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <User size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('العميل / المستلم')}</p>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('العميل / المستلم')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
                                 </div>
                             </div>
@@ -224,7 +224,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <Receipt size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('رقم الفاتورة')}</p>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('رقم الفاتورة')}</p>
                                     <div style={{ color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{invNumFmt}</div>
                                 </div>
                             </div>
@@ -235,7 +235,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <Building2 size={18} />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('المستودع / المخزن')}</p>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('المستودع / المخزن')}</p>
                                         <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
                                     </div>
                                 </div>
@@ -246,7 +246,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <status.icon size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('حالة التحصيل')}</p>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('حالة التحصيل')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
                         {/* ── Items Table ── */}
                         <div style={TABLE_STYLE.container}>
-                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
                                 <div style={STitle}><Package size={14} /> {t('بنود الفاتورة')}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>
@@ -281,8 +281,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 <td style={{...TABLE_STYLE.td(true)}}>
                                                     <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                     {l.description
-                                                        ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
-                                                        : <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, opacity: 0.5 }}>{l.item.code}</div>
+                                                        ? <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
+                                                        : <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, opacity: 0.5 }}>{l.item.code}</div>
                                                     }
                                                 </td>
                                                 {!isServices && (
@@ -313,14 +313,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
                         {invoice.notes && (
                             <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
-                                <div style={{ ...STitle, fontSize: '11px', color: C.textMuted }}><Info size={12} /> {t('ملاحظات')}</div>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}><Info size={12} /> {t('ملاحظات')}</div>
                                 <p style={{ fontSize: '13px', color: C.textSecondary, margin: '8px 0 0', lineHeight: 1.6 }}>{invoice.notes}</p>
                             </div>
                         )}
 
                         {invoice.returnInvoices && invoice.returnInvoices.length > 0 && (
                             <div style={TABLE_STYLE.container}>
-                                <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(239,68,68,0.04)' }}>
+                                <div style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(239,68,68,0.04)' }}>
                                     <div style={{ ...STitle, color: C.danger }}><RotateCcw size={14} /> {t('مرتجعات هذه الفاتورة')}</div>
                                     <div style={{ fontSize: '12px', fontWeight: 700, color: C.danger }}>{invoice.returnInvoices.length} {t('مرتجع')}</div>
                                 </div>

@@ -97,7 +97,7 @@ export default function OverdueReportPage() {
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>فلترة بعميل:</span>
+                    <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>فلترة بعميل:</span>
                     <div style={{ flex: '1', minWidth: '220px', maxWidth: '380px' }}>
                         <CustomSelect
                             value={selectedCustomer}
@@ -134,8 +134,8 @@ export default function OverdueReportPage() {
 
                     {!loading && !data && (
                         <div style={{ textAlign: 'center', padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                            <AlertTriangle size={60} style={{ color: C.textMuted }} />
-                            <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
+                            <AlertTriangle size={60} style={{ color: C.textSecondary }} />
+                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
                         </div>
                     )}
 
@@ -143,14 +143,14 @@ export default function OverdueReportPage() {
                         <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                    <div style={{ textAlign: 'start'}}>
+                                    <div style={{ textAlign: 'center'}}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
                                         {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
-                                    <div style={{ textAlign: 'start'}}>
+                                    <div style={{ textAlign: 'center'}}>
                                         <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
                                     </div>
-                                    <div style={{ maxWidth: '150px', textAlign: 'start'}}>
+                                    <div style={{ maxWidth: '150px', textAlign: 'center'}}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                     </div>
                                 </div>
@@ -167,11 +167,11 @@ export default function OverdueReportPage() {
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                         padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                     }}>
-                                        <div style={{ textAlign: 'start'}}>
-                                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ textAlign: 'center'}}>
+                                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                                {i === 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                                {i === 0 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                             </div>
                                         </div>
                                         <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -206,8 +206,8 @@ export default function OverdueReportPage() {
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
                                                 </td>
-                                                <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
-                                                <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
+                                                <td style={{ padding: '16px 20px', textAlign: 'center', textAlign: 'center', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 600, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                                                         {inst.daysOverdue} يوم تأخير
@@ -215,7 +215,7 @@ export default function OverdueReportPage() {
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: '#f87171', fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                        {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -160,12 +160,12 @@ export default function GeneralLedgerPage() {
                     </div>
 
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
                             <input type="date" value={fromDate} onChange={e => { setLoading(true); setFromDate(e.target.value); }} style={{ ...IS, width: '160px' }} />
                         </div>
-                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("إلى")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={toDate} onChange={e => { setLoading(true); setToDate(e.target.value); }} style={{ ...IS, width: '160px' }} />
@@ -204,8 +204,8 @@ export default function GeneralLedgerPage() {
                                     onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
                                     onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                                 >
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <Currency 
                                                 amount={s.value} 
@@ -261,7 +261,7 @@ export default function GeneralLedgerPage() {
 
                                     {filtered.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} style={{ padding: '60px 20px',  color: C.textMuted }}>
+                                            <td colSpan={7} style={{ padding: '60px 20px',  color: C.textSecondary }}>
                                                 <div className="no-print" style={{ opacity: 0.3, marginBottom: '8px' }}><Search size={32} /></div>
                                                 <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات مالية مسجلة لهذه الفترة')}</p>
                                             </td>
@@ -299,7 +299,7 @@ export default function GeneralLedgerPage() {
                                                     ? <span style={{ background: 'rgba(139,92,246,0.06)', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '2px 10px', fontSize: '10px', color: '#a78bfa', fontFamily: CAIRO }}>
                                                         {line.costCenter.name}
                                                     </span>
-                                                    : <span style={{ color: C.textMuted, fontSize: '13px' }}>—</span>}
+                                                    : <span style={{ color: C.textSecondary, fontSize: '13px' }}>—</span>}
                                             </td>
 
                                             {/* مدين */}
