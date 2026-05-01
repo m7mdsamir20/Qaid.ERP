@@ -155,6 +155,7 @@ export default function ReturnsReportPage() {
                                 value={returnType}
                                 onChange={v => setReturnType(v)}
                                 placeholder={t("كل المرتجعات")}
+                                hideSearch={true}
                                 options={[
                                     { value: 'all', label: t('كل المرتجعات') },
                                     { value: 'sale_return', label: t('مرتجعات المبيعات') },
@@ -169,6 +170,7 @@ export default function ReturnsReportPage() {
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
                                     placeholder={t("كل الفروع")}
+                                    hideSearch={true}
                                     options={[
                                         { value: 'all', label: t('كل الفروع') },
                                         ...branches.map((b) => ({ value: b.id, label: b.name }))
@@ -204,7 +206,7 @@ export default function ReturnsReportPage() {
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                 
+                                                textAlign: 'center',
                                                 fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
@@ -216,11 +218,11 @@ export default function ReturnsReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                 {r.type === 'sale_return' ? 'RET-' : 'RTN-'}{String(r.invoiceNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px' }}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, textAlign: 'center' }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
@@ -230,9 +232,9 @@ export default function ReturnsReportPage() {
                                                     {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{r.party}</td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'center' }}>{r.itemCount} {t('صنف')}</td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}>
                                                 <Currency amount={r.total} />
                                             </td>
                                         </tr>
