@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
+export const dynamic = 'force-dynamic';
+
 // GET: list orders with optional filters
 export const GET = withProtection(async (request, session) => {
     try {

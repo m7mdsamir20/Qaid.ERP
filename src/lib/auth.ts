@@ -125,8 +125,8 @@ export const authOptions: AuthOptions = {
                 if (u.countryCode) token.countryCode = u.countryCode;
             }
 
-            // sync مع قاعدة البيانات باستمرار عند كل عملية تحديث أو تحميل للصفحة لتطبيق الصلاحيات فوراً
-            const SYNC_INTERVAL = 0; // 0 دقائق (تحديث فوري)
+            // sync مع قاعدة البيانات باستمرار عند كل عملية تحديث 
+            const SYNC_INTERVAL = 5 * 60 * 1000; // 5 دقائق بدلاً من 0 لمنع تعارض الكوكيز
             const shouldSync = !user && token.id && (trigger === "update" || !token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
 
             if (shouldSync) {
