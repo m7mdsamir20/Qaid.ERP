@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
@@ -138,12 +139,24 @@ export default function EditCompanyPage() {
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
+    const { data: session, status } = useSession();
 
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+    useEffect(() => {
+        if (status === 'loading') return;
+        if (!session) {
+            router.push(`/login?callbackUrl=/super-admin/edit/${id}`);
+            return;
+        }
+        if (!(session?.user as any)?.isSuperAdmin) {
+            router.push('/');
+        }
+    }, [session, status, router, id]);
 
     const [form, setForm] = useState({
         // الشركة

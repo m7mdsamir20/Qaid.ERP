@@ -3,19 +3,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
-import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut, Globe, XCircle, Phone, MapPin, User } from 'lucide-react';
+import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut, Globe, XCircle, Phone, MapPin, User, Shield } from 'lucide-react';
 
 import PageHeader from '@/components/PageHeader';
+import { useSession } from 'next-auth/react';
 
 export default function KDSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
+    const { data: session, status } = useSession();
 
     const [orders, setOrders] = useState<any[]>([]);
     const [completedOrders, setCompletedOrders] = useState<any[]>([]);
     const [showCompletedPanel, setShowCompletedPanel] = useState(false);
     const [loading, setLoading] = useState(true);
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+    const userRole = (session?.user as any)?.role?.toLowerCase();
+    const isSuperAdmin = userRole === 'super-admin';
+    const isAdmin = userRole === 'admin';
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isRestaurants = businessType === 'RESTAURANTS';
+    const userPerms = (session?.user as any)?.permissions || {};
+    const hasKDSPerm = userPerms['/kds']?.view || userRole === 'chef' || isSuperAdmin || isAdmin;
 
     const load = useCallback(async () => {
         try {
@@ -33,14 +43,33 @@ export default function KDSPage() {
     const [now, setNow] = useState(Date.now());
 
     useEffect(() => {
-        load();
-        const fetchInterval = setInterval(load, 15000);
-        const tickInterval = setInterval(() => setNow(Date.now()), 1000);
-        return () => {
-            clearInterval(fetchInterval);
-            clearInterval(tickInterval);
-        };
-    }, [load]);
+        if (status === 'authenticated' && isRestaurants && hasKDSPerm) {
+            load();
+            const fetchInterval = setInterval(load, 15000);
+            const tickInterval = setInterval(() => setNow(Date.now()), 1000);
+            return () => {
+                clearInterval(fetchInterval);
+                clearInterval(tickInterval);
+            };
+        }
+    }, [load, status, isRestaurants, hasKDSPerm]);
+
+    if (status === 'loading') {
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
+    }
+
+    if (status === 'unauthenticated' || !isRestaurants || !hasKDSPerm) {
+        return (
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
+                    <Shield size={40} />
+                </div>
+                <h2 style={{ fontSize: '24px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{t('غير مصرح لك بالدخول')}</h2>
+                <p style={{ fontSize: '15px', color: C.textSecondary, margin: 0 }}>{t('لا تملك الصلاحيات الكافية للوصول لشاشة المطبخ.')}</p>
+                <button onClick={() => window.location.href = '/'} style={{ padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, marginTop: '16px' }}>{t('العودة للرئيسية')}</button>
+            </div>
+        );
+    }
 
     const markAsReady = async (orderId: string) => {
         setUpdatingId(orderId);
