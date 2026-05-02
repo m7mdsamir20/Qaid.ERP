@@ -68,8 +68,8 @@ export const POST = withProtection(async (request, session, body) => {
                         });
                         const available = stock?.quantity || 0;
                         if (available < requiredQty) {
-                            return NextResponse.json({ 
-                                error: `المواد الخام غير كافية لعمل "${item.name}". المتاح من "${ri.item.name}" هو ${available} فقط.` 
+                            return NextResponse.json({
+                                error: `المواد الخام غير كافية لعمل "${item.name}". المتاح من "${ri.item.name}" هو ${available} فقط.`
                             }, { status: 400 });
                         }
                     }
@@ -85,7 +85,7 @@ export const POST = withProtection(async (request, session, body) => {
                     Object.values(parsed).forEach((arr: any) => {
                         arr.forEach((m: any) => modsTotal += (m.price || 0));
                     });
-                } catch(e) {}
+                } catch (e) { }
             }
             return s + ((l.unitPrice + modsTotal) * l.quantity - (l.discount ?? 0));
         }, 0);
@@ -161,7 +161,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 Object.values(parsed).forEach((arr: any) => {
                                     arr.forEach((m: any) => modsTotal += (m.price || 0));
                                 });
-                            } catch(e) {}
+                            } catch (e) { }
                         }
                         return {
                             itemId: l.itemId,
@@ -181,8 +181,8 @@ export const POST = withProtection(async (request, session, body) => {
                     }
                 })
             },
-            include: { 
-                lines: true, 
+            include: {
+                lines: true,
                 table: true,
                 driver: true,
                 company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } },
@@ -259,7 +259,7 @@ export const POST = withProtection(async (request, session, body) => {
                                         Object.values(parsed).forEach((arr: any) => {
                                             arr.forEach((m: any) => modsTotal += (m.price || 0));
                                         });
-                                    } catch(e) {}
+                                    } catch (e) { }
                                 }
                                 return {
                                     itemId: l.itemId,
@@ -337,7 +337,7 @@ export const POST = withProtection(async (request, session, body) => {
                     if (body.paidAmount > 0) {
                         lines.push({ accountId: cashAccount.id, debit: body.paidAmount, credit: 0, description: `تحصيل طلب كاشير #${orderNumber}` });
                     }
-                    
+
                     if (total - body.paidAmount > 0) {
                         // Find receivables account
                         const recAccount = await prisma.account.findFirst({
@@ -428,7 +428,7 @@ export const POST = withProtection(async (request, session, body) => {
                     // بناءً على طلب المستخدم: المنتج التام لا يسحب بالسالب ولا يتم خصمه من المخزون إلا إذا كان له وصفة (مواد خام)
                     // لذلك قمنا بتعطيل الخصم المباشر للمنتج التام الذي ليس له وصفة
                 }
-                
+
                 // 3. Deduct Modifiers Inventory
                 if (line.modifiers) {
                     try {
@@ -455,7 +455,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 });
                             }
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 }
             }
         }
@@ -475,15 +475,15 @@ export const PUT = withProtection(async (request, session, body) => {
         if (body.action === 'pay_and_close') {
             const order = await prisma.posOrder.findUnique({ where: { id: body.id, companyId }, include: { invoice: true } });
             if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
-            
+
             const paymentAmount = order.total - order.paidAmount;
-            
+
             // Update POS Order
             await prisma.posOrder.update({
                 where: { id: order.id },
                 data: { paidAmount: order.total, status: order.type === 'delivery' ? 'delivered' : 'ready', paymentMethod: body.paymentMethod || 'cash' }
             });
-            
+
             // Free the driver
             if (order.driverId) {
                 await prisma.driver.updateMany({
@@ -491,7 +491,7 @@ export const PUT = withProtection(async (request, session, body) => {
                     data: { status: 'available' }
                 });
             }
-            
+
             // Free the table
             if (order.tableId) {
                 await prisma.restaurantTable.updateMany({
@@ -499,7 +499,7 @@ export const PUT = withProtection(async (request, session, body) => {
                     data: { status: 'available' }
                 });
             }
-            
+
             // Update Invoice & Treasury & Accounting if there was an unpaid amount
             if (paymentAmount > 0) {
                 if (order.invoiceId) {
@@ -512,14 +512,14 @@ export const PUT = withProtection(async (request, session, body) => {
                         }
                     });
                 }
-                
+
                 if (body.treasuryId) {
                     await prisma.treasury.update({
                         where: { id: body.treasuryId },
                         data: { balance: { increment: paymentAmount } }
                     });
                 }
-                
+
                 // Accounting Entry
                 const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
                 if (activeYear) {
@@ -529,7 +529,7 @@ export const PUT = withProtection(async (request, session, body) => {
                     const recAccount = await prisma.account.findFirst({
                         where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
                     });
-                    
+
                     if (cashAccount && recAccount) {
                         const lastEntry = await prisma.journalEntry.findFirst({
                             where: { companyId },
@@ -581,9 +581,9 @@ export const PUT = withProtection(async (request, session, body) => {
 
         // If ready/cancelled/returned, free the table
         if (body.status === 'ready' || body.status === 'cancelled' || body.status === 'returned') {
-            const order = await prisma.posOrder.findUnique({ 
-                where: { id: body.id }, 
-                include: { lines: true } 
+            const order = await prisma.posOrder.findUnique({
+                where: { id: body.id },
+                include: { lines: true }
             });
             if (order?.tableId) {
                 await prisma.restaurantTable.updateMany({
@@ -659,7 +659,7 @@ export const PUT = withProtection(async (request, session, body) => {
                                         });
                                     }
                                 }
-                            } catch(e) {}
+                            } catch (e) { }
                         }
                     }
                 }

@@ -274,35 +274,35 @@ export default function OrdersHistoryPage() {
                         <span>${formatMoney(finalDiscount)}</span>
                     </div>` : ''}
                     ${(() => {
-                        if (orderData.serviceAmount > 0) {
-                            let rate = '';
-                            try {
-                                const rs = typeof orderData.company?.restaurantSettings === 'string' ? JSON.parse(orderData.company.restaurantSettings) : orderData.company?.restaurantSettings;
-                                if (rs && rs.serviceCharge && rs.serviceCharge.rate) rate = ` (${rs.serviceCharge.rate}%)`;
-                            } catch(e) {}
-                            return `
+                if (orderData.serviceAmount > 0) {
+                    let rate = '';
+                    try {
+                        const rs = typeof orderData.company?.restaurantSettings === 'string' ? JSON.parse(orderData.company.restaurantSettings) : orderData.company?.restaurantSettings;
+                        if (rs && rs.serviceCharge && rs.serviceCharge.rate) rate = ` (${rs.serviceCharge.rate}%)`;
+                    } catch (e) { }
+                    return `
                             <div class="flex-between">
                                 <span>رسوم الخدمة${rate}</span>
                                 <span>${formatMoney(orderData.serviceAmount)}</span>
                             </div>`;
-                        }
-                        return '';
-                    })()}
+                }
+                return '';
+            })()}
                     ${(() => {
-                        if (taxAmount > 0) {
-                            let rate = '';
-                            try {
-                                const ts = typeof orderData.company?.taxSettings === 'string' ? JSON.parse(orderData.company.taxSettings) : orderData.company?.taxSettings;
-                                if (ts && ts.rate) rate = ` (${ts.rate}%)`;
-                            } catch(e) {}
-                            return `
+                if (taxAmount > 0) {
+                    let rate = '';
+                    try {
+                        const ts = typeof orderData.company?.taxSettings === 'string' ? JSON.parse(orderData.company.taxSettings) : orderData.company?.taxSettings;
+                        if (ts && ts.rate) rate = ` (${ts.rate}%)`;
+                    } catch (e) { }
+                    return `
                             <div class="flex-between">
                                 <span>ضريبة القيمة المضافة${rate}</span>
                                 <span>${formatMoney(taxAmount)}</span>
                             </div>`;
-                        }
-                        return '';
-                    })()}
+                }
+                return '';
+            })()}
                 </div>
 
                 <div class="dashed-line"></div>
@@ -313,17 +313,17 @@ export default function OrdersHistoryPage() {
                         <span>${formatMoney(finalTotal)}</span>
                     </div>
                     ${(() => {
-                        const paidAmount = Number(orderData.paidAmount || 0);
-                        const methodStr = { 'cash': 'نقدي', 'card': 'شبكة', 'mixed': 'مختلط', 'bank': 'تحويل بنكي' }[orderData.paymentMethod as string] || orderData.paymentMethod || 'نقدي';
-                        if (orderData.type === 'delivery') {
-                            if (paidAmount === 0) {
-                                return `
+                const paidAmount = Number(orderData.paidAmount || 0);
+                const methodStr = { 'cash': 'نقدي', 'card': 'شبكة', 'mixed': 'مختلط', 'bank': 'تحويل بنكي' }[orderData.paymentMethod as string] || orderData.paymentMethod || 'نقدي';
+                if (orderData.type === 'delivery') {
+                    if (paidAmount === 0) {
+                        return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
                                     <span>طريقة الدفع</span>
                                     <span>الدفع عند الاستلام</span>
                                 </div>`;
-                            }
-                            return `
+                    }
+                    return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
                                     <span>المدفوع (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
@@ -332,9 +332,9 @@ export default function OrdersHistoryPage() {
                                     <span>المتبقي</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
-                        } else {
-                            if (paidAmount > 0) {
-                                return `
+                } else {
+                    if (paidAmount > 0) {
+                        return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
                                     <span>المدفوع (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
@@ -343,10 +343,10 @@ export default function OrdersHistoryPage() {
                                     <span>المتبقي</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
-                            }
-                            return '';
-                        }
-                    })()}
+                    }
+                    return '';
+                }
+            })()}
                 </div>
 
                 <div class="dashed-line"></div>
@@ -358,12 +358,12 @@ export default function OrdersHistoryPage() {
                 ${orderData.company?.countryCode === 'SA' ? `
                 <div style="text-align: center; margin-top: 15px;">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(generateZatcaTLV(
-                        orderData.company.name || '',
-                        orderData.company.taxNumber || '000000000000000',
-                        new Date(orderData.createdAt || Date.now()).toISOString(),
-                        finalTotal.toFixed(2),
-                        orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
-                    ))}" style="width: 120px; height: 120px; display: inline-block;" alt="ZATCA QR" />
+                orderData.company.name || '',
+                orderData.company.taxNumber || '000000000000000',
+                new Date(orderData.createdAt || Date.now()).toISOString(),
+                finalTotal.toFixed(2),
+                orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
+            ))}" style="width: 120px; height: 120px; display: inline-block;" alt="ZATCA QR" />
                 </div>
                 ` : ''}
             </body>
