@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';import { C } from '@/constants/theme';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -68,32 +69,9 @@ export default function SaleReturnDetailsPage() {
         }
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '14px', color: '#475569' }}>
-                    <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ fontSize: '13px', fontWeight: 600 }}>{t('جاري استرجاع تفاصيل المرتجع...')}</span>
-                </div>
-                <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-            </DashboardLayout>
-        );
-    }
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
-    if (error || !ret) {
-        return (
-            <DashboardLayout>
-                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#f87171' }}>
-                    <AlertCircle size={56} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
-                    <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 10px' }}>{t('خطأ في التحميل')}</h3>
-                    <p style={{ opacity: 0.8, marginBottom: '20px' }}>{error || t('لم نتمكن من العثور على المرتجع المطلوب')}</p>
-                    <button onClick={() => router.push('/sale-returns')} className="btn btn-ghost" style={{ gap: '8px' }}>
-                        <ChevronRight size={16} /> {t('العودة للمرتجعات')}
-                    </button>
-                </div>
-            </DashboardLayout>
-        );
-    }
+    if (!ret) return null;
 
     const { customer } = ret;
 

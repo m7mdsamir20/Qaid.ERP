@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -100,12 +101,7 @@ export default function FixedAssetsReportPage() {
                     printTitle={assets.length > 0 ? t("تقرير الأصول الثابتة") : undefined}
                 />
 
-                {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل بيانات الأصول...')}</span>
-                    </div>
-                ) : (
+                {loading ? ( <TableSkeleton /> ) : (
                     <>
 
                         {/* ── KPI Cards ── */}

@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -311,11 +312,7 @@ export default function InstallmentsPage() {
                     </div>
                 </div>
 
-                    {loading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
-                        </div>
-                    ) : (
+                    {loading ? ( <TableSkeleton /> ) : (
                         <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                             <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                 <table style={TABLE_STYLE.table}>

@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -188,12 +189,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                     </div>
                 )}
 
-                {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد المركز المالي...')}</span>
-                    </div>
-                ) : !data || (data.assets.length === 0 && data.liabilities.length === 0 && data.equities.length === 0) ? (
+                {loading ? ( <TableSkeleton /> ) : !data || (data.assets.length === 0 && data.liabilities.length === 0 && data.equities.length === 0) ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center'}}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Scale size={40} style={{ opacity: 0.2, color: C.textSecondary }} />

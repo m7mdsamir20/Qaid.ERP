@@ -1,3 +1,4 @@
+import StandaloneSkeleton from '@/components/StandaloneSkeleton';
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -54,9 +55,7 @@ export default function KDSPage() {
         }
     }, [load, status, isRestaurants, hasKDSPerm]);
 
-    if (status === 'loading') {
-        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
-    }
+    if (status === 'loading') { return <StandaloneSkeleton isRtl={isRtl} />; }
 
     if (status === 'unauthenticated' || !isRestaurants || !hasKDSPerm) {
         return (

@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
@@ -280,12 +281,7 @@ table{width:100%;border-collapse:collapse}
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '16px', color: '#475569' }}>
-                        <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استخراج وتحليل البيانات اليومية...')}</span>
-                    </div>
-                ) : data && (
+                {loading ? ( <TableSkeleton /> ) : data && (
                     <>
                         {/* Summary Cards */}
                         <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>

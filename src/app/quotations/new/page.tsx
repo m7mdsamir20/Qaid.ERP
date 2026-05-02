@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -285,13 +286,7 @@ export default function NewQuotationPage() {
         );
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <Loader2 size={32} className="animate-spin" style={{ color: C.primary }} />
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     return (
         <DashboardLayout>

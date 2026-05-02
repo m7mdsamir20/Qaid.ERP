@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -178,12 +179,7 @@ export default function ClientsSuppliersBalancesPage() {
                     </div>
                 )}
 
-                {loading ? (
-                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل الأرصدة...')}</span>
-                    </div>
-                ) : (
+                {loading ? ( <TableSkeleton /> ) : (
                     <>
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
                             {[

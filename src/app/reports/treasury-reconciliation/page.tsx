@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -216,11 +217,7 @@ export default function TreasuryReconciliationPage() {
                         </div>
 
                         {/* Table */}
-                        {loading ? (
-                            <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            </div>
-                        ) : (
+                        {loading ? ( <TableSkeleton /> ) : (
                             <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                                 <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>

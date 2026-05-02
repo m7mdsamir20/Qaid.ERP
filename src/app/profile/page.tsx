@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -82,13 +83,7 @@ export default function ProfilePage() {
         }
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--c-text-secondary)', gap: '10px' }}>
-                <Loader2 className="animate-spin" size={24} /> {t('جاري التحميل...')}
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     const roles: Record<string, string> = {
         admin: t('مدير النظام'),

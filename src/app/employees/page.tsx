@@ -1,4 +1,5 @@
-﻿'use client';
+import TableSkeleton from '@/components/TableSkeleton';
+'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -198,12 +199,7 @@ export default function EmployeesPage() {
 
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center' }}>
-                            <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
-                        </div>
-                    ) : filteredEmployees.length === 0 ? (
+                    {loading ? ( <TableSkeleton /> ) : filteredEmployees.length === 0 ? (
                         <div style={{ padding: '100px 20px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textSecondary }} />
