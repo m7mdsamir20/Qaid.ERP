@@ -728,14 +728,14 @@ function SettingsContent() {
                 <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
             </div>
                 <style jsx>{`
-                    .settings-layout { display: flex; gap: 24px; align-items: flex-start; }
+                    .settings-layout { display: flex; flex-direction: row; gap: 24px; align-items: flex-start; }
                     .settings-sidebar {
                         padding: 8px; width: 280px; flex-shrink: 0;
                         background: ${C.card}; border-radius: 20px; border: 1px solid ${C.border};
                         box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); position: sticky; top: 84px;
                         z-index: 10;
                     }
-                    .settings-tabs { display: block; }
+                    .settings-tabs { display: flex; flex-direction: column; gap: 4px; }
                     @media (max-width: 1023px) {
                         .settings-layout { flex-direction: column; }
                         .settings-sidebar { 
@@ -743,7 +743,7 @@ function SettingsContent() {
                             width: 100% !important; 
                         }
                         .settings-tabs { 
-                            display: flex; flex-wrap: nowrap; overflow-x: auto; 
+                            flex-direction: row; flex-wrap: nowrap; overflow-x: auto; 
                             gap: 8px; padding-bottom: 8px;
                         }
                         .settings-tabs::-webkit-scrollbar { height: 4px; }
@@ -846,18 +846,18 @@ function SettingsContent() {
                             const Icon = tab.icon;
                             const active = activeTab === tab.id;
                             return (
-                                    <button className="settings-tab-btn" key={tab.id} onClick={() => {
-                                        setActiveTab(tab.id);
-                                        handleCancel();
+                                <button className="settings-tab-btn" key={tab.id} onClick={() => {
+                                    setActiveTab(tab.id);
+                                    handleCancel();
+                                }}
+                                    style={{
+                                        width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
+                                        padding: '12px 16px', border: 'none', borderRadius: '12px',
+                                        background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
+                                        color: active ? C.primary : C.textSecondary,
+                                        fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
+                                        fontFamily: CAIRO
                                     }}
-                                        style={{
-                                            width: '100%', textAlign: 'center', display: 'flex', alignItems: 'center', gap: '12px',
-                                            padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
-                                            background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
-                                            color: active ? C.primary : C.textSecondary,
-                                            fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
-                                            fontFamily: CAIRO
-                                        }}
                                     onMouseEnter={e => {
                                         if (!active) {
                                             e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
@@ -879,8 +879,8 @@ function SettingsContent() {
                                     }}>
                                         <Icon size={16} />
                                     </div>
-                                        <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
-                                        {active && <div style={{ marginInlineStart: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
+                                    <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
+                                    {active && <div style={{ marginInlineStart: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
                                 </button>
                             );
                         })}
@@ -1036,35 +1036,7 @@ function SettingsContent() {
                 </div>
 
                 <style jsx global>{`
-                    @media (max-width: 1023px) {
-                        .settings-sidebar {
-                            position: static !important;
-                            top: auto !important;
-                            width: 100% !important;
-                            padding: 6px !important;
-                            border-radius: 14px !important;
-                        }
-                        .settings-tabs {
-                            display: flex !important;
-                            gap: 8px !important;
-                            overflow-x: auto !important;
-                            overflow-y: hidden !important;
-                            padding: 2px;
-                            -webkit-overflow-scrolling: touch;
-                            scrollbar-width: none;
-                        }
-                        .settings-tabs::-webkit-scrollbar {
-                            display: none;
-                        }
-                        .settings-tab-btn {
-                            flex: 0 0 auto !important;
-                            width: auto !important;
-                            min-width: 170px;
-                            margin-bottom: 0 !important;
-                            padding: 10px 12px !important;
-                            border-radius: 10px !important;
-                        }
-                    }
+                    /* Add global settings overrides if needed */
                 `}</style>
 
                 <AppModal
