@@ -727,34 +727,8 @@ function SettingsContent() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
                 <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
             </div>
-                <style jsx>{`
-                    .settings-layout { display: flex; flex-direction: row; gap: 24px; align-items: flex-start; }
-                    .settings-sidebar {
-                        padding: 8px; width: 280px; flex-shrink: 0;
-                        background: ${C.card}; border-radius: 20px; border: 1px solid ${C.border};
-                        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); position: sticky; top: 84px;
-                        z-index: 10;
-                    }
-                    .settings-tabs { display: flex; flex-direction: column; gap: 4px; }
-                    @media (max-width: 1023px) {
-                        .settings-layout { flex-direction: column; }
-                        .settings-sidebar { 
-                            position: relative !important; top: 0 !important; 
-                            width: 100% !important; 
-                        }
-                        .settings-tabs { 
-                            flex-direction: row; flex-wrap: nowrap; overflow-x: auto; 
-                            gap: 8px; padding-bottom: 8px;
-                        }
-                        .settings-tabs::-webkit-scrollbar { height: 4px; }
-                        .settings-tabs::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
-                        .settings-tabs::-webkit-scrollbar-thumb { background: rgba(37, 106, 244, 0.3); border-radius: 10px; }
-                        .settings-tab-btn { white-space: nowrap; flex: 0 0 auto; width: auto !important; }
-                        .settings-content-area { width: 100% !important; }
-                    }
-                `}</style>
-                <style>{`
-                    @keyframes spin{to{transform:rotate(360deg)}}
+            <style>{`
+                @keyframes spin{to{transform:rotate(360deg)}}
                 input:-webkit-autofill,
                 input:-webkit-autofill:hover,
                 input:-webkit-autofill:focus {
@@ -838,9 +812,14 @@ function SettingsContent() {
                     </div>
                 )}
 
-                <div className="settings-layout">
+                <div className="mobile-column" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
                     {/* ── Sidebar ── */}
-                    <div className="settings-sidebar">
+                    <div className="settings-sidebar mobile-full" style={{
+                        padding: '8px', width: '280px', flexShrink: 0,
+                        background: C.card, borderRadius: '20px', border: `1px solid ${C.border}`,
+                        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)', position: 'sticky', top: '84px',
+                        zIndex: 10
+                    }}>
                         <div className="settings-tabs">
                         {filteredTabs.map(tab => {
                             const Icon = tab.icon;
@@ -852,7 +831,7 @@ function SettingsContent() {
                                 }}
                                     style={{
                                         width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
-                                        padding: '12px 16px', border: 'none', borderRadius: '12px',
+                                        padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
                                         background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
                                         color: active ? C.primary : C.textSecondary,
                                         fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
