@@ -603,6 +603,74 @@ export const PUT = withProtection(async (request, session, body) => {
             }
         }
 
+        // ════════════════════════════════════════════════════
+        // ACCOUNTING REVERSAL: Void invoice & reverse journal entry on cancellation
+        // ════════════════════════════════════════════════════
+        if (body.status === 'cancelled') {
+            try {
+                const cancelledOrder = await prisma.posOrder.findUnique({
+                    where: { id: body.id },
+                    include: { invoice: true }
+                });
+
+                if (cancelledOrder) {
+                    // 1. Void the linked invoice (set remaining = 0, zero out the balance)
+                    if (cancelledOrder.invoiceId) {
+                        await prisma.invoice.update({
+                            where: { id: cancelledOrder.invoiceId },
+                            data: {
+                                paidAmount: cancelledOrder.total,
+                                remaining: 0,
+                                notes: `[ملغي - رفض استلام العميل]`
+                            }
+                        });
+                    }
+
+                    // 2. Create reversal journal entry to undo the original sale
+                    const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+                    if (activeYear && cancelledOrder.total > 0 && cancelledOrder.paidAmount === 0) {
+                        // Only reverse if the order was NOT already paid (cash on delivery unpaid)
+                        const lastEntry = await prisma.journalEntry.findFirst({ where: { companyId }, orderBy: { entryNumber: 'desc' } });
+                        const entryNumber = (lastEntry?.entryNumber ?? 0) + 1;
+
+                        // Find accounts
+                        const revenueAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '4101' }, { name: { contains: 'إيرادات' } }, { name: { contains: 'مبيعات' } }] }
+                        });
+                        const recAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                        });
+
+                        if (revenueAccount && recAccount) {
+                            await prisma.journalEntry.create({
+                                data: {
+                                    entryNumber,
+                                    date: new Date(),
+                                    description: `عكس قيد مبيعات - إلغاء طلب #${cancelledOrder.orderNumber} (رفض استلام)`,
+                                    reference: `CANCEL-POS-${cancelledOrder.orderNumber}`,
+                                    referenceType: 'pos_order',
+                                    referenceId: cancelledOrder.id,
+                                    financialYearId: activeYear.id,
+                                    companyId,
+                                    isPosted: true,
+                                    lines: {
+                                        create: [
+                                            // Debit revenue (reverse the credit)
+                                            { accountId: revenueAccount.id, debit: cancelledOrder.total, credit: 0, description: `عكس إيراد - إلغاء طلب #${cancelledOrder.orderNumber}` },
+                                            // Credit receivables (reverse the debit)
+                                            { accountId: recAccount.id, debit: 0, credit: cancelledOrder.total, description: `عكس ذمم - إلغاء طلب #${cancelledOrder.orderNumber}` },
+                                        ]
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[CANCEL_REVERSAL_ERROR]:', e);
+            }
+        }
+
         // If ready/cancelled/returned, free the table
         if (body.status === 'ready' || body.status === 'cancelled' || body.status === 'returned') {
             const order = await prisma.posOrder.findUnique({
