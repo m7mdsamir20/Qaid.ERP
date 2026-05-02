@@ -1,6 +1,5 @@
-import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
-
+import ContentSkeleton from '@/components/ContentSkeleton';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';

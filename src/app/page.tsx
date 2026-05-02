@@ -1,5 +1,4 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign, UtensilsCrossed } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';

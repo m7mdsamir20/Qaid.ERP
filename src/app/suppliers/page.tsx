@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect, useCallback } from 'react';

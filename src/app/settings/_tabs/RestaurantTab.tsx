@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
 import { C, CAIRO, OUTFIT, IS } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';

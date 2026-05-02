@@ -1,5 +1,4 @@
 'use client';
- 
 import { useTranslation } from '@/lib/i18n';
 import { useState } from 'react';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';

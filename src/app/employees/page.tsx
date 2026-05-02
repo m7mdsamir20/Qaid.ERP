@@ -1,6 +1,5 @@
-import TableSkeleton from '@/components/TableSkeleton';
 'use client';
-
+import TableSkeleton from '@/components/TableSkeleton';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';

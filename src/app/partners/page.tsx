@@ -1,5 +1,5 @@
-import TableSkeleton from '@/components/TableSkeleton';
 'use client';
+import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { Currency } from '@/components/Currency';

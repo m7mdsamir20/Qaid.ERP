@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { formatNumber } from '@/lib/currency';
 import { useCurrency } from '@/hooks/useCurrency';
 

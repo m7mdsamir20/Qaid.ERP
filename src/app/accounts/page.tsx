@@ -1,6 +1,5 @@
-import TableSkeleton from '@/components/TableSkeleton';
 'use client';
-
+import TableSkeleton from '@/components/TableSkeleton';
 import React, { useEffect, useState, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';

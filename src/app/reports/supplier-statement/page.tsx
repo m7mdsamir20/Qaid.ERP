@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';

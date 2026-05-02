@@ -1,5 +1,5 @@
-import TableSkeleton from '@/components/TableSkeleton';
 'use client';
+import TableSkeleton from '@/components/TableSkeleton';
 import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 

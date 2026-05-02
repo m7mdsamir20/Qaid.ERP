@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';

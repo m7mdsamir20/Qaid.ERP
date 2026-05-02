@@ -1,4 +1,5 @@
-'use client';import { C } from '@/constants/theme';
+'use client';
+import { C } from '@/constants/theme';
 
 import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';

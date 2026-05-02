@@ -1,6 +1,5 @@
-import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
-
+import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';

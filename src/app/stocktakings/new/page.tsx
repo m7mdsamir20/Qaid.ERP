@@ -1,6 +1,5 @@
-import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
-
+import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
