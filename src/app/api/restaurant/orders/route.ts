@@ -10,7 +10,19 @@ export const GET = withProtection(async (request, session) => {
         const type = url.searchParams.get('type');
         const status = url.searchParams.get('status');
         const shiftId = url.searchParams.get('shiftId');
+        const dateStr = url.searchParams.get('date');
         const limit = parseInt(url.searchParams.get('limit') ?? '50');
+
+        let dateFilter = {};
+        if (dateStr) {
+            const startOfDay = new Date(dateStr);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(dateStr);
+            endOfDay.setHours(23, 59, 59, 999);
+            dateFilter = {
+                createdAt: { gte: startOfDay, lte: endOfDay }
+            };
+        }
 
         const orders = await prisma.posOrder.findMany({
             where: {
@@ -18,6 +30,7 @@ export const GET = withProtection(async (request, session) => {
                 ...(type ? { type } : {}),
                 ...(status ? { status } : {}),
                 ...(shiftId ? { shiftId } : {}),
+                ...dateFilter,
             },
             include: {
                 lines: true,
@@ -41,8 +54,17 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
 
-        // Get next order number
-        const last = await prisma.posOrder.findFirst({ where: { companyId }, orderBy: { orderNumber: 'desc' } });
+        // Get next order number for today
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const last = await prisma.posOrder.findFirst({
+            where: { 
+                companyId,
+                createdAt: { gte: startOfDay }
+            }, 
+            orderBy: { orderNumber: 'desc' } 
+        });
         const orderNumber = (last?.orderNumber ?? 0) + 1;
 
         // Get active shift

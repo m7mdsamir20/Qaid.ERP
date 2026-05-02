@@ -35,6 +35,7 @@ export default function OrdersHistoryPage() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('');
+    const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [actionPrompt, setActionPrompt] = useState<{ type: 'cancel' | 'return' | 'pay' | null }>({ type: null });
@@ -45,11 +46,13 @@ export default function OrdersHistoryPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const url = filterStatus ? `/api/restaurant/orders?status=${filterStatus}&limit=100` : '/api/restaurant/orders?limit=100';
+            let url = `/api/restaurant/orders?limit=100`;
+            if (filterStatus) url += `&status=${filterStatus}`;
+            if (filterDate) url += `&date=${filterDate}`;
             const r = await fetch(url);
             setOrders(await r.json());
         } finally { setLoading(false); }
-    }, [filterStatus]);
+    }, [filterStatus, filterDate]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -409,6 +412,12 @@ export default function OrdersHistoryPage() {
                 {/* Filters & Search */}
                 <div style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        <input 
+                            type="date" 
+                            value={filterDate} 
+                            onChange={(e) => setFilterDate(e.target.value)}
+                            style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}
+                        />
                         {[{ value: '', label: 'كل الحالات' }, { value: 'preparing', label: 'تحت التحضير' }, { value: 'ready', label: 'مكتمل' }, { value: 'cancelled', label: 'ألغيت' }].map(s => (
                             <button key={s.value} onClick={() => setFilterStatus(s.value)}
                                 style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
