@@ -1,12 +1,15 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { generateA4HTML } from '@/lib/printInvoices';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { CAIRO } from '@/constants/theme';
 
 export default function PrintInvoicePage() {
     const { id } = useParams<{ id: string }>();
+    const { status } = useSession();
+    const router = useRouter();
     const [html, setHtml] = useState('');
     const [invoiceNum, setInvoiceNum] = useState('');
     const [loading, setLoading] = useState(true);
@@ -16,6 +19,12 @@ export default function PrintInvoicePage() {
     const autoPrinted = useRef(false);
 
     useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push(`/login?callbackUrl=/print/invoice/${id}`);
+            return;
+        }
+        if (status === 'loading') return;
+
         fetch(`/api/print/invoice/${id}`)
             .then(r => r.json())
             .then(data => {

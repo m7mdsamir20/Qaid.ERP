@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
@@ -76,9 +77,22 @@ export default function NewCompanyPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
+    const { data: session, status } = useSession();
+
     const [step, setStep] = useState(1); // 1: شركة, 2: مدير, 3: اشتراك, 4: صلاحيات
     const [submitting, setSubmitting] = useState(false);
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+
+    useEffect(() => {
+        if (status === 'loading') return;
+        if (!session) {
+            router.push('/login?callbackUrl=/super-admin/new');
+            return;
+        }
+        if (!(session?.user as any)?.isSuperAdmin) {
+            router.push('/');
+        }
+    }, [session, status, router]);
 
     const [form, setForm] = useState({
         // الشركة

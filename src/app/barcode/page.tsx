@@ -7,15 +7,21 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 import { QrCode, Printer, Download, RefreshCw, Loader2, Table2 } from 'lucide-react';
 
+import { useSession } from 'next-auth/react';
+
 export default function BarcodePage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
+    const { data: session, status } = useSession();
 
     const [tables,  setTables]  = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [baseUrl, setBaseUrl] = useState('');
     const canvasRefs = useRef<Record<string, HTMLCanvasElement | null>>({});
+
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isRestaurants = businessType === 'RESTAURANTS';
 
     useEffect(() => {
         if (typeof window !== 'undefined') setBaseUrl(window.location.origin);
@@ -30,7 +36,29 @@ export default function BarcodePage() {
         } finally { setLoading(false); }
     }, []);
 
-    useEffect(() => { load(); }, [load]);
+    useEffect(() => { 
+        if (status === 'authenticated' && isRestaurants) {
+            load(); 
+        }
+    }, [load, status, isRestaurants]);
+
+    if (status === 'loading') {
+        return <DashboardLayout><div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div></DashboardLayout>;
+    }
+
+    if (status === 'unauthenticated' || !isRestaurants) {
+        return (
+            <DashboardLayout>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '16px', fontFamily: CAIRO }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
+                        <QrCode size={40} />
+                    </div>
+                    <h2 style={{ fontSize: '24px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{t('غير مصرح لك بالدخول')}</h2>
+                    <p style={{ fontSize: '15px', color: C.textSecondary, margin: 0 }}>{t('هذه الصفحة مخصصة لقطاع المطاعم والكافيهات فقط.')}</p>
+                </div>
+            </DashboardLayout>
+        );
+    }
 
     // Draw QR on canvas using simple QR-like pattern (using data URL)
     const getQrUrl = (tableId: string, companyId: string) => {
