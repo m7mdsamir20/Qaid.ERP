@@ -160,11 +160,7 @@ export default function DashboardLayout({
     const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');
 
     if (status === 'loading') {
-        return (
-            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-            </div>
-        );
+        return <DashboardSkeleton isRtl={isRtl} />;
     }
 
     return (
@@ -482,3 +478,64 @@ export default function DashboardLayout({
         </div>
     );
 }
+
+function DashboardSkeleton({ isRtl }: { isRtl: boolean }) {
+    return (
+        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
+            {/* Sidebar Skeleton */}
+            <div className="sidebar-wrapper print-hide">
+                <aside style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column' }}>
+                    {/* Logo area */}
+                    <div style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 20px', borderBottom: `1px solid ${C.border}05` }}>
+                        <div className="skeleton-pulse" style={{ width: '140px', height: '40px', borderRadius: '8px', background: 'rgba(128,128,128,0.1)' }} />
+                    </div>
+                    {/* Nav Items */}
+                    <div style={{ padding: '20px 14px', flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="skeleton-pulse" style={{ width: '100%', height: '40px', borderRadius: '12px', background: 'rgba(128,128,128,0.05)' }} />
+                        ))}
+                    </div>
+                </aside>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="dashboard-content" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                {/* Header Skeleton */}
+                <header className="main-header print-hide" style={{ height: '80px', background: C.card, borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', zIndex: 900 }}>
+                    <div className="skeleton-pulse" style={{ width: '200px', height: '30px', borderRadius: '8px', background: 'rgba(128,128,128,0.08)' }} />
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <div className="skeleton-pulse" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(128,128,128,0.08)' }} />
+                        <div className="skeleton-pulse" style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(128,128,128,0.08)' }} />
+                        <div className="skeleton-pulse" style={{ width: '140px', height: '40px', borderRadius: '20px', background: 'rgba(128,128,128,0.08)' }} />
+                    </div>
+                </header>
+
+                {/* Content Skeleton */}
+                <main style={{ flex: 1, padding: '88px 24px 24px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        <div className="skeleton-pulse" style={{ width: '30%', height: '40px', borderRadius: '12px', background: 'rgba(128,128,128,0.08)' }} />
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                <div key={i} className="skeleton-pulse" style={{ height: '140px', borderRadius: '24px', background: 'rgba(128,128,128,0.05)' }} />
+                            ))}
+                        </div>
+                        <div className="skeleton-pulse" style={{ width: '100%', height: '400px', borderRadius: '24px', background: 'rgba(128,128,128,0.05)' }} />
+                    </div>
+                </main>
+            </div>
+            <style jsx global>{`
+                @keyframes pulse-shimmer {
+                    0% { opacity: 0.5; }
+                    50% { opacity: 0.8; }
+                    100% { opacity: 0.5; }
+                }
+                .skeleton-pulse {
+                    animation: pulse-shimmer 2s infinite ease-in-out;
+                }
+                .ltr-mode .sidebar-wrapper { border-right: 1px solid ${C.border}; }
+                .rtl-mode .sidebar-wrapper { border-left: 1px solid ${C.border}; }
+            `}</style>
+        </div>
+    );
+}
+
