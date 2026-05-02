@@ -12,13 +12,13 @@ import {
 } from 'lucide-react';
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string; emoji: string }> = {
-    pending:    { label: 'بانتظار المطبخ',  color: '#f59e0b', bg: '#f59e0b12', emoji: '⏳' },
-    preparing:  { label: 'قيد التجهيز',    color: '#8b5cf6', bg: '#8b5cf612', emoji: '🍳' },
-    ready:      { label: 'جاهز للاستلام',  color: '#10b981', bg: '#10b98112', emoji: '🎒' },
-    assigned:   { label: 'تم التعيين',     color: '#6366f1', bg: '#6366f112', emoji: '🏍️' },
-    picked:     { label: 'خرج للتوصيل',    color: '#3b82f6', bg: '#3b82f612', emoji: '🚚' },
-    delivered:  { label: 'تم التسليم',     color: '#14b8a6', bg: '#14b8a612', emoji: '✅' },
-    cancelled:  { label: 'ملغي',          color: '#ef4444', bg: '#ef444412', emoji: '❌' },
+    pending: { label: 'بانتظار المطبخ', color: '#f59e0b', bg: '#f59e0b12', emoji: '⏳' },
+    preparing: { label: 'قيد التجهيز', color: '#8b5cf6', bg: '#8b5cf612', emoji: '🍳' },
+    ready: { label: 'جاهز للاستلام', color: '#10b981', bg: '#10b98112', emoji: '🎒' },
+    assigned: { label: 'تم التعيين', color: '#6366f1', bg: '#6366f112', emoji: '🏍️' },
+    picked: { label: 'خرج للتوصيل', color: '#3b82f6', bg: '#3b82f612', emoji: '🚚' },
+    delivered: { label: 'تم التسليم', color: '#14b8a6', bg: '#14b8a612', emoji: '✅' },
+    cancelled: { label: 'ملغي', color: '#ef4444', bg: '#ef444412', emoji: '❌' },
 };
 
 export default function DeliveryPage() {
@@ -26,9 +26,9 @@ export default function DeliveryPage() {
     const isRtl = lang === 'ar';
     const { fMoney } = useCurrency();
 
-    const [orders,   setOrders]   = useState<any[]>([]);
-    const [drivers,  setDrivers]  = useState<any[]>([]);
-    const [loading,  setLoading]  = useState(true);
+    const [orders, setOrders] = useState<any[]>([]);
+    const [drivers, setDrivers] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [filterStatus, setFilterStatus] = useState('');
 
@@ -71,8 +71,8 @@ export default function DeliveryPage() {
     const formatTime = (d: string) => new Date(d).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
     const formatDate = (d: string) => new Date(d).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
 
-    const pending   = orders.filter(o => o.status === 'pending').length;
-    const onTheWay  = orders.filter(o => o.status === 'picked').length;
+    const pending = orders.filter(o => o.status === 'pending').length;
+    const onTheWay = orders.filter(o => o.status === 'picked').length;
     const delivered = orders.filter(o => o.status === 'delivered').length;
 
     return (
@@ -195,9 +195,9 @@ export default function DeliveryPage() {
                                         <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color }}>{st.label}</span>
                                         <div style={{ marginInlineStart: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
                                             {(!order.driverId && order.status !== 'delivered' && order.status !== 'cancelled') && (
-                                                <select 
-                                                    value="" 
-                                                    onChange={(e) => { if(e.target.value) updateStatus(order.id, 'assigned', e.target.value); }}
+                                                <select
+                                                    value=""
+                                                    onChange={(e) => { if (e.target.value) updateStatus(order.id, 'assigned', e.target.value); }}
                                                     style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.border}`, background: C.card, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary, outline: 'none', cursor: 'pointer' }}
                                                 >
                                                     <option value="" disabled>تعيين سريع لمندوب...</option>
@@ -206,7 +206,7 @@ export default function DeliveryPage() {
                                                     ))}
                                                 </select>
                                             )}
-                                            
+
                                             {(order.driverId && order.status !== 'picked' && order.status !== 'delivered' && order.status !== 'cancelled') && (
                                                 <button onClick={() => updateStatus(order.id, 'picked', order.driverId)}
                                                     style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid #3b82f640`, background: '#3b82f612', color: '#3b82f6', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
