@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useTranslation } from '@/lib/i18n';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -156,7 +156,7 @@ export default function UnitsPage() {
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

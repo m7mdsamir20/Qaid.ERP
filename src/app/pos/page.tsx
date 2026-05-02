@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -54,7 +54,7 @@ interface CartItem {
 export default function POSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fMoney, symbol: cSymbol } = useCurrency();
+    const { fMoneyJSX, symbol: cSymbol } = useCurrency();
 
     // Data
     const [categories, setCategories] = useState<any[]>([]);
@@ -373,11 +373,14 @@ export default function POSPage() {
                           orderData.type === 'takeaway' ? 'تيك أواي' : 
                           orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
-        let footerHtml = '';
-        if (orderData.type === 'dine-in') footerHtml = '<p>شكراً لزيارتكم ❤️</p><p>نتمنى لكم تجربة سعيدة</p>';
-        else if (orderData.type === 'takeaway') footerHtml = '<p>يرجى الاحتفاظ بالفاتورة</p><p>لاستلام الطلب 🙏</p>';
-        else if (orderData.type === 'delivery') footerHtml = '<p>شكراً لطلبك ❤️</p><p>سيتم التوصيل قريباً</p>';
-        else footerHtml = '<p>شكراً لزيارتكم ❤️</p>';
+        // Use receiptFooter from restaurant settings, fall back to generic message
+        const rs = typeof orderData.company?.restaurantSettings === 'string'
+            ? JSON.parse(orderData.company.restaurantSettings)
+            : (orderData.company?.restaurantSettings || {});
+        const customFooter = rs?.receiptFooter || '';
+        const footerHtml = customFooter
+            ? customFooter.split('\n').map((line: string) => `<p>${line}</p>`).join('')
+            : '<p>شكراً لزيارتكم ❤️</p>';
 
         const html = `
             <!DOCTYPE html>
@@ -896,7 +899,7 @@ export default function POSPage() {
                 const data = await res.json();
                 setCurrentShift(null);
                 setShowEndShift(false);
-                setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoney(data.difference));
+                setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoneyJSX(data.difference));
                 setTimeout(() => setSuccessMsg(''), 5000);
             }
         } catch {} finally { setShiftLoading(false); }
@@ -965,7 +968,7 @@ export default function POSPage() {
 
                         {/* Search */}
                         {showSearchInput ? (
-                            <div style={{ position: 'relative', width: '250px', display: 'flex', alignItems: 'center' }}>
+                            <div className="mobile-full" style={{ position: 'relative', width: '250px', display: 'flex', alignItems: 'center' }}>
                                 <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', color: C.textMuted }} />
                                 <input autoFocus value={search} onChange={e => setSearch(e.target.value)} placeholder={t('ابحث عن صنف...')} style={{ ...IS, paddingInlineStart: '36px', paddingInlineEnd: '36px', height: '40px', fontSize: '13px', width: '100%' }} />
                                 <button onClick={() => { setSearch(''); setShowSearchInput(false); }} style={{ position: 'absolute', insetInlineEnd: '8px', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={16} /></button>
@@ -1039,7 +1042,7 @@ export default function POSPage() {
                                                 ) : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
-                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.sellPrice ?? item.price ?? 0)}</p>
+                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(item.sellPrice ?? item.price ?? 0)}</p>
                                         </button>
                                     );
                                 })}
@@ -1080,7 +1083,7 @@ export default function POSPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <div style={{ flex: 1 }}>
                                                 <p style={{ margin: '0 0 2px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary }}>{item.itemName}</p>
-                                                <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.unitPrice)} × {item.quantity} = {fMoney(calculateCartItemTotal(item))}</p>
+                                                <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(item.unitPrice)} × {item.quantity} = {fMoneyJSX(calculateCartItemTotal(item))}</p>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                 <button onClick={() => updateQty(item.itemId, -1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={13} /></button>
@@ -1142,29 +1145,29 @@ export default function POSPage() {
                         <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.textSecondary }}>
                                 <span>{t('المجموع')}</span>
-                                <span style={{ fontFamily: OUTFIT }}>{fMoney(subtotal)}</span>
+                                <span style={{ fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</span>
                             </div>
                             {discount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.danger }}>
                                     <span>{t('خصم')}</span>
-                                    <span style={{ fontFamily: OUTFIT }}>- {fMoney(discount)}</span>
+                                    <span style={{ fontFamily: OUTFIT }}>- {fMoneyJSX(discount)}</span>
                                 </div>
                             )}
                             {taxAmount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
                                     <span>{t('ضريبة')} ({taxRate}%)</span>
-                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoney(taxAmount)}</span>
+                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoneyJSX(taxAmount)}</span>
                                 </div>
                             )}
                             {serviceAmount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#3b82f6' }}>
                                     <span>{t('رسوم خدمة')} ({serviceChargeRate}%)</span>
-                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoney(serviceAmount)}</span>
+                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoneyJSX(serviceAmount)}</span>
                                 </div>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 700, color: C.textPrimary, borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
                                 <span>{t('الإجمالي')}</span>
-                                <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoney(total)}</span>
+                                <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoneyJSX(total)}</span>
                             </div>
                         </div>
 
@@ -1224,8 +1227,8 @@ export default function POSPage() {
                                             {o.table?.name ? `طاولة: ${o.table.name}` : `طلب #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
-                                            <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoney(o.total)}</b></span>
-                                            <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoney(o.total - o.paidAmount)}</b></span>
+                                            <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(o.total)}</b></span>
+                                            <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - o.paidAmount)}</b></span>
                                         </div>
                                     </div>
                                     {o.total - o.paidAmount > 0 ? (
@@ -1259,7 +1262,7 @@ export default function POSPage() {
                         <div style={{ textAlign: 'center', padding: '16px', background: `${C.primary}10`, borderRadius: '16px', border: `1px dashed ${C.primary}40` }}>
                             <p style={{ margin: '0 0 4px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t('المبلغ المطلوب')}</p>
                             <div style={{ fontSize: '28px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                                {fMoney(payingOrder.total - payingOrder.paidAmount)}
+                                {fMoneyJSX(payingOrder.total - payingOrder.paidAmount)}
                             </div>
                         </div>
 
@@ -1339,7 +1342,7 @@ export default function POSPage() {
                                 }}
                                 style={{ padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                     <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary }}>{v.name}</span>
-                                    <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(v.sellPrice)}</span>
+                                    <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(v.sellPrice)}</span>
                                 </button>
                             ))}
                         </div>
@@ -1370,7 +1373,7 @@ export default function POSPage() {
                                                 <button key={opt.id} onClick={() => handleModifierToggle(mod.name, opt.name, opt.extraPrice, mod.multiSelect)}
                                                     style={{ padding: '10px 12px', borderRadius: '10px', border: `1px solid ${isSelected ? C.primary : C.border}`, background: isSelected ? `${C.primary}10` : C.bg, color: isSelected ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: CAIRO }}>
                                                     <span>{opt.name}</span>
-                                                    {opt.extraPrice > 0 && <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '11px' }}>+{fMoney(opt.extraPrice)}</span>}
+                                                    {opt.extraPrice > 0 && <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '11px' }}>+{fMoneyJSX(opt.extraPrice)}</span>}
                                                 </button>
                                             );
                                         })}
@@ -1396,7 +1399,7 @@ export default function POSPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={{ background: `${C.primary}10`, padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
                                 <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>المبلغ المطلوب</p>
-                                <p style={{ margin: '4px 0 0', fontSize: '20px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(total)}</p>
+                                <p style={{ margin: '4px 0 0', fontSize: '20px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(total)}</p>
                             </div>
                             
                             <div>
@@ -1625,7 +1628,7 @@ export default function POSPage() {
                         {couponError && <div style={{ fontSize: '11px', color: C.danger, fontFamily: CAIRO, marginTop: '-6px' }}>{couponError}</div>}
                         {appliedCoupon && (
                             <div style={{ fontSize: '11px', color: C.primary, fontFamily: CAIRO, marginTop: '-6px', fontWeight: 600 }}>
-                                {t('تم تطبيق خصم الكوبون:')} {fMoney(appliedCoupon.discount)}
+                                {t('تم تطبيق خصم الكوبون:')} {fMoneyJSX(appliedCoupon.discount)}
                             </div>
                         )}
                         <button onClick={() => setShowOffersModal(false)} style={{ ...BTN_PRIMARY(false, false), height: '44px', borderRadius: '12px', marginTop: '8px' }}>{t('تم')}</button>

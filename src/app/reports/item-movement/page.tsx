@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
@@ -215,7 +215,7 @@ export default function ItemMovementReportPage() {
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: OUTFIT }}>{movements.length}</span></div>
                             </div>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>

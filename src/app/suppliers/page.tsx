@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -256,7 +256,7 @@ export default function SuppliersPage() {
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد موردين')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

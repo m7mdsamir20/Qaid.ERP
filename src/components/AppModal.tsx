@@ -78,7 +78,7 @@ const AppModal: React.FC<AppModalProps> = ({
         >
             <div
                 dir={isRtl ? 'rtl' : 'ltr'}
-                className="modal-content"
+                className="modal-content app-modal-inner"
                 style={{
                     width: '94%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
                     borderRadius: '16px', border: `1px solid ${isDanger ? 'rgba(239,68,68,0.3)' : C.border}`,
@@ -229,6 +229,19 @@ const AppModal: React.FC<AppModalProps> = ({
             </div>
             <style jsx>{`
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @media (max-width: 768px) {
+                    .modal-content {
+                        width: 96% !important;
+                        max-height: 90vh !important;
+                        border-radius: 14px !important;
+                    }
+                    .modal-actions {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .modal-actions button {
+                        width: 100% !important;
+                    }
+                }
                 @media (max-width: 480px) {
                     .modal-content {
                         width: 96% !important;

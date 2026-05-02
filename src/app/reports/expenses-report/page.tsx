@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState } from 'react';
@@ -151,7 +151,7 @@ export default function ExpensesReportPage() {
                                     {t('لا توجد مصروفات في هذه الفترة')}
                                 </div>
                             ) : (
-                                <div style={{ overflowX: 'auto' }}>
+                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
