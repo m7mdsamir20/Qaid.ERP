@@ -22,7 +22,7 @@ export default function KDSPage() {
             const res = await fetch('/api/restaurant/orders?limit=100');
             const data = await res.json();
             if (Array.isArray(data)) {
-                setOrders(data.filter(o => o.status === 'preparing' || (o.status === 'pending' && o.source && o.source !== 'pos')));
+                setOrders(data.filter(o => o.status === 'preparing'));
                 setCompletedOrders(data.filter(o => o.status === 'ready' || o.status === 'delivered').slice(0, 50));
             }
         } finally {
@@ -78,39 +78,7 @@ export default function KDSPage() {
         }
     };
 
-    // Accept external order
-    const acceptOrder = async (orderId: string) => {
-        setUpdatingId(orderId);
-        try {
-            const res = await fetch('/api/restaurant/orders', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: orderId, status: 'preparing' }),
-            });
-            if (res.ok) {
-                setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'preparing' } : o));
-            }
-        } finally {
-            setUpdatingId(null);
-        }
-    };
 
-    // Reject external order
-    const rejectOrder = async (orderId: string) => {
-        setUpdatingId(orderId);
-        try {
-            const res = await fetch('/api/restaurant/orders', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: orderId, status: 'cancelled' }),
-            });
-            if (res.ok) {
-                setOrders(prev => prev.filter(o => o.id !== orderId));
-            }
-        } finally {
-            setUpdatingId(null);
-        }
-    };
 
     const formatElapsedTime = (dateString: string) => {
         const diffMs = Math.max(0, now - new Date(dateString).getTime());
@@ -256,16 +224,7 @@ export default function KDSPage() {
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '8px' }}>
-                                            {isPendingExternal ? (
-                                                <>
-                                                    <button onClick={() => acceptOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                                        {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> قبول</>}
-                                                    </button>
-                                                    <button onClick={() => rejectOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#ef4444', border: 'none', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                                        {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><XCircle size={16} /> رفض</>}
-                                                    </button>
-                                                </>
-                                            ) : isPreparing ? (
+                                            {isPreparing ? (
                                                 <button onClick={() => markAsReady(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}>
                                                     {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> جاهز</>}
                                                 </button>
