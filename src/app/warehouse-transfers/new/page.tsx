@@ -1,5 +1,5 @@
-import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
+import ContentSkeleton from '@/components/ContentSkeleton';
 import { useTranslation } from '@/lib/i18n';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';

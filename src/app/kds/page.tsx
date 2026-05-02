@@ -1,6 +1,5 @@
-import StandaloneSkeleton from '@/components/StandaloneSkeleton';
 'use client';
-
+import StandaloneSkeleton from '@/components/StandaloneSkeleton';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';

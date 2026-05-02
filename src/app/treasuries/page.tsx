@@ -1,5 +1,5 @@
-import TableSkeleton from '@/components/TableSkeleton';
 'use client';
+import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';

@@ -1,5 +1,6 @@
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
-'use client';import { C } from '@/constants/theme';
+import { C } from '@/constants/theme';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';

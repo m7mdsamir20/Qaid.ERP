@@ -1,6 +1,5 @@
-import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
-
+import ContentSkeleton from '@/components/ContentSkeleton';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';

@@ -1,5 +1,4 @@
 'use client';
- 
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
 import { CreditCard, AlertCircle, Calendar, Users, Clock, ArrowUpRight, Phone } from 'lucide-react';

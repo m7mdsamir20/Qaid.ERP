@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import { C, CAIRO } from '@/constants/theme';
 import { ShoppingCart, CheckCircle2 } from 'lucide-react';

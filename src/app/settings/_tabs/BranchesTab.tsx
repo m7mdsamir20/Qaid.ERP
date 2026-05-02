@@ -1,5 +1,4 @@
 'use client';
- 
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, BTN_PRIMARY } from '@/constants/theme';
 import { Store, Plus, Pencil, Trash2, Save, Loader2 } from 'lucide-react';
