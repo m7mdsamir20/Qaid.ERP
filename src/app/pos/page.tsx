@@ -4,10 +4,11 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useSession } from 'next-auth/react';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -55,6 +56,7 @@ export default function POSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
     const { fMoneyJSX, symbol: cSymbol } = useCurrency();
+    const { data: session, status } = useSession();
 
     // Data
     const [categories, setCategories] = useState<any[]>([]);
@@ -196,7 +198,36 @@ export default function POSPage() {
     // Variants Modal
     const [activeVariantItem, setActiveVariantItem] = useState<any>(null);
 
-    useEffect(() => { load(); }, [load]);
+    const userRole = (session?.user as any)?.role?.toLowerCase();
+    const isSuperAdmin = userRole === 'super-admin';
+    const isAdmin = userRole === 'admin';
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isRestaurants = businessType === 'RESTAURANTS';
+    const userPerms = (session?.user as any)?.permissions || {};
+    const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
+
+    useEffect(() => { 
+        if (status === 'authenticated' && isRestaurants && hasPosPerm) {
+            load(); 
+        }
+    }, [load, status, isRestaurants, hasPosPerm]);
+
+    if (status === 'loading') {
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
+    }
+
+    if (status === 'unauthenticated' || !isRestaurants || !hasPosPerm) {
+        return (
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
+                    <Shield size={40} />
+                </div>
+                <h2 style={{ fontSize: '24px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{t('غير مصرح لك بالدخول')}</h2>
+                <p style={{ fontSize: '15px', color: C.textSecondary, margin: 0 }}>{t('لا تملك الصلاحيات الكافية أو أن نوع نشاطك التجاري لا يدعم نقاط البيع.')}</p>
+                <button onClick={() => window.location.href = '/'} style={{ padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, marginTop: '16px' }}>{t('العودة للرئيسية')}</button>
+            </div>
+        );
+    }
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
