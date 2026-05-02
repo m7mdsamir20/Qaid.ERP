@@ -27,17 +27,23 @@ export default function StockMovementsPage() {
     const [movements, setMovements] = useState<StockMovement[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
 
     const fetchData = useCallback(async () => {
         try {
-            const res = await fetch('/api/stock-movements');
+            const params = new URLSearchParams();
+            if (dateFrom) params.set('from', dateFrom);
+            if (dateTo) params.set('to', dateTo);
+            const url = `/api/stock-movements${params.toString() ? '?' + params.toString() : ''}`;
+            const res = await fetch(url);
             if (res.ok) {
                 setMovements(await res.json());
             }
         } catch { } finally {
             setLoading(false);
         }
-    }, []);
+    }, [dateFrom, dateTo]);
 
     useEffect(() => {
         fetchData();
@@ -49,10 +55,30 @@ export default function StockMovementsPage() {
         (m.warehouse?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const getTypeLabel = (type: string) => {
+    const getTypeLabel = (type: string, reference?: string) => {
+        const ref = (reference || '').toUpperCase();
+
+        // Distinguish by reference source
+        if (ref.startsWith('POS-')) {
+            return { label: t('استهلاك مبيعات'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
+        }
+        if (ref.startsWith('CANCEL-')) {
+            return { label: t('مرتجع إلغاء طلب'), icon: <ArrowDownRight size={15} />, bg: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: 'rgba(167,139,250,0.2)' };
+        }
+        if (ref.startsWith('PUR-') || ref.startsWith('PURCH-')) {
+            return { label: t('وارد مشتريات'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
+        }
+        if (ref.startsWith('SAL-')) {
+            return { label: t('صادر مبيعات'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
+        }
+        if (ref.startsWith('FIX-STOCK') || ref.startsWith('OP-BAL') || ref.startsWith('OPEN-INV')) {
+            return { label: t('رصيد افتتاحي'), icon: <Package size={15} />, bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: 'rgba(251,191,36,0.2)' };
+        }
+
+        // Fallback to generic type
         switch (type) {
-            case 'in': return { label: t('وارد المشتريات'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
-            case 'out': return { label: t('صادر مبيعات'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
+            case 'in': return { label: t('وارد +'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
+            case 'out': return { label: t('صادر -'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
             case 'transfer': return { label: t('تحويل مخزني'), icon: <ArrowRightLeft size={15} />, bg: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: 'rgba(96,165,250,0.2)' };
             case 'adjustment': return { label: t('تسوية الجرد'), icon: <Activity size={15} />, bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: 'rgba(251,191,36,0.2)' };
             case 'return_in': return { label: t('مرتجع وارد'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
@@ -92,19 +118,30 @@ export default function StockMovementsPage() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
-                        <input
-                            placeholder={t("ابحث باسم الصنف، رقم المرجع، أو المخزن...")}
-                            value={searchTerm}
-                            onChange={e => setSearchTerm(e.target.value)}
-                            style={{ 
-                                ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                outline: 'none', fontFamily: CAIRO, fontWeight: 500 
-                            }}
-                        />
+                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
+                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <input
+                                placeholder={t("ابحث باسم الصنف، رقم المرجع، أو المخزن...")}
+                                value={searchTerm}
+                                onChange={e => setSearchTerm(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
+                                    borderRadius: '12px', border: `1px solid ${C.border}`, 
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                                    outline: 'none', fontFamily: CAIRO, fontWeight: 500 
+                                }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <label style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('من')}</label>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: OUTFIT }} />
+                            <label style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('إلى')}</label>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: OUTFIT }} />
+                            {(dateFrom || dateTo) && (
+                                <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ height: '42px', padding: '0 14px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('مسح')}</button>
+                            )}
+                        </div>
                     </div>
 
                     {loading ? (
@@ -134,7 +171,7 @@ export default function StockMovementsPage() {
                                 </thead>
                                 <tbody>
                                     {filteredMovements.map((m, idx) => {
-                                        const typeConfig = getTypeLabel(m.type);
+                                        const typeConfig = getTypeLabel(m.type, m.reference);
                                         return (
                                             <tr key={m.id} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}

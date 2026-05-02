@@ -102,7 +102,9 @@ export default function NewPurchasePage() {
     const remaining = Math.max(0, diff);
     const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
-    const partners = Array.isArray(suppliers) ? suppliers.map(s => ({ ...s, partnerType: 'supplier' })) : [];
+    const partners = [
+        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' }))
+    ];
     const selectedPartner = Array.isArray(partners) ? partners.find(p => p.id === form.supplierId) : null;
 
     const loadData = useCallback(async () => {
@@ -119,7 +121,11 @@ export default function NewPurchasePage() {
             const whs = await whR.json();
             const trs = await trR.json();
             const its = await itemR.json();
-            if (coR.ok) setCompany(await coR.json());
+            let companyData: any = {};
+            if (coR.ok) {
+                companyData = await coR.json();
+                setCompany(companyData);
+            }
 
             const taxRes = await fetch('/api/settings');
             if (taxRes.ok) {
@@ -136,7 +142,12 @@ export default function NewPurchasePage() {
             setSuppliers(Array.isArray(sups) ? sups : []);
             setWarehouses(Array.isArray(whs) ? whs : []);
             setTreasuries(Array.isArray(trs) ? trs : []);
-            setItems(Array.isArray(its) ? its : (its.items || []));
+            
+            let fetchedItems = Array.isArray(its) ? its : (its.items || []);
+            if (companyData?.businessType?.toUpperCase() === 'RESTAURANTS') {
+                fetchedItems = fetchedItems.filter((i: any) => i.type === 'raw');
+            }
+            setItems(fetchedItems);
 
             if (Array.isArray(whs) && whs.length > 0) {
                 const lastWh = localStorage.getItem('last_warehouse_id');
@@ -444,10 +455,11 @@ export default function NewPurchasePage() {
                                             value={form.supplierId}
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
                                             icon={Search}
-                                            placeholder={t("ابحث واختر...")}
+                                            placeholder={t("ابحث واختر المورد...")}
                                             options={partners.map(p => ({
                                                 value: p.id,
-                                                label: p.name
+                                                label: p.name,
+                                                sub: t('مورد')
                                             }))}
                                         />
                                         <InlineError field="supplierId" />

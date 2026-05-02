@@ -19,7 +19,7 @@ export const GET = withProtection(async (request, session) => {
         })();
 
         const stocks = await prisma.stock.findMany({
-            where: { item: { companyId }, warehouse: { companyId, ...warehouseFilter } },
+            where: { item: { companyId, type: 'raw' }, warehouse: { companyId, ...warehouseFilter } },
             include: {
                 item: { select: { code: true, name: true, unit: { select: { name: true } }, costPrice: true, sellPrice: true, averageCost: true } },
                 warehouse: { select: { name: true } },

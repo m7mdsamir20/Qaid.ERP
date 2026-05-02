@@ -509,13 +509,13 @@ export default function NewPurchaseReturnPage() {
                                         <thead>
                                             <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '12px', width: '30px', textAlign: 'center' }}>✓</th>
-                                                <th style={{ padding: '12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم الصنف')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية المشتراة')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية الإرجاع')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر التكلفة')}</th>
-                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم الصنف')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية المشتراة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية الإرجاع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر التكلفة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

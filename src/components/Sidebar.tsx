@@ -130,7 +130,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             if (businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
-                    section.links = section.links?.map((l: any) => {
+                    section.links = section.links?.filter((l: any) => l.id !== '/coupons').map((l: any) => {
                         if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
                         if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
                         return l;
@@ -144,14 +144,48 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                         return l;
                     });
                 }
-                if (section.featureKey === 'installments') {
-                    return null;
+            } else if (businessType !== 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.links = section.links?.filter((l: any) => l.id !== '/coupons');
+                }
+            }
+
+            if (businessType === 'RESTAURANTS') {
+                if (section.featureKey === 'installments') return null;
+                
+                if (section.featureKey === 'sales') {
+                    section.title = 'العملاء والتسويق';
+                    section.links = section.links?.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
+                }
+                if (section.featureKey === 'inventory') {
+                    section.title = 'المنيو والمخزون';
+                    section.links = section.links?.map((l: any) => {
+                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المنيو' };
+                        if (l.id === '/items') return { ...l, label: 'أصناف المنيو' };
+                        if (l.id === '/warehouses') return { ...l, label: 'المخازن والمستودعات' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'purchases') {
+                    section.title = 'المشتريات والموردين';
+                }
+                if (section.featureKey === 'reports') {
+                    section.links = section.links?.map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير الكاشير والمبيعات' };
+                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير المخزون والمنيو' };
+                        return l;
+                    });
                 }
             }
 
             const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id)) || [];
             if (!hasFeature(section.featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;
+
+            // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
+            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
+
 
             const SectionIcon = section.icon;
             if (section.isStandalone && section.href) {

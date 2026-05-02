@@ -6,7 +6,7 @@ import { navSections } from '@/constants/navigation';
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Settings as SettingsIcon, Building2, Globe, Bell, Shield, Database, AlertCircle, FileText, CreditCard, CheckCircle2, Percent, Loader2, Store } from 'lucide-react';
+import { Settings as SettingsIcon, Building2, Globe, Bell, Shield, Database, AlertCircle, FileText, CreditCard, CheckCircle2, Percent, Loader2, Store, UtensilsCrossed, Key } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -20,6 +20,8 @@ import UsersTab from './_tabs/UsersTab';
 import SubscriptionTab from './_tabs/SubscriptionTab';
 import BranchesTab from './_tabs/BranchesTab';
 import DatabaseTab from './_tabs/DatabaseTab';
+import RestaurantTab from './_tabs/RestaurantTab';
+import ApiTab from './_tabs/ApiTab';
 
 /* ══════════════════════════════════════════
    MAIN PAGE
@@ -55,7 +57,8 @@ function SettingsContent() {
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const isServices    = businessType === 'SERVICES';
+    const isRestaurants = businessType === 'RESTAURANTS';
 
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -95,12 +98,16 @@ function SettingsContent() {
         type: 'VAT',
         rate: 14,
         isInclusive: false,
+        hasServiceCharge: false,
+        serviceChargeRate: 0,
     });
     const [savedTaxForm, setSavedTaxForm] = useState({
         enabled: false,
         type: 'VAT',
         rate: 14,
         isInclusive: false,
+        hasServiceCharge: false,
+        serviceChargeRate: 0,
     });
     interface NewUserForm {
         name: string;
@@ -161,8 +168,12 @@ function SettingsContent() {
                 '/', '/employees', '/payrolls', '/advances', '/deductions', '/departments',
             ], ['reports-hr']);
         } else if (role === 'cashier') {
-            // كاشير
-            grant(['/', '/sales', '/receipts'], ['/customers', '/treasuries']);
+            // كاشير: نقاط البيع + سندات القبض + صفحات المطاعم
+            const cashierPages = ['/', '/sales', '/receipts'];
+            if (isRestaurants) {
+                cashierPages.push('/pos', '/pos/history', '/kds', '/shifts', '/tables');
+            }
+            grant(cashierPages, ['/customers', '/treasuries']);
         } else if (role === 'manager') {
             // مدير فرع: كل شيء عدا الإعدادات
             permissionHierarchy
@@ -425,6 +436,9 @@ function SettingsContent() {
     // Build the permission hierarchy based on user's actual permissions and subscription
     const permissionHierarchy = navSections
         .filter(sectionOrigin => {
+            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
+            if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
             return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })
         .map(sectionOrigin => {
@@ -449,7 +463,30 @@ function SettingsContent() {
                     ];
                 }
             }
-
+            // Apply restaurants terminology
+            if (isRestaurants) {
+                if (section.featureKey === 'sales') {
+                    section.title = t('إدارة العملاء');
+                    section.links = section.links?.filter((l: any) => l.id === '/customers');
+                }
+                if (section.featureKey === 'inventory') {
+                    section.title = t('المنيو والمخزون');
+                    section.links = section.links?.map((l: any) => {
+                        if (l.id === '/categories') return { ...l, label: t('تصنيفات المنيو') };
+                        if (l.id === '/items')      return { ...l, label: t('أصناف المنيو') };
+                        if (l.id === '/warehouses') return { ...l, label: t('المخازن والمستودعات') };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'purchases') section.title = t('المشتريات والموردين');
+                if (section.featureKey === 'reports') {
+                    section.links = section.links?.map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: t('تقارير الكاشير والمبيعات') };
+                        if (l.label === 'تقارير المخزون')      return { ...l, label: t('تقارير المخزون والمنيو') };
+                        return l;
+                    });
+                }
+            }
             const filteredLinks = section.links?.filter((link: any) => hasPage(section.featureKey || '', link.id)) || [];
             return {
                 title: section.title,
@@ -528,6 +565,8 @@ function SettingsContent() {
                                 type: tax.type || 'VAT',
                                 rate: tax.rate ?? 14,
                                 isInclusive: tax.isInclusive ?? false,
+                                hasServiceCharge: tax.hasServiceCharge ?? false,
+                                serviceChargeRate: tax.serviceChargeRate ?? 0,
                             };
                             setTaxForm(tForm);
                             setSavedTaxForm(tForm);
@@ -765,7 +804,7 @@ function SettingsContent() {
 
     // Filter tabs based on permissionHierarchy
     const filteredTabs = [
-        { id: 'company', icon: Building2, label: t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
+        { id: 'company', icon: Building2, label: isRestaurants ? t('بيانات المطعم') : t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
         { id: 'general', icon: Globe, label: t('الإعدادات العامة'), featureKey: 'settings', pageId: '/settings/general' },
         { id: 'branches', icon: Store, label: t('الفروع'), featureKey: 'settings', pageId: '/settings/branches' },
         { id: 'notifications', icon: Bell, label: t('الإشعارات'), featureKey: 'settings', pageId: '/settings/notifications' },
@@ -773,10 +812,11 @@ function SettingsContent() {
         { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
         { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
         { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
-    ].filter(tab => hasPage(tab.featureKey, tab.pageId)).filter(tab => {
-        if (isServices && tab.id === 'notifications') return false;
-        return true;
-    });
+        ...(businessType === 'RESTAURANTS' ? [
+            { id: 'restaurant', icon: UtensilsCrossed, label: t('إعدادات المطعم'), featureKey: 'settings', pageId: '/settings/restaurant' },
+            { id: 'api', icon: Key, label: t('ربط API خارجي'), featureKey: 'settings', pageId: '/settings/api' },
+        ] : []),
+    ].filter(tab => hasPage(tab.featureKey, tab.pageId));
 
 
     /* ══════════════════════════════════════════
@@ -861,6 +901,7 @@ function SettingsContent() {
                                 handleCancel={handleCancel}
                                 saveSettings={saveSettings}
                                 showToast={showToast}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 
@@ -890,6 +931,7 @@ function SettingsContent() {
                                 fetchData={fetchData}
                                 hasInstallmentsAccess={hasPage('installments', '/installments')}
                                 isServices={isServices}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 
@@ -903,6 +945,7 @@ function SettingsContent() {
                                 isSaving={isSaving}
                                 handleCancel={handleCancel}
                                 saveSettings={saveSettings}
+                                isRestaurants={isRestaurants}
                             />
                         )}
 
@@ -981,7 +1024,13 @@ function SettingsContent() {
                             />
                         )}
 
+                        {activeTab === 'restaurant' && (
+                            <RestaurantTab showToast={showToast} />
+                        )}
 
+                        {activeTab === 'api' && (
+                            <ApiTab />
+                        )}
 
                     </div>
                 </div>

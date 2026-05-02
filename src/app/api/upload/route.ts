@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withProtection } from '@/lib/apiHandler';
-import { supabase } from '@/lib/supabase';
 import path from 'path';
+import fs from 'fs/promises';
 
 export const POST = withProtection(async (request, session) => {
     try {
@@ -18,6 +18,7 @@ export const POST = withProtection(async (request, session) => {
         }
 
         const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
         
         // Sanitize filename
         let safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
@@ -27,26 +28,16 @@ export const POST = withProtection(async (request, session) => {
         
         const filename = `logo-${Date.now()}-${safeName}`;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('company-logos')
-            .upload(filename, bytes, {
-                contentType: file.type,
-                upsert: true
-            });
+        // Ensure public/uploads directory exists
+        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+        await fs.mkdir(uploadDir, { recursive: true });
 
-        if (uploadError) {
-            console.error("Supabase Storage Error:", uploadError);
-            return NextResponse.json({ 
-                success: false, 
-                error: "فشل الرفع إلى Supabase. تأكد من إنشاء Bucket باسم 'company-logos' وجعله متاح للجميع (Public). الخطأ: " + uploadError.message 
-            }, { status: 500 });
-        }
+        // Save file locally
+        const filePath = path.join(uploadDir, filename);
+        await fs.writeFile(filePath, buffer);
 
-        // Get the public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('company-logos')
-            .getPublicUrl(filename);
+        // Public URL
+        const publicUrl = `/uploads/${filename}`;
 
         return NextResponse.json({ success: true, url: publicUrl });
     } catch (e: any) {

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -37,6 +37,7 @@ export default function CategoriesPage() {
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isRestaurant = businessType === 'RESTAURANTS';
 
     const [form, setForm] = useState({ id: '', name: '', code: '' });
 
@@ -114,8 +115,8 @@ export default function CategoriesPage() {
                 
                 {/* Page Header */}
                 <PageHeader 
-                    title={isServices ? t("تصنيفات الخدمات") : t("تصنيفات الأصناف")} 
-                    subtitle={isServices ? t("إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير") : t("إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع")} 
+                    title={isRestaurant ? t("تصنيفات المنيو") : isServices ? t("تصنيفات الخدمات") : t("تصنيفات الأصناف")} 
+                    subtitle={isRestaurant ? t("تصنيف أصناف المنيو لتسهيل عرضها في الكاشير والموقع") : isServices ? t("إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير") : t("إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع")} 
                     icon={FolderTree} 
                     primaryButton={canCreate ? {
                         label: t("إضافة تصنيف جديد"),
@@ -151,11 +152,11 @@ export default function CategoriesPage() {
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        {[t('الكود'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
+                                        {[t('الكود'), t('اسم التصنيف'), isRestaurant ? t('عدد أصناف المنيو') : isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
                                             <th key={i} style={TABLE_STYLE.th(i === 0, [0, 2, 3].includes(i))}>{h}</th>
                                         ))}
                                     </tr>
@@ -180,7 +181,7 @@ export default function CategoriesPage() {
                                                     padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT,
                                                     background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
                                                 }}>
-                                                    {cat._count?.items || 0} {isServices ? t('خدمة') : t('صنف')}
+                                                    {cat._count?.items || 0} {isRestaurant ? t('صنف') : isServices ? t('خدمة') : t('صنف')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
@@ -229,7 +230,7 @@ export default function CategoriesPage() {
                                 <label style={LS}>{t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
                                 <input
                                     type="text" required autoFocus
-                                    placeholder={isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
+                                    placeholder={isRestaurant ? t("مثال: مشروبات، برجر، بيتزا، حلويات...") : isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
                                     value={form.name}
                                     onChange={e => setForm({ ...form, name: e.target.value })}
                                     style={{ ...IS, height: '42px' }}

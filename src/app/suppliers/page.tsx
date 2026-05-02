@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -247,16 +247,16 @@ export default function SuppliersPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
-                            <UserX size={36} style={{ color: C.textSecondary, opacity: 0.3, margin: '0 auto 10px' }} />
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                            <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد موردين')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

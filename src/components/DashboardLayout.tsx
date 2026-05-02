@@ -1,6 +1,6 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Calendar, AlertTriangle, Loader2 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
@@ -8,17 +8,35 @@ import Header from '@/components/Header';
 import TrialBanner from '@/components/TrialBanner';
 import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
+import { navSections } from '@/constants/navigation';
+import { useMemo, useCallback } from 'react';
 
 export default function DashboardLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession();
     const pathname = usePathname();
     const router = useRouter();
-    const [noFY, setNoFY] = useState(false);
+    const [noFY, setNoFY]       = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
+
+    const syncAttempted = useRef(false);
+
+    // تحديث الـ session تلقائيًا كل 5 دقائق لضمان مزامنة businessType والصلاحيات مع قاعدة البيانات
+    useEffect(() => {
+        if (status !== 'authenticated') return;
+        
+        // تحديث إجباري مرة واحدة عند فتح الموقع لمزامنة أي تغييرات حصلت من السوبر أدمن
+        if (!syncAttempted.current) {
+            syncAttempted.current = true;
+            update();
+        }
+
+        const interval = setInterval(() => { update(); }, 5 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [status, update]);
 
     useEffect(() => {
         if (status === 'loading' || !session) return;
@@ -48,13 +66,95 @@ export default function DashboardLayout({
             .finally(() => setLoadingFY(false));
     }, [status, session, pathname]);
 
+    const user = session?.user as any;
+    const isSuperAdmin = !!user?.isSuperAdmin;
+    const userRole = user?.role;
+    const featuresRaw = user?.subscription?.features;
+    const hasSubscription = !!user?.subscription;
+
+    const enabledFeatures = useMemo(() => {
+        if (status === 'loading') return {};
+        try {
+            if (!featuresRaw) {
+                const all: Record<string, string[]> = {};
+                navSections.forEach((s: any) => {
+                    if (s && s.featureKey && s.links) {
+                        all[s.featureKey] = s.links.map((l: any) => l.id);
+                    }
+                });
+                return all;
+            }
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
+            if (Array.isArray(parsed)) {
+                const obj: Record<string, string[]> = {};
+                parsed.forEach((key: string) => {
+                    const sections = navSections.filter(s => s.featureKey === key);
+                    sections.forEach(section => {
+                        if (section && section.links) {
+                            obj[key] = [...(obj[key] || []), ...section.links.map(l => l.id)];
+                        }
+                    });
+                });
+                return obj;
+            }
+            return parsed || {};
+        } catch (e) { return {}; }
+    }, [featuresRaw, status]);
+
+    const hasPage = useCallback((featureKey: string, pageId: string): boolean => {
+        try {
+            if (isSuperAdmin) return true;
+            if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
+
+            const userPerms = user?.permissions || {};
+            const hasGranularPerms = Object.keys(userPerms).length > 0;
+
+            if (userRole === 'admin') {
+                if (featureKey === 'settings') return true;
+                if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                    return (enabledFeatures[featureKey] || []).includes(pageId);
+                }
+                return true;
+            }
+            if (featureKey === 'settings') return !hasGranularPerms;
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                if (!(featureKey in enabledFeatures)) return false;
+                if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
+            }
+            if (hasGranularPerms) return !!userPerms[pageId]?.view;
+            return true;
+        } catch { return true; }
+    }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, user]);
+
+    useEffect(() => {
+        if (status !== 'authenticated' || !user) return;
+        if (pathname === '/' || pathname.includes('/menu/') || pathname.includes('/barcode/')) return;
+
+        let foundFeatureKey = '';
+        let foundPageId = '';
+
+        for (const section of navSections) {
+            const link = section.links?.find(l => pathname === l.href || pathname.startsWith(l.href + '/'));
+            if (link) {
+                foundFeatureKey = section.featureKey;
+                foundPageId = link.id;
+                break;
+            }
+        }
+
+        if (foundFeatureKey && foundPageId) {
+            if (!hasPage(foundFeatureKey, foundPageId)) {
+                router.replace('/');
+            }
+        }
+    }, [pathname, status, user, hasPage, router]);
+
     const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
     const sub = (session?.user as any)?.subscription;
-    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
     const isExpired = sub ? (new Date(sub.endDate).getTime() < Date.now() || !sub.isActive) : false;
     const isLockoutActive = isExpired && !isSuperAdmin;
     const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');
@@ -180,36 +280,116 @@ export default function DashboardLayout({
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
                     main { padding: 76px 16px 20px !important; }
 
-                    /* Global Responsive Helpers */
+                    /* ─── Global Responsive Helpers ─── */
                     .mobile-column, .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
                     .mobile-full { width: 100% !important; max-width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
                     .mobile-hide { display: none !important; }
                     .mobile-p-sm { padding: 12px !important; }
                     .mobile-m-none { margin: 0 !important; }
                     
-                    /* Typography scaling */
+                    /* ─── Typography ─── */
                     .page-title { font-size: 16px !important; }
                     .page-subtitle { font-size: 11px !important; }
 
-                    /* Grids & Tables */
-                    .responsive-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
-                    
-                    .scroll-table {
+                    /* ─── Tables: always scroll horizontally on mobile ─── */
+                    main table,
+                    .table-container,
+                    .scroll-table,
+                    [class*="table-wrap"],
+                    [class*="table-container"] {
+                        display: block !important;
                         width: 100% !important;
                         overflow-x: auto !important;
                         -webkit-overflow-scrolling: touch !important;
                         border-radius: 12px;
-                        margin-bottom: 5px;
                     }
-                    .scroll-table table { min-width: 750px !important; }
+                    main table table { display: table !important; } /* reset nested tables */
+                    .scroll-table table,
+                    [class*="table-container"] > table,
+                    main > div table { min-width: 620px; }
 
-                    /* Improved touch targets */
-                    button, input, select { min-height: 42px !important; font-size: 14px !important; }
+                    /* ─── Grids ─── */
+                    .responsive-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+                    /* ─── Page Headers: stack title+actions vertically ─── */
+                    .page-header-row {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        gap: 12px !important;
+                    }
+                    .page-header-actions {
+                        width: 100% !important;
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .page-header-actions > button,
+                    .page-header-actions > a {
+                        flex: 1 !important;
+                        min-width: 120px !important;
+                        justify-content: center !important;
+                    }
+
+                    /* ─── Filter bars: wrap pills/buttons ─── */
+                    .filter-bar {
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .filter-bar > button,
+                    .filter-bar > input,
+                    .filter-bar > select {
+                        flex-shrink: 0 !important;
+                    }
+
+                    /* ─── Cards ─── */
+                    .cards-row {
+                        flex-direction: column !important;
+                        gap: 12px !important;
+                    }
+                    .card-col {
+                        width: 100% !important;
+                        flex: none !important;
+                    }
+
+                    /* ─── Modals: near full-screen on mobile ─── */
+                    [role="dialog"],
+                    .app-modal-inner {
+                        width: 96vw !important;
+                        max-width: 96vw !important;
+                        max-height: 88vh !important;
+                        margin: 6vh auto !important;
+                        overflow-y: auto !important;
+                        border-radius: 16px !important;
+                    }
+
+                    /* ─── Delivery / POS order cards ─── */
+                    .order-card-header {
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .order-card-actions {
+                        flex-wrap: wrap !important;
+                        gap: 6px !important;
+                    }
+                    .order-card-actions > button {
+                        flex: 1 !important;
+                        min-width: 90px !important;
+                        justify-content: center !important;
+                    }
+
+                    /* ─── Summary/totals rows ─── */
+                    .summary-row {
+                        flex-direction: column !important;
+                        gap: 8px !important;
+                    }
+
+                    /* ─── Touch targets ─── */
+                    button, input[type="text"], input[type="date"],
+                    input[type="number"], input[type="email"],
+                    input[type="password"], select {
+                        min-height: 42px !important;
+                    }
                     .action-btn { width: 36px !important; height: 36px !important; }
-
-                    /* Modals */
-                    [role="dialog"] { width: 92vw !important; max-width: 92vw !important; margin: 10vh auto !important; }
                 }
 
                 @media (max-width: 768px) {
@@ -221,38 +401,54 @@ export default function DashboardLayout({
                     .mobile-column, .mobile-stack { gap: 10px !important; }
                     .mobile-full { width: 100% !important; max-width: 100% !important; }
 
-                    /* Standard global mobile table behavior */
-                    .table-container,
-                    .scroll-table,
-                    .print-table-container,
-                    [class*="table-container"],
-                    .table-responsive {
+                    /* All tables scroll on mobile — always */
+                    main table {
+                        display: block !important;
                         overflow-x: auto !important;
                         -webkit-overflow-scrolling: touch !important;
+                        white-space: nowrap;
                     }
-
-                    .table-container > table,
-                    .scroll-table > table,
-                    .print-table-container > table,
-                    [class*="table-container"] > table,
-                    .table-responsive > table,
-                    main table {
-                        width: max-content !important;
-                        min-width: 100% !important;
+                    main table thead, main table tbody,
+                    main table tfoot, main table tr {
+                        display: table-row-group;
                     }
+                    main table table { display: table !important; white-space: normal; }
 
                     /* Better touch usability */
                     button, input, select, textarea { min-height: 44px !important; }
-                    input, select, textarea { font-size: 16px !important; }
+                    input[type="text"], input[type="date"],
+                    input[type="number"], input[type="email"],
+                    input[type="password"], select, textarea {
+                        font-size: 16px !important; /* prevents iOS zoom */
+                    }
+
+                    /* KPI / stats cards */
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+
+                    /* Sidebar search bar on header */
+                    .header-search { display: none !important; }
                 }
 
                 @media (max-width: 640px) {
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr !important; }
-                    main { padding: 72px 12px 16px !important; }
+                    main { padding: 72px 10px 16px !important; }
                     
                     .item-entry-grid { grid-template-columns: 1fr 1fr !important; }
                     .item-entry-grid > div:first-child { grid-column: 1 / -1 !important; }
                     .item-entry-grid > button { grid-column: 1 / -1 !important; width: 100% !important; }
+
+                    /* Stack filter buttons fully on very small screens */
+                    .filter-bar > button {
+                        flex: 1 1 calc(50% - 4px) !important;
+                        text-align: center !important;
+                    }
+
+                    /* Page header actions: full width buttons */
+                    .page-header-actions > button,
+                    .page-header-actions > a {
+                        width: 100% !important;
+                        flex: 1 1 100% !important;
+                    }
                 }
 
                 @keyframes fadeDown {

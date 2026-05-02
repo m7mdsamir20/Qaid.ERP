@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
@@ -192,7 +192,9 @@ export default function CustomersPage() {
         return formatNumber(n);
     };
 
-    const stats = [
+    const stats = businessType === 'RESTAURANTS' ? [
+        { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: t('عميل') }
+    ] : [
         { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: t('عميل') },
         { label: t('مديونيات العملاء'), value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
         { label: t('أرصدة مقدمة'), value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
@@ -204,7 +206,7 @@ export default function CustomersPage() {
 
                 <PageHeader
                     title={t("العملاء")}
-                    subtitle={t("إدارة بيانات العملاء والشركات والمستحقات")}
+                    subtitle={businessType === 'RESTAURANTS' ? t("إدارة بيانات العملاء وحسابات التوصيل") : t("إدارة بيانات العملاء والشركات والمستحقات")}
                     icon={Users}
                     primaryButton={{
                         label: t("إضافة عميل"),
@@ -223,7 +225,7 @@ export default function CustomersPage() {
                 />
 
                 {/* KPI Stats Summary */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: businessType === 'RESTAURANTS' ? '1fr' : 'repeat(3, 1fr)', gap: '14px', marginBottom: '16px' }}>
                     {stats.map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -266,50 +268,52 @@ export default function CustomersPage() {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
-                        {[
-                            { id: 'all', label: t('الكل') },
-                            { id: 'debit', label: t('المدينين') },
-                            { id: 'credit', label: t('الدائنين') },
-                        ].map(f => (
-                            <button
-                                key={f.id}
-                                onClick={() => setStatusFilter(f.id as any)}
-                                style={{
-                                    padding: '0 16px', height: '32px', borderRadius: '8px',
-                                    border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
-                                    fontFamily: CAIRO, transition: 'all 0.2s',
-                                    background: statusFilter === f.id ? C.primary : 'transparent',
-                                    color: statusFilter === f.id ? '#fff' : C.textSecondary,
-                                }}
-                            >
-                                {f.label}
-                            </button>
-                        ))}
-                    </div>
+                    {businessType !== 'RESTAURANTS' && (
+                        <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                            {[
+                                { id: 'all', label: t('الكل') },
+                                { id: 'debit', label: t('المدينين') },
+                                { id: 'credit', label: t('الدائنين') },
+                            ].map(f => (
+                                <button
+                                    key={f.id}
+                                    onClick={() => setStatusFilter(f.id as any)}
+                                    style={{
+                                        padding: '0 16px', height: '32px', borderRadius: '8px',
+                                        border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+                                        fontFamily: CAIRO, transition: 'all 0.2s',
+                                        background: statusFilter === f.id ? C.primary : 'transparent',
+                                        color: statusFilter === f.id ? '#fff' : C.textSecondary,
+                                    }}
+                                >
+                                    {f.label}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* ── Table (Suppliers Style) ── */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
-                            <UserX size={36} style={{ color: C.textSecondary, opacity: 0.3, margin: '0 auto 10px' }} />
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                            <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عملاء مضافين حالياً')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('العميل')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('إجراءات')}</th>
+                                        {businessType !== 'RESTAURANTS' && <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -332,18 +336,20 @@ export default function CustomersPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <span style={{
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
-                                                    background: c.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : (c.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
-                                                    color: c.balance < 0 ? '#fb7185' : (c.balance > 0 ? '#4ade80' : C.textMuted),
-                                                    border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
-                                                }}>
-                                                    <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? t('له عندنا') : (c.balance > 0 ? t('عليه لنا') : t('متزن'))}</span>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(c.balance)} /></span>
-                                                </span>
-                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                            {businessType !== 'RESTAURANTS' && (
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <span style={{
+                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
+                                                        background: c.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : (c.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
+                                                        color: c.balance < 0 ? '#fb7185' : (c.balance > 0 ? '#4ade80' : C.textMuted),
+                                                        border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
+                                                    }}>
+                                                        <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? t('له عندنا') : (c.balance > 0 ? t('عليه لنا') : t('متزن'))}</span>
+                                                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(c.balance)} /></span>
+                                                    </span>
+                                                </td>
+                                            )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                     <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
@@ -368,38 +374,56 @@ export default function CustomersPage() {
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? t('تعديل بيانات العميل') : t('إضافة عميل جديد')} icon={UserPlus} maxWidth="520px">
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                            {/* النوع + الاسم */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
-                                <div>
-                                    <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
-                                    <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                        <button
-                                            type="button"
-                                            onClick={() => setForm({ ...form, type: 'individual' })}
-                                            style={{
-                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
-                                                background: form.type === 'individual' ? C.primary : 'transparent',
-                                                color: form.type === 'individual' ? '#fff' : C.textSecondary
-                                            }}
-                                        >{t('فرد')}</button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setForm({ ...form, type: 'company' })}
-                                            style={{
-                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
-                                                background: form.type === 'company' ? C.primary : 'transparent',
-                                                color: form.type === 'company' ? '#fff' : C.textSecondary
-                                            }}
-                                        >{t('شركة')}</button>
+                            {businessType === 'RESTAURANTS' ? (
+                                <>
+                                    {/* الاسم + الهاتف (لنشاط المطاعم) */}
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                        <div>
+                                            <label style={LS}>{t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: أحمد محمد')} autoFocus />
+                                        </div>
+                                        <div>
+                                            <label style={LS}>{t('رقم الهاتف')}</label>
+                                            <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <label style={LS}>{form.type === 'company' ? t('اسم الشركة') : t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
-                                    <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? t('مثال: شركة النور للتجارة') : t('مثال: أحمد محمد')} />
-                                </div>
-                            </div>
+                                </>
+                            ) : (
+                                <>
+                                    {/* النوع + الاسم (للأنشطة الأخرى) */}
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
+                                        <div>
+                                            <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                            <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm({ ...form, type: 'individual' })}
+                                                    style={{
+                                                        flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                        background: form.type === 'individual' ? C.primary : 'transparent',
+                                                        color: form.type === 'individual' ? '#fff' : C.textSecondary
+                                                    }}
+                                                >{t('فرد')}</button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setForm({ ...form, type: 'company' })}
+                                                    style={{
+                                                        flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                        background: form.type === 'company' ? C.primary : 'transparent',
+                                                        color: form.type === 'company' ? '#fff' : C.textSecondary
+                                                    }}
+                                                >{t('شركة')}</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label style={LS}>{form.type === 'company' ? t('اسم الشركة') : t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? t('مثال: شركة النور للتجارة') : t('مثال: أحمد محمد')} autoFocus />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
-                            {/* العنوان — 4 خانات */}
+                            {/* العنوان — 4 خانات (مشترك للكل) */}
                             <div>
                                 <label style={LS}>{t('العنوان')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
@@ -422,86 +446,90 @@ export default function CustomersPage() {
                                 </div>
                             </div>
 
-                            {/* رقم ضريبي + سجل تجاري (شركة فقط) */}
-                            {form.type === 'company' && (
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
-                                    <div>
-                                        <label style={LS}>{t('الرقم الضريبي')}</label>
-                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
-                                    </div>
-                                    <div>
-                                        <label style={LS}>{t('السجل التجاري')}</label>
-                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* هاتف + المسؤول */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                <div>
-                                    <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS,  direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
-                                </div>
-                                {form.type === 'company' && (
-                                    <div>
-                                        <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
-                                        <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
-                                    </div>
-                                )}
-                            </div>
-                            <div>
-                                <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>
-                                <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                                    {/* Digital Zero Watermark */}
-                                    {!form.creditLimit && (
-                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                            0.00
+                            {businessType !== 'RESTAURANTS' && (
+                                <>
+                                    {/* رقم ضريبي + سجل تجاري (شركة فقط) */}
+                                    {form.type === 'company' && (
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
+                                            <div>
+                                                <label style={LS}>{t('الرقم الضريبي')}</label>
+                                                <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
+                                            </div>
+                                            <div>
+                                                <label style={LS}>{t('السجل التجاري')}</label>
+                                                <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
+                                            </div>
                                         </div>
                                     )}
-                                    <input
-                                        type="text"
-                                        inputMode="decimal"
-                                        value={formatWithCommas(form.creditLimit)}
-                                        onChange={e => {
-                                            const v = e.target.value.replace(/[^0-9.]/g, '');
-                                            if ((v.match(/\./g) || []).length > 1) return;
-                                            setForm({ ...form, creditLimit: v });
-                                        }}
-                                        style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
-                                        onFocus={focusIn} onBlur={focusOut}
-                                    />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
-                                </div>
-                            </div>
-                            {!editingId && (
-                                <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    <label style={{ ...LS, marginBottom: 0 }}>{t('الرصيد الافتتاحي (عند بداية التعامل)')}</label>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'debit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'debit' ? '#4ade80' : C.border}`, background: form.balanceType === 'debit' ? 'rgba(74,222,128,0.1)' : 'transparent', color: form.balanceType === 'debit' ? '#4ade80' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('عليه (مدين)')}</button>
-                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'credit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'credit' ? '#fb7185' : C.border}`, background: form.balanceType === 'credit' ? 'rgba(251,113,133,0.1)' : 'transparent', color: form.balanceType === 'credit' ? '#fb7185' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('له (دائن)')}</button>
-                                    </div>
-                                    <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                                        {/* Digital Zero Watermark */}
-                                        {!form.openingBalance && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                                0.00
+
+                                    {/* هاتف + المسؤول */}
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                        <div>
+                                            <label style={LS}>{t('رقم الهاتف')}</label>
+                                            <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                        </div>
+                                        {form.type === 'company' && (
+                                            <div>
+                                                <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
+                                                <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
                                             </div>
                                         )}
-                                        <input
-                                            type="text"
-                                            inputMode="decimal"
-                                            value={formatWithCommas(form.openingBalance)}
-                                            onChange={e => {
-                                                const v = e.target.value.replace(/[^0-9.]/g, '');
-                                                if ((v.match(/\./g) || []).length > 1) return;
-                                                setForm({ ...form, openingBalance: v });
-                                            }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                        />
-                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
-                                </div>
+                                    <div>
+                                        <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>
+                                        <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+                                            {/* Digital Zero Watermark */}
+                                            {!form.creditLimit && (
+                                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                    0.00
+                                                </div>
+                                            )}
+                                            <input
+                                                type="text"
+                                                inputMode="decimal"
+                                                value={formatWithCommas(form.creditLimit)}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/[^0-9.]/g, '');
+                                                    if ((v.match(/\./g) || []).length > 1) return;
+                                                    setForm({ ...form, creditLimit: v });
+                                                }}
+                                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
+                                                onFocus={focusIn} onBlur={focusOut}
+                                            />
+                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                        </div>
+                                    </div>
+                                    {!editingId && (
+                                        <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                            <label style={{ ...LS, marginBottom: 0 }}>{t('الرصيد الافتتاحي (عند بداية التعامل)')}</label>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button type="button" onClick={() => setForm({ ...form, balanceType: 'debit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'debit' ? '#4ade80' : C.border}`, background: form.balanceType === 'debit' ? 'rgba(74,222,128,0.1)' : 'transparent', color: form.balanceType === 'debit' ? '#4ade80' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('عليه (مدين)')}</button>
+                                                <button type="button" onClick={() => setForm({ ...form, balanceType: 'credit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'credit' ? '#fb7185' : C.border}`, background: form.balanceType === 'credit' ? 'rgba(251,113,133,0.1)' : 'transparent', color: form.balanceType === 'credit' ? '#fb7185' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('له (دائن)')}</button>
+                                            </div>
+                                            <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+                                                {/* Digital Zero Watermark */}
+                                                {!form.openingBalance && (
+                                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                        0.00
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="text"
+                                                    inputMode="decimal"
+                                                    value={formatWithCommas(form.openingBalance)}
+                                                    onChange={e => {
+                                                        const v = e.target.value.replace(/[^0-9.]/g, '');
+                                                        if ((v.match(/\./g) || []).length > 1) return;
+                                                        setForm({ ...form, openingBalance: v });
+                                                    }}
+                                                    style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
+                                                    onFocus={focusIn} onBlur={focusOut}
+                                                />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>

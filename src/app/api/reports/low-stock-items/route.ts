@@ -11,7 +11,7 @@ export const GET = withProtection(async (request, session) => {
 
         // Fetch all items with their stocks and units
         const items = await prisma.item.findMany({
-            where: { companyId },
+            where: { companyId, type: 'raw' },
             include: {
                 stocks: true,
                 unit: true,

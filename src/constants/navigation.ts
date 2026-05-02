@@ -33,6 +33,7 @@ import {
     Tag,
     Clock,
     AlertTriangle,
+    QrCode,
 } from 'lucide-react';
 
 export const navSections = [
@@ -46,6 +47,53 @@ export const navSections = [
             { id: '/', href: '/', label: 'لوحة التحكم' }
         ],
     },
+    // ═══════════════════════════════════════════════════════
+    // 🍽️  أقسام المطاعم والكافيهات (تظهر فقط لنشاط RESTAURANTS)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'نقطة البيع (POS)',
+        icon: Receipt,
+        featureKey: 'pos',
+        links: [
+            { id: '/pos', href: '/pos', label: 'شاشة الكاشير' },
+            { id: '/pos/history', href: '/pos/history', label: 'سجل الطلبات' },
+        ],
+    },
+    {
+        title: 'الطاولات والصالة',
+        icon: Layers,
+        featureKey: 'tables',
+        links: [
+            { id: '/tables', href: '/tables', label: 'خريطة الطاولات' },
+            { id: '/shifts', href: '/shifts', label: 'الورديات' },
+        ],
+    },
+    {
+        title: 'المطبخ',
+        icon: ClipboardList,
+        featureKey: 'kitchen',
+        links: [
+            { id: '/kds', href: '/kds', label: 'شاشة المطبخ (KDS)' },
+            { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
+        ],
+    },
+    {
+        title: 'التوصيل',
+        icon: Truck,
+        featureKey: 'delivery',
+        links: [
+            { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
+            { id: '/restaurant/drivers', href: '/restaurant/drivers', label: 'إدارة السائقين' },
+        ],
+    },
+    {
+        title: 'باركود وQR الطاولات',
+        icon: QrCode,
+        featureKey: 'barcode',
+        links: [
+            { id: '/barcode', href: '/barcode', label: 'QR الطاولات' },
+        ],
+    },
     {
         title: 'المبيعات',
         icon: Receipt,
@@ -56,6 +104,8 @@ export const navSections = [
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
             { id: '/customers', href: '/customers', label: 'العملاء' },
+            { id: '/coupons', href: '/coupons', label: 'كوبونات الخصم' },
+            { id: '/settlements', href: '/settlements', label: 'تسوية ديون (حوالة)' },
         ],
     },
     {
@@ -170,6 +220,7 @@ export const navSections = [
             { id: 'reports-treasury-bank', href: '/reports', label: 'الخزن والبنوك' },
             { id: 'reports-hr', href: '/reports', label: 'تقارير الموظفين' },
             { id: 'reports-installments', href: '/reports/installments', label: 'تقارير الأقساط' },
+            { id: 'reports-restaurant', href: '/restaurant/reports', label: 'تقارير المطعم' },
         ],
     },
     {
@@ -184,7 +235,9 @@ export const navSections = [
             { id: '/settings/notifications', href: '/settings', label: 'الإشعارات' },
             { id: '/settings/users', href: '/settings', label: 'المستخدمين والصلاحيات' },
             { id: '/settings/subscription', href: '/settings', label: 'الاشتراك والخطة' },
+            { id: '/settings/api-keys', href: '/settings/api-keys', label: 'الربط البرمجي (API)' },
             { id: '/settings/database', href: '/settings', label: 'قواعد البيانات' },
         ],
     },
+
 ];

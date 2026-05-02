@@ -21,11 +21,12 @@ interface CompanyTabProps {
     handleCancel: () => void;
     saveSettings: (action: string, data: any) => void;
     showToast: (msg: string, type?: 'success' | 'error') => void;
+    isRestaurants?: boolean;
 }
 
 export default function CompanyTab({
     countryCode, isEditMode, setIsEditMode, companyForm, setCompanyForm,
-    isSaving, handleCancel, saveSettings, showToast
+    isSaving, handleCancel, saveSettings, showToast, isRestaurants
 }: CompanyTabProps) {
     const { t } = useTranslation();
     const ph = getCountryPlaceholders(countryCode);
@@ -34,7 +35,7 @@ export default function CompanyTab({
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
             <TabHeader
-                title={t("بيانات الشركة والمؤسسة")}
+                title={isRestaurants ? t("بيانات المطعم") : t("بيانات الشركة والمؤسسة")}
                 sub={t("الهوية المؤسسية، بيانات الاتصال، والبيانات القانونية")}
                 isEdit={isEditMode}
                 onEdit={() => setIsEditMode(true)}
@@ -52,8 +53,8 @@ export default function CompanyTab({
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: t('اسم الشركة (عربي)'), key: 'name', dir: 'rtl', icon: <FileText size={15} />, placeholder: t('أدخل الاسم بالعربية') },
-                            { label: t('اسم الشركة (EN)'), key: 'nameEn', dir: 'ltr', icon: <AlignRight size={15} />, placeholder: t('Enter name in English') },
+                            { label: isRestaurants ? t('اسم المطعم (عربي)') : t('اسم الشركة (عربي)'), key: 'name', dir: 'rtl', icon: <FileText size={15} />, placeholder: t('أدخل الاسم بالعربية') },
+                            { label: isRestaurants ? t('اسم المطعم (EN)') : t('اسم الشركة (EN)'), key: 'nameEn', dir: 'ltr', icon: <AlignRight size={15} />, placeholder: t('Enter name in English') },
                         ].map((f, i) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -74,7 +75,7 @@ export default function CompanyTab({
                         <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '20px' }}>
                             <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', borderInlineStart: `1px solid ${C.border}` }}>
                                 <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}><UploadCloud size={15} /></div>
-                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('شعار المؤسسة')}</span>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isRestaurants ? t('شعار المطعم') : t('شعار المؤسسة')}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 <div style={{

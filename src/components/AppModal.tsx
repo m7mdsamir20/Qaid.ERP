@@ -6,12 +6,13 @@ import { useTranslation } from '@/lib/i18n';
 interface AppModalProps {
     show: boolean;
     onClose: () => void;
-    title: string;
+    title: React.ReactNode;
     icon?: LucideIcon;
     children?: React.ReactNode;
     maxWidth?: string;
     footer?: React.ReactNode;
     variant?: 'default' | 'danger';
+    headerActions?: React.ReactNode;
     // New Deletion Props
     isDelete?: boolean;
     itemName?: string;
@@ -32,6 +33,7 @@ const AppModal: React.FC<AppModalProps> = ({
     maxWidth = '480px' ,
     footer,
     variant = 'default',
+    headerActions,
     isDelete = false,
     itemName,
     description,
@@ -76,14 +78,14 @@ const AppModal: React.FC<AppModalProps> = ({
         >
             <div
                 dir={isRtl ? 'rtl' : 'ltr'}
-                className="modal-content"
+                className="modal-content app-modal-inner"
                 style={{
                     width: '94%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
                     borderRadius: '16px', border: `1px solid ${isDanger ? 'rgba(239,68,68,0.3)' : C.border}`,
                     boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
                     transform: show ? 'scale(1)' : 'scale(0.95)',
                     transition: 'transform 0.2s ease',
-                    overflow: 'hidden',
+                    overflow: 'visible',
                     maxHeight: '92vh', display: 'flex', flexDirection: 'column'
                 }}
                 onClick={e => e.stopPropagation()}
@@ -108,35 +110,37 @@ const AppModal: React.FC<AppModalProps> = ({
                             </h2>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        style={{
-                            width: '30px', height: '30px', borderRadius: '6px',
-                            border: `1px solid ${C.border}`, background: 'transparent',
-                            color: C.textMuted, cursor: 'pointer', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s',
-                            flexShrink: 0
-                        }}
-                        onMouseEnter={e => {
-                            e.currentTarget.style.color = C.danger;
-                            e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
-                            e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
-                        }}
-                        onMouseLeave={e => {
-                            e.currentTarget.style.color = C.textMuted;
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.borderColor = C.border;
-                        }}
-                    >
-                        <X size={16} />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                        {headerActions}
+                        <button
+                            onClick={onClose}
+                            style={{
+                                width: '30px', height: '30px', borderRadius: '6px',
+                                border: `1px solid ${C.border}`, background: 'transparent',
+                                color: C.textMuted, cursor: 'pointer', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s'
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.color = C.danger;
+                                e.currentTarget.style.background = 'rgba(239,68,68,0.1)';
+                                e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.color = C.textMuted;
+                                e.currentTarget.style.background = 'transparent';
+                                e.currentTarget.style.borderColor = C.border;
+                            }}
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Body */}
                 <div style={{ 
-                    padding: isDelete ? '18px 22px' : '20px 24px', 
-                    overflowY: 'auto',
-                    flex: 1
+                    padding: isDelete ? '18px 22px' : '20px 24px',
+                    flex: 1,
+                    overflowY: 'auto'
                 }}>
                     {isDelete ? (
                         <div style={{ textAlign: 'center', padding: '16px 0', fontFamily: CAIRO }}>
@@ -218,13 +222,26 @@ const AppModal: React.FC<AppModalProps> = ({
 
                 {/* Footer if exists */}
                 {footer && !isDelete && (
-                    <div style={{ padding: '16px 22px', borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ padding: '16px 22px', borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}>
                         {footer}
                     </div>
                 )}
             </div>
             <style jsx>{`
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @media (max-width: 768px) {
+                    .modal-content {
+                        width: 96% !important;
+                        max-height: 90vh !important;
+                        border-radius: 14px !important;
+                    }
+                    .modal-actions {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .modal-actions button {
+                        width: 100% !important;
+                    }
+                }
                 @media (max-width: 480px) {
                     .modal-content {
                         width: 96% !important;
