@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -30,7 +30,7 @@ const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> 
 export default function OrdersHistoryPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fMoney } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
 
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -145,11 +145,14 @@ export default function OrdersHistoryPage() {
             orderData.type === 'takeaway' ? 'تيك أواي' :
                 orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
 
-        let footerHtml = '';
-        if (orderData.type === 'dine-in') footerHtml = '<p>شكراً لزيارتكم ❤️</p><p>نتمنى لكم تجربة سعيدة</p>';
-        else if (orderData.type === 'takeaway') footerHtml = '<p>يرجى الاحتفاظ بالفاتورة</p><p>لاستلام الطلب 🙏</p>';
-        else if (orderData.type === 'delivery') footerHtml = '<p>شكراً لطلبك ❤️</p><p>سيتم التوصيل قريباً</p>';
-        else footerHtml = '<p>شكراً لزيارتكم ❤️</p>';
+        // Use receiptFooter from restaurant settings, fall back to generic message
+        const rs = typeof orderData.company?.restaurantSettings === 'string'
+            ? JSON.parse(orderData.company.restaurantSettings)
+            : (orderData.company?.restaurantSettings || {});
+        const customFooter = rs?.receiptFooter || '';
+        const footerHtml = customFooter
+            ? customFooter.split('\n').map((line: string) => `<p>${line}</p>`).join('')
+            : '<p>شكراً لزيارتكم ❤️</p>';
 
         const html = `
             <!DOCTYPE html>
@@ -410,8 +413,8 @@ export default function OrdersHistoryPage() {
                 />
 
                 {/* Filters & Search */}
-                <div style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <div className="filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                         <input 
                             type="date" 
                             value={filterDate} 
@@ -426,7 +429,7 @@ export default function OrdersHistoryPage() {
                         ))}
                     </div>
 
-                    <div style={{ position: 'relative', width: '280px' }}>
+                    <div className="mobile-full" style={{ position: 'relative', width: '280px' }}>
                         <Search size={16} color={C.textMuted} style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', [isRtl ? 'right' : 'left']: '14px' }} />
                         <input
                             type="text"
@@ -500,7 +503,7 @@ export default function OrdersHistoryPage() {
                                                 {order.shift?.user?.name || '-'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, fontSize: '14px', color: C.textPrimary }}>
-                                                {fMoney(order.total)}
+                                                {fMoneyJSX(order.total)}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
@@ -542,7 +545,7 @@ export default function OrdersHistoryPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
 
                             {/* Action Badges in Modal Header */}
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px', alignItems: 'center' }}>
+                            <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '4px', alignItems: 'center' }}>
                                 {selectedOrder.status && STATUS_INFO[selectedOrder.status] && (
                                     <span style={{
                                         padding: '6px 14px',
@@ -587,7 +590,7 @@ export default function OrdersHistoryPage() {
                                 </div>
                                 <div>
                                     <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>المجموع</p>
-                                    <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoney(selectedOrder.total)}</p>
+                                    <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoneyJSX(selectedOrder.total)}</p>
                                 </div>
                             </div>
 
@@ -612,7 +615,7 @@ export default function OrdersHistoryPage() {
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                                 <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.04)', padding: '2px 8px', borderRadius: '4px' }}>x {line.quantity}</span>
-                                                <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '13px', minWidth: '70px', textAlign: isRtl ? 'left' : 'right' }}>{fMoney(line.total)}</span>
+                                                <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '13px', minWidth: '70px', textAlign: isRtl ? 'left' : 'right' }}>{fMoneyJSX(line.total)}</span>
                                             </div>
                                         </div>
                                     ))}
@@ -627,24 +630,24 @@ export default function OrdersHistoryPage() {
                                 <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '12px 16px', border: `1px solid ${C.border}` }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>المجموع الفرعي</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.subtotal)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.subtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>تخفيض</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>الخدمة</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.serviceAmount || 0)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.serviceAmount || 0)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>ضريبة</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(selectedOrder.taxAmount)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.taxAmount)}</span>
                                     </div>
                                     <div style={{ height: '1px', background: C.border, margin: '8px 0' }}></div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
                                         <span>المجموع</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoney(selectedOrder.total)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoneyJSX(selectedOrder.total)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '12px', color: C.textPrimary, fontWeight: 700 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -659,11 +662,11 @@ export default function OrdersHistoryPage() {
                                                 </span>
                                             )}
                                         </div>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px' }}>{fMoney(selectedOrder.paidAmount)}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px' }}>{fMoneyJSX(selectedOrder.paidAmount)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
                                         <span>المتبقي</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
+                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
                                     </div>
                                 </div>
                             </div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -258,7 +258,7 @@ export default function CashStatementPage() {
                         </div>
 
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

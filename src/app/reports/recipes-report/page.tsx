@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -94,7 +94,7 @@ export default function RecipesPage() {
 
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                     {recipe.items?.map((ri: any, i: number) => (
                                         <div key={i} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '5px 12px', fontSize: '12px', color: C.textSecondary }}>
                                             {ri.item?.name || getItemName(ri.itemId)} — <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{ri.quantity}</span> {ri.unit}

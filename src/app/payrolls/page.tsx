@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -235,7 +235,7 @@ export default function PayrollsPage() {
                             <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بتوليد أول مسير من زر "توليد مسير جديد"')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -22,7 +22,7 @@ const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> 
 export default function DeliveryPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fMoney } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
 
     const [orders, setOrders] = useState<any[]>([]);
     const [drivers, setDrivers] = useState<any[]>([]);
@@ -139,7 +139,7 @@ export default function DeliveryPage() {
                 </div>
 
                 {/* فلتر */}
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div className="filter-bar" style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
                     <input 
                         type="date" 
                         value={filterDate} 
@@ -250,7 +250,7 @@ export default function DeliveryPage() {
                                                 </>
                                              )}
                                             
-                                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, marginInlineStart: '8px', fontSize: '14px' }}>{fMoney(order.total)}</span>
+                                            {fMoneyJSX(order.total, '', { fontWeight: 800, fontSize: '14px', color: C.textPrimary, marginInlineStart: '8px' })}
                                             <ChevronDown size={15} color={C.textMuted} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', marginLeft: '4px' }} />
                                         </div>
                                     </div>
@@ -269,7 +269,7 @@ export default function DeliveryPage() {
                                                                 <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: OUTFIT, fontSize: '12px' }}>x{line.quantity}</span>
                                                                 <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{line.itemName}</span>
                                                             </div>
-                                                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{fMoney(line.total)}</span>
+                                                            {fMoneyJSX(line.total, "", { fontWeight: 700, color: C.textPrimary })}
                                                         </div>
                                                     ))}
                                                 </div>
@@ -299,7 +299,7 @@ export default function DeliveryPage() {
                                                         {(!order.driverId && (order.status === 'ready' || order.status === 'preparing' || order.status === 'pending')) && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: order.status === 'ready' ? 0 : '8px', paddingTop: order.status === 'ready' ? 0 : '8px', borderTop: order.status === 'ready' ? 'none' : `1px dashed ${C.border}` }}>
                                                                 <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>إسناد إلى مندوب:</span>
-                                                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                                <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                                     {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
                                                                         <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.id)}
                                                                             style={{ padding: '6px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
@@ -345,7 +345,7 @@ export default function DeliveryPage() {
                                                                     تم رفض الاستلام من العميل — يمكنك إعادة المحاولة أو إلغاء الطلب
                                                                 </div>
                                                                 <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>إعادة الإرسال مع مندوب:</span>
-                                                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                                                <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                                     {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
                                                                         <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.id)}
                                                                             style={{ padding: '6px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}

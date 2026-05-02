@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -18,7 +18,7 @@ const STATUS_COLOR: Record<string, { color: string; bg: string; label: string }>
 export default function ShiftsPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fMoney } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
 
     const [shifts, setShifts]       = useState<any[]>([]);
     const [loading, setLoading]     = useState(true);
@@ -77,15 +77,15 @@ export default function ShiftsPage() {
                     ${shift.closedAt ? `<p>وقت الإغلاق: ${formatDate(shift.closedAt)}</p>` : ''}
                 </div>
                 <div class="dashed-line"></div>
-                <div class="flex-between"><span>عهدة الفتح:</span> <span class="bold">${fMoney(shift.openingBalance)}</span></div>
-                <div class="flex-between"><span>إجمالي المبيعات:</span> <span class="bold">${fMoney(shift.totalSales)}</span></div>
-                <div class="flex-between"><span>المرتجعات:</span> <span class="bold">${fMoney(0)}</span></div>
+                <div class="flex-between"><span>عهدة الفتح:</span> <span class="bold">${fMoneyJSX(shift.openingBalance)}</span></div>
+                <div class="flex-between"><span>إجمالي المبيعات:</span> <span class="bold">${fMoneyJSX(shift.totalSales)}</span></div>
+                <div class="flex-between"><span>المرتجعات:</span> <span class="bold">${fMoneyJSX(0)}</span></div>
                 <div class="flex-between"><span>إجمالي الطلبات:</span> <span class="bold">${arNum(shift.totalOrders)}</span></div>
                 <div class="dashed-line"></div>
-                <div class="flex-between"><span>المتوقع في الدرج:</span> <span class="bold">${fMoney(shift.openingBalance + shift.totalSales)}</span></div>
+                <div class="flex-between"><span>المتوقع في الدرج:</span> <span class="bold">${fMoneyJSX(shift.openingBalance + shift.totalSales)}</span></div>
                 ${shift.closedAt ? `
-                <div class="flex-between"><span>الفعلي في الدرج:</span> <span class="bold">${fMoney(shift.closingBalance)}</span></div>
-                <div class="flex-between"><span>الفرق (عجز/زيادة):</span> <span class="bold">${fMoney(shift.difference)}</span></div>
+                <div class="flex-between"><span>الفعلي في الدرج:</span> <span class="bold">${fMoneyJSX(shift.closingBalance)}</span></div>
+                <div class="flex-between"><span>الفرق (عجز/زيادة):</span> <span class="bold">${fMoneyJSX(shift.difference)}</span></div>
                 ` : ''}
                 <div class="dashed-line"></div>
                 <div class="text-center" style="margin-top: 20px; font-size: 11px;">

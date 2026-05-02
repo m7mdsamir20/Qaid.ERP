@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import CustomSelect from '@/components/CustomSelect';
@@ -251,7 +251,7 @@ export default function CouponsPage() {
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج مطابقة') : t('لا توجد كوبونات خصم حالياً')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

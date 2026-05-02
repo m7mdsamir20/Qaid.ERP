@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -148,7 +148,7 @@ export default function ModifiersPage() {
                                 {/* Options */}
                                 <div>
                                     <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>الخيارات المتاحة ({mod.options?.length})</p>
-                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                    <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                         {mod.options?.map((opt: any) => (
                                             <div key={opt.id} style={{ 
                                                 background: C.bg, 

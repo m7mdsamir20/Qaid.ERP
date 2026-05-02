@@ -280,36 +280,116 @@ export default function DashboardLayout({
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
                     main { padding: 76px 16px 20px !important; }
 
-                    /* Global Responsive Helpers */
+                    /* ─── Global Responsive Helpers ─── */
                     .mobile-column, .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
                     .mobile-full { width: 100% !important; max-width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
                     .mobile-hide { display: none !important; }
                     .mobile-p-sm { padding: 12px !important; }
                     .mobile-m-none { margin: 0 !important; }
                     
-                    /* Typography scaling */
+                    /* ─── Typography ─── */
                     .page-title { font-size: 16px !important; }
                     .page-subtitle { font-size: 11px !important; }
 
-                    /* Grids & Tables */
-                    .responsive-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
-                    
-                    .scroll-table {
+                    /* ─── Tables: always scroll horizontally on mobile ─── */
+                    main table,
+                    .table-container,
+                    .scroll-table,
+                    [class*="table-wrap"],
+                    [class*="table-container"] {
+                        display: block !important;
                         width: 100% !important;
                         overflow-x: auto !important;
                         -webkit-overflow-scrolling: touch !important;
                         border-radius: 12px;
-                        margin-bottom: 5px;
                     }
-                    .scroll-table table { min-width: 750px !important; }
+                    main table table { display: table !important; } /* reset nested tables */
+                    .scroll-table table,
+                    [class*="table-container"] > table,
+                    main > div table { min-width: 620px; }
 
-                    /* Improved touch targets */
-                    button, input, select { min-height: 42px !important; font-size: 14px !important; }
+                    /* ─── Grids ─── */
+                    .responsive-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+                    /* ─── Page Headers: stack title+actions vertically ─── */
+                    .page-header-row {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        gap: 12px !important;
+                    }
+                    .page-header-actions {
+                        width: 100% !important;
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .page-header-actions > button,
+                    .page-header-actions > a {
+                        flex: 1 !important;
+                        min-width: 120px !important;
+                        justify-content: center !important;
+                    }
+
+                    /* ─── Filter bars: wrap pills/buttons ─── */
+                    .filter-bar {
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .filter-bar > button,
+                    .filter-bar > input,
+                    .filter-bar > select {
+                        flex-shrink: 0 !important;
+                    }
+
+                    /* ─── Cards ─── */
+                    .cards-row {
+                        flex-direction: column !important;
+                        gap: 12px !important;
+                    }
+                    .card-col {
+                        width: 100% !important;
+                        flex: none !important;
+                    }
+
+                    /* ─── Modals: near full-screen on mobile ─── */
+                    [role="dialog"],
+                    .app-modal-inner {
+                        width: 96vw !important;
+                        max-width: 96vw !important;
+                        max-height: 88vh !important;
+                        margin: 6vh auto !important;
+                        overflow-y: auto !important;
+                        border-radius: 16px !important;
+                    }
+
+                    /* ─── Delivery / POS order cards ─── */
+                    .order-card-header {
+                        flex-wrap: wrap !important;
+                        gap: 8px !important;
+                    }
+                    .order-card-actions {
+                        flex-wrap: wrap !important;
+                        gap: 6px !important;
+                    }
+                    .order-card-actions > button {
+                        flex: 1 !important;
+                        min-width: 90px !important;
+                        justify-content: center !important;
+                    }
+
+                    /* ─── Summary/totals rows ─── */
+                    .summary-row {
+                        flex-direction: column !important;
+                        gap: 8px !important;
+                    }
+
+                    /* ─── Touch targets ─── */
+                    button, input[type="text"], input[type="date"],
+                    input[type="number"], input[type="email"],
+                    input[type="password"], select {
+                        min-height: 42px !important;
+                    }
                     .action-btn { width: 36px !important; height: 36px !important; }
-
-                    /* Modals */
-                    [role="dialog"] { width: 92vw !important; max-width: 92vw !important; margin: 10vh auto !important; }
                 }
 
                 @media (max-width: 768px) {
@@ -321,38 +401,54 @@ export default function DashboardLayout({
                     .mobile-column, .mobile-stack { gap: 10px !important; }
                     .mobile-full { width: 100% !important; max-width: 100% !important; }
 
-                    /* Standard global mobile table behavior */
-                    .table-container,
-                    .scroll-table,
-                    .print-table-container,
-                    [class*="table-container"],
-                    .table-responsive {
+                    /* All tables scroll on mobile — always */
+                    main table {
+                        display: block !important;
                         overflow-x: auto !important;
                         -webkit-overflow-scrolling: touch !important;
+                        white-space: nowrap;
                     }
-
-                    .table-container > table,
-                    .scroll-table > table,
-                    .print-table-container > table,
-                    [class*="table-container"] > table,
-                    .table-responsive > table,
-                    main table {
-                        width: max-content !important;
-                        min-width: 100% !important;
+                    main table thead, main table tbody,
+                    main table tfoot, main table tr {
+                        display: table-row-group;
                     }
+                    main table table { display: table !important; white-space: normal; }
 
                     /* Better touch usability */
                     button, input, select, textarea { min-height: 44px !important; }
-                    input, select, textarea { font-size: 16px !important; }
+                    input[type="text"], input[type="date"],
+                    input[type="number"], input[type="email"],
+                    input[type="password"], select, textarea {
+                        font-size: 16px !important; /* prevents iOS zoom */
+                    }
+
+                    /* KPI / stats cards */
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+
+                    /* Sidebar search bar on header */
+                    .header-search { display: none !important; }
                 }
 
                 @media (max-width: 640px) {
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr !important; }
-                    main { padding: 72px 12px 16px !important; }
+                    main { padding: 72px 10px 16px !important; }
                     
                     .item-entry-grid { grid-template-columns: 1fr 1fr !important; }
                     .item-entry-grid > div:first-child { grid-column: 1 / -1 !important; }
                     .item-entry-grid > button { grid-column: 1 / -1 !important; width: 100% !important; }
+
+                    /* Stack filter buttons fully on very small screens */
+                    .filter-bar > button {
+                        flex: 1 1 calc(50% - 4px) !important;
+                        text-align: center !important;
+                    }
+
+                    /* Page header actions: full width buttons */
+                    .page-header-actions > button,
+                    .page-header-actions > a {
+                        width: 100% !important;
+                        flex: 1 1 100% !important;
+                    }
                 }
 
                 @keyframes fadeDown {

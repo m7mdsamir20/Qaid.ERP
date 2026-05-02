@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -132,7 +132,7 @@ export default function OverduePage() {
                         </div>
                     ) : (
                         <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                            <div style={{ overflowX: 'auto' }}>
+                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -227,7 +227,7 @@ export default function DeductionsPage() {
                             <p style={{ fontSize: '13px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

@@ -216,7 +216,35 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                     </div>
                 </div>
 
-                {/* ══ شاشة العميل (Customer Display) ══ */}
+                {/* ══ تذييل الفاتورة ══ */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Printer size={14} /> {t('تذييل الفاتورة')}
+                    </div>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', borderBottom: 'none' }}>
+                            <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('نص تذييل الفاتورة')}</span>
+                                <p style={{ margin: '4px 0 0', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('يظهر أسفل كل أنواع الفواتير')}</p>
+                            </div>
+                            <div style={{ flex: 1, padding: '12px 20px' }}>
+                                {isEditMode ? (
+                                    <textarea
+                                        value={form.receiptFooter}
+                                        onChange={e => set('receiptFooter', e.target.value)}
+                                        rows={3}
+                                        placeholder={t('مثال: شكراً لزيارتكم - يسعدنا خدمتكم دائماً')}
+                                        style={{ width: '100%', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, resize: 'vertical', outline: 'none', lineHeight: '1.6', boxSizing: 'border-box' }}
+                                    />
+                                ) : (
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: form.receiptFooter ? C.textPrimary : C.textMuted, padding: '14px 0', fontFamily: CAIRO, whiteSpace: 'pre-wrap', fontStyle: form.receiptFooter ? 'normal' : 'italic' }}>
+                                        {form.receiptFooter || t('لم يتم تحديد تذييل')}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         <Monitor size={14} /> {t('شاشة العميل')}
@@ -233,11 +261,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                             </div>
                         </div>
                     </div>
-                    {form.enableCustomerDisplay && (
-                        <div style={{ padding: '12px', background: '#10b98110', border: '1px solid #10b98130', borderRadius: '12px', marginTop: '12px', fontSize: '12.5px', color: '#10b981', fontFamily: CAIRO }}>
-                            💡 {t('افتح الرابط')} <strong>/customer-display</strong> {t('على شاشة العميل وصمّمه كملء شاشة')}
-                        </div>
-                    )}
+
                 </div>
 
                 {/* ══ سلوك الكاشير ══ */}

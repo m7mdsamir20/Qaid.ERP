@@ -31,7 +31,7 @@ export default function CustomerDisplayPage() {
         return () => bc.close();
     }, []);
 
-    // Helper formatter
+    // Helper formatter (standalone page - no session context)
     const fMoney = (val: number) => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'SAR' }).format(val);
     };
