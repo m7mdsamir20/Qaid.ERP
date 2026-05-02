@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
@@ -158,12 +159,7 @@ export default function PartnersPage() {
                     </div>
                 )}
 
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
-                        <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
-                    </div>
-                ) : partners.length === 0 ? (
+                {loading ? ( <TableSkeleton /> ) : partners.length === 0 ? (
                     <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>

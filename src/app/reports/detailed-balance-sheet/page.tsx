@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -64,14 +65,7 @@ export default function DetailedBalanceSheetPage() {
 
     const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh', flexDirection: 'column', gap: '16px' }}>
-                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد التقارير التفصيلية...')}</span>
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     if (!data) return (
         <DashboardLayout>

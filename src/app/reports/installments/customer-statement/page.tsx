@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -152,12 +153,7 @@ function CustomerStatementReportContent() {
             </div>
 
             <div style={{ minHeight: '300px' }}>
-                {loading && (
-                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري جلب البيانات وتحليلها...')}</p>
-                    </div>
-                )}
+                {loading && ( <TableSkeleton /> )}
 
                 {!loading && !data && (
                     <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>

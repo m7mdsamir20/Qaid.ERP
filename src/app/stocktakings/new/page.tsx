@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -211,16 +212,7 @@ export default function NewStocktakingPage() {
         }
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                    <p style={{ fontWeight: 600 }}>{t('جاري استرجاع البيانات...')}</p>
-                </div>
-            </DashboardLayout>
-        );
-    }
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     return (
         <DashboardLayout>

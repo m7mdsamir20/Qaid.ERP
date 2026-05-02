@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -148,12 +149,7 @@ export default function PurchasesReportPage() {
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استخراج تقرير المشتريات...')}</span>
-                    </div>
-                ) : !data || data.invoices.length === 0 ? (
+                {loading ? ( <TableSkeleton /> ) : !data || data.invoices.length === 0 ? (
                     <div className="no-print" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <ShoppingCart size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير شراء حالياً')}</h3>

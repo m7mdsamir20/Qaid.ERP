@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -115,12 +116,7 @@ export default function ExpensesReportPage() {
                     </button>
                 </div>
 
-                {loading ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center'}}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <p style={{ marginTop: '20px', color: C.textSecondary, fontFamily: CAIRO }}>{t('جاري استخراج التقرير...')}</p>
-                    </div>
-                ) : !data ? (
+                {loading ? ( <TableSkeleton /> ) : !data ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: C.primary }} />
                         <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>

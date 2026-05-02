@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -57,13 +58,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
     useEffect(() => { fetchDetail(); }, [fetchDetail]);
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     if (!invoice) return (
         <DashboardLayout>

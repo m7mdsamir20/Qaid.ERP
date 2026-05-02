@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -67,15 +68,7 @@ export default function CostCenterDetails() {
         document.body.removeChild(link);
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textSecondary }}>
-                    <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                    <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
-                </div>
-            </DashboardLayout>
-        );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>;
     }
 
     if (!data || data.error) {

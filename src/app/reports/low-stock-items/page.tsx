@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -91,12 +92,7 @@ export default function LowStockReportPage() {
                             </div>
                         )}
 
-                        {loading ? (
-                            <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري فحص النواقص...')}</span>
-                            </div>
-                        ) : filtered.length === 0 ? (
+                        {loading ? ( <TableSkeleton /> ) : filtered.length === 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>

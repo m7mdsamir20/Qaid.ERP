@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -435,13 +436,7 @@ function NewSalePageInner() {
         } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     /* ── Section card style ── */
     const SC: React.CSSProperties = {

@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -287,14 +288,7 @@ ${tableHtml}
         window.open('/print/report', '_blank');
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', flexDirection: 'column', gap: '12px' }}>
-                <Loader2 size={32} className="animate-spin" style={{ color: '#256af4' }} />
-                <span style={{ fontSize: '13px', color: '#94a3b8' }}>جاري التحميل...</span>
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     if (!payroll) return (
         <DashboardLayout>

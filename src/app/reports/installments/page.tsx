@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -281,12 +282,7 @@ export default function InstallmentReportsPage() {
 
                 {/* Results Container */}
                 <div style={{ minHeight: '400px', animation: 'slideUp 0.3s ease-out' }}>
-                    {loading ? (
-                        <div style={{  padding: '120px 0', color: C.textSecondary }}>
-                            <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '16px' }} />
-                            <p style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
-                        </div>
-                    ) : !data ? (
+                    {loading ? ( <TableSkeleton /> ) : !data ? (
                         <div style={{  padding: '120px 0', color: C.textSecondary }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />

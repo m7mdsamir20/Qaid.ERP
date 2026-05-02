@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -722,58 +723,7 @@ function SettingsContent() {
         } finally { setIsSaving(false); }
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
-            </div>
-            <style>{`
-                @keyframes spin{to{transform:rotate(360deg)}}
-                input:-webkit-autofill,
-                input:-webkit-autofill:hover,
-                input:-webkit-autofill:focus {
-                    -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
-                    -webkit-text-fill-color: #e2e8f0 !important;
-                    caret-color: #e2e8f0;
-                    border-color: rgba(255,255,255,0.08) !important;
-                    transition: background-color 5000s ease-in-out 0s;
-                }
-                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-                .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(37, 106, 244,0.3); borderRadius: 10px; }
-                
-                @media (max-width: 1023px) {
-                    .mobile-setting-row { flex-direction: column !important; align-items: stretch !important; border-bottom: none !important; margin-bottom: 8px; background: rgba(255,255,255,0.01); border-radius: 12px; }
-                    .mobile-setting-label { width: 100% !important; border-inline-start: none !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; padding: 12px 16px !important; }
-                    .mobile-setting-value { width: 100% !important; padding: 12px 16px !important; }
-                    .mobile-setting-grid { grid-template-columns: 1fr !important; }
-                    .mobile-setting-grid-2 { grid-template-columns: 1fr !important; }
-                    .mobile-setting-table-wrap { display: block; width: 100%; overflow-x: auto; white-space: nowrap; }
-                    .settings-content-area > div { padding: 16px !important; border-radius: 16px !important; min-height: auto !important; }
-                }
-            `}</style>
-        </DashboardLayout>
-    );
-
-    // Permission guard: block access for non-admin users without settings permissions
-    const userPerms = (session?.user as any)?.permissions || {};
-    const userRole = (session?.user as any)?.role;
-    const hasGranularPerms = Object.keys(userPerms).length > 0;
-    const hasAnySettingsPerm = !hasGranularPerms ? false : Object.keys(userPerms).some(key => key.startsWith('/settings') && userPerms[key]?.view);
-
-    if (!isSuperAdmin && !isAdmin && !hasAnySettingsPerm) {
-        return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '16px', fontFamily: CAIRO }}>
-                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
-                        <Shield size={40} />
-                    </div>
-                    <h2 style={{ fontSize: '18px', fontWeight: 700, color: C.textPrimary, margin: 0 }}>{t('ليس لديك صلاحية')}</h2>
-                    <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{t('لا تملك صلاحية للوصول إلى صفحة الإعدادات. يرجى مراجعة مدير النظام.')}</p>
-                    <button onClick={() => window.location.href = '/'} style={{ padding: '10px 24px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('العودة للرئيسية')}</button>
-                </div>
-            </DashboardLayout>
-        );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>;
     }
 
     // Filter tabs based on permissionHierarchy

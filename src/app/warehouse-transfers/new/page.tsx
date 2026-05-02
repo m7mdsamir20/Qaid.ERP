@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { useTranslation } from '@/lib/i18n';
 
@@ -130,18 +131,7 @@ export default function NewTransferPage() {
         }
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={PAGE_BASE}>
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
-                        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
-                        <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تهيئة نموذج التحويل...')}</p>
-                    </div>
-                </div>
-            </DashboardLayout>
-        );
-    }
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     return (
         <DashboardLayout>

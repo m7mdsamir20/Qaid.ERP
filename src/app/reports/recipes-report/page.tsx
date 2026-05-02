@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -59,9 +60,7 @@ export default function RecipesPage() {
                     ]}
                 />
 
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
-                ) : recipes.length === 0 ? (
+                {loading ? ( <TableSkeleton /> ) : recipes.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted }}>
                         <BookOpen size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 16px' }} />
                         <p style={{ margin: 0, fontSize: '15px' }}>لا توجد وصفات — ابدأ بإضافة وصفة لوجبة</p>

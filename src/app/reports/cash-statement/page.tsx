@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 ﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -216,12 +217,7 @@ export default function CashStatementPage() {
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري سحب كشف الحركة...')}</span>
-                    </div>
-                ) : !data ? (
+                {loading ? ( <TableSkeleton /> ) : !data ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Wallet size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار الخزينة')}</h3>

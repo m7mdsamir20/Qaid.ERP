@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
@@ -281,12 +282,7 @@ export default function TreasuriesPage() {
                     ))}
                 </div>
 
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
-                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 700, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري جرد الخزن والبنوك...')}</p>
-                    </div>
-                ) : treasuries.length === 0 ? (
+                {loading ? ( <TableSkeleton /> ) : treasuries.length === 0 ? (
                     <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textSecondary, margin: '0 auto 20px' }}>
                             <Landmark size={36} />

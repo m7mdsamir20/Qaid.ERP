@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -117,16 +118,7 @@ export default function NewAccountPage() {
         }
     };
 
-    if (loading) {
-        return (
-            <DashboardLayout>
-                <div style={{ padding: '100px 0', color: C.textSecondary, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
-                    <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري التحميل...')}</p>
-                </div>
-            </DashboardLayout>
-        );
-    }
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     return (
         <DashboardLayout>

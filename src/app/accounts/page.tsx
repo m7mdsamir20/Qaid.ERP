@@ -1,3 +1,4 @@
+import TableSkeleton from '@/components/TableSkeleton';
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -467,12 +468,7 @@ export default function AccountsPage() {
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{ padding: '80px', color: C.textSecondary,  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
-                    </div>
-                ) : (
+                {loading ? ( <TableSkeleton /> ) : (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
                         {/* Table Header */}
                         <div className="table-header-responsive" style={{

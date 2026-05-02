@@ -1,3 +1,4 @@
+import ContentSkeleton from '@/components/ContentSkeleton';
 'use client';
 import { formatNumber } from '@/lib/currency';
 
@@ -136,24 +137,7 @@ export default function InstallmentDetailPage() {
         window.open(`/print/installment/${plan.id}`, '_blank');
     };
 
-    if (loading) return (
-        <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-            </div>
-            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
-        </DashboardLayout>
-    );
-
-    if (!plan) return (
-        <DashboardLayout>
-            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                <p style={{ fontSize: '16px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
-                <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>{t('العودة للقائمة')}</button>
-            </div>
-        </DashboardLayout>
-    );
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     const paidCount    = plan.installments?.filter((i: any) => i.status === 'paid').length || 0;
     const totalPaid    = plan.installments?.reduce((s: number, i: any) => s + (i.paidAmount || 0), 0) || 0;
