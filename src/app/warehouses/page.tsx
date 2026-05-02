@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
@@ -9,6 +9,7 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, fo
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import { useSession } from 'next-auth/react';
 
 interface WarehouseItem {
     id: string;
@@ -31,6 +32,9 @@ export default function WarehousesPage() {
     const [deleteItem, setDeleteItem] = useState<WarehouseItem | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 15;
+    const { data: session } = useSession();
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isRestaurant = businessType === 'RESTAURANTS';
     
     const [form, setForm] = useState({ name: '', address: '', code: '' });
 
@@ -133,8 +137,8 @@ export default function WarehousesPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={t("المخازن")} 
-                    subtitle={t("إدارة مواقع التخزين، الفروع، وتوزيع الكميات الجردية")} 
+                    title={isRestaurant ? t("المخازن والمستودعات") : t("المخازن")} 
+                    subtitle={isRestaurant ? t("إدارة مخازن المواد الخام والمستودعات") : t("إدارة مواقع التخزين، الفروع، وتوزيع الكميات الجردية")} 
                     icon={Warehouse} 
                     primaryButton={{
                         label: t("إضافة مخزن جديد"),
@@ -170,7 +174,7 @@ export default function WarehousesPage() {
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
@@ -259,7 +263,7 @@ export default function WarehousesPage() {
                                 <label style={LS}>{t('اسم المخزن')} <span style={{ color: C.danger }}>*</span></label>
                                 <input 
                                     type="text" required autoFocus 
-                                    placeholder={t("مثال: المخزن الرئيسي، فرع الجيزة...")} 
+                                    placeholder={isRestaurant ? t("مثال: مخزن المواد الخام، مبرد المطبخ...") : t("مثال: المخزن الرئيسي، فرع الجيزة...")} 
                                     value={form.name} 
                                     onChange={e => setForm({ ...form, name: e.target.value })} 
                                     style={{ ...IS, height: '42px' }} 

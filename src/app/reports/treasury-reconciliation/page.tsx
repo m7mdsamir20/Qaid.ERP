@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect } from 'react';
@@ -222,7 +222,7 @@ export default function TreasuryReconciliationPage() {
                             </div>
                         ) : (
                             <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                                <div style={{ overflowX: 'auto' }}>
+                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
@@ -300,9 +300,9 @@ export default function TreasuryReconciliationPage() {
                         </div>
 
                         {snapshotsLoading ? (
-                            <div style={{ padding: '80px', textAlign: 'center'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
                         ) : filteredSnapshots.length === 0 ? (
-                            <div style={{ padding: '80px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                 <FileText size={50} style={{ opacity: 0.1, color: C.primary, marginBottom: '16px' }} />
                                 <p style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد سجلات جرد محفوظة')}</p>
                             </div>
@@ -369,7 +369,7 @@ export default function TreasuryReconciliationPage() {
                                                 </span>
                                                 {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
                                             </div>
-                                            <div style={{ overflowX: 'auto' }}>
+                                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                     <thead>
                                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

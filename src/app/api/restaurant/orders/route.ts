@@ -1,0 +1,765 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { withProtection } from '@/lib/apiHandler';
+
+export const dynamic = 'force-dynamic';
+
+// GET: list orders with optional filters
+export const GET = withProtection(async (request, session) => {
+    try {
+        const companyId = (session.user as any).companyId;
+        const url = new URL(request.url);
+        const type = url.searchParams.get('type');
+        const status = url.searchParams.get('status');
+        const shiftId = url.searchParams.get('shiftId');
+        const dateStr = url.searchParams.get('date');
+        const limit = parseInt(url.searchParams.get('limit') ?? '50');
+
+        let dateFilter = {};
+        if (dateStr) {
+            const startOfDay = new Date(dateStr);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(dateStr);
+            endOfDay.setHours(23, 59, 59, 999);
+            dateFilter = {
+                createdAt: { gte: startOfDay, lte: endOfDay }
+            };
+        }
+
+        const orders = await prisma.posOrder.findMany({
+            where: {
+                companyId,
+                ...(type ? { type } : {}),
+                ...(status ? { status } : {}),
+                ...(shiftId ? { shiftId } : {}),
+                ...dateFilter,
+            },
+            include: {
+                lines: true,
+                table: { select: { id: true, name: true } },
+                driver: true,
+                invoice: { select: { invoiceNumber: true } },
+                shift: { select: { user: { select: { name: true } } } },
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: limit,
+        });
+        return NextResponse.json(orders);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+});
+
+// POST: create a new POS order
+export const POST = withProtection(async (request, session, body) => {
+    try {
+        const companyId = (session.user as any).companyId;
+
+        // Get next order number for today
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const last = await prisma.posOrder.findFirst({
+            where: { 
+                companyId,
+                createdAt: { gte: startOfDay }
+            }, 
+            orderBy: { orderNumber: 'desc' } 
+        });
+        const orderNumber = (last?.orderNumber ?? 0) + 1;
+
+        // Get active shift
+        const activeShift = await prisma.shift.findFirst({ where: { companyId, status: 'open' } });
+
+        const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+
+        // ════════════════════════════════════════════════════
+        // PRE-CHECK INVENTORY (Warning when materials run out)
+        // ════════════════════════════════════════════════════
+        if (defaultWarehouse) {
+            for (const line of body.lines as any[]) {
+                const item = await prisma.item.findUnique({
+                    where: { id: line.itemId },
+                    include: { recipe: { include: { items: { include: { item: true } } } } }
+                });
+
+                if (item?.recipe && item.recipe.items.length > 0) {
+                    for (const ri of item.recipe.items) {
+                        const requiredQty = ri.quantity * line.quantity;
+                        const stock = await prisma.stock.findUnique({
+                            where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } }
+                        });
+                        const available = stock?.quantity || 0;
+                        if (available < requiredQty) {
+                            return NextResponse.json({
+                                error: `المواد الخام غير كافية لعمل "${item.name}". المتاح من "${ri.item.name}" هو ${available} فقط.`
+                            }, { status: 400 });
+                        }
+                    }
+                }
+            }
+        }
+
+        const subtotal = (body.lines as any[]).reduce((s: number, l: any) => {
+            let modsTotal = 0;
+            if (l.modifiers) {
+                try {
+                    const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                    Object.values(parsed).forEach((arr: any) => {
+                        arr.forEach((m: any) => modsTotal += (m.price || 0));
+                    });
+                } catch (e) { }
+            }
+            return s + ((l.unitPrice + modsTotal) * l.quantity - (l.discount ?? 0));
+        }, 0);
+        const taxAmount = body.taxAmount ?? 0;
+        const serviceAmount = body.serviceAmount ?? 0;
+        const deliveryFee = body.type === 'delivery' ? (body.deliveryFee || 0) : 0;
+        const discount = (body.discount || 0) + (body.couponDiscount || 0);
+        const total = subtotal - discount + taxAmount + serviceAmount + deliveryFee;
+
+        // Prepare payments with treasuryId
+        const paymentsData = body.payments && body.payments.length > 0
+            ? body.payments.map((p: any) => ({
+                amount: p.amount,
+                paymentMethod: p.paymentMethod,
+                treasuryId: p.treasuryId || null
+            }))
+            : [];
+
+        let finalCustomerId = body.customerId ?? null;
+        if (!finalCustomerId && body.type === 'delivery' && body.deliveryPhone) {
+            const existingCust = await prisma.customer.findFirst({ where: { companyId, phone: body.deliveryPhone } });
+            if (existingCust) {
+                finalCustomerId = existingCust.id;
+                if (!existingCust.addressCity && body.deliveryAddress) {
+                    await prisma.customer.update({ where: { id: existingCust.id }, data: { addressCity: body.deliveryAddress } });
+                }
+                if (!body.deliveryName) body.deliveryName = existingCust.name;
+            } else {
+                const newCust = await prisma.customer.create({
+                    data: {
+                        companyId,
+                        name: body.deliveryName || 'عميل توصيل',
+                        phone: body.deliveryPhone,
+                        addressCity: body.deliveryAddress || ''
+                    }
+                });
+                finalCustomerId = newCust.id;
+            }
+        }
+
+        const order = await prisma.posOrder.create({
+            data: {
+                orderNumber,
+                type: body.type ?? 'dine-in',
+                status: (body.source && body.source !== 'pos') ? 'pending' : 'preparing',
+                tableId: body.tableId ?? null,
+                shiftId: activeShift?.id ?? null,
+                customerId: finalCustomerId,
+                deliveryName: body.deliveryName,
+                deliveryPhone: body.deliveryPhone,
+                deliveryAddress: body.deliveryAddress,
+                notes: body.notes,
+                subtotal,
+                discount,
+                couponCode: body.couponCode ?? null,
+                couponDiscount: body.couponDiscount ?? 0,
+                taxAmount,
+                serviceAmount,
+                deliveryFee,
+                total,
+                paidAmount: body.paidAmount || 0,
+                paymentMethod: body.paymentMethod,
+                source: body.source ?? 'pos',
+                externalRef: body.externalRef,
+                driverId: body.driverId || null,
+                companyId,
+                lines: {
+                    create: (body.lines as any[]).map((l: any) => {
+                        let modsTotal = 0;
+                        if (l.modifiers) {
+                            try {
+                                const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                Object.values(parsed).forEach((arr: any) => {
+                                    arr.forEach((m: any) => modsTotal += (m.price || 0));
+                                });
+                            } catch (e) { }
+                        }
+                        return {
+                            itemId: l.itemId,
+                            itemName: l.itemName,
+                            quantity: l.quantity,
+                            unitPrice: l.unitPrice,
+                            discount: l.discount ?? 0,
+                            total: ((l.unitPrice + modsTotal) * l.quantity) - (l.discount ?? 0),
+                            notes: l.notes,
+                            modifiers: l.modifiers ? JSON.stringify(l.modifiers) : null,
+                        };
+                    }),
+                },
+                ...(paymentsData.length > 0 && {
+                    payments: {
+                        create: paymentsData
+                    }
+                })
+            },
+            include: {
+                lines: true,
+                table: true,
+                driver: true,
+                company: { select: { name: true, phone: true, logo: true, addressCity: true, addressRegion: true, addressDistrict: true, addressStreet: true, restaurantSettings: true, taxSettings: true, countryCode: true, taxNumber: true } },
+                shift: { select: { user: { select: { name: true } } } }
+            },
+        });
+
+        // Update table status to occupied
+        if (body.tableId) {
+            await prisma.restaurantTable.updateMany({
+                where: { id: body.tableId, companyId },
+                data: { status: 'occupied' },
+            });
+        }
+
+        // Update Coupon Usage
+        if (body.couponCode) {
+            await prisma.coupon.updateMany({
+                where: { companyId, code: body.couponCode },
+                data: { usedCount: { increment: 1 } }
+            });
+        }
+
+        // Update shift sales counter
+        if (activeShift) {
+            await prisma.shift.update({
+                where: { id: activeShift.id },
+                data: {
+                    totalSales: { increment: total },
+                    totalOrders: { increment: 1 },
+                },
+            });
+        }
+
+        // ════════════════════════════════════════════════════
+        // ACCOUNTING INTEGRATION: Create Invoice from POS Order
+        // ════════════════════════════════════════════════════
+        const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+        // defaultWarehouse is already defined at the top
+
+        if (activeYear) {
+            try {
+                const lastInvoice = await prisma.invoice.findFirst({
+                    where: { companyId, type: 'sale' },
+                    orderBy: { invoiceNumber: 'desc' }
+                });
+                const invoiceNumber = (lastInvoice?.invoiceNumber ?? 0) + 1;
+
+                const invoice = await prisma.invoice.create({
+                    data: {
+                        invoiceNumber,
+                        type: 'sale',
+                        date: new Date(),
+                        customerId: body.customerId || null,
+                        subtotal,
+                        discount,
+                        taxEnabled: taxAmount > 0,
+                        taxRate: body.taxRate || 0,
+                        taxAmount,
+                        serviceAmount,
+                        total,
+                        paidAmount: body.paidAmount,
+                        remaining: total - body.paidAmount,
+                        paymentMethod: body.paymentMethod || 'cash',
+                        warehouseId: defaultWarehouse?.id ?? null,
+                        companyId,
+                        notes: `فاتورة كاشير - طلب رقم #${orderNumber}`,
+                        lines: {
+                            create: (body.lines as any[]).map((l: any) => {
+                                let modsTotal = 0;
+                                if (l.modifiers) {
+                                    try {
+                                        const parsed = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers;
+                                        Object.values(parsed).forEach((arr: any) => {
+                                            arr.forEach((m: any) => modsTotal += (m.price || 0));
+                                        });
+                                    } catch (e) { }
+                                }
+                                return {
+                                    itemId: l.itemId,
+                                    quantity: l.quantity,
+                                    price: l.unitPrice,
+                                    discount: l.discount ?? 0,
+                                    total: ((l.unitPrice + modsTotal) * l.quantity) - (l.discount ?? 0),
+                                    unit: '',
+                                };
+                            })
+                        }
+                    }
+                });
+
+                // Link Invoice to POS Order
+                await prisma.posOrder.update({
+                    where: { id: order.id },
+                    data: { invoiceId: invoice.id }
+                });
+
+                // Update customer balance if applicable
+                if (body.customerId) {
+                    await prisma.customer.updateMany({
+                        where: { id: body.customerId, companyId },
+                        data: { balance: { decrement: total } }
+                    });
+                }
+            } catch (e) {
+                console.error('POS Invoice creation error (non-blocking):', e);
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // TREASURY: Update treasury balances
+        // ════════════════════════════════════════════════════
+        if (paymentsData.length > 0) {
+            for (const payment of paymentsData) {
+                if (payment.treasuryId) {
+                    try {
+                        await prisma.treasury.update({
+                            where: { id: payment.treasuryId },
+                            data: { balance: { increment: payment.amount } }
+                        });
+                    } catch (e) {
+                        console.error('Treasury update error (non-blocking):', e);
+                    }
+                }
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // JOURNAL ENTRIES: Auto-create accounting entries
+        // ════════════════════════════════════════════════════
+        if (activeYear && total > 0) {
+            try {
+                // Find Cash account (parent code 1201 or name contains خزنة/نقدية) and Sales Revenue (4101 or إيرادات)
+                const cashAccount = await prisma.account.findFirst({
+                    where: { companyId, OR: [{ code: '1201' }, { code: '1200' }, { name: { contains: 'نقدية' } }, { name: { contains: 'خزنة' } }, { name: { contains: 'صندوق' } }] }
+                });
+                const salesAccount = await prisma.account.findFirst({
+                    where: { companyId, OR: [{ code: '4101' }, { code: '4100' }, { name: { contains: 'إيرادات' } }, { name: { contains: 'مبيعات' } }] }
+                });
+
+                if (cashAccount && salesAccount) {
+                    const lastEntry = await prisma.journalEntry.findFirst({
+                        where: { companyId },
+                        orderBy: { entryNumber: 'desc' }
+                    });
+                    const entryNumber = (lastEntry?.entryNumber ?? 0) + 1;
+
+                    const lines: { accountId: string; debit: number; credit: number; description: string }[] = [
+                        { accountId: salesAccount.id, debit: 0, credit: total, description: `إيرادات مبيعات - طلب #${orderNumber}` },
+                    ];
+
+                    if (body.paidAmount > 0) {
+                        lines.push({ accountId: cashAccount.id, debit: body.paidAmount, credit: 0, description: `تحصيل طلب كاشير #${orderNumber}` });
+                    }
+
+                    if (total - body.paidAmount > 0) {
+                        // Find receivables account
+                        const recAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                        });
+                        if (recAccount) {
+                            lines.push({ accountId: recAccount.id, debit: total - body.paidAmount, credit: 0, description: `ذمم (طاولة/عميل) - طلب #${orderNumber}` });
+                        }
+                    }
+
+                    // If there's tax, add tax liability entry
+                    if (taxAmount > 0) {
+                        const taxAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '2201' }, { name: { contains: 'ضريبة' } }] }
+                        });
+                        if (taxAccount) {
+                            lines[0].credit -= taxAmount;
+                            lines.push({ accountId: taxAccount.id, debit: 0, credit: taxAmount, description: `ضريبة قيمة مضافة - طلب #${orderNumber}` });
+                        }
+                    }
+
+                    // If there's service amount, add service revenue entry
+                    if (serviceAmount > 0) {
+                        const serviceAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '4102' }, { name: { contains: 'رسوم خدمة' } }, { name: { contains: 'خدمات' } }] }
+                        });
+                        if (serviceAccount) {
+                            lines[0].credit -= serviceAmount;
+                            lines.push({ accountId: serviceAccount.id, debit: 0, credit: serviceAmount, description: `رسوم خدمة - طلب #${orderNumber}` });
+                        }
+                    }
+
+                    await prisma.journalEntry.create({
+                        data: {
+                            entryNumber,
+                            date: new Date(),
+                            description: `قيد مبيعات كاشير - طلب #${orderNumber}`,
+                            reference: `POS-${orderNumber}`,
+                            referenceType: 'pos_order',
+                            referenceId: order.id,
+                            financialYearId: activeYear.id,
+                            companyId,
+                            isPosted: true,
+                            lines: { create: lines }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Journal entry creation error (non-blocking):', e);
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // INVENTORY: Auto-Deduction Logic
+        // ════════════════════════════════════════════════════
+        if (defaultWarehouse) {
+            for (const line of body.lines as any[]) {
+                const item = await prisma.item.findUnique({
+                    where: { id: line.itemId },
+                    include: { recipe: { include: { items: true } } }
+                });
+
+                if (!item) continue;
+
+                // 1. If it has a recipe, deduct recipe ingredients
+                if (item.recipe && item.recipe.items.length > 0) {
+                    for (const ri of item.recipe.items) {
+                        const deductionQty = ri.quantity * line.quantity;
+                        await prisma.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } },
+                            create: { itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                            update: { quantity: { decrement: deductionQty } }
+                        });
+                        await prisma.stockMovement.create({
+                            data: {
+                                type: 'out',
+                                date: new Date(),
+                                itemId: ri.itemId,
+                                warehouseId: defaultWarehouse.id,
+                                quantity: deductionQty,
+                                reference: `POS-${order.orderNumber}`,
+                                notes: `استهلاك مكونات لوجبة ${item.name}`,
+                                companyId
+                            }
+                        });
+                    }
+                } else if (item.type !== 'service') {
+                    // بناءً على طلب المستخدم: المنتج التام لا يسحب بالسالب ولا يتم خصمه من المخزون إلا إذا كان له وصفة (مواد خام)
+                    // لذلك قمنا بتعطيل الخصم المباشر للمنتج التام الذي ليس له وصفة
+                }
+
+                // 3. Deduct Modifiers Inventory
+                if (line.modifiers) {
+                    try {
+                        const mods = typeof line.modifiers === 'string' ? JSON.parse(line.modifiers) : line.modifiers;
+                        for (const mod of mods) {
+                            if (mod.itemId) {
+                                const deductionQty = line.quantity;
+                                await prisma.stock.upsert({
+                                    where: { itemId_warehouseId: { itemId: mod.itemId, warehouseId: defaultWarehouse.id } },
+                                    create: { itemId: mod.itemId, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                                    update: { quantity: { decrement: deductionQty } }
+                                });
+                                await prisma.stockMovement.create({
+                                    data: {
+                                        type: 'out',
+                                        date: new Date(),
+                                        itemId: mod.itemId,
+                                        warehouseId: defaultWarehouse.id,
+                                        quantity: deductionQty,
+                                        reference: `POS-${order.orderNumber}-MOD`,
+                                        notes: `استهلاك إضافة (${mod.name}) لطلب الكاشير`,
+                                        companyId
+                                    }
+                                });
+                            }
+                        }
+                    } catch (e) { }
+                }
+            }
+        }
+
+        return NextResponse.json(order, { status: 201 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+});
+
+// PUT: update order status
+export const PUT = withProtection(async (request, session, body) => {
+    try {
+        const companyId = (session.user as any).companyId;
+        if (!body.id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+        if (body.action === 'pay_and_close') {
+            const order = await prisma.posOrder.findUnique({ where: { id: body.id, companyId }, include: { invoice: true } });
+            if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+
+            const paymentAmount = order.total - order.paidAmount;
+
+            // Update POS Order
+            await prisma.posOrder.update({
+                where: { id: order.id },
+                data: { paidAmount: order.total, status: order.type === 'delivery' ? 'delivered' : 'ready', paymentMethod: body.paymentMethod || 'cash' }
+            });
+
+            // Free the driver
+            if (order.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'available' }
+                });
+            }
+
+            // Free the table
+            if (order.tableId) {
+                await prisma.restaurantTable.updateMany({
+                    where: { id: order.tableId, companyId },
+                    data: { status: 'available' }
+                });
+            }
+
+            // Update Invoice & Treasury & Accounting if there was an unpaid amount
+            if (paymentAmount > 0) {
+                if (order.invoiceId) {
+                    await prisma.invoice.update({
+                        where: { id: order.invoiceId },
+                        data: {
+                            paidAmount: order.total,
+                            remaining: 0,
+                            paymentMethod: body.paymentMethod || 'cash'
+                        }
+                    });
+                }
+
+                if (body.treasuryId) {
+                    await prisma.treasury.update({
+                        where: { id: body.treasuryId },
+                        data: { balance: { increment: paymentAmount } }
+                    });
+                }
+
+                // Accounting Entry
+                const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+                if (activeYear) {
+                    const cashAccount = await prisma.account.findFirst({
+                        where: { companyId, OR: [{ code: '1201' }, { code: '1200' }, { name: { contains: 'نقدية' } }, { name: { contains: 'خزنة' } }] }
+                    });
+                    const recAccount = await prisma.account.findFirst({
+                        where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                    });
+
+                    if (cashAccount && recAccount) {
+                        const lastEntry = await prisma.journalEntry.findFirst({
+                            where: { companyId },
+                            orderBy: { entryNumber: 'desc' }
+                        });
+                        await prisma.journalEntry.create({
+                            data: {
+                                entryNumber: (lastEntry?.entryNumber ?? 0) + 1,
+                                date: new Date(),
+                                description: `تحصيل فاتورة آجل كاشير - طلب #${order.orderNumber}`,
+                                financialYearId: activeYear.id,
+                                companyId,
+                                lines: {
+                                    create: [
+                                        { accountId: cashAccount.id, debit: paymentAmount, credit: 0, description: `تحصيل نقدي` },
+                                        { accountId: recAccount.id, debit: 0, credit: paymentAmount, description: `إقفال ذمم` },
+                                    ]
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            return NextResponse.json({ success: true, message: 'تم الدفع وإخلاء الطاولة' });
+        }
+
+        await prisma.posOrder.updateMany({
+            where: { id: body.id, companyId },
+            data: {
+                ...(body.status && { status: body.status }),
+                ...(body.kitchenPrinted !== undefined && { kitchenPrinted: body.kitchenPrinted }),
+                ...(body.paidAmount !== undefined && { paidAmount: body.paidAmount }),
+                ...(body.paymentMethod && { paymentMethod: body.paymentMethod }),
+                ...(body.driverId !== undefined && { driverId: body.driverId }),
+            },
+        });
+
+        // Add cancel reason to notes if provided
+        if (body.cancelReason) {
+            const currentOrder = await prisma.posOrder.findUnique({ where: { id: body.id } });
+            if (currentOrder) {
+                const newNotes = currentOrder.notes ? `${currentOrder.notes}\n[السبب: ${body.cancelReason}]` : `[السبب: ${body.cancelReason}]`;
+                await prisma.posOrder.update({
+                    where: { id: body.id },
+                    data: { notes: newNotes }
+                });
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // ACCOUNTING REVERSAL: Void invoice & reverse journal entry on cancellation
+        // ════════════════════════════════════════════════════
+        if (body.status === 'cancelled') {
+            try {
+                const cancelledOrder = await prisma.posOrder.findUnique({
+                    where: { id: body.id },
+                    include: { invoice: true }
+                });
+
+                if (cancelledOrder) {
+                    // 1. Void the linked invoice (set remaining = 0, zero out the balance)
+                    if (cancelledOrder.invoiceId) {
+                        await prisma.invoice.update({
+                            where: { id: cancelledOrder.invoiceId },
+                            data: {
+                                paidAmount: cancelledOrder.total,
+                                remaining: 0,
+                                notes: `[ملغي - رفض استلام العميل]`
+                            }
+                        });
+                    }
+
+                    // 2. Create reversal journal entry to undo the original sale
+                    const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+                    if (activeYear && cancelledOrder.total > 0 && cancelledOrder.paidAmount === 0) {
+                        // Only reverse if the order was NOT already paid (cash on delivery unpaid)
+                        const lastEntry = await prisma.journalEntry.findFirst({ where: { companyId }, orderBy: { entryNumber: 'desc' } });
+                        const entryNumber = (lastEntry?.entryNumber ?? 0) + 1;
+
+                        // Find accounts
+                        const revenueAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '4101' }, { name: { contains: 'إيرادات' } }, { name: { contains: 'مبيعات' } }] }
+                        });
+                        const recAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                        });
+
+                        if (revenueAccount && recAccount) {
+                            await prisma.journalEntry.create({
+                                data: {
+                                    entryNumber,
+                                    date: new Date(),
+                                    description: `عكس قيد مبيعات - إلغاء طلب #${cancelledOrder.orderNumber} (رفض استلام)`,
+                                    reference: `CANCEL-POS-${cancelledOrder.orderNumber}`,
+                                    referenceType: 'pos_order',
+                                    referenceId: cancelledOrder.id,
+                                    financialYearId: activeYear.id,
+                                    companyId,
+                                    isPosted: true,
+                                    lines: {
+                                        create: [
+                                            // Debit revenue (reverse the credit)
+                                            { accountId: revenueAccount.id, debit: cancelledOrder.total, credit: 0, description: `عكس إيراد - إلغاء طلب #${cancelledOrder.orderNumber}` },
+                                            // Credit receivables (reverse the debit)
+                                            { accountId: recAccount.id, debit: 0, credit: cancelledOrder.total, description: `عكس ذمم - إلغاء طلب #${cancelledOrder.orderNumber}` },
+                                        ]
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error('[CANCEL_REVERSAL_ERROR]:', e);
+            }
+        }
+
+        // If ready/cancelled/returned, free the table
+        if (body.status === 'ready' || body.status === 'cancelled' || body.status === 'returned') {
+            const order = await prisma.posOrder.findUnique({
+                where: { id: body.id },
+                include: { lines: true }
+            });
+            if (order?.tableId) {
+                await prisma.restaurantTable.updateMany({
+                    where: { id: order.tableId, companyId },
+                    data: { status: 'available' },
+                });
+            }
+
+            // If it's a delivery order and just marked ready, mark driver as busy
+            if (body.status === 'ready' && order?.type === 'delivery' && order?.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'busy' }
+                });
+            }
+            // If it's cancelled/returned and it's delivery, free the driver
+            if ((body.status === 'cancelled' || body.status === 'returned') && order?.type === 'delivery' && order?.driverId) {
+                await prisma.driver.updateMany({
+                    where: { id: order.driverId, companyId },
+                    data: { status: 'available' }
+                });
+            }
+
+            // Inventory Reversion for Cancellation / Return
+            if ((body.status === 'cancelled' || body.status === 'returned') && body.revertInventory && order) {
+                const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+                if (defaultWarehouse) {
+                    for (const line of order.lines) {
+                        const item = await prisma.item.findUnique({
+                            where: { id: line.itemId },
+                            include: { recipe: { include: { items: true } } }
+                        });
+                        if (!item) continue;
+
+                        // 1. Return Recipe Ingredients
+                        if (item.recipe && item.recipe.items.length > 0) {
+                            for (const ri of item.recipe.items) {
+                                const qty = ri.quantity * line.quantity;
+                                await prisma.stock.upsert({
+                                    where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } },
+                                    create: { itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: qty },
+                                    update: { quantity: { increment: qty } }
+                                });
+                                await prisma.stockMovement.create({
+                                    data: {
+                                        type: 'in', date: new Date(), itemId: ri.itemId, warehouseId: defaultWarehouse.id,
+                                        quantity: qty, reference: `CANCEL-${order.orderNumber}`,
+                                        notes: `مرتجع استهلاك مكونات لإلغاء طلب`, companyId
+                                    }
+                                });
+                            }
+                        }
+                        // المنتجات التامة بدون وصفة لا يتم إرجاعها لأنها أصلاً لا تُخصم من المخزون عند البيع
+
+                        // 3. Return Modifiers
+                        if (line.modifiers) {
+                            try {
+                                const mods = typeof line.modifiers === 'string' ? JSON.parse(line.modifiers) : line.modifiers;
+                                for (const mod of mods) {
+                                    if (mod.itemId) {
+                                        const qty = line.quantity;
+                                        await prisma.stock.upsert({
+                                            where: { itemId_warehouseId: { itemId: mod.itemId, warehouseId: defaultWarehouse.id } },
+                                            create: { itemId: mod.itemId, warehouseId: defaultWarehouse.id, quantity: qty },
+                                            update: { quantity: { increment: qty } }
+                                        });
+                                        await prisma.stockMovement.create({
+                                            data: {
+                                                type: 'in', date: new Date(), itemId: mod.itemId, warehouseId: defaultWarehouse.id,
+                                                quantity: qty, reference: `CANCEL-${order.orderNumber}-MOD`,
+                                                notes: `مرتجع إضافة (${mod.name}) لإلغاء طلب`, companyId
+                                            }
+                                        });
+                                    }
+                                }
+                            } catch (e) { }
+                        }
+                    }
+                }
+            }
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+});

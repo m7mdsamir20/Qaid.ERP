@@ -132,12 +132,12 @@ export default function ReceiptVouchersPage() {
                 {/* ── Table Section ── */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px' }}>
-                            <Receipt size={36} style={{ color: C.textSecondary, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
+                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد سندات قبض')}</p>
                         </div>
                     ) : (

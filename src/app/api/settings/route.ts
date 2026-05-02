@@ -29,12 +29,18 @@ export const GET = withProtection(async (request, session) => {
             try { notificationSettings = JSON.parse(company.notificationSettings); } catch (e) { }
         }
 
+        let restaurantSettings = null;
+        if ((company as any)?.restaurantSettings) {
+            try { restaurantSettings = JSON.parse((company as any).restaurantSettings); } catch (e) { }
+        }
+
         return NextResponse.json({
             company,
             users,
             roles,
             financialYears,
             notificationSettings,
+            restaurantSettings,
         });
     } catch (e: any) {
         console.error("GET Settings Error:", e);
@@ -112,6 +118,14 @@ export const PUT = withProtection(async (request, session, body) => {
                 data: { currency: data.currency, timezone: data.timezone, calendarType: data.calendarType, dateFormat: data.dateFormat, countryCode: data.countryCode }
             });
             return NextResponse.json(updated);
+        }
+
+        if (action === 'update_restaurant') {
+            await prisma.company.update({
+                where: { id: companyId },
+                data: { restaurantSettings: JSON.stringify(data) } as any
+            });
+            return NextResponse.json({ success: true });
         }
 
         if (action === 'update_financial_year') {

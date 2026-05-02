@@ -13,6 +13,7 @@ export const GET = withProtection(async (request, session) => {
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 200);
         const skip = (page - 1) * limit;
         const all = url.searchParams.get('all') === 'true'; // لصفحات الفواتير تحتاج كل الأصناف
+        const typeFilter = url.searchParams.get('type'); // تصفية بنوع الصنف
 
         const where: any = { companyId };
         if (search) {
@@ -21,6 +22,10 @@ export const GET = withProtection(async (request, session) => {
                 { barcode: { contains: search } },
                 { code: { contains: search } },
             ];
+        }
+        
+        if (typeFilter) {
+            where.type = typeFilter;
         }
 
         // Get branch-scoped warehouse IDs for stock filtering
@@ -43,7 +48,7 @@ export const GET = withProtection(async (request, session) => {
             const items = await prisma.item.findMany({
                 where,
                 orderBy: { name: 'asc' },
-                include: { category: true, unit: true, stocks: stocksInclude },
+                include: { category: true, unit: true, stocks: true, variants: { include: { recipe: { include: { items: true } } } }, recipe: { include: { items: true } } },
             });
             return NextResponse.json(items);
         }
@@ -54,7 +59,7 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'asc' },
                 skip,
                 take: limit,
-                include: { category: true, unit: true, stocks: stocksInclude },
+                include: { category: true, unit: true, stocks: true, variants: { include: { recipe: { include: { items: true } } } }, recipe: { include: { items: true } } },
             }),
             prisma.item.count({ where }),
         ]);
@@ -91,6 +96,9 @@ export const POST = withProtection(async (request, session, body) => {
                     minLimit: parseFloat(body.minLimit) || 0,
                     categoryId: body.categoryId || null,
                     description: body.description || null,
+                    type: body.type || 'product',
+                    isPosEligible: body.type === 'raw' ? false : (body.isPosEligible ?? true),
+                    isPriceVariable: body.isPriceVariable ?? false,
                     status: body.status || 'active',
                     companyId,
                 },
@@ -179,6 +187,57 @@ export const POST = withProtection(async (request, session, body) => {
                     }
                 }
             }
+            if (body.variants && Array.isArray(body.variants)) {
+                for (let i = 0; i < body.variants.length; i++) {
+                    const v = body.variants[i];
+                    const createdVariant = await tx.item.create({
+                        data: {
+                            code: `${nextCode}-V${i + 1}`,
+                            barcode: v.barcode || Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || parseFloat(body.costPrice) || 0,
+                            companyId,
+                            parentId: newItem.id,
+                            isPosEligible: true,
+                            type: body.type || 'product',
+                            categoryId: body.categoryId || null,
+                        }
+                    });
+                    
+                    if (v.recipeItems && Array.isArray(v.recipeItems) && v.recipeItems.length > 0) {
+                        await tx.recipe.create({
+                            data: {
+                                itemId: createdVariant.id,
+                                companyId,
+                                items: {
+                                    create: v.recipeItems.map((ri: any) => ({
+                                        itemId: ri.itemId,
+                                        quantity: parseFloat(ri.quantity) || 0,
+                                        unit: ri.unit || '',
+                                    })),
+                                },
+                            },
+                        });
+                    }
+                }
+            }
+
+            if (body.recipeItems && Array.isArray(body.recipeItems) && body.recipeItems.length > 0) {
+                await tx.recipe.create({
+                    data: {
+                        itemId: newItem.id,
+                        companyId,
+                        items: {
+                            create: body.recipeItems.map((i: any) => ({
+                                itemId: i.itemId,
+                                quantity: parseFloat(i.quantity) || 0,
+                                unit: i.unit || '',
+                            })),
+                        },
+                    },
+                });
+            }
 
             return newItem;
         });
@@ -203,10 +262,88 @@ export const PUT = withProtection(async (request, session, body) => {
                 averageCost: parseFloat(body.averageCost) || parseFloat(body.costPrice) || 0,
                 minLimit: parseFloat(body.minLimit) || 0,
                 categoryId: body.categoryId || null,
+                description: body.description || null,
+                type: body.type || 'product',
+                isPosEligible: body.type === 'raw' ? false : (body.isPosEligible ?? true),
+                isPriceVariable: body.isPriceVariable ?? false,
             },
         });
+
+        if (body.variants && Array.isArray(body.variants)) {
+            const companyId = (session.user as any).companyId;
+            for (const v of body.variants) {
+                let variantId = v.id;
+                if (variantId) {
+                    await prisma.item.update({
+                        where: { id: variantId },
+                        data: {
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || 0,
+                            barcode: v.barcode,
+                        }
+                    });
+                } else {
+                    const createdVariant = await prisma.item.create({
+                        data: {
+                            code: `VAR-${Math.floor(1000 + Math.random() * 9000)}`,
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || parseFloat(body.costPrice) || 0,
+                            barcode: v.barcode || Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+                            companyId,
+                            parentId: item.id,
+                            isPosEligible: true,
+                            type: item.type,
+                            categoryId: item.categoryId,
+                        }
+                    });
+                    variantId = createdVariant.id;
+                }
+
+                if (v.recipeItems && Array.isArray(v.recipeItems)) {
+                    await prisma.recipe.deleteMany({ where: { itemId: variantId } });
+                    if (v.recipeItems.length > 0) {
+                        await prisma.recipe.create({
+                            data: {
+                                itemId: variantId,
+                                companyId,
+                                items: {
+                                    create: v.recipeItems.map((ri: any) => ({
+                                        itemId: ri.itemId,
+                                        quantity: parseFloat(ri.quantity) || 0,
+                                        unit: ri.unit || '',
+                                    })),
+                                },
+                            },
+                        });
+                    }
+                }
+            }
+        }
+
+        if (body.recipeItems && Array.isArray(body.recipeItems)) {
+            const companyId = (session.user as any).companyId;
+            await prisma.recipe.deleteMany({ where: { itemId: item.id } });
+            if (body.recipeItems.length > 0) {
+                await prisma.recipe.create({
+                    data: {
+                        itemId: item.id,
+                        companyId,
+                        items: {
+                            create: body.recipeItems.map((i: any) => ({
+                                itemId: i.itemId,
+                                quantity: parseFloat(i.quantity) || 0,
+                                unit: i.unit || '',
+                            })),
+                        },
+                    },
+                });
+            }
+        }
+
         return NextResponse.json(item);
-    } catch {
+    } catch (error) {
         return NextResponse.json({ error: 'فشل في تعديل الصنف' }, { status: 500 });
     }
 });

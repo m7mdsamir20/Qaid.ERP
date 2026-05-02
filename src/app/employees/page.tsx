@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -199,7 +199,7 @@ export default function EmployeesPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ margin: 0, color: C.textSecondary, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
@@ -212,7 +212,7 @@ export default function EmployeesPage() {
                             <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

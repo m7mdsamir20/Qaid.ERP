@@ -1,0 +1,308 @@
+﻿ظû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+node : ظأب The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: 
+https://nextjs.org/docs/messages/middleware-to-proxy
+At line:1 char:1
++ node node_modules\next\dist\bin\next build 2>&1 | Out-File -FilePath  ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (ظأب The "middle...leware-to-proxy:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  Creating an optimized production build ...
+ظ£ô Compiled successfully in 32.4s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/197) ...
+ظأب metadataBase property in metadata export is not set for resolving social open graph or twitter images, using 
+"http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+ظأب metadataBase property in metadata export is not set for resolving social open graph or twitter images, using 
+"http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+  Generating static pages using 3 workers (49/197) 
+ظأب metadataBase property in metadata export is not set for resolving social open graph or twitter images, using 
+"http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+  Generating static pages using 3 workers (98/197) 
+  Generating static pages using 3 workers (147/197) 
+ظ£ô Generating static pages using 3 workers (197/197) in 3.2s
+  Finalizing page optimization ...
+
+Route (app)
+ظ¤î ظùï /
+ظ¤£ ظùï /_not-found
+ظ¤£ ظùï /accounts
+ظ¤£ ظùï /accounts/new
+ظ¤£ ظùï /advances
+ظ¤£ ╞ْ /advances/[id]
+ظ¤£ ╞ْ /api/accounts
+ظ¤£ ╞ْ /api/accounts/[id]
+ظ¤£ ╞ْ /api/accounts/seed
+ظ¤£ ╞ْ /api/admin/fix-branches
+ظ¤£ ╞ْ /api/admin/reorder-vouchers
+ظ¤£ ╞ْ /api/advances
+ظ¤£ ╞ْ /api/advances/[id]
+ظ¤£ ╞ْ /api/api-keys
+ظ¤£ ╞ْ /api/auth/[...nextauth]
+ظ¤£ ╞ْ /api/auth/register
+ظ¤£ ╞ْ /api/auth/send-otp
+ظ¤£ ╞ْ /api/auth/verify-otp
+ظ¤£ ╞ْ /api/branches
+ظ¤£ ╞ْ /api/capital
+ظ¤£ ╞ْ /api/categories
+ظ¤£ ╞ْ /api/closing-entries
+ظ¤£ ╞ْ /api/closing-entries/preview
+ظ¤£ ╞ْ /api/company
+ظ¤£ ╞ْ /api/cost-centers
+ظ¤£ ╞ْ /api/cost-centers/[id]
+ظ¤£ ╞ْ /api/coupons
+ظ¤£ ╞ْ /api/coupons/[id]
+ظ¤£ ╞ْ /api/coupons/validate
+ظ¤£ ╞ْ /api/customers
+ظ¤£ ╞ْ /api/customers/[id]/ledger
+ظ¤£ ╞ْ /api/database
+ظ¤£ ╞ْ /api/debt-settlement
+ظ¤£ ╞ْ /api/deductions
+ظ¤£ ╞ْ /api/deductions/[id]
+ظ¤£ ╞ْ /api/departments
+ظ¤£ ╞ْ /api/departments/[id]
+ظ¤£ ╞ْ /api/depreciation/check
+ظ¤£ ╞ْ /api/depreciation/register
+ظ¤£ ╞ْ /api/drivers
+ظ¤£ ╞ْ /api/employees
+ظ¤£ ╞ْ /api/employees/[id]
+ظ¤£ ╞ْ /api/employees/next-code
+ظ¤£ ╞ْ /api/expenses
+ظ¤£ ╞ْ /api/external/orders
+ظ¤£ ╞ْ /api/financial-years
+ظ¤£ ╞ْ /api/financial-years/check
+ظ¤£ ╞ْ /api/fixed-assets
+ظ¤£ ╞ْ /api/fixed-assets/disposals
+ظ¤£ ╞ْ /api/general-ledger
+ظ¤£ ╞ْ /api/installments
+ظ¤£ ╞ْ /api/installments/[id]
+ظ¤£ ╞ْ /api/installments/cancel
+ظ¤£ ╞ْ /api/installments/collect
+ظ¤£ ╞ْ /api/installments/due
+ظ¤£ ╞ْ /api/installments/overdue
+ظ¤£ ╞ْ /api/installments/reports
+ظ¤£ ╞ْ /api/installments/settle
+ظ¤£ ╞ْ /api/items
+ظ¤£ ╞ْ /api/journal-entries
+ظ¤£ ╞ْ /api/menu-order
+ظ¤£ ╞ْ /api/notifications
+ظ¤£ ╞ْ /api/notifications/generate
+ظ¤£ ╞ْ /api/opening-balances
+ظ¤£ ╞ْ /api/opening-balances/carry-forward
+ظ¤£ ╞ْ /api/other-income
+ظ¤£ ╞ْ /api/partner-transactions
+ظ¤£ ╞ْ /api/partners
+ظ¤£ ╞ْ /api/payrolls
+ظ¤£ ╞ْ /api/payrolls/[id]
+ظ¤£ ╞ْ /api/print/invoice/[id]
+ظ¤£ ╞ْ /api/print/quotation/[id]
+ظ¤£ ╞ْ /api/print/voucher/[id]
+ظ¤£ ╞ْ /api/profile/change-password
+ظ¤£ ╞ْ /api/profile/update
+ظ¤£ ╞ْ /api/profit-distributions
+ظ¤£ ╞ْ /api/purchase-payments
+ظ¤£ ╞ْ /api/purchase-returns
+ظ¤£ ╞ْ /api/purchases
+ظ¤£ ╞ْ /api/quotations
+ظ¤£ ╞ْ /api/quotations/convert
+ظ¤£ ╞ْ /api/reports/aging-report
+ظ¤£ ╞ْ /api/reports/balance-sheet
+ظ¤£ ╞ْ /api/reports/balances
+ظ¤£ ╞ْ /api/reports/cash-flow
+ظ¤£ ╞ْ /api/reports/customer-statement
+ظ¤£ ╞ْ /api/reports/daily-report
+ظ¤£ ╞ْ /api/reports/expenses-report
+ظ¤£ ╞ْ /api/reports/hr
+ظ¤£ ╞ْ /api/reports/income-statement
+ظ¤£ ╞ْ /api/reports/inventory-report
+ظ¤£ ╞ْ /api/reports/item-movement
+ظ¤£ ╞ْ /api/reports/kitchen-consumption
+ظ¤£ ╞ْ /api/reports/kitchen-waste
+ظ¤£ ╞ْ /api/reports/low-stock-items
+ظ¤£ ╞ْ /api/reports/purchases-report
+ظ¤£ ╞ْ /api/reports/reconciliation-snapshots
+ظ¤£ ╞ْ /api/reports/returns-report
+ظ¤£ ╞ْ /api/reports/revenues-report
+ظ¤£ ╞ْ /api/reports/sales-report
+ظ¤£ ╞ْ /api/reports/shift-sales
+ظ¤£ ╞ْ /api/reports/supplier-statement
+ظ¤£ ╞ْ /api/reports/top-selling-items
+ظ¤£ ╞ْ /api/reports/treasury-bank-report
+ظ¤£ ╞ْ /api/reports/trial-balance
+ظ¤£ ╞ْ /api/restaurant/modifiers
+ظ¤£ ╞ْ /api/restaurant/orders
+ظ¤£ ╞ْ /api/restaurant/recipes
+ظ¤£ ╞ْ /api/restaurant/reports
+ظ¤£ ╞ْ /api/restaurant/shifts
+ظ¤£ ╞ْ /api/restaurant/shifts/drawer
+ظ¤£ ╞ْ /api/restaurant/tables
+ظ¤£ ╞ْ /api/sale-returns
+ظ¤£ ╞ْ /api/sale-returns/[id]
+ظ¤£ ╞ْ /api/sales
+ظ¤£ ╞ْ /api/sales/[id]
+ظ¤£ ╞ْ /api/search
+ظ¤£ ╞ْ /api/settings
+ظ¤£ ╞ْ /api/settings/backup
+ظ¤£ ╞ْ /api/stats
+ظ¤£ ╞ْ /api/stock-movements
+ظ¤£ ╞ْ /api/stocks
+ظ¤£ ╞ْ /api/stocktakings
+ظ¤£ ╞ْ /api/stocktakings/[id]
+ظ¤£ ╞ْ /api/super-admin/check
+ظ¤£ ╞ْ /api/super-admin/companies
+ظ¤£ ╞ْ /api/super-admin/companies/[id]
+ظ¤£ ╞ْ /api/super-admin/stats
+ظ¤£ ╞ْ /api/suppliers
+ظ¤£ ╞ْ /api/treasuries
+ظ¤£ ╞ْ /api/treasuries/[id]
+ظ¤£ ╞ْ /api/treasuries/[id]/transactions
+ظ¤£ ╞ْ /api/units
+ظ¤£ ╞ْ /api/upload
+ظ¤£ ╞ْ /api/vouchers
+ظ¤£ ╞ْ /api/vouchers/fix
+ظ¤£ ╞ْ /api/warehouse-transfers
+ظ¤£ ╞ْ /api/warehouses
+ظ¤£ ظùï /barcode
+ظ¤£ ظùï /capital
+ظ¤£ ظùï /categories
+ظ¤£ ظùï /closing-entries
+ظ¤£ ظùï /cost-centers
+ظ¤£ ╞ْ /cost-centers/[id]
+ظ¤£ ظùï /coupons
+ظ¤£ ظùï /customers
+ظ¤£ ╞ْ /customers/[id]
+ظ¤£ ظùï /deductions
+ظ¤£ ╞ْ /deductions/[id]
+ظ¤£ ظùï /delivery
+ظ¤£ ظùï /departments
+ظ¤£ ظùï /due-installments
+ظ¤£ ظùï /employees
+ظ¤£ ╞ْ /employees/[id]
+ظ¤£ ╞ْ /employees/[id]/edit
+ظ¤£ ظùï /employees/new
+ظ¤£ ظùï /employees/new/edit
+ظ¤£ ظùï /expenses
+ظ¤£ ظùï /financial-years
+ظ¤£ ظùï /fixed-assets
+ظ¤£ ظùï /fixed-assets/depreciation
+ظ¤£ ظùï /fixed-assets/disposals
+ظ¤£ ظùï /fixed-assets/new
+ظ¤£ ظùï /general-ledger
+ظ¤£ ظùï /icon.png
+ظ¤£ ظùï /installments
+ظ¤£ ╞ْ /installments/[id]
+ظ¤£ ظùï /items
+ظ¤£ ظùï /journal-entries
+ظ¤£ ظùï /kds
+ظ¤£ ظùï /kitchen
+ظ¤£ ظùï /login
+ظ¤£ ╞ْ /menu/[companyId]
+ظ¤£ ظùï /modifiers
+ظ¤£ ظùï /opening-balances
+ظ¤£ ظùï /other-income
+ظ¤£ ظùï /overdue-installments
+ظ¤£ ظùï /partner-accounts
+ظ¤£ ظùï /partners
+ظ¤£ ظùï /payments
+ظ¤£ ظùï /payments/new
+ظ¤£ ظùï /payrolls
+ظ¤£ ╞ْ /payrolls/[id]
+ظ¤£ ظùï /pos
+ظ¤£ ظùï /pos/customer
+ظ¤£ ظùï /pos/history
+ظ¤£ ظùï /print/installment-receipt
+ظ¤£ ╞ْ /print/installment/[id]
+ظ¤£ ╞ْ /print/invoice/[id]
+ظ¤£ ╞ْ /print/quotation/[id]
+ظ¤£ ظùï /print/report
+ظ¤£ ╞ْ /print/voucher/[id]
+ظ¤£ ظùï /profile
+ظ¤£ ظùï /profile/password
+ظ¤£ ظùï /profit-distribution
+ظ¤£ ظùï /purchase-payments
+ظ¤£ ظùï /purchase-payments/new
+ظ¤£ ظùï /purchase-returns
+ظ¤£ ظùï /purchase-returns/new
+ظ¤£ ظùï /purchases
+ظ¤£ ╞ْ /purchases/[id]
+ظ¤£ ظùï /purchases/new
+ظ¤£ ظùï /quotations
+ظ¤£ ╞ْ /quotations/[id]
+ظ¤£ ظùï /quotations/new
+ظ¤£ ظùï /receipts
+ظ¤£ ظùï /receipts/new
+ظ¤£ ظùï /register
+ظ¤£ ╞ْ /reports
+ظ¤£ ╞ْ /reports/aging-report
+ظ¤£ ╞ْ /reports/balance-sheet
+ظ¤£ ╞ْ /reports/bank-statement
+ظ¤£ ╞ْ /reports/cash-flow
+ظ¤£ ╞ْ /reports/cash-statement
+ظ¤£ ╞ْ /reports/clients-suppliers-balances
+ظ¤£ ╞ْ /reports/customer-statement
+ظ¤£ ╞ْ /reports/daily-report
+ظ¤£ ╞ْ /reports/detailed-balance-sheet
+ظ¤£ ╞ْ /reports/employees-advances
+ظ¤£ ╞ْ /reports/employees-catalog
+ظ¤£ ╞ْ /reports/employees-deductions
+ظ¤£ ╞ْ /reports/expenses-report
+ظ¤£ ╞ْ /reports/fixed-assets
+ظ¤£ ╞ْ /reports/general-ledger
+ظ¤£ ╞ْ /reports/income-statement
+ظ¤£ ╞ْ /reports/installments
+ظ¤£ ╞ْ /reports/installments/collection
+ظ¤£ ╞ْ /reports/installments/customer-statement
+ظ¤£ ╞ْ /reports/installments/overdue
+ظ¤£ ╞ْ /reports/inventory-report
+ظ¤£ ╞ْ /reports/item-movement
+ظ¤£ ╞ْ /reports/kitchen-consumption
+ظ¤£ ╞ْ /reports/kitchen-waste
+ظ¤£ ╞ْ /reports/low-stock-items
+ظ¤£ ╞ْ /reports/payroll-statement
+ظ¤£ ╞ْ /reports/purchases-report
+ظ¤£ ╞ْ /reports/recipes-report
+ظ¤£ ╞ْ /reports/returns-report
+ظ¤£ ╞ْ /reports/revenues-report
+ظ¤£ ╞ْ /reports/sales-report
+ظ¤£ ╞ْ /reports/shift-sales
+ظ¤£ ╞ْ /reports/supplier-statement
+ظ¤£ ╞ْ /reports/top-selling-items
+ظ¤£ ╞ْ /reports/treasury-bank-report
+ظ¤£ ╞ْ /reports/treasury-reconciliation
+ظ¤£ ╞ْ /reports/trial-balance
+ظ¤£ ظùï /restaurant/drivers
+ظ¤£ ظùï /restaurant/reports
+ظ¤£ ظùï /sale-returns
+ظ¤£ ╞ْ /sale-returns/[id]
+ظ¤£ ظùï /sale-returns/new
+ظ¤£ ظùï /sales
+ظ¤£ ╞ْ /sales/[id]
+ظ¤£ ظùï /sales/new
+ظ¤£ ظùï /settings
+ظ¤£ ظùï /settings/api-keys
+ظ¤£ ظùï /settlements
+ظ¤£ ظùï /shifts
+ظ¤£ ظùï /stock-movements
+ظ¤£ ظùï /stocktakings
+ظ¤£ ظùï /stocktakings/new
+ظ¤£ ظùï /super-admin
+ظ¤£ ╞ْ /super-admin/edit/[id]
+ظ¤£ ظùï /super-admin/new
+ظ¤£ ظùï /suppliers
+ظ¤£ ظùï /tables
+ظ¤£ ظùï /treasuries
+ظ¤£ ظùï /units
+ظ¤£ ظùï /verify
+ظ¤£ ظùï /warehouse-transfers
+ظ¤£ ظùï /warehouse-transfers/new
+ظ¤¤ ظùï /warehouses
+
+
+╞ْ Proxy (Middleware)
+
+ظùï  (Static)   prerendered as static content
+╞ْ  (Dynamic)  server-rendered on demand
+

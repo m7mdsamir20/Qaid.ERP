@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -319,7 +319,7 @@ export default function InstallmentReportsPage() {
 
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة العمليات المسجلة')}</div>
-                                        <div style={{ overflowX: 'auto' }}>
+                                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
@@ -367,7 +367,7 @@ export default function InstallmentReportsPage() {
 
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة الأقساط المتجاوزة للموعد')}</div>
-                                        <div style={{ overflowX: 'auto' }}>
+                                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
@@ -438,7 +438,7 @@ export default function InstallmentReportsPage() {
                                                         {fMoneyJSX(plan.grandTotal)}
                                                     </div>
                                                 </div>
-                                                <div style={{ overflowX: 'auto' }}>
+                                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: CAIRO }}>
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>

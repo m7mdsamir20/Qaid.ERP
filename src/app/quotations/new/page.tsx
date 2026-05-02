@@ -436,10 +436,10 @@ export default function NewQuotationPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '12px', textAlign: 'start', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
                                             <th style={{ padding: '12px', width: '80px' }}></th>
                                         </tr>
                                     </thead>

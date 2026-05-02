@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 import { useCurrency } from '@/hooks/useCurrency';
 
@@ -173,7 +173,7 @@ export default function DisposalsPage() {
 
                 {/* Table */}
                 <div style={TABLE_STYLE.container}>
-                    <div style={{ overflowX: 'auto' }}>
+                    <div className="scroll-table" style={{ overflowX: 'auto' }}>
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
@@ -188,7 +188,7 @@ export default function DisposalsPage() {
                             </thead>
                             <tbody>
                                 {loadingList ? (
-                                    <tr><td colSpan={7} style={{ padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
+                                    <tr><td colSpan={7} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                                 ) : filtered.length === 0 ? (
                                     <tr><td colSpan={7} style={{ padding: '80px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
                                 ) : filtered.map((d, i) => {

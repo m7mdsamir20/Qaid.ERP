@@ -29,6 +29,11 @@ const BUSINESS_TYPES = [
         label: "نشاط خدمات (استشارات، صيانة، إلخ)",
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
+    {
+        value: "RESTAURANTS",
+        label: "مطاعم وكافيهات",
+        modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+    },
 ];
 
 const COUNTRIES = [
@@ -160,17 +165,23 @@ export default function EditCompanyPage() {
 
     const uniqueSections = (() => {
         const map = new Map<string, any>();
+        const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+        const isRestaurants = form.businessType === 'RESTAURANTS';
+
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
 
+            // فلترة حسب نوع النشاط
+            if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
+            if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
+
             let section = { ...s };
 
-            // ✅ تعديلات ديناميكية للمسميات بناءً على نوع النشاط
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
-                    section.links = section.links.map((l: any) => {
+                    section.links = section.links.filter((l: any) => l.id !== '/coupons').map((l: any) => {
                         if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
                         if (l.label === 'مرتجع مبيعات') return { ...l, label: 'مرتجع خدمات' };
                         return l;
@@ -188,6 +199,32 @@ export default function EditCompanyPage() {
                     section.links = section.links.map((l: any) => {
                         if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الخدمات والمشتريات' };
                         if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير الخدمات' };
+                        return l;
+                    });
+                }
+            } else if (form.businessType !== 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.links = section.links.filter((l: any) => l.id !== '/coupons');
+                }
+            }
+
+            if (form.businessType === 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.title = 'العملاء والتسويق';
+                    section.links = section.links.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
+                }
+                if (section.featureKey === 'inventory') {
+                    section.title = 'المنيو والمخزون';
+                    section.links = section.links.map((l: any) => {
+                        if (l.id === '/items') return { ...l, label: 'أصناف المنيو' };
+                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المنيو' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'purchases') section.title = 'المشتريات والموردين';
+                if (section.featureKey === 'reports') {
+                    section.links = section.links.map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير الكاشير والمبيعات' };
                         return l;
                     });
                 }
@@ -635,8 +672,8 @@ export default function EditCompanyPage() {
                                                     <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
-                                                        {(form.features[fk] || []).length} / {section.links.length}
+                                                    <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                        {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
                                                     </div>
                                                 </div>
                                                 <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}

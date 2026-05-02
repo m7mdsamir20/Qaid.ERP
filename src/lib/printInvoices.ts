@@ -47,7 +47,7 @@ const PREFIXES: Record<InvoiceType, string> = {
 // ═══════════════════════════════════════════════
 //  ZATCA QR Code TLV Generator (Saudi Arabia)
 // ═══════════════════════════════════════════════
-function generateZatcaTLV(sellerName: string, vatNumber: string, timestamp: string, totalWithVat: string, vatAmount: string): string {
+export function generateZatcaTLV(sellerName: string, vatNumber: string, timestamp: string, totalWithVat: string, vatAmount: string): string {
     const encoder = new TextEncoder();
     const tlvBuffers: Uint8Array[] = [];
     const values = [sellerName, vatNumber, timestamp, totalWithVat, vatAmount];

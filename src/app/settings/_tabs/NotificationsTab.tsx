@@ -15,12 +15,13 @@ interface NotificationsTabProps {
     fetchData: () => void;
     hasInstallmentsAccess: boolean;
     isServices?: boolean;
+    isRestaurants?: boolean;
 }
 
 export default function NotificationsTab(props: NotificationsTabProps) {
     const {
         notificationsForm, setNotificationsForm, isSaving, saveSettings,
-        isEditMode, setIsEditMode, fetchData, hasInstallmentsAccess, isServices
+        isEditMode, setIsEditMode, fetchData, hasInstallmentsAccess, isServices, isRestaurants
     } = props;
     const { t } = useTranslation();
 
@@ -108,7 +109,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 )}
 
                 {/* ── إشعارات المدفوعات ── */}
-                {hasInstallmentsAccess && (
+                {hasInstallmentsAccess && !isRestaurants && (
                     <>
                         <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <BellRing size={14} /> {t('المدفوعات والمديونيات')}
@@ -147,7 +148,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 )}
 
                 {/* ── إشعارات أعمار الديون ── */}
-                {!isServices && (
+                {!isServices && !isRestaurants && (
                     <>
                         <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <AlertTriangle size={14} /> {t('أعمار الديون والمديونيات المتأخرة')}
