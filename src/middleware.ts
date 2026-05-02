@@ -18,7 +18,7 @@ export default withAuth(
             const basePage = '/' + path.split('/')[1];
 
             // استثناءات الصفحات العامة بعد تسجيل الدخول
-            const publicPages = ['/profile', '/notifications', '/support', '/settings']; 
+            const publicPages = ['/profile', '/notifications', '/support', '/settings'];
             if (publicPages.includes(basePage)) return NextResponse.next();
 
             // فحص الصلاحية
@@ -45,7 +45,7 @@ export default withAuth(
                 return !!token;
             }
         }
-    }   
+    }
 );
 
 export const config = {
