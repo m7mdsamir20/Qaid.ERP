@@ -54,7 +54,7 @@ export async function POST(request: Request) {
         const order = await prisma.posOrder.create({
             data: {
                 orderNumber,
-                type: tableId ? 'dine_in' : 'online',
+                type: tableId ? 'dine-in' : 'online',
                 status: 'pending',
                 source: 'qr',
                 tableId: tableId || null,

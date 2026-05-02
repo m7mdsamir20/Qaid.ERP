@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -729,18 +729,43 @@ export default function POSPage() {
         }, 500);
     };
 
-    const fetchOpenOrders = async () => {
+    const fetchOpenOrders = useCallback(async () => {
         try {
             const res = await fetch('/api/restaurant/orders?limit=200');
             if (res.ok) {
                 const data = await res.json();
                 setOpenOrders(data.filter((o: any) => 
-                    (o.type === 'dine-in' || o.type === 'delivery') && 
                     o.status !== 'cancelled' && 
-                    (o.total - o.paidAmount > 0)
+                    (o.status === 'pending' || (o.total - o.paidAmount > 0))
                 ));
             }
         } catch {}
+    }, []);
+
+    useEffect(() => {
+        fetchOpenOrders();
+        const interval = setInterval(fetchOpenOrders, 15000);
+        return () => clearInterval(interval);
+    }, [fetchOpenOrders]);
+
+    const acceptPendingOrder = async (orderId: string) => {
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId, status: 'preparing' }),
+            });
+            if (res.ok) fetchOpenOrders();
+        } catch (e) { console.error(e); }
+    };
+
+    const rejectPendingOrder = async (orderId: string) => {
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId, status: 'cancelled' }),
+            });
+            if (res.ok) fetchOpenOrders();
+        } catch (e) { console.error(e); }
     };
 
     const payOpenOrder = async (order: any) => {
@@ -1221,17 +1246,27 @@ export default function POSPage() {
                                     <span style={{ fontWeight: 600 }}>{t('لا توجد طلبات مفتوحة')}</span>
                                 </div>
                             ) : openOrders.map(o => (
-                                <div key={o.id} style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg, flexShrink: 0 }}>
+                                <div key={o.id} style={{ border: `1px solid ${o.status === 'pending' ? '#f59e0b50' : C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: o.status === 'pending' ? 'rgba(245, 158, 11, 0.05)' : C.bg, flexShrink: 0 }}>
                                     <div>
-                                        <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             {o.table?.name ? `طاولة: ${o.table.name}` : `طلب #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
+                                            {o.status === 'pending' && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>طلب خارجي (بانتظار الموافقة)</span>}
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
                                             <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(o.total)}</b></span>
                                             <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - o.paidAmount)}</b></span>
                                         </div>
                                     </div>
-                                    {o.total - o.paidAmount > 0 ? (
+                                    {o.status === 'pending' ? (
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button onClick={() => acceptPendingOrder(o.id)} style={{ padding: '8px 16px', borderRadius: '8px', background: '#10b981', color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <CheckCircle2 size={14} /> قبول الطلب
+                                            </button>
+                                            <button onClick={() => rejectPendingOrder(o.id)} style={{ padding: '8px 12px', borderRadius: '8px', background: '#ef4444', color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <XCircle size={14} /> رفض
+                                            </button>
+                                        </div>
+                                    ) : o.total - o.paidAmount > 0 ? (
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             <button onClick={() => printOpenOrderCheck(o)} style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '12px', fontWeight: 700, borderStyle: 'solid', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                 <Printer size={14} /> {t('طباعة الشيك')}
@@ -1446,11 +1481,17 @@ export default function POSPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px' }}>
                             {ORDER_TYPES.map(ot => {
                                 const Icon = ot.icon;
+                                const pendingCount = ot.value === 'online' ? openOrders.filter(o => o.status === 'pending').length : 0;
                                 return (
                                     <button key={ot.value} onClick={() => { setOrderType(ot.value); setSelectedTable(''); }}
-                                        style={{ padding: '8px 4px', borderRadius: '10px', border: `1px solid ${orderType === ot.value ? ot.color + '60' : C.border}`, background: orderType === ot.value ? ot.color + '15' : 'transparent', color: orderType === ot.value ? ot.color : C.textMuted, fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                        style={{ position: 'relative', padding: '8px 4px', borderRadius: '10px', border: `1px solid ${orderType === ot.value ? ot.color + '60' : C.border}`, background: orderType === ot.value ? ot.color + '15' : 'transparent', color: orderType === ot.value ? ot.color : C.textMuted, fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                         <Icon size={16} />
                                         {ot.label}
+                                        {pendingCount > 0 && (
+                                            <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: '#ef4444', color: 'white', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold', border: '2px solid #fff', animation: 'pulse 2s infinite' }}>
+                                                {pendingCount}
+                                            </span>
+                                        )}
                                     </button>
                                 );
                             })}
