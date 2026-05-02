@@ -365,7 +365,7 @@ export default function POSPage() {
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
         const formatMoney = (m: number) => Number(m).toFixed(2);
-        const subtotal = finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) + finalDiscount;
+        const subtotal = finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) - (orderData.deliveryFee || 0) + finalDiscount;
         const paidAmount = orderData.paidAmount ?? finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
