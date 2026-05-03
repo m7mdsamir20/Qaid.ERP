@@ -207,6 +207,17 @@ export default function POSPage() {
     const userPerms = (session?.user as any)?.permissions || {};
     const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
 
+    const allOrderTypes: any[] = [
+        ...ORDER_TYPES,
+        ...(restaurantSettings?.deliveryApps || []).map((app: any) => ({
+            value: `app_${app.id}`,
+            label: app.name,
+            icon: Store,
+            color: '#ec4899',
+            isApp: true
+        }))
+    ];
+
     useEffect(() => { 
         if (status === 'authenticated' && isRestaurants && hasPosPerm) {
             load(); 
@@ -1211,7 +1222,7 @@ export default function POSPage() {
                         {/* 3 أيقونات تحت الملاحظات */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <button onClick={() => setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('نوع الطلب')}>
-                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{ORDER_TYPES.find(o => o.value === orderType)?.label || t('نوع الطلب')}</span>
+                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{allOrderTypes.find(o => o.value === orderType)?.label || t('نوع الطلب')}</span>
                             </button>
                             <button onClick={() => setShowCustomerModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${selectedCustomer ? C.primary : C.border}`, background: selectedCustomer ? `${C.primary}10` : C.card, color: selectedCustomer ? C.primary : C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('العميل')}>
                                 <User size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{selectedCustomer ? customers.find(c => c.id === selectedCustomer)?.name || t('العميل') : t('إضافة عميل')}</span>
@@ -1221,16 +1232,7 @@ export default function POSPage() {
                             </button>
                         </div>
 
-                        {/* زر تحديد طريقة الدفع */}
-                        {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (
-                            <button onClick={() => setShowPaymentModal(true)} style={{ height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s', width: '100%' }}>
-                                <Wallet size={16} />
-                                <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>
-                                    {paymentMethod === 'cash' ? 'نقدي' : paymentMethod === 'card' ? 'شبكة' : 'مختلط'}
-                                    {selectedTreasury ? ` • ${treasuries.find(t => t.id === selectedTreasury)?.name || ''}` : ''}
-                                </span>
-                            </button>
-                        )}
+                        
 
                         {/* الإجمالي */}
                         <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -1393,8 +1395,9 @@ export default function POSPage() {
                             const requiredAmount = payingOrder.total - payingOrder.paidAmount;
                             const paidVal = parseFloat(cashPaid) || 0;
                             const change = paidVal - requiredAmount;
-                            return (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     <label style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t('المبلغ المدفوع:')}</label>
                                     <input
                                         type="number"
@@ -1545,7 +1548,7 @@ export default function POSPage() {
                             <button onClick={() => setShowOrderTypeModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px' }}>
-                            {ORDER_TYPES.map(ot => {
+                            {allOrderTypes.map((ot: any) => {
                                 const Icon = ot.icon;
                                 const pendingCount = ot.value === 'online' ? openOrders.filter(o => o.status === 'pending').length : 0;
                                 return (
@@ -1743,47 +1746,7 @@ export default function POSPage() {
                 </div>
             )}
 
-            {/* Payment Method & Treasury Modal */}
-            {showPaymentModal && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('طريقة الدفع')}</h2>
-                            <button onClick={() => setShowPaymentModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
-                        </div>
-
-                        {/* طرق الدفع */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                            {([
-                                { key: 'cash', label: 'نقدي' },
-                                { key: 'card', label: 'شبكة' },
-                                { key: 'mixed', label: 'مختلط' },
-                            ] as const).map(pm => {
-                                const isActive = paymentMethod === pm.key;
-                                return (
-                                    <button key={pm.key} onClick={() => setPaymentMethod(pm.key as any)}
-                                        style={{ padding: '12px 8px', borderRadius: '12px', border: `2px solid ${isActive ? C.primary : C.border}`, background: isActive ? `${C.primary}12` : 'transparent', color: isActive ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', fontFamily: CAIRO }}>
-                                        {pm.label}
-                                    </button>
-                                );
-                            })}
-                        </div>
-
-                        {/* اختيار الخزنة */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('الخزنة')}</label>
-                            <CustomSelect
-                                value={selectedTreasury}
-                                onChange={v => setSelectedTreasury(v)}
-                                options={treasuries.map(t => ({ value: t.id, label: t.name }))}
-                                placeholder={t('— اختر الخزنة —')}
-                            />
-                        </div>
-
-                        <button onClick={() => setShowPaymentModal(false)} style={{ ...BTN_PRIMARY(false, false), height: '44px', borderRadius: '12px' }}>{t('تم')}</button>
-                    </div>
-                </div>
-            )}
+            
 
             {/* Terminal Loading Modal */}
             {showTerminalLoading && (
