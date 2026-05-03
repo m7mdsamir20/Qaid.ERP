@@ -242,6 +242,49 @@ export default function POSPage() {
         }
     };
 
+    const getAppMarkupPercent = useCallback(() => {
+        if (!orderType.startsWith('app_')) return 0;
+        const appId = orderType.replace('app_', '');
+        const app = (restaurantSettings?.deliveryApps || []).find((a: any) => a.id === appId);
+        return app ? (Number(app.markupPercent) || 0) : 0;
+    }, [orderType, restaurantSettings?.deliveryApps]);
+
+    const currentMarkup = getAppMarkupPercent();
+    
+    useEffect(() => {
+        setCart(prev => {
+            const markup = getAppMarkupPercent();
+            let changed = false;
+            const newCart = prev.map(cItem => {
+                const originalItem = items.find(i => i.id === cItem.itemId);
+                if (!originalItem) return cItem;
+                const basePrice = originalItem.sellPrice ?? originalItem.price ?? 0;
+                const newPrice = basePrice * (1 + markup / 100);
+                
+                const newMods: any = {};
+                if (cItem.modifiers) {
+                    Object.keys(cItem.modifiers).forEach(modName => {
+                        newMods[modName] = cItem.modifiers[modName].map((o: any) => {
+                            const originalMod = modifiers.find(m => m.name === modName);
+                            const originalOpt = originalMod?.options?.find((opt: any) => opt.name === o.name);
+                            const baseExtra = originalOpt ? (originalOpt.extraPrice || 0) : 0;
+                            return { ...o, price: baseExtra * (1 + markup / 100) };
+                        });
+                    });
+                }
+                
+                if (cItem.unitPrice !== newPrice) changed = true;
+                
+                return {
+                    ...cItem,
+                    unitPrice: newPrice,
+                    modifiers: cItem.modifiers ? newMods : cItem.modifiers
+                };
+            });
+            return changed ? newCart : prev;
+        });
+    }, [getAppMarkupPercent, items, modifiers]);
+
     const addToCart = (item: any) => {
         playBeep();
         setCart(prev => {
@@ -252,7 +295,7 @@ export default function POSPage() {
             return [...prev, {
                 itemId: item.id,
                 itemName: item.name,
-                unitPrice: item.sellPrice ?? item.price ?? 0,
+                unitPrice: (item.sellPrice ?? item.price ?? 0) * (1 + currentMarkup / 100),
                 quantity: 1,
                 discount: 0,
                 notes: '',
@@ -1145,7 +1188,7 @@ export default function POSPage() {
                                                 ) : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
-                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(item.sellPrice ?? item.price ?? 0)}</p>
+                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX((item.sellPrice ?? item.price ?? 0) * (1 + currentMarkup / 100))}</p>
                                         </button>
                                     );
                                 })}
@@ -1447,7 +1490,7 @@ export default function POSPage() {
                                 }}
                                 style={{ padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                     <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary }}>{v.name}</span>
-                                    <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(v.sellPrice)}</span>
+                                    <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX((v.sellPrice || 0) * (1 + currentMarkup / 100))}</span>
                                 </button>
                             ))}
                         </div>
@@ -1475,10 +1518,10 @@ export default function POSPage() {
                                         {mod.options?.map((opt: any) => {
                                             const isSelected = tempModifiers[mod.name]?.some((o: any) => o.name === opt.name);
                                             return (
-                                                <button key={opt.id} onClick={() => handleModifierToggle(mod.name, opt.name, opt.extraPrice, mod.multiSelect)}
+                                                <button key={opt.id} onClick={() => handleModifierToggle(mod.name, opt.name, opt.extraPrice * (1 + currentMarkup / 100), mod.multiSelect)}
                                                     style={{ padding: '10px 12px', borderRadius: '10px', border: `1px solid ${isSelected ? C.primary : C.border}`, background: isSelected ? `${C.primary}10` : C.bg, color: isSelected ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: CAIRO }}>
                                                     <span>{opt.name}</span>
-                                                    {opt.extraPrice > 0 && <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '11px' }}>+{fMoneyJSX(opt.extraPrice)}</span>}
+                                                    {opt.extraPrice > 0 && <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '11px' }}>+{fMoneyJSX(opt.extraPrice * (1 + currentMarkup / 100))}</span>}
                                                 </button>
                                             );
                                         })}
