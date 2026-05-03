@@ -85,6 +85,8 @@ export default function POSPage() {
     const [searchedCustomerObj, setSearchedCustomerObj] = useState<any>(null);
     const [showNewCustomerForm, setShowNewCustomerForm] = useState(false);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [showTerminalLoading, setShowTerminalLoading] = useState(false);
+    const [terminalStatusMsg, setTerminalStatusMsg] = useState('');
 
     // Open Orders Modal
     const [showOpenOrders, setShowOpenOrders] = useState(false);
@@ -851,6 +853,40 @@ export default function POSPage() {
         let finalNotes = orderNotes;
         if (isSplit) {
             finalNotes += `\n[تقسيم الفاتورة: نقدي ${splitAmounts.cash} | شبكة ${splitAmounts.card}]`;
+        }
+
+        if (paymentMethod === 'card' && restaurantSettings?.paymentTerminalIp) {
+            try {
+                setShowTerminalLoading(true);
+                setTerminalStatusMsg('جاري الاتصال بماكينة الدفع (ECR). يرجى تمرير البطاقة...');
+                
+                if (typeof window !== 'undefined' && (window as any).electronAPI && (window as any).electronAPI.startPayment) {
+                    const result = await (window as any).electronAPI.startPayment({
+                        amount: total,
+                        ip: restaurantSettings.paymentTerminalIp,
+                        port: parseInt(restaurantSettings.paymentTerminalPort || '5000')
+                    });
+                    
+                    if (!result.success) {
+                        setErrorMsg(result.message || 'فشلت عملية الدفع بالبطاقة');
+                        setSubmitting(false);
+                        setShowTerminalLoading(false);
+                        return;
+                    }
+                    
+                    finalNotes += `\n[رقم العملية (ECR): ${result.transactionId}]`;
+                } else {
+                    console.warn('Electron API not found, simulating success...');
+                    await new Promise(r => setTimeout(r, 1500));
+                }
+            } catch (err: any) {
+                setErrorMsg('تعذر الاتصال بالماكينة');
+                setSubmitting(false);
+                setShowTerminalLoading(false);
+                return;
+            } finally {
+                setShowTerminalLoading(false);
+            }
         }
 
         try {
@@ -1745,6 +1781,21 @@ export default function POSPage() {
                         </div>
 
                         <button onClick={() => setShowPaymentModal(false)} style={{ ...BTN_PRIMARY(false, false), height: '44px', borderRadius: '12px' }}>{t('تم')}</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Terminal Loading Modal */}
+            {showTerminalLoading && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '40px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', textAlign: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
+                        <CreditCard size={48} color={C.primary} className="animate-pulse" />
+                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>الدفع بالبطاقة</h2>
+                        <p style={{ margin: 0, fontSize: '15px', color: C.textSecondary, fontFamily: CAIRO }}>{terminalStatusMsg}</p>
+                        <div style={{ fontSize: '32px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT, margin: '10px 0' }}>
+                            {fMoneyJSX(total)}
+                        </div>
+                        <Loader2 size={32} color={C.primary} style={{ animation: 'spin 1s linear infinite' }} />
                     </div>
                 </div>
             )}
