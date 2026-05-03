@@ -224,22 +224,6 @@ export default function POSPage() {
         }
     }, [load, status, isRestaurants, hasPosPerm]);
 
-    if (status === 'loading') {
-        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
-    }
-
-    if (status === 'unauthenticated' || !isRestaurants || !hasPosPerm) {
-        return (
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
-                <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
-                    <Shield size={40} />
-                </div>
-                <h2 style={{ fontSize: '24px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{t('غير مصرح لك بالدخول')}</h2>
-                <p style={{ fontSize: '15px', color: C.textSecondary, margin: 0 }}>{t('لا تملك الصلاحيات الكافية أو أن نوع نشاطك التجاري لا يدعم نقاط البيع.')}</p>
-                <button onClick={() => window.location.href = '/'} style={{ padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, marginTop: '16px' }}>{t('العودة للرئيسية')}</button>
-            </div>
-        );
-    }
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
@@ -1025,6 +1009,23 @@ export default function POSPage() {
             }
         } catch {} finally { setShiftLoading(false); }
     };
+
+    if (status === 'loading') {
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
+    }
+
+    if (status === 'unauthenticated' || !isRestaurants || !hasPosPerm) {
+        return (
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
+                    <Shield size={40} />
+                </div>
+                <h2 style={{ fontSize: '24px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{t('غير مصرح لك بالدخول')}</h2>
+                <p style={{ fontSize: '15px', color: C.textSecondary, margin: 0 }}>{t('لا تملك الصلاحيات الكافية أو أن نوع نشاطك التجاري لا يدعم نقاط البيع.')}</p>
+                <button onClick={() => window.location.href = '/'} style={{ padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, marginTop: '16px' }}>{t('العودة للرئيسية')}</button>
+            </div>
+        );
+    }
 
     return (
         <>
