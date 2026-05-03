@@ -1,0 +1,85 @@
+const fs = require('fs');
+
+let content = fs.readFileSync('src/app/settings/_tabs/RestaurantTab.tsx', 'utf-8');
+
+// 1. Remove the old ECR IP and Port inputs block
+content = content.replace(
+    /<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">[\s\S]*?<div style={{ background: C\.card, border: `1px solid \$\{C\.border\}`/m,
+    "<div style={{ background: C.card, border: `1px solid ${C.border}`"
+);
+
+// 2. Add the IP and Port to the mapped fields inside the Card block
+const target_map = `{[
+                            { label: t('طابعة المطبخ'), key: 'kitchenPrinterName' },
+                            { label: t('طابعة الفاتورة'), key: 'receiptPrinterName' },
+                        ].map((f, i, arr) => (`
+
+const replacement_map = `{[
+                            { label: t('IP ماكينة الدفع (ECR)'), key: 'paymentTerminalIp', desc: t('اتركها فارغة لإلغاء الربط الآلي'), placeholder: '192.168.1.50' },
+                            { label: t('منفذ الماكينة (Port)'), key: 'paymentTerminalPort', placeholder: '5000' },
+                            { label: t('طابعة المطبخ'), key: 'kitchenPrinterName', isPrinter: true },
+                            { label: t('طابعة الفاتورة'), key: 'receiptPrinterName', isPrinter: true },
+                        ].map((f, i, arr) => (`
+
+content = content.replace(target_map, replacement_map);
+
+// Update the rendering of the inputs to support the new fields
+const target_render = `{isEditMode ? (
+                                        availablePrinters.length > 0 ? (
+                                            <div style={{ padding: '8px 0' }}>
+                                                <CustomSelect
+                                                    value={(form as any)[f.key] || ''}
+                                                    onChange={val => set(f.key as any, val)}
+                                                    options={[
+                                                        { value: '', label: t('— الطابعة الافتراضية —') },
+                                                        ...availablePrinters.map(p => ({ value: p, label: p }))
+                                                    ]}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('اسم الطابعة')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
+                                        )
+                                    ) : (`;
+
+const replacement_render = `{isEditMode ? (
+                                        f.isPrinter && availablePrinters.length > 0 ? (
+                                            <div style={{ padding: '8px 0' }}>
+                                                <CustomSelect
+                                                    value={(form as any)[f.key] || ''}
+                                                    onChange={val => set(f.key as any, val)}
+                                                    options={[
+                                                        { value: '', label: t('— الطابعة الافتراضية —') },
+                                                        ...availablePrinters.map(p => ({ value: p, label: p }))
+                                                    ]}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div style={{ position: 'relative', width: '100%' }}>
+                                                <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={(f as any).placeholder || t('اسم الطابعة')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
+                                                {(f as any).desc && <div style={{ fontSize: '10px', color: C.textMuted, position: 'absolute', top: '14px', left: 0, pointerEvents: 'none' }}>{(f as any).desc}</div>}
+                                            </div>
+                                        )
+                                    ) : (`;
+
+content = content.replace(target_render, replacement_render);
+
+// 3. Update the receiptFooter textarea design
+const target_textarea = `<textarea
+                                        value={form.receiptFooter}
+                                        onChange={e => set('receiptFooter', e.target.value)}
+                                        rows={3}
+                                        placeholder={t('مثال: شكراً لزيارتكم - يسعدنا خدمتكم دائماً')}
+                                        style={{ width: '100%', background: C.bg, border: \`1px solid \${C.border}\`, borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, resize: 'vertical', outline: 'none', lineHeight: '1.6', boxSizing: 'border-box' }}
+                                    />`;
+
+const replacement_textarea = `<textarea
+                                        value={form.receiptFooter}
+                                        onChange={e => set('receiptFooter', e.target.value)}
+                                        rows={3}
+                                        placeholder={t('مثال: شكراً لزيارتكم - يسعدنا خدمتكم دائماً')}
+                                        style={{ width: '100%', background: 'transparent', border: 'none', padding: '10px 0', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, resize: 'vertical', outline: 'none', lineHeight: '1.6', boxSizing: 'border-box', fontWeight: 600 }}
+                                    />`;
+
+content = content.replace(target_textarea, replacement_textarea);
+
+fs.writeFileSync('src/app/settings/_tabs/RestaurantTab.tsx', content, 'utf-8');
