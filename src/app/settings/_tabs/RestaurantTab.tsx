@@ -18,6 +18,8 @@ interface RestaurantSettings {
     receiptFooter: string;
     kitchenCopyCount: number;
     dineInPaymentPolicy: 'pre-pay' | 'post-pay';
+    paymentTerminalIp: string;
+    paymentTerminalPort: string;
 }
 
 const DEFAULTS: RestaurantSettings = {
@@ -27,11 +29,13 @@ const DEFAULTS: RestaurantSettings = {
     receiptPrinterName: '',
     autoSendToKitchen: true,
     requireTableForDineIn: true,
-    allowSplitBill: false,
+    allowSplitBill: true,
     defaultOrderType: 'dine-in',
-    receiptFooter: 'شكراً لزيارتكم - يسعدنا خدمتكم دائماً',
+    receiptFooter: 'Thank you for your visit!',
     kitchenCopyCount: 1,
     dineInPaymentPolicy: 'pre-pay',
+    paymentTerminalIp: '',
+    paymentTerminalPort: '5000'
 };
 
 const STORAGE_KEY = 'restaurant_settings';
@@ -176,11 +180,40 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                     </div>
                 </div>
 
-                {/* ══ إعدادات الطباعة ══ */}
+                {/* ══ إعدادات الطباعة وشاشات العرض وماكينة الدفع ══ */}
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Printer size={14} /> {t('إعدادات الطباعة')}
+                        <Monitor size={20} className="text-gray-400" />
+                        <h2 className="text-lg font-bold">الطباعة وشاشات العرض وماكينة الدفع</h2>
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold">IP ماكينة الدفع (ECR)</label>
+                            <input
+                                type="text"
+                                value={form.paymentTerminalIp}
+                                onChange={e => set('paymentTerminalIp', e.target.value)}
+                                disabled={!isEditMode}
+                                placeholder="مثال: 192.168.1.50"
+                                className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition-all outline-none disabled:bg-gray-50"
+                            />
+                            <p className="text-xs text-gray-500">اتركها فارغة لإلغاء الربط الآلي.</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                            <label className="block text-sm font-semibold">منفذ الماكينة (Port)</label>
+                            <input
+                                type="text"
+                                value={form.paymentTerminalPort}
+                                onChange={e => set('paymentTerminalPort', e.target.value)}
+                                disabled={!isEditMode}
+                                placeholder="مثال: 5000"
+                                className="w-full p-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 transition-all outline-none disabled:bg-gray-50"
+                            />
+                        </div>
+                    </div>
+
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
                             { label: t('طابعة المطبخ'), key: 'kitchenPrinterName' },
