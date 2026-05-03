@@ -197,14 +197,15 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                 {/* ══ إعدادات الطباعة وشاشات العرض وماكينة الدفع ══ */}
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Monitor size={20} className="text-gray-400" />
-                        <h2 className="text-lg font-bold">الطباعة وشاشات العرض وماكينة الدفع</h2>
+                        <Monitor size={14} /> {t('الطباعة وشاشات العرض وماكينة الدفع')}
                     </div>
 
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: t('طابعة المطبخ'), key: 'kitchenPrinterName' },
-                            { label: t('طابعة الفاتورة'), key: 'receiptPrinterName' },
+                            { label: t('IP ماكينة الدفع (ECR)'), key: 'paymentTerminalIp', desc: t('اتركها فارغة لإلغاء الربط الآلي'), placeholder: '192.168.1.50' },
+                            { label: t('منفذ الماكينة (Port)'), key: 'paymentTerminalPort', placeholder: '5000' },
+                            { label: t('طابعة المطبخ'), key: 'kitchenPrinterName', isPrinter: true },
+                            { label: t('طابعة الفاتورة'), key: 'receiptPrinterName', isPrinter: true },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                 <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -212,7 +213,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        availablePrinters.length > 0 ? (
+                                        (f as any).isPrinter && availablePrinters.length > 0 ? (
                                             <div style={{ padding: '8px 0' }}>
                                                 <CustomSelect
                                                     value={(form as any)[f.key] || ''}
@@ -224,7 +225,10 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                                 />
                                             </div>
                                         ) : (
-                                            <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('اسم الطابعة')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
+                                            <div style={{ position: 'relative', width: '100%' }}>
+                                                <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={(f as any).placeholder || t('اسم الطابعة')} value={(form as any)[f.key] || ''} onChange={e => set(f.key as any, e.target.value)} />
+                                                {(f as any).desc && <div style={{ fontSize: '10px', color: C.textMuted, position: 'absolute', top: '14px', left: 0, pointerEvents: 'none' }}>{(f as any).desc}</div>}
+                                            </div>
                                         )
                                     ) : (
                                         <div style={{ fontSize: '13px', fontWeight: 700, color: (form as any)[f.key] ? C.textPrimary : C.textMuted, padding: '14px 0', fontStyle: (form as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(form as any)[f.key] || t('الافتراضية')}</div>
