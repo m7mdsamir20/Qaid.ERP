@@ -257,7 +257,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                         onChange={e => set('receiptFooter', e.target.value)}
                                         rows={3}
                                         placeholder={t('مثال: شكراً لزيارتكم - يسعدنا خدمتكم دائماً')}
-                                        style={{ width: '100%', background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, resize: 'vertical', outline: 'none', lineHeight: '1.6', boxSizing: 'border-box' }}
+                                        style={{ width: '100%', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, resize: 'vertical', outline: 'none', lineHeight: '1.6', boxSizing: 'border-box' }}
                                     />
                                 ) : (
                                     <div style={{ fontSize: '13px', fontWeight: 600, color: form.receiptFooter ? C.textPrimary : C.textMuted, padding: '14px 0', fontFamily: CAIRO, whiteSpace: 'pre-wrap', fontStyle: form.receiptFooter ? 'normal' : 'italic' }}>
@@ -458,7 +458,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                         }}
                                         disabled={!isEditMode}
                                         placeholder={t('اسم التطبيق (مثال: طلبات)')}
-                                        style={{ flex: 1, padding: '12px 16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.bg, fontSize: '13px', fontFamily: CAIRO, outline: 'none' }}
+                                        style={{ flex: 1, padding: '12px 16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', fontSize: '13px', fontFamily: CAIRO, outline: 'none' }}
                                     />
                                     <div style={{ position: 'relative', width: '120px' }}>
                                         <input
@@ -471,7 +471,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                             }}
                                             disabled={!isEditMode}
                                             placeholder="0"
-                                            style={{ width: '100%', padding: '12px 16px', paddingInlineEnd: '30px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.bg, fontSize: '13px', fontFamily: OUTFIT, outline: 'none' }}
+                                            style={{ width: '100%', padding: '12px 16px', paddingInlineEnd: '30px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', fontSize: '13px', fontFamily: OUTFIT, outline: 'none' }}
                                         />
                                         <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', insetInlineEnd: '12px', fontSize: '13px', color: C.textMuted }}>%</span>
                                     </div>
