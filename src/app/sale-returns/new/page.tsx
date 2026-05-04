@@ -302,7 +302,7 @@ export default function NewReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    printInvoiceDirectly(saved.id);
+                    printInvoiceDirectly(saved.id)
                 }
                 router.push('/sale-returns');
             } else { const err = await res.json(); alert(err.error || t('فشل في الحفظ')); }

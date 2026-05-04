@@ -67,7 +67,7 @@ export default function ReceiptVouchersPage() {
     });
 
     const handlePrint = (v: Voucher) => {
-        printVoucherDirectly(v.id);
+        printVoucherDirectly(v.id)
     };
 
 

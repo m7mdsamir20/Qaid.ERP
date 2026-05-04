@@ -63,7 +63,7 @@ export default function PurchaseReturnsListPage() {
     };
 
     const handlePrint = (inv: PurchaseReturn) => {
-        printInvoiceDirectly(inv.id);
+        printInvoiceDirectly(inv.id)
     };
 
     return (

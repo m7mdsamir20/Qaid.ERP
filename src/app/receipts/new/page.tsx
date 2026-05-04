@@ -121,7 +121,7 @@ export default function NewReceiptPage() {
     };
 
     const handlePrint = (v: any) => {
-        printVoucherDirectly(v.id);
+        printVoucherDirectly(v.id)
     };
 
     const InlineError = ({ field, top = '-32px' }: { field: string, top?: string }) => {

@@ -94,7 +94,7 @@ export default function SalesPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        printInvoiceDirectly(inv.id);
+        printInvoiceDirectly(inv.id)
     };
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();

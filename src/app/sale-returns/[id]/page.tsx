@@ -68,7 +68,7 @@ export default function SaleReturnDetailsPage() {
 
     const handlePrint = () => {
         if (ret) {
-            printInvoiceDirectly(ret.id);
+            printInvoiceDirectly(ret.id)
         }
     };
 

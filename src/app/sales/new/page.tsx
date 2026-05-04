@@ -428,7 +428,7 @@ function NewSalePageInner() {
                 }
 
                 if (andPrint) {
-                    printInvoiceDirectly(savedInvoice.id);
+                    printInvoiceDirectly(savedInvoice.id)
                 }
                 router.push('/sales');
             } else {

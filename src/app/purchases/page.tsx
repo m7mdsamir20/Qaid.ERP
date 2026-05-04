@@ -77,7 +77,7 @@ export default function PurchasesListPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        printInvoiceDirectly(inv.id);
+        printInvoiceDirectly(inv.id)
     };
 
     return (
