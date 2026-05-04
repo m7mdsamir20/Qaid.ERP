@@ -39,7 +39,7 @@ export default function PrintInvoicePage() {
                 setLoading(false);
             })
             .catch(() => { setError('فشل تحميل الفاتورة'); setLoading(false); });
-    }, [id]);
+    }, [id, status, router]);
 
     const handleIframeLoad = useCallback(() => {
         if (autoPrinted.current) return;
