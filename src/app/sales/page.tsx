@@ -12,6 +12,8 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface Invoice {
     id: string;
@@ -92,7 +94,7 @@ export default function SalesPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        window.open(`/print/invoice/${inv.id}`, '_blank');
+        printInvoiceDirectly(inv.id);
     };
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();

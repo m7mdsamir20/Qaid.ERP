@@ -10,6 +10,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC
 import PageHeader from '@/components/PageHeader';
 import PriceInput from '@/components/PriceInput';
 import { formatNumber } from '@/lib/currency';
+import { printVoucherDirectly } from '@/lib/printDirectly';
+
 
 /* ── Types ── */
 interface Supplier { id: string; name: string; balance: number; }
@@ -76,7 +78,7 @@ export default function NewPaymentPage() {
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
 
     const handlePrint = (v: any) => {
-        window.open(`/print/voucher/${v.id}`, '_blank');
+        printVoucherDirectly(v.id);
     };
 
     const handleSubmit = async (andPrint = false) => {

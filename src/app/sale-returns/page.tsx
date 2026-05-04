@@ -9,6 +9,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -57,7 +59,7 @@ export default function SaleReturnsListPage() {
     });
 
     const handlePrint = (r: ReturnInvoice) => {
-        window.open(`/print/invoice/${r.id}`, '_blank');
+        printInvoiceDirectly(r.id);
     };
 
     const getStatusStyle = (r: ReturnInvoice) => {

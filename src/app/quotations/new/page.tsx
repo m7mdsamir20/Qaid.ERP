@@ -14,6 +14,8 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import PriceInput from '@/components/PriceInput';
+import { printQuotationDirectly } from '@/lib/printDirectly';
+
 
 interface Customer { id: string; name: string; phone?: string; balance: number; }
 interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; }
@@ -233,7 +235,7 @@ export default function NewQuotationPage() {
             });
             if (res.ok) {
                 const savedQuotation = await res.json();
-                window.open(`/print/quotation/${savedQuotation.id}`, '_blank');
+                printQuotationDirectly(savedQuotation.id);
                 router.push('/quotations');
             } else {
                 const err = await res.json();

@@ -13,6 +13,8 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 /* ── Types ── */
 interface Supplier { id: string; name: string; phone?: string; balance: number; }
@@ -274,7 +276,7 @@ export default function NewPurchaseReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    window.open(`/print/invoice/${saved.id}`, '_blank');
+                    printInvoiceDirectly(saved.id);
                 }
                 router.push('/purchase-returns');
             } else { const err = await res.json(); alert(err.error || 'فشل في الحفظ'); }

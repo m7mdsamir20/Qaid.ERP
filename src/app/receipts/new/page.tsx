@@ -11,6 +11,8 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { formatNumber } from '@/lib/currency';
+import { printVoucherDirectly } from '@/lib/printDirectly';
+
 
 /* ── Types ── */
 interface Customer { id: string; name: string; balance: number; }
@@ -119,7 +121,7 @@ export default function NewReceiptPage() {
     };
 
     const handlePrint = (v: any) => {
-        window.open(`/print/voucher/${v.id}`, '_blank');
+        printVoucherDirectly(v.id);
     };
 
     const InlineError = ({ field, top = '-32px' }: { field: string, top?: string }) => {

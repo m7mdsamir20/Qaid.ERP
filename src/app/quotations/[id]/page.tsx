@@ -11,6 +11,8 @@ import { FileText, Printer, CheckCircle, Loader2, X, Eye, Package, Info } from '
 import { THEME, C, CAIRO, OUTFIT, IS, LS, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
+import { printQuotationDirectly } from '@/lib/printDirectly';
+
 
 export default function QuotationViewPage() {
     const { lang, t } = useTranslation();
@@ -74,7 +76,7 @@ export default function QuotationViewPage() {
                     backUrl="/quotations"
                     primaryButton={{
                         label: t('طباعة العرض'),
-                        onClick: () => window.open(`/print/quotation/${quotation.id}`, '_blank'),
+                        onClick: () => printQuotationDirectly(quotation.id);,
                         icon: Printer
                     }}
                 />
