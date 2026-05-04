@@ -12,6 +12,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } f
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface ReturnInvoice {
     id: string;
@@ -192,7 +194,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 return;
                             }
 
-                            window.open(`/print/invoice/${invoice.id}`, '_blank');
+                            printInvoiceDirectly(invoice.id);
                         },
                         icon: Printer
                     }}

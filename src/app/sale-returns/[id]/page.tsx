@@ -8,6 +8,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import { ChevronRight, Printer, Package, Calendar, User, CreditCard, FileText, Loader2, RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -66,7 +68,7 @@ export default function SaleReturnDetailsPage() {
 
     const handlePrint = () => {
         if (ret) {
-            window.open(`/print/invoice/${ret.id}`, '_blank');
+            printInvoiceDirectly(ret.id);
         }
     };
 

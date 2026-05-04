@@ -10,6 +10,8 @@ import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface PurchaseReturn {
     id: string; invoiceNumber: number; date: string;
@@ -61,7 +63,7 @@ export default function PurchaseReturnsListPage() {
     };
 
     const handlePrint = (inv: PurchaseReturn) => {
-        window.open(`/print/invoice/${inv.id}`, '_blank');
+        printInvoiceDirectly(inv.id);
     };
 
     return (

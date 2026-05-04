@@ -14,6 +14,8 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface Supplier { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
@@ -336,7 +338,7 @@ export default function NewPurchasePage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) window.open(`/print/invoice/${(saved.invoice || saved).id}`, '_blank');
+                if (andPrint) printInvoiceDirectly((saved.invoice || saved).id);
                 router.push('/purchases');
             } else alert(t('فشل الحفظ'));
         } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }

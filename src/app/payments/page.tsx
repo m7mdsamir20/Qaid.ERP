@@ -11,6 +11,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, 
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useCurrency } from '@/hooks/useCurrency';
+import { printVoucherDirectly } from '@/lib/printDirectly';
+
 
 /* ── Types ── */
 interface Voucher {
@@ -59,7 +61,7 @@ export default function PaymentVouchersPage() {
     useEffect(() => { fetchAll(); }, [fetchAll]);
 
     const handlePrint = (v: Voucher) => {
-        window.open(`/print/voucher/${v.id}`, '_blank');
+        printVoucherDirectly(v.id);
     };
 
 

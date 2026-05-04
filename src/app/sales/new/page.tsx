@@ -14,6 +14,8 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
@@ -426,7 +428,7 @@ function NewSalePageInner() {
                 }
 
                 if (andPrint) {
-                    window.open(`/print/invoice/${savedInvoice.id}`, '_blank');
+                    printInvoiceDirectly(savedInvoice.id);
                 }
                 router.push('/sales');
             } else {

@@ -11,6 +11,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STY
 import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
+import { printVoucherDirectly } from '@/lib/printDirectly';
+
 
 /* ── Types ── */
 interface Voucher {
@@ -65,7 +67,7 @@ export default function ReceiptVouchersPage() {
     });
 
     const handlePrint = (v: Voucher) => {
-        window.open(`/print/voucher/${v.id}`, '_blank');
+        printVoucherDirectly(v.id);
     };
 
 

@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { printQuotationDirectly } from '@/lib/printDirectly';
+
 
 interface Quotation {
     id: string;
@@ -213,7 +215,7 @@ export default function QuotationsPage() {
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                                         <button
-                                                            onClick={() => window.open(`/print/quotation/${quo.id}`, '_blank')}
+                                                            onClick={() => printQuotationDirectly(quo.id);}
                                                             title={t("طباعة")}
                                                             style={TABLE_STYLE.actionBtn()}
                                                         >

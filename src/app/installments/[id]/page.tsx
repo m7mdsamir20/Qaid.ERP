@@ -12,6 +12,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BT
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
+import { printInstallmentDirectly } from '@/lib/printDirectly';
+
 
 
 const fmt  = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
@@ -134,7 +136,7 @@ export default function InstallmentDetailPage() {
 
     const handlePrint = () => {
         if (!plan) return;
-        window.open(`/print/installment/${plan.id}`, '_blank');
+        printInstallmentDirectly(plan.id);
     };
 
     if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }

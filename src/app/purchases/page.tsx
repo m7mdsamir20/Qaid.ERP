@@ -10,6 +10,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, TABLE_ST
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useTranslation } from '@/lib/i18n';
+import { printInvoiceDirectly } from '@/lib/printDirectly';
+
 
 interface Invoice {
     id: string; invoiceNumber: number; date: string;
@@ -75,7 +77,7 @@ export default function PurchasesListPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        window.open(`/print/invoice/${inv.id}`, '_blank');
+        printInvoiceDirectly(inv.id);
     };
 
     return (
