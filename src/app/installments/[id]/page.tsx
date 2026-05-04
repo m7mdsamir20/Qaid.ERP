@@ -136,7 +136,7 @@ export default function InstallmentDetailPage() {
 
     const handlePrint = () => {
         if (!plan) return;
-        printInstallmentDirectly(plan.id);
+        printInstallmentDirectly(plan.id)
     };
 
     if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }

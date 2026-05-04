@@ -59,7 +59,7 @@ export default function SaleReturnsListPage() {
     });
 
     const handlePrint = (r: ReturnInvoice) => {
-        printInvoiceDirectly(r.id);
+        printInvoiceDirectly(r.id)
     };
 
     const getStatusStyle = (r: ReturnInvoice) => {

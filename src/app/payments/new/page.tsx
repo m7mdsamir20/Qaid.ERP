@@ -78,7 +78,7 @@ export default function NewPaymentPage() {
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
 
     const handlePrint = (v: any) => {
-        printVoucherDirectly(v.id);
+        printVoucherDirectly(v.id)
     };
 
     const handleSubmit = async (andPrint = false) => {

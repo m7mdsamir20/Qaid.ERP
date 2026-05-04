@@ -76,7 +76,7 @@ export default function QuotationViewPage() {
                     backUrl="/quotations"
                     primaryButton={{
                         label: t('طباعة العرض'),
-                        onClick: () => printQuotationDirectly(quotation.id);,
+                        onClick: () => printQuotationDirectly(quotation.id),
                         icon: Printer
                     }}
                 />

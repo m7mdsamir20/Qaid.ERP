@@ -215,7 +215,7 @@ export default function QuotationsPage() {
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                                         <button
-                                                            onClick={() => printQuotationDirectly(quo.id);}
+                                                            onClick={() => printQuotationDirectly(quo.id)}
                                                             title={t("طباعة")}
                                                             style={TABLE_STYLE.actionBtn()}
                                                         >

@@ -61,7 +61,7 @@ export default function PaymentVouchersPage() {
     useEffect(() => { fetchAll(); }, [fetchAll]);
 
     const handlePrint = (v: Voucher) => {
-        printVoucherDirectly(v.id);
+        printVoucherDirectly(v.id)
     };
 
 

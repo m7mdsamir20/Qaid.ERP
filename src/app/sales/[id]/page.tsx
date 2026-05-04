@@ -194,7 +194,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 return;
                             }
 
-                            printInvoiceDirectly(invoice.id);
+                            printInvoiceDirectly(invoice.id)
                         },
                         icon: Printer
                     }}

@@ -276,7 +276,7 @@ export default function NewPurchaseReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    printInvoiceDirectly(saved.id);
+                    printInvoiceDirectly(saved.id)
                 }
                 router.push('/purchase-returns');
             } else { const err = await res.json(); alert(err.error || 'فشل في الحفظ'); }

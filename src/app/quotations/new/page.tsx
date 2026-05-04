@@ -235,7 +235,7 @@ export default function NewQuotationPage() {
             });
             if (res.ok) {
                 const savedQuotation = await res.json();
-                printQuotationDirectly(savedQuotation.id);
+                printQuotationDirectly(savedQuotation.id)
                 router.push('/quotations');
             } else {
                 const err = await res.json();

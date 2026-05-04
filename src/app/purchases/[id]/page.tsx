@@ -89,7 +89,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                     primaryButton={{
                         label: t('طباعة الفاتورة'),
                         onClick: () => {
-                            printInvoiceDirectly(invoice.id);
+                            printInvoiceDirectly(invoice.id)
                         },
                         icon: Printer
                     }}
