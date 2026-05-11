@@ -209,14 +209,23 @@ export default function POSPage() {
 
     const allOrderTypes: any[] = [
         ...ORDER_TYPES,
-        ...(restaurantSettings?.deliveryApps || []).map((app: any) => ({
-            value: `app_${app.id}`,
-            label: app.name,
+        ...(restaurantSettings?.deliveryApps?.length > 0 ? [{
+            value: 'delivery_app',
+            label: 'تطبيقات',
             icon: Store,
             color: '#ec4899',
             isApp: true
-        }))
+        }] : [])
     ];
+
+    const getCurrentOrderTypeLabel = () => {
+        if (orderType.startsWith('app_')) {
+            const appId = orderType.replace('app_', '');
+            const app = restaurantSettings?.deliveryApps?.find((a: any) => a.id === appId);
+            return app ? app.name : 'تطبيق توصيل';
+        }
+        return allOrderTypes.find(o => o.value === orderType)?.label || t('نوع الطلب');
+    };
 
     useEffect(() => { 
         if (status === 'authenticated' && isRestaurants && hasPosPerm) {
@@ -1266,7 +1275,7 @@ export default function POSPage() {
                         {/* 3 أيقونات تحت الملاحظات */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <button onClick={() => setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('نوع الطلب')}>
-                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{allOrderTypes.find(o => o.value === orderType)?.label || t('نوع الطلب')}</span>
+                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrentOrderTypeLabel()}</span>
                             </button>
                             <button onClick={() => setShowCustomerModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${selectedCustomer ? C.primary : C.border}`, background: selectedCustomer ? `${C.primary}10` : C.card, color: selectedCustomer ? C.primary : C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('العميل')}>
                                 <User size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{selectedCustomer ? customers.find(c => c.id === selectedCustomer)?.name || t('العميل') : t('إضافة عميل')}</span>
@@ -1595,9 +1604,18 @@ export default function POSPage() {
                             {allOrderTypes.map((ot: any) => {
                                 const Icon = ot.icon;
                                 const pendingCount = ot.value === 'online' ? openOrders.filter(o => o.status === 'pending').length : 0;
+                                const isSelected = ot.value === 'delivery_app' ? orderType.startsWith('app_') : orderType === ot.value;
                                 return (
-                                    <button key={ot.value} onClick={() => { setOrderType(ot.value); setSelectedTable(''); }}
-                                        style={{ position: 'relative', padding: '8px 4px', borderRadius: '10px', border: `1px solid ${orderType === ot.value ? ot.color + '60' : C.border}`, background: orderType === ot.value ? ot.color + '15' : 'transparent', color: orderType === ot.value ? ot.color : C.textMuted, fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                    <button key={ot.value} onClick={() => { 
+                                            if (ot.value === 'delivery_app') {
+                                                const firstApp = restaurantSettings?.deliveryApps?.[0];
+                                                if (firstApp) setOrderType('app_' + firstApp.id);
+                                            } else {
+                                                setOrderType(ot.value); 
+                                            }
+                                            setSelectedTable(''); 
+                                        }}
+                                        style={{ position: 'relative', padding: '8px 4px', borderRadius: '10px', border: `1px solid ${isSelected ? ot.color + '60' : C.border}`, background: isSelected ? ot.color + '15' : 'transparent', color: isSelected ? ot.color : C.textMuted, fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                         <Icon size={16} />
                                         {ot.label}
                                         {pendingCount > 0 && (
@@ -1609,6 +1627,17 @@ export default function POSPage() {
                                 );
                             })}
                         </div>
+                        {orderType.startsWith('app_') && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('التطبيق')}</label>
+                                <CustomSelect 
+                                    value={orderType.replace('app_', '')} 
+                                    onChange={v => setOrderType('app_' + v)} 
+                                    options={(restaurantSettings?.deliveryApps || []).map((app: any) => ({ value: app.id, label: app.name }))} 
+                                    placeholder={t('— اختر التطبيق —')} 
+                                />
+                            </div>
+                        )}
                         {orderType === 'dine-in' && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('الطاولة')}</label>
