@@ -84,6 +84,7 @@ export const navSections = [
         links: [
             { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
             { id: '/restaurant/drivers', href: '/restaurant/drivers', label: 'إدارة السائقين' },
+            { id: '/delivery/apps', href: '/delivery/apps', label: 'تطبيقات التوصيل' },
         ],
     },
     {

@@ -6,11 +6,7 @@ import { Printer, Monitor, UtensilsCrossed, ChefHat, Truck, Plus, Trash2 } from 
 import { TabHeader, Toggle } from './shared';
 import CustomSelect from '@/components/CustomSelect';
 
-export interface DeliveryApp {
-    id: string;
-    name: string;
-    markupRate: number;
-}
+
 
 interface RestaurantSettings {
     enableKds: boolean;
@@ -26,7 +22,7 @@ interface RestaurantSettings {
     dineInPaymentPolicy: 'pre-pay' | 'post-pay';
     paymentTerminalIp: string;
     paymentTerminalPort: string;
-    deliveryApps: DeliveryApp[];
+
     defaultCashTreasuryId: string;
     defaultCardTreasuryId: string;
 }
@@ -45,7 +41,7 @@ const DEFAULTS: RestaurantSettings = {
     dineInPaymentPolicy: 'pre-pay',
     paymentTerminalIp: '',
     paymentTerminalPort: '5000',
-    deliveryApps: [],
+
     defaultCashTreasuryId: '',
     defaultCardTreasuryId: ''
 };
@@ -435,76 +431,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                     </div>
                 </div>
 
-                {/* ══ تطبيقات التوصيل ══ */}
-                <div style={{ marginBottom: '24px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Truck size={14} /> {t('تطبيقات التوصيل (Aggregators)')}
-                    </div>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
-                        <p style={{ fontSize: '13px', color: C.textSecondary, marginBottom: '16px', fontFamily: CAIRO }}>
-                            {t('أضف تطبيقات التوصيل (مثل طلبات، جاهز) وحدد نسبة زيادة السعر ليتم تطبيقها تلقائياً عند اختيار التطبيق في شاشة الكاشير.')}
-                        </p>
-                        
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {(form.deliveryApps || []).map((app, index) => (
-                                <div key={app.id} style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                    <input
-                                        type="text"
-                                        value={app.name}
-                                        onChange={e => {
-                                            const newApps = [...(form.deliveryApps || [])];
-                                            newApps[index].name = e.target.value;
-                                            set('deliveryApps', newApps);
-                                        }}
-                                        disabled={!isEditMode}
-                                        placeholder={t('اسم التطبيق (مثال: طلبات)')}
-                                        style={{ flex: 1, padding: '12px 16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', fontSize: '13px', fontFamily: CAIRO, outline: 'none' }}
-                                    />
-                                    <div style={{ position: 'relative', width: '120px' }}>
-                                        <input
-                                            type="number"
-                                            value={app.markupRate}
-                                            onChange={e => {
-                                                const newApps = [...(form.deliveryApps || [])];
-                                                newApps[index].markupRate = Number(e.target.value);
-                                                set('deliveryApps', newApps);
-                                            }}
-                                            disabled={!isEditMode}
-                                            placeholder="0"
-                                            style={{ width: '100%', padding: '12px 16px', paddingInlineEnd: '30px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', fontSize: '13px', fontFamily: OUTFIT, outline: 'none' }}
-                                        />
-                                        <span style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', insetInlineEnd: '12px', fontSize: '13px', color: C.textMuted }}>%</span>
-                                    </div>
-                                    {isEditMode && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const newApps = (form.deliveryApps || []).filter((_, i) => i !== index);
-                                                set('deliveryApps', newApps);
-                                            }}
-                                            style={{ width: 42, height: 42, borderRadius: '12px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
-                            
-                            {isEditMode && (
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        const newApps = [...(form.deliveryApps || []), { id: Date.now().toString(), name: '', markupRate: 0 }];
-                                        set('deliveryApps', newApps);
-                                    }}
-                                    style={{ padding: '12px', borderRadius: '12px', border: `1px dashed ${C.primary}`, background: `${C.primary}05`, color: C.primary, fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
-                                >
-                                    <Plus size={16} /> {t('إضافة تطبيق توصيل')}
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
+
             </form>
         </div>
     );
