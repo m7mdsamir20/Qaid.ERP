@@ -913,18 +913,10 @@ function NewSalePageInner() {
                             <div style={{ ...STitle, color: '#256af4' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
-                                {/* صافي الفاتورة */}
-                                <div style={{
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
-                                    padding: '10px 14px', borderRadius: '12px', marginTop: '6px',
-                                    border: `1px solid ${C.primaryBorder}`,
-                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
-                                }}>
-                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('المبلغ')}</span>
-                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px' }}>
-                                        {fMoneyJSX(netTotal, '', { fontSize: '18px', fontWeight: 700 })}
-                                    </span>
+                                {/* إجمالي الأصناف */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0', marginTop: '4px' }}>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600 }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
                                 </div>
 
                                 {/* الخصم */}
@@ -1005,10 +997,18 @@ function NewSalePageInner() {
                                     </div>
                                 )}
 
-                                {/* إجمالي الأصناف */}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0', marginTop: '4px' }}>
-                                    <span style={{ color: C.textSecondary, fontWeight: 600 }}>{t('إجمالي الأصناف')}</span>
-                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
+                                {/* صافي الفاتورة */}
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '6px',
+                                    border: `1px solid ${C.primaryBorder}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
+                                }}>
+                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px' }}>
+                                        {fMoneyJSX(netTotal, '', { fontSize: '18px', fontWeight: 700 })}
+                                    </span>
                                 </div>
                             </div>
                         </div>
