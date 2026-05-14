@@ -128,8 +128,8 @@ export default function CustomerDisplayPage() {
                     </div>
                     {state.hasTax && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: C.textSecondary, fontSize: '20px' }}>
-                            <span>الضريبة ({state.taxRate}%):</span>
-                            <span>{fMoney(state.taxAmount)}</span>
+                            <span>الضريبة ({state.taxRate}%){state.isTaxInclusive && ' (شامل)'}:</span>
+                            <span>{!state.isTaxInclusive && '+ '}{fMoney(state.taxAmount)}</span>
                         </div>
                     )}
                     {(state.discount > 0 || state.couponDiscount > 0) && (
