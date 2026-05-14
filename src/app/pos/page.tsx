@@ -419,12 +419,13 @@ export default function POSPage() {
                     deliveryFee: df,
                     total,
                     hasTax,
-                    taxRate
+                    taxRate,
+                    isTaxInclusive
                 }
             });
             bc.close();
         } catch(e) {}
-    }, [cart, subtotal, discount, couponDiscount, taxAmount, serviceAmount, total, hasTax, taxRate, restaurantSettings.enableCustomerDisplay]);
+    }, [cart, subtotal, discount, couponDiscount, taxAmount, serviceAmount, total, hasTax, taxRate, isTaxInclusive, restaurantSettings.enableCustomerDisplay]);
 
     const handleApplyCoupon = async () => {
         if (!couponCode) return;
@@ -1321,8 +1322,8 @@ export default function POSPage() {
                             )}
                             {taxAmount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
-                                    <span>{t('ضريبة')} ({taxRate}%)</span>
-                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoneyJSX(taxAmount)}</span>
+                                    <span>{t('ضريبة')} ({taxRate}%) {isTaxInclusive && '(شامل)'}</span>
+                                    <span style={{ fontFamily: OUTFIT }}>{!isTaxInclusive && '+ '}{fMoneyJSX(taxAmount)}</span>
                                 </div>
                             )}
                             {serviceAmount > 0 && (
