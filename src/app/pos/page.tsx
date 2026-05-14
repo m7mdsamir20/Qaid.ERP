@@ -115,6 +115,7 @@ export default function POSPage() {
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [discount, setDiscount] = useState(0);
     const [hasTax, setHasTax] = useState(false);
+    const [isTaxInclusive, setIsTaxInclusive] = useState(false);
     const [taxRate, setTaxRate] = useState(0);
     const [hasServiceCharge, setHasServiceCharge] = useState(false);
     const [serviceChargeRate, setServiceChargeRate] = useState(0);
@@ -186,7 +187,10 @@ export default function POSPage() {
                 try {
                     const ts = typeof settings.company.taxSettings === 'string' ? JSON.parse(settings.company.taxSettings) : settings.company.taxSettings;
                     setHasTax(ts.enabled ?? false);
-                    if (ts.enabled) setTaxRate(ts.rate ?? 0);
+                    if (ts.enabled) {
+                        setTaxRate(ts.rate ?? 0);
+                        setIsTaxInclusive(ts.isInclusive ?? false);
+                    }
                     setHasServiceCharge(ts.hasServiceCharge ?? false);
                     if (ts.hasServiceCharge) setServiceChargeRate(ts.serviceChargeRate ?? 0);
                 } catch(e) {}
@@ -380,10 +384,22 @@ export default function POSPage() {
     const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
     const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
     const baseForTax = Math.max(0, subtotal - discount - couponDiscount);
-    const taxAmount = hasTax && taxRate > 0 ? Math.round(baseForTax * taxRate / 100) : 0;
+    
+    let taxAmount = 0;
+    let netTotalForTax = baseForTax;
+    
+    if (hasTax && taxRate > 0) {
+        if (isTaxInclusive) {
+            taxAmount = Math.round(baseForTax - (baseForTax / (1 + (taxRate / 100))));
+            netTotalForTax = baseForTax - taxAmount;
+        } else {
+            taxAmount = Math.round(baseForTax * taxRate / 100);
+        }
+    }
+    
     const serviceAmount = hasServiceCharge && orderType === 'dine-in' && serviceChargeRate > 0 ? Math.round(baseForTax * serviceChargeRate / 100) : 0;
     const df = orderType === 'delivery' ? (Number(deliveryFee) || 0) : 0;
-    const total = Math.max(0, baseForTax + taxAmount + serviceAmount + df);
+    const total = Math.max(0, netTotalForTax + taxAmount + serviceAmount + df);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
     // Broadcast cart updates to Customer Display
@@ -444,7 +460,10 @@ export default function POSPage() {
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
         const formatMoney = (m: number) => Number(m).toFixed(2);
-        const subtotal = finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) - (orderData.deliveryFee || 0) + finalDiscount;
+        const isInclusive = orderData.isTaxInclusive === true;
+        const subtotal = isInclusive
+            ? finalTotal - (orderData.serviceAmount || 0) - (orderData.deliveryFee || 0) + finalDiscount
+            : finalTotal - (orderData.taxAmount || 0) - (orderData.serviceAmount || 0) - (orderData.deliveryFee || 0) + finalDiscount;
         const paidAmount = orderData.paidAmount ?? finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
@@ -967,6 +986,7 @@ export default function POSPage() {
                     discount,
                     couponCode: appliedCoupon?.code || null,
                     couponDiscount: appliedCoupon?.discount || 0,
+                    isTaxInclusive,
                     taxAmount,
                     serviceAmount,
                     deliveryFee: df,
