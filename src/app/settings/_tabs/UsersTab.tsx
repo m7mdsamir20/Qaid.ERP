@@ -122,26 +122,27 @@ export default function UsersTab({
                         ))}
 
                         {/* الدور ── آخر حاجة */}
-                        <div className="custom-dropdown" style={{ position: 'relative' }}>
+                        <div className="custom-dropdown">
                             <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO }}>{t('الدور الوظيفي')}</label>
-                            <button type="button"
-                                onClick={() => setOpenDropdown(openDropdown === 'role' ? null : 'role')}
-                                style={{
-                                    width: '100%', height: '40px', padding: '0 12px', boxSizing: 'border-box',
-                                    borderRadius: '10px', border: `1px solid ${openDropdown === 'role' ? C.primary : C.border}`,
-                                    background: 'rgba(255,255,255,0.02)', color: C.textPrimary,
-                                    fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    fontFamily: CAIRO, transition: 'border-color 0.2s'
-                                }}>
-                                <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                <span style={{ flex: 1,  fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
-                                    {roleLabels[newUserForm.roleId] || newUserForm.roleId}
-                                </span>
-                            </button>
+                            <div style={{ position: 'relative' }}>
+                                <button type="button"
+                                    onClick={() => setOpenDropdown(openDropdown === 'role' ? null : 'role')}
+                                    style={{
+                                        width: '100%', height: '40px', padding: '0 12px', boxSizing: 'border-box',
+                                        borderRadius: '10px', border: `1px solid ${openDropdown === 'role' ? C.primary : C.border}`,
+                                        background: 'rgba(255,255,255,0.02)', color: C.textPrimary,
+                                        fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        fontFamily: CAIRO, transition: 'border-color 0.2s'
+                                    }}>
+                                    <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                                    <span style={{ flex: 1,  fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
+                                        {roleLabels[newUserForm.roleId] || newUserForm.roleId}
+                                    </span>
+                                </button>
 
-                            {openDropdown === 'role' && (
-                                <div style={{ position: 'absolute', top: '46px', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
+                                {openDropdown === 'role' && (
+                                    <div style={{ position: 'absolute', top: 'calc(100% + 6px)', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
                                     {[
                                         { value: 'none' },
                                         { value: 'admin' },
@@ -182,6 +183,7 @@ export default function UsersTab({
                                     ))}
                                 </div>
                             )}
+                            </div>
                         </div>
                     </div>
 
