@@ -142,7 +142,7 @@ export default function UsersTab({
                                 </button>
 
                                 {openDropdown === 'role' && (
-                                    <div style={{ position: 'absolute', top: 'calc(100% + 6px)', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
+                                    <div className="custom-scrollbar" style={{ position: 'absolute', top: 'calc(100% + 6px)', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflowY: 'auto', maxHeight: '220px', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
                                     {[
                                         { value: 'none' },
                                         { value: 'admin' },
@@ -165,8 +165,8 @@ export default function UsersTab({
                                                 setOpenDropdown(null);
                                             }}
                                             style={{
-                                                width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
-                                                padding: '10px 14px', border: 'none', boxSizing: 'border-box',
+                                                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
+                                                padding: '12px 14px', border: 'none', boxSizing: 'border-box',
                                                 borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none',
                                                 background: newUserForm.roleId === opt.value ? `${C.primary}15` : 'transparent',
                                                 color: newUserForm.roleId === opt.value ? C.primary : C.textSecondary,
@@ -176,9 +176,9 @@ export default function UsersTab({
                                             onMouseLeave={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'transparent'; }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 {newUserForm.roleId === opt.value && opt.value !== 'none' && <Check size={13} style={{ color: C.primary }} />}
-                                                <span style={{ fontSize: '12.5px', fontWeight: newUserForm.roleId === opt.value ? 900 : (opt.value === 'none' ? 600 : 700), opacity: opt.value === 'none' ? 0.7 : 1 }}>{roleLabels[opt.value]}</span>
+                                                <span style={{ fontSize: '13px', fontWeight: newUserForm.roleId === opt.value ? 900 : (opt.value === 'none' ? 600 : 700), opacity: opt.value === 'none' ? 0.7 : 1 }}>{roleLabels[opt.value]}</span>
                                             </div>
-                                            <span style={{ fontSize: '10px', color: C.textSecondary, opacity: 0.8, paddingInlineStart: (newUserForm.roleId === opt.value && opt.value !== 'none') ? '21px' : '0' }}>{roleDescriptions[opt.value]}</span>
+                                            <span style={{ fontSize: '11px', color: C.textSecondary, opacity: 0.8, textAlign: 'left', whiteSpace: 'nowrap' }}>{roleDescriptions[opt.value]}</span>
                                         </button>
                                     ))}
                                 </div>
