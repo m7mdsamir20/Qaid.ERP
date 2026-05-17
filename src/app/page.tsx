@@ -606,9 +606,9 @@ export default function DashboardPage() {
                   {t('عرض التقارير')} <ArrowUpRight size={14} />
                 </Link>
               )}>
-              <div style={{ padding: '0 10px 10px' }} className="scroll-table">
+              <div style={{ padding: '0', maxHeight: '350px', overflowY: 'auto' }} className="scroll-table custom-scrollbar">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
-                  <thead>
+                  <thead style={{ position: 'sticky', top: 0, background: C.card, zIndex: 10 }}>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {[t('التاريخ والطرف'), t('القيمة'), t('النوع'), t('رقم')].map((h, i) => (
                         <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
