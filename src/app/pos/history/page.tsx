@@ -578,12 +578,12 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Order Info Grid */}
-                            <div style={{ padding: '10px 14px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+                            <div style={{ padding: '10px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', borderBottom: `1px dashed ${C.border}`, paddingBottom: '16px' }}>
                                 <div>
                                     <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>نوع الخدمة</p>
                                     <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type}</p>
                                 </div>
-                                <div style={{ borderInlineStart: `1px solid ${C.border}`, borderInlineEnd: `1px solid ${C.border}` }}>
+                                <div>
                                     <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>الكاشير</p>
                                     <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{selectedOrder.shift?.user?.name || '-'}</p>
                                 </div>
@@ -595,25 +595,25 @@ export default function OrdersHistoryPage() {
 
                             {/* Notes Display */}
                             {selectedOrder.notes && (
-                                <div style={{ padding: '10px 14px', background: `${C.danger}15`, border: `1px dashed ${C.danger}40`, borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                                <div style={{ padding: '10px 14px', background: `${C.danger}15`, border: `1px dashed ${C.danger}40`, borderRadius: '12px', display: 'flex', alignItems: 'flex-start', gap: '8px', marginTop: '4px' }}>
                                     <AlertCircle size={16} color={C.danger} style={{ marginTop: '2px' }} />
                                     <p style={{ margin: 0, fontSize: '13px', color: C.danger, fontWeight: 700, whiteSpace: 'pre-wrap' }}>{selectedOrder.notes}</p>
                                 </div>
                             )}
 
                             {/* Order Items List */}
-                            <div>
+                            <div style={{ marginTop: '8px' }}>
                                 <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <ShoppingBag size={14} color={C.primary} /> عناصر الطلب
                                 </h3>
-                                <div className="custom-scrollbar" style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '8px', display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(255,255,255,0.01)', maxHeight: '160px', overflowY: 'auto' }}>
-                                    {selectedOrder.lines?.map((line: any) => (
-                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 12px', background: C.card, borderRadius: '8px', border: `1px solid ${C.border}`, boxShadow: '0 2px 4px rgba(0,0,0,0.03)' }}>
+                                <div className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: '0', maxHeight: '200px', overflowY: 'auto' }}>
+                                    {selectedOrder.lines?.map((line: any, idx: number) => (
+                                        <div key={line.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 0', borderBottom: idx < selectedOrder.lines.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{line.itemName}</span>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.04)', padding: '2px 8px', borderRadius: '4px' }}>x {line.quantity}</span>
+                                                <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>x {line.quantity}</span>
                                                 <span style={{ fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary, fontSize: '13px', minWidth: '70px', textAlign: isRtl ? 'left' : 'right' }}>{fMoneyJSX(line.total)}</span>
                                             </div>
                                         </div>
@@ -622,50 +622,44 @@ export default function OrdersHistoryPage() {
                             </div>
 
                             {/* Summary */}
-                            <div>
-                                <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '16px', marginTop: '4px' }}>
+                                <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <FileText size={14} color={C.primary} /> ملخص الطلب
                                 </h3>
-                                <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '12px 16px', border: `1px solid ${C.border}` }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                <div style={{ padding: '0 8px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>المجموع الفرعي</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.subtotal)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>تخفيض</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>الخدمة</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.serviceAmount || 0)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
                                         <span>ضريبة</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.taxAmount)}</span>
                                     </div>
-                                    <div style={{ height: '1px', background: C.border, margin: '8px 0' }}></div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
+                                    <div style={{ height: '1px', background: C.border, margin: '12px 0' }}></div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
                                         <span>المجموع</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoneyJSX(selectedOrder.total)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '12px', color: C.textPrimary, fontWeight: 700 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '12px', color: C.textPrimary, fontWeight: 700 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <span>دفع</span>
-                                            {selectedOrder.paidAmount >= selectedOrder.total && selectedOrder.total > 0 ? (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.success}15`, color: C.success, border: `1px solid ${C.success}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, fontWeight: 800 }}>
-                                                    <CheckCircle2 size={12} /> {selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'}
-                                                </span>
-                                            ) : (
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, fontWeight: 800 }}>
-                                                    <XCircle size={12} /> {selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'}
-                                                </span>
-                                            )}
+                                            <span style={{ fontSize: '11px', color: C.textSecondary }}>
+                                                ({selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'})
+                                            </span>
                                         </div>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px' }}>{fMoneyJSX(selectedOrder.paidAmount)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: selectedOrder.paidAmount < selectedOrder.total ? C.danger : C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
                                         <span>المتبقي</span>
-                                        <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
+                                        <span style={{ fontFamily: OUTFIT }}>{fMoneyJSX(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
                                     </div>
                                 </div>
                             </div>
