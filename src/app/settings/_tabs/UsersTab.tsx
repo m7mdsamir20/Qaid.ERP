@@ -127,7 +127,7 @@ export default function UsersTab({
                             <button type="button"
                                 onClick={() => setOpenDropdown(openDropdown === 'role' ? null : 'role')}
                                 style={{
-                                    width: '100%', height: '40px', padding: '0 12px',
+                                    width: '100%', height: '40px', padding: '0 12px', boxSizing: 'border-box',
                                     borderRadius: '10px', border: `1px solid ${openDropdown === 'role' ? C.primary : C.border}`,
                                     background: 'rgba(255,255,255,0.02)', color: C.textPrimary,
                                     fontSize: '13px', fontWeight: 700, cursor: 'pointer',
@@ -164,20 +164,20 @@ export default function UsersTab({
                                                 setOpenDropdown(null);
                                             }}
                                             style={{
-                                                width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                padding: '10px 14px', border: 'none',
+                                                width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+                                                padding: '10px 14px', border: 'none', boxSizing: 'border-box',
                                                 borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none',
                                                 background: newUserForm.roleId === opt.value ? `${C.primary}15` : 'transparent',
                                                 color: newUserForm.roleId === opt.value ? C.primary : C.textSecondary,
-                                                fontSize: '12.5px', cursor: 'pointer',  fontFamily: CAIRO
+                                                cursor: 'pointer', fontFamily: CAIRO
                                             }}
                                             onMouseEnter={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
                                             onMouseLeave={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'transparent'; }}>
-                                            <span style={{ fontSize: '10px', color: C.textSecondary }}>{roleDescriptions[opt.value]}</span>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 {newUserForm.roleId === opt.value && opt.value !== 'none' && <Check size={13} style={{ color: C.primary }} />}
-                                                <span style={{ fontWeight: newUserForm.roleId === opt.value ? 900 : (opt.value === 'none' ? 600 : 700), opacity: opt.value === 'none' ? 0.7 : 1 }}>{roleLabels[opt.value]}</span>
+                                                <span style={{ fontSize: '12.5px', fontWeight: newUserForm.roleId === opt.value ? 900 : (opt.value === 'none' ? 600 : 700), opacity: opt.value === 'none' ? 0.7 : 1 }}>{roleLabels[opt.value]}</span>
                                             </div>
+                                            <span style={{ fontSize: '10px', color: C.textSecondary, opacity: 0.8, paddingInlineStart: (newUserForm.roleId === opt.value && opt.value !== 'none') ? '21px' : '0' }}>{roleDescriptions[opt.value]}</span>
                                         </button>
                                     ))}
                                 </div>
