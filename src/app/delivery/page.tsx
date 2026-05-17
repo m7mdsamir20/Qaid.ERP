@@ -255,17 +255,17 @@ export default function DeliveryPage() {
                                     </div>
 
                                     {isOpen && (
-                                        <div style={{ borderTop: `1px solid ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px', background: `${C.bg}30` }}>
+                                        <div style={{ borderTop: `1px dashed ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px', background: 'transparent' }}>
                                             {/* الأصناف */}
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
                                                     <Package size={14} color={C.primary} /> تفاصيل الطلب
                                                 </h4>
-                                                <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                <div style={{ padding: '0 8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                     {order.lines?.map((line: any, idx: number) => (
                                                         <div key={line.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: C.textPrimary, paddingBottom: idx !== order.lines.length - 1 ? '8px' : 0, borderBottom: idx !== order.lines.length - 1 ? `1px dashed ${C.border}` : 'none' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                                <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: OUTFIT, fontSize: '12px' }}>x{line.quantity}</span>
+                                                                <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '12px' }}>x{line.quantity}</span>
                                                                 <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{line.itemName}</span>
                                                             </div>
                                                             {fMoneyJSX(line.total, "", { fontWeight: 700, color: C.textPrimary })}
@@ -276,10 +276,10 @@ export default function DeliveryPage() {
 
                                             {/* العمليات المنطقية - Workflow */}
                                              {order.status !== 'delivered' && order.status !== 'cancelled' && order.status !== 'returned' && (
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                    <h4 style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>تحديث الإجراء</h4>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: `1px dashed ${C.border}`, paddingTop: '16px' }}>
+                                                    <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>تحديث الإجراء</h4>
                                                     
-                                                    <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 8px' }}>
                                                         
                                                         {order.status === 'pending' && (
                                                             <button onClick={() => updateStatus(order.id, 'preparing')}
@@ -340,7 +340,7 @@ export default function DeliveryPage() {
 
                                                         {order.status === 'returned' && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                                                <div style={{ padding: '8px 12px', background: '#ffedd5', border: '1px solid #f9741640', borderRadius: '8px', fontSize: '12px', color: '#c2410c', fontWeight: 700 }}>
+                                                                <div style={{ padding: '8px 12px', background: 'transparent', border: '1px dashed #f9741680', borderRadius: '8px', fontSize: '12px', color: '#c2410c', fontWeight: 700 }}>
                                                                     تم رفض الاستلام من العميل — يمكنك إعادة المحاولة أو إلغاء الطلب
                                                                 </div>
                                                                 <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>إعادة الإرسال مع مندوب:</span>
