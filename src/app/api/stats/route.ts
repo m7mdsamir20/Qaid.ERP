@@ -51,6 +51,8 @@ export const GET = withProtection(async (request, session) => {
             posOrdersKpi,
             recentPosOrdersRaw,
             chartPosRawData,
+            installmentPlansKpi,
+            chartInstallmentRawData,
         ] = await Promise.all([
             // Counts
             Promise.all([
@@ -197,6 +199,20 @@ export const GET = withProtection(async (request, session) => {
                 },
                 select: { createdAt: true, total: true }
             }), []),
+            // ── Installment Plans KPI ──
+            safeQuery(() => prisma.installmentPlan.aggregate({
+                where: { companyId, status: { not: 'cancelled' }, startDate: { gte: startDate, lte: endDate } },
+                _sum: { totalAmount: true, totalInterest: true },
+            }), { _sum: { totalAmount: 0, totalInterest: 0 } }),
+            // ── Installment Chart Data ──
+            safeQuery(() => prisma.installmentPlan.findMany({
+                where: {
+                    companyId,
+                    status: { not: 'cancelled' },
+                    startDate: { gte: chartStart },
+                },
+                select: { startDate: true, totalAmount: true, totalInterest: true }
+            }), []),
         ]);
 
         // Merge and Sort Recent Transactions
@@ -239,6 +255,13 @@ export const GET = withProtection(async (request, session) => {
             dailySummary[dateKey].sales += po.total;
         });
 
+        // ── إضافة مبيعات التقسيط للرسم البياني ──
+        chartInstallmentRawData.forEach((ip: any) => {
+            const dateKey = new Date(ip.startDate).toLocaleDateString('en-US', { weekday: 'short' });
+            if (!dailySummary[dateKey]) dailySummary[dateKey] = { sales: 0, purchases: 0, expenses: 0 };
+            dailySummary[dateKey].sales += (ip.totalAmount || 0) + (ip.totalInterest || 0);
+        });
+
         const last7DaysLabels = [];
         for (let i = 6; i >= 0; i--) {
             const d = new Date(now);
@@ -251,10 +274,11 @@ export const GET = withProtection(async (request, session) => {
             ...(dailySummary[label] || { sales: 0, purchases: 0, expenses: 0 })
         }));
 
-        // ── دمج مبيعات الفواتير + مبيعات الكاشير ──
+        // ── دمج مبيعات الفواتير + مبيعات الكاشير + مبيعات التقسيط ──
         const invoiceSalesTotal = kpis[0]._sum?.total || 0;
         const posSalesTotal = posOrdersKpi._sum?.total || 0;
-        const salesTotal = invoiceSalesTotal + posSalesTotal;
+        const installmentSalesTotal = (installmentPlansKpi._sum?.totalAmount || 0) + (installmentPlansKpi._sum?.totalInterest || 0);
+        const salesTotal = invoiceSalesTotal + posSalesTotal + installmentSalesTotal;
         const purchasesTotal = kpis[1]._sum?.total || 0;
         const expensesTotal = isServices
             ? (kpis[2]._sum?.debit || 0)

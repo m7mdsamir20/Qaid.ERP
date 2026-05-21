@@ -57,12 +57,12 @@ export const GET = withProtection(async (request, session) => {
             if (!acc) return 0;
             const children = accountList.filter(a => a.parentId === accountId);
             if (children.length === 0) return acc.baseBalance;
-            return children.reduce((sum, child) => sum + getFullBalance(child.id), 0);
+            return acc.baseBalance + children.reduce((sum, child) => sum + getFullBalance(child.id), 0);
         };
 
         const finalAccounts = accountList.map(acc => ({
             ...acc,
-            balance:     acc.accountCategory === 'summary'
+            balance:     (acc.accountCategory === 'summary' || acc.isParent || accountList.some(a => a.parentId === acc.id))
                 ? getFullBalance(acc.id)
                 : acc.baseBalance,
             baseBalance: undefined,
