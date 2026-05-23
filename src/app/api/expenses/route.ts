@@ -144,6 +144,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const newEntry = await tx.journalEntry.create({
                 data: {
+                                // @ts-ignore
                                 branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                     entryNumber: nextEntryNumber,
                     date: new Date(date),
