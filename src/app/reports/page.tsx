@@ -278,6 +278,7 @@ function ReportsHubPageInner() {
                         key={idx}
                         onClick={() => router.push(report.href)}
                         style={{
+                            height: '140px',
                             background: C.card,
                             border: `1px solid ${C.border}`,
                             borderRadius: '20px',
@@ -302,11 +303,11 @@ function ReportsHubPageInner() {
                             e.currentTarget.style.boxShadow = '0 4px 20px -10px rgba(0,0,0,0.3)';
                         }}
                     >
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: 'auto' }}>
                             <div style={{ width: 44, height: 44, borderRadius: '14px', background: `${report.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <report.icon size={22} color={report.color} />
                             </div>
-                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, lineHeight: 1.4 }}>
                                 {report.title.includes('(') ? (
                                     <>
                                         {report.title.split('(')[0]}
@@ -317,7 +318,19 @@ function ReportsHubPageInner() {
                                 ) : report.title}
                             </h3>
                         </div>
-                        <p style={{ margin: 0, fontSize: '11.5px', color: C.textSecondary, lineHeight: 1.5, fontFamily: CAIRO }}>{report.description}</p>
+                        <p style={{ 
+                            margin: 0, 
+                            fontSize: '11.5px', 
+                            color: C.textSecondary, 
+                            lineHeight: 1.6, 
+                            fontFamily: CAIRO,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                        }}>
+                            {report.description}
+                        </p>
                     </div>
                 ))}
             </div>

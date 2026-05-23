@@ -312,24 +312,24 @@ export default function JournalEntriesPage() {
                                                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                                 <thead style={{ background: C.subtle }}>
                                                                     <tr>
-                                                                        <th style={{ padding: '12px',  fontFamily: CAIRO, fontSize: '11px' }}>{t('الحساب')}</th>
-                                                                        <th style={{ padding: '12px',  fontFamily: CAIRO, fontSize: '11px' }}>{t('مركز التكلفة')}</th>
-                                                                        <th style={{ padding: '12px',  fontFamily: CAIRO, fontSize: '11px' }}>{t('مدين')}</th>
-                                                                        <th style={{ padding: '12px',  fontFamily: CAIRO, fontSize: '11px' }}>{t('دائن')}</th>
-                                                                        <th style={{ padding: '12px',  fontFamily: CAIRO, fontSize: '11px' }}>{t('البيان')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('الحساب')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('مركز التكلفة')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('مدين')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('دائن')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('البيان')}</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     {entry.lines.map((line, lidx) => (
                                                                         <tr key={lidx} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                                            <td style={{ padding: '10px 12px' }}>
+                                                                            <td style={{ padding: '10px 12px', textAlign: 'start' }}>
                                                                                 <div style={{ fontWeight: 700, fontSize: '13px' }}>{line.account.name}</div>
                                                                                 <div style={{ fontSize: '10px', color: C.primary, fontFamily: OUTFIT }}>{line.account.code}</div>
                                                                             </td>
-                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</td>
-                                                                            <td style={{  fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
-                                                                            <td style={{  fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
-                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.description || '—'}</td>
+                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary, textAlign: 'start' }}>{line.costCenter?.name || '—'}</td>
+                                                                            <td style={{ textAlign: 'center', fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
+                                                                            <td style={{ textAlign: 'center', fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
+                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary, textAlign: 'start' }}>{line.description || '—'}</td>
                                                                         </tr>
                                                                     ))}
                                                                 </tbody>
@@ -377,11 +377,11 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('مدين')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('دائن')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px',  fontFamily: CAIRO }}>{t('البيان')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px', textAlign: 'center', fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px', textAlign: 'center', fontFamily: CAIRO }}>{t('دائن')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('البيان')}</th>
                                                 <th style={{ width: '40px' }}></th>
                                             </tr>
                                         </thead>
@@ -423,7 +423,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS,  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>
