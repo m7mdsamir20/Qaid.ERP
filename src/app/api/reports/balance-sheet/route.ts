@@ -41,7 +41,10 @@ export const GET = withProtection(async (request, session) => {
                     isPosted: true, 
                     ...yearFilter,
                     ...branchFilter,
-                    referenceType: { not: 'opening_balance' }
+                    OR: [
+                        { referenceType: { not: 'opening_balance' } },
+                        { referenceType: null }
+                    ]
                 },
                 account: {
                     type: { in: ['asset', 'liability', 'equity', 'revenue', 'expense'] }
