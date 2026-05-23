@@ -433,6 +433,7 @@ export const POST = withProtection(async (request, session, body) => {
                     if (journalLines.length >= 2) {
                         await tx.journalEntry.create({
                             data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                 entryNumber,
                                 date: new Date(),
                                 description: `قيد فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,

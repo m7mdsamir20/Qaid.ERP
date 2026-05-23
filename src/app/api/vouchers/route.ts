@@ -187,6 +187,7 @@ export const POST = withProtection(async (request, session, body) => {
                     if (type === 'receipt') {
                         await tx.journalEntry.create({
                             data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                 entryNumber, date: new Date(),
                                 description: `سند قبض رقم RCP-${String(voucherNumber).padStart(5, '0')}`,
                                 reference: `RCP-${String(voucherNumber).padStart(5, '0')}`,
@@ -203,6 +204,7 @@ export const POST = withProtection(async (request, session, body) => {
                     } else if (type === 'payment') {
                         await tx.journalEntry.create({
                             data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                 entryNumber, date: new Date(),
                                 description: `سند صرف رقم PMT-${String(voucherNumber).padStart(5, '0')}`,
                                 reference: `PMT-${String(voucherNumber).padStart(5, '0')}`,

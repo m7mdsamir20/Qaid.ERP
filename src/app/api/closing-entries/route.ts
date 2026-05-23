@@ -102,6 +102,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             return tx.journalEntry.create({
                 data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                     entryNumber: nextEntryNumber,
                     date: new Date(year.endDate),
                     description: `قيود إقفال الحسابات الختامية للسنة المالية ${year.name}`,

@@ -86,6 +86,7 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
                 if (currentYear) {
                     await tx.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: advance.date,
                             description: `سلفة موظف — ${advance.employee?.name}`,

@@ -257,6 +257,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber, date: new Date(),
                             description: `قيد مرتجع مشتريات رقم ${invoiceNumber}`,
                             reference: `PRET-${invoiceNumber}`,

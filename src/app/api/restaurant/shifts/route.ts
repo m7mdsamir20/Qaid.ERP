@@ -132,6 +132,7 @@ export const PUT = withProtection(async (request, session, body) => {
 
                     await prisma.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber,
                             date: new Date(),
                             description: `قيد مبيعات وردية رقم ${body.id.slice(-5)}`,

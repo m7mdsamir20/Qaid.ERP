@@ -36,6 +36,7 @@ export const POST = withProtection(async (request, session, body) => {
                 // إنشاء القيد المحاسبي
                 const entry = await tx.journalEntry.create({
                     data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                         entryNumber,
                         date:           new Date(),
                         description:    `إهلاك ${period} — ${financialYear.name}`,
