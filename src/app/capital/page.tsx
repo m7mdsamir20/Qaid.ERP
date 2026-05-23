@@ -306,21 +306,18 @@ export default function CapitalPage() {
                             </button>
                         </div>
 
-                        <div style={{ position: 'relative', marginBottom: '24px' }}>
-                            <label style={{ ...LS,  display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المبلغ المراد تعديله')}</label>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={LS}>{t('المبلغ المراد تعديله')}</label>
                             <div style={{ position: 'relative' }}>
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
-                                    0.00
-                                </div>
                                 <input 
                                     type="number" step="any" required 
                                     value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
-                                    style={{ ...IS, background: 'transparent',  fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    style={IS} 
                                     onFocus={focusIn} onBlur={focusOut} 
-                                    placeholder=""
+                                    placeholder={t("أدخل المبلغ...")}
                                 />
-                                <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
+                                <span style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                             </div>
                         </div>
 
