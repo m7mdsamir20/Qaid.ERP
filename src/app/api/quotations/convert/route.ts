@@ -272,6 +272,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                 await tx.journalEntry.create({
                     data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                         entryNumber,
                         date:            new Date(),
                         description:     `قيد فاتورة محولة من عرض سعر رقم ${quotation.quotationNumber}`,

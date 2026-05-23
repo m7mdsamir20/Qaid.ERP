@@ -398,6 +398,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await prisma.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber,
                             date: new Date(),
                             description: `قيد مبيعات كاشير - طلب #${orderNumber}`,
@@ -563,6 +564,7 @@ export const PUT = withProtection(async (request, session, body) => {
                         });
                         await prisma.journalEntry.create({
                             data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                 entryNumber: (lastEntry?.entryNumber ?? 0) + 1,
                                 date: new Date(),
                                 description: `تحصيل فاتورة آجل كاشير - طلب #${order.orderNumber}`,
@@ -646,6 +648,7 @@ export const PUT = withProtection(async (request, session, body) => {
                         if (revenueAccount && recAccount) {
                             await prisma.journalEntry.create({
                                 data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                     entryNumber,
                                     date: new Date(),
                                     description: `عكس قيد مبيعات - إلغاء طلب #${cancelledOrder.orderNumber} (رفض استلام)`,

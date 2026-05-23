@@ -145,6 +145,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                             date:            new Date(),
                             description:     `إثبات خطة تقسيط رقم ${planNumber} للعميل ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,
@@ -231,6 +232,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                             await tx.journalEntry.create({
                                 data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                     entryNumber:     (lastEntry2?.entryNumber || 0) + 1,
                                     date:            new Date(),
                                     description:     `تكلفة بضاعة مقسطة - خطة #${planNumber} - ${item.name}`,
@@ -372,6 +374,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                             date:            new Date(),
                             description:     `مقدم خطة تقسيط رقم ${planNumber} — ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,

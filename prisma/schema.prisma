@@ -141,8 +141,9 @@ model Branch {
   treasuries  Treasury[]
   users       User[]
   vouchers    Voucher[]
-  quotations  Quotation[]
-  warehouses  Warehouse[]
+  quotations     Quotation[]
+  warehouses     Warehouse[]
+  journalEntries JournalEntry[]
 
   @@unique([code, companyId])
 }
@@ -339,10 +340,12 @@ model JournalEntry {
   referenceId     String?
   financialYearId String
   companyId       String
+  branchId        String?
   isPosted        Boolean            @default(false)
   createdAt       DateTime           @default(now())
   company         Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   financialYear   FinancialYear      @relation(fields: [financialYearId], references: [id])
+  branch          Branch?            @relation(fields: [branchId], references: [id])
   lines           JournalEntryLine[]
 
   @@index([companyId, entryNumber])

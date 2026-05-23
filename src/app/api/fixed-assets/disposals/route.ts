@@ -150,6 +150,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const entry = await tx.journalEntry.create({
                 data: {
+                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                     entryNumber,
                     date: new Date(disposalDate),
                     description: `استبعاد أصل ثابت — ${asset.name} — ${reason}`,
