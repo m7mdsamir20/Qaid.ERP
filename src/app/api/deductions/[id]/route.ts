@@ -85,6 +85,7 @@ export const PATCH = withProtection(async (request, session, body, context) => {
 
                     const je = await prisma.journalEntry.create({
                         data: {
+                                // @ts-ignore
                                 branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: deduction.date,

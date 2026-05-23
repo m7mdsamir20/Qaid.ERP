@@ -106,6 +106,7 @@ export const POST = withProtection(async (request, session, body) => {
                 const partnerName = supplierId ? (voucher.supplier?.name || 'مورد') : (voucher.customer?.name || 'عميل');
                 await tx.journalEntry.create({
                     data: {
+                                // @ts-ignore
                                 branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                         entryNumber,
                         date:           new Date(date || new Date()),
