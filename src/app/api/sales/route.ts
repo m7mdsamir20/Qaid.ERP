@@ -38,6 +38,10 @@ export const GET = withProtection(async (request, session) => {
         const search = url.searchParams.get('search') || '';
 
         const where: any = { companyId, type: 'sale', ...branchFilter };
+        if (url.searchParams.get('status') === 'unpaid') {
+            where.remaining = { gt: 0 };
+            where.paymentMethod = { not: 'installment_plan' };
+        }
         if (search) {
             where.OR = [
                 { invoiceNumber: { equals: parseInt(search) || undefined } },
