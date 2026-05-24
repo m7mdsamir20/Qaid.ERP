@@ -1,34 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+const fs = require('fs');
 
-export const GET = withProtection(async (request, session) => {
-    try {
-        const companyId = (session.user as any).companyId;
+function updateAPI() {
+    const file = 'src/app/api/installments/route.ts';
+    let code = fs.readFileSync(file, 'utf8');
 
-        const plans = await prisma.installmentPlan.findMany({
-            where: { companyId },
-            include: {
-                customer:     { select: { id: true, name: true, phone: true } },
-                installments: { orderBy: { installmentNo: 'asc' } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-
-        return NextResponse.json(plans);
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json([], { status: 500 });
-    }
-});
-
-export const POST = withProtection(async (request, session, body) => {
+    // Remove the old POST
+    code = code.replace(/export const POST = withProtection\(async \(request, session, body\) => \{[\s\S]*?\}\);/, 
+`export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const isServices = (session.user as any).businessType === 'SERVICES';
 
         const {
-            customerId, totalAmount, downPayment,
+            customerId, productName, totalAmount, downPayment,
             interestRate, monthsCount, startDate,
             notes, treasuryId, cart = [],
             paymentType, activeMonths, 
@@ -67,8 +51,6 @@ export const POST = withProtection(async (request, session, body) => {
             where:   { companyId, isOpen: true },
             orderBy: { startDate: 'desc' },
         });
-        
-        const productName = cart.map((i: any) => `${i.name} (${i.quantity})`).join(', ');
 
         const result = await prisma.$transaction(async (tx) => {
             
@@ -87,16 +69,17 @@ export const POST = withProtection(async (request, session, body) => {
                     date: new Date(startDate),
                     type: 'sale',
                     paymentMethod: 'installment_plan',
-                    subtotal: total,
+                    subTotal: total,
                     taxRate,
                     taxAmount,
-                    
-                    discount: 0,
+                    discountType: 'percentage',
+                    discountValue: 0,
+                    discountAmount: 0,
                     total: priceWithTax,
                     paidAmount: down,
                     remaining: remaining,
                     status: down >= priceWithTax ? 'paid' : 'unpaid',
-                    notes: notes || `فاتورة مرتبطة بخطة تقسيط رقم ${planNumber}`,
+                    notes: notes || \`فاتورة مرتبطة بخطة تقسيط رقم \${planNumber}\`,
                     companyId,
                     // @ts-ignore
                     branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
@@ -154,19 +137,21 @@ export const POST = withProtection(async (request, session, body) => {
                         const itemCost = (dbItem.costPrice || 0) * item.quantity;
                         totalCost += itemCost;
                         
-                        const warehouse = await tx.warehouse.findFirst({ where: { companyId } });
                         await tx.stockMovement.create({
                             data: {
                                 itemId: dbItem.id,
                                 type: 'out',
                                 quantity: item.quantity,
-                                reference: invoice.id,
-                                date: new Date(),
-                                warehouseId: warehouse?.id || '',
+                                reference: \`فاتورة تقسيط \${invNum}\`,
+                                referenceType: 'sale',
+                                referenceId: invoice.id,
                                 companyId,
                             }
                         });
                         
+                        // Deduct from available stock logic (simplified - just assume default warehouse for now or let warehouse module handle it if needed. 
+                        // To be precise, since cart doesn't have warehouseId, we can skip direct warehouse deduction if not strictly enforced, 
+                        // or just deduct from the first warehouse that has stock.
                         const stocks = await tx.stock.findMany({ where: { itemId: dbItem.id, quantity: { gt: 0 } }, orderBy: { quantity: 'desc' } });
                         let remQty = item.quantity;
                         for (const st of stocks) {
@@ -187,8 +172,8 @@ export const POST = withProtection(async (request, session, body) => {
                             branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: new Date(),
-                            description: `إثبات تكلفة بضاعة مباعة لخطة التقسيط ${planNumber}`,
-                            reference: `INST-${String(planNumber).padStart(5, '0')}`,
+                            description: \`إثبات تكلفة بضاعة مباعة لخطة التقسيط \${planNumber}\`,
+                            reference: \`INST-\${String(planNumber).padStart(5, '0')}\`,
                             referenceType: 'installment_plan',
                             referenceId: plan.id,
                             financialYearId: currentYear.id,
@@ -196,8 +181,8 @@ export const POST = withProtection(async (request, session, body) => {
                             isPosted: true,
                             lines: {
                                 create: [
-                                    { accountId: cogsAcc.id, debit: totalCost, credit: 0, description: `تكلفة بضاعة مباعة` },
-                                    { accountId: inventoryAcc.id, debit: 0, credit: totalCost, description: `صرف مخزون لخطة ${planNumber}` },
+                                    { accountId: cogsAcc.id, debit: totalCost, credit: 0, description: \`تكلفة بضاعة مباعة\` },
+                                    { accountId: inventoryAcc.id, debit: 0, credit: totalCost, description: \`صرف مخزون لخطة \${planNumber}\` },
                                 ],
                             },
                         }
@@ -233,12 +218,11 @@ export const POST = withProtection(async (request, session, body) => {
                     installmentNo:     i,
                     dueDate:           dDate,
                     amount:            installAmt,
-                    principal:   principalAmt,
-                    interest:    interestAmt,
+                    principalAmount:   principalAmt,
+                    interestAmount:    interestAmt,
                     remaining:         installAmt,
                     paidAmount:        0,
                     status:            'unpaid',
-                    companyId,
                 });
             }
             await tx.installment.createMany({ data: generated });
@@ -287,8 +271,8 @@ export const POST = withProtection(async (request, session, body) => {
                             branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                             date:            new Date(),
-                            description:     `إثبات خطة تقسيط رقم ${planNumber} للعميل ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,
-                            reference:       `INST-${String(planNumber).padStart(5, '0')}`,
+                            description:     \`إثبات خطة تقسيط رقم \${planNumber} للعميل \${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}\`,
+                            reference:       \`INST-\${String(planNumber).padStart(5, '0')}\`,
                             referenceType:   'installment_plan',
                             referenceId:     plan.id,
                             financialYearId: currentYear.id,
@@ -300,25 +284,25 @@ export const POST = withProtection(async (request, session, body) => {
                                         accountId:   receivablesAcc.id,
                                         debit:       remaining + totalInterest,
                                         credit:      0,
-                                        description: `قيمة عقد تقسيط رقم ${planNumber}`,
+                                        description: \`قيمة عقد تقسيط رقم \${planNumber}\`,
                                     },
                                     {
                                         accountId:   salesAcc.id,
                                         debit:       0,
                                         credit:      total,
-                                        description: `قيمة منتجات قسط رقم ${planNumber}`,
+                                        description: \`قيمة منتجات قسط رقم \${planNumber}\`,
                                     },
                                     ...(taxAmount > 0 ? [{
                                         accountId:   taxAcc?.id || salesAcc.id,
                                         debit:       0,
                                         credit:      taxAmount,
-                                        description: `ضريبة قسط رقم ${planNumber}`,
+                                        description: \`ضريبة قسط رقم \${planNumber}\`,
                                     }] : []),
                                     ...(totalInterest > 0 ? [{
                                         accountId:   interestAcc?.id || salesAcc.id,
                                         debit:       0,
                                         credit:      totalInterest,
-                                        description: `فوائد قسط رقم ${planNumber}`,
+                                        description: \`فوائد قسط رقم \${planNumber}\`,
                                     }] : []),
                                 ],
                             },
@@ -363,8 +347,8 @@ export const POST = withProtection(async (request, session, body) => {
                                     branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                     entryNumber:     (lastEntry2?.entryNumber || 0) + 1,
                                     date:            new Date(),
-                                    description:     `دفعة مقدمة لخطة تقسيط ${planNumber}`,
-                                    reference:       `INST-${String(planNumber).padStart(5, '0')}`,
+                                    description:     \`دفعة مقدمة لخطة تقسيط \${planNumber}\`,
+                                    reference:       \`INST-\${String(planNumber).padStart(5, '0')}\`,
                                     referenceType:   'installment_plan',
                                     referenceId:     plan.id,
                                     financialYearId: currentYear.id,
@@ -376,13 +360,13 @@ export const POST = withProtection(async (request, session, body) => {
                                                 accountId: treasury.accountId,
                                                 debit:     down,
                                                 credit:    0,
-                                                description: `مقدم خطة ${planNumber}`,
+                                                description: \`مقدم خطة \${planNumber}\`,
                                             },
                                             {
                                                 accountId: receivablesAcc.id,
                                                 debit:     0,
                                                 credit:    down,
-                                                description: `مقدم خطة ${planNumber}`,
+                                                description: \`مقدم خطة \${planNumber}\`,
                                             }
                                         ]
                                     }
@@ -396,91 +380,14 @@ export const POST = withProtection(async (request, session, body) => {
             return plan;
         });
 
-        return NextResponse.json(result, { status: 201 });
+        return NextResponse.json(result);
     } catch (error: any) {
         console.error('Create Installment Error:', error);
         return NextResponse.json({ error: error.message || 'حدث خطأ غير متوقع' }, { status: 500 });
     }
-});
+});`);
 
-export const DELETE = withProtection(async (request, session) => {
-    try {
-        const companyId = (session.user as any).companyId;
-        const { searchParams } = new URL(request.url);
-        const id = searchParams.get('id');
-        if (!id) return NextResponse.json({ error: 'id مطلوب' }, { status: 400 });
-
-        const plan = await prisma.installmentPlan.findUnique({ where: { id, companyId } });
-        if (!plan) return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
-        if (plan.status !== 'active')
-            return NextResponse.json({ error: 'لا يمكن حذف خطة غير نشطة' }, { status: 400 });
-
-        const hasPaid = await prisma.installment.findFirst({
-            where: { planId: id, status: { in: ['paid', 'partial'] } },
-        });
-        if (hasPaid)
-            return NextResponse.json({ error: 'لا يمكن حذف خطة تم تحصيل أقساط منها' }, { status: 400 });
-
-        await prisma.$transaction(async (tx) => {
-            
-            const addedToBalance = plan.grandTotal;
-            const netBalance = addedToBalance - plan.downPayment;
-            if (netBalance > 0) {
-                await tx.customer.update({
-                    where: { id: plan.customerId },
-                    data: { balance: { decrement: netBalance } },
-                });
-            }
-
-            if (plan.invoiceId) {
-                const inv = await tx.invoice.findUnique({ where: { id: plan.invoiceId }, include: { lines: true } });
-                if (inv) {
-                    await tx.invoice.delete({ where: { id: plan.invoiceId } });
-                    // Reverse stock movements
-                    for (const line of inv.lines) {
-                        const outMovements = await tx.stockMovement.findMany({
-                            where: { companyId, reference: plan.invoiceId, type: 'out', itemId: line.itemId },
-                        });
-                        for (const mv of outMovements) {
-                            await tx.stock.upsert({
-                                where: { itemId_warehouseId: { itemId: mv.itemId, warehouseId: mv.warehouseId || '' } },
-                                update: { quantity: { increment: mv.quantity } },
-                                create: { itemId: mv.itemId, warehouseId: mv.warehouseId || '', quantity: mv.quantity },
-                            });
-                            await tx.stockMovement.create({
-                                data: {
-                                    type: 'in', date: new Date(),
-                                    itemId: mv.itemId, warehouseId: mv.warehouseId,
-                                    quantity: mv.quantity,
-                                    reference: `INST-${plan.planNumber}`,
-                                    notes: `عكس بيع تقسيط - حذف خطة #${plan.planNumber}`,
-                                    companyId,
-                                }
-                            });
-                        }
-                    }
-                }
-            }
-
-            const relatedEntries = await tx.journalEntry.findMany({
-                where: {
-                    companyId,
-                    referenceId: id,
-                    referenceType: { in: ['installment_plan', 'installment_cogs', 'installment_down'] },
-                },
-                select: { id: true },
-            });
-            if (relatedEntries.length > 0) {
-                const entryIds = relatedEntries.map(e => e.id);
-                await tx.journalEntryLine.deleteMany({ where: { journalEntryId: { in: entryIds } } });
-                await tx.journalEntry.deleteMany({ where: { id: { in: entryIds } } });
-            }
-
-            await tx.installmentPlan.delete({ where: { id } });
-        });
-
-        return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ error: 'فشل في حذف الخطة' }, { status: 500 });
-    }
-});
+    fs.writeFileSync(file, code);
+}
+updateAPI();
+console.log('API Updated');

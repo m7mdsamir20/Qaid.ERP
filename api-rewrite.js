@@ -1,4 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+const fs = require('fs');
+
+const content = `import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
@@ -68,7 +70,7 @@ export const POST = withProtection(async (request, session, body) => {
             orderBy: { startDate: 'desc' },
         });
         
-        const productName = cart.map((i: any) => `${i.name} (${i.quantity})`).join(', ');
+        const productName = cart.map((i: any) => \`\${i.name} (\${i.quantity})\`).join(', ');
 
         const result = await prisma.$transaction(async (tx) => {
             
@@ -87,16 +89,17 @@ export const POST = withProtection(async (request, session, body) => {
                     date: new Date(startDate),
                     type: 'sale',
                     paymentMethod: 'installment_plan',
-                    subtotal: total,
+                    subTotal: total,
                     taxRate,
                     taxAmount,
-                    
-                    discount: 0,
+                    discountType: 'percentage',
+                    discountValue: 0,
+                    discountAmount: 0,
                     total: priceWithTax,
                     paidAmount: down,
                     remaining: remaining,
                     status: down >= priceWithTax ? 'paid' : 'unpaid',
-                    notes: notes || `فاتورة مرتبطة بخطة تقسيط رقم ${planNumber}`,
+                    notes: notes || \`فاتورة مرتبطة بخطة تقسيط رقم \${planNumber}\`,
                     companyId,
                     // @ts-ignore
                     branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
@@ -154,15 +157,14 @@ export const POST = withProtection(async (request, session, body) => {
                         const itemCost = (dbItem.costPrice || 0) * item.quantity;
                         totalCost += itemCost;
                         
-                        const warehouse = await tx.warehouse.findFirst({ where: { companyId } });
                         await tx.stockMovement.create({
                             data: {
                                 itemId: dbItem.id,
                                 type: 'out',
                                 quantity: item.quantity,
-                                reference: invoice.id,
-                                date: new Date(),
-                                warehouseId: warehouse?.id || '',
+                                reference: \`فاتورة تقسيط \${invNum}\`,
+                                referenceType: 'sale',
+                                referenceId: invoice.id,
                                 companyId,
                             }
                         });
@@ -187,8 +189,8 @@ export const POST = withProtection(async (request, session, body) => {
                             branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: new Date(),
-                            description: `إثبات تكلفة بضاعة مباعة لخطة التقسيط ${planNumber}`,
-                            reference: `INST-${String(planNumber).padStart(5, '0')}`,
+                            description: \`إثبات تكلفة بضاعة مباعة لخطة التقسيط \${planNumber}\`,
+                            reference: \`INST-\${String(planNumber).padStart(5, '0')}\`,
                             referenceType: 'installment_plan',
                             referenceId: plan.id,
                             financialYearId: currentYear.id,
@@ -196,8 +198,8 @@ export const POST = withProtection(async (request, session, body) => {
                             isPosted: true,
                             lines: {
                                 create: [
-                                    { accountId: cogsAcc.id, debit: totalCost, credit: 0, description: `تكلفة بضاعة مباعة` },
-                                    { accountId: inventoryAcc.id, debit: 0, credit: totalCost, description: `صرف مخزون لخطة ${planNumber}` },
+                                    { accountId: cogsAcc.id, debit: totalCost, credit: 0, description: \`تكلفة بضاعة مباعة\` },
+                                    { accountId: inventoryAcc.id, debit: 0, credit: totalCost, description: \`صرف مخزون لخطة \${planNumber}\` },
                                 ],
                             },
                         }
@@ -233,12 +235,11 @@ export const POST = withProtection(async (request, session, body) => {
                     installmentNo:     i,
                     dueDate:           dDate,
                     amount:            installAmt,
-                    principal:   principalAmt,
-                    interest:    interestAmt,
+                    principalAmount:   principalAmt,
+                    interestAmount:    interestAmt,
                     remaining:         installAmt,
                     paidAmount:        0,
                     status:            'unpaid',
-                    companyId,
                 });
             }
             await tx.installment.createMany({ data: generated });
@@ -287,8 +288,8 @@ export const POST = withProtection(async (request, session, body) => {
                             branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                             entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                             date:            new Date(),
-                            description:     `إثبات خطة تقسيط رقم ${planNumber} للعميل ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,
-                            reference:       `INST-${String(planNumber).padStart(5, '0')}`,
+                            description:     \`إثبات خطة تقسيط رقم \${planNumber} للعميل \${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}\`,
+                            reference:       \`INST-\${String(planNumber).padStart(5, '0')}\`,
                             referenceType:   'installment_plan',
                             referenceId:     plan.id,
                             financialYearId: currentYear.id,
@@ -300,25 +301,25 @@ export const POST = withProtection(async (request, session, body) => {
                                         accountId:   receivablesAcc.id,
                                         debit:       remaining + totalInterest,
                                         credit:      0,
-                                        description: `قيمة عقد تقسيط رقم ${planNumber}`,
+                                        description: \`قيمة عقد تقسيط رقم \${planNumber}\`,
                                     },
                                     {
                                         accountId:   salesAcc.id,
                                         debit:       0,
                                         credit:      total,
-                                        description: `قيمة منتجات قسط رقم ${planNumber}`,
+                                        description: \`قيمة منتجات قسط رقم \${planNumber}\`,
                                     },
                                     ...(taxAmount > 0 ? [{
                                         accountId:   taxAcc?.id || salesAcc.id,
                                         debit:       0,
                                         credit:      taxAmount,
-                                        description: `ضريبة قسط رقم ${planNumber}`,
+                                        description: \`ضريبة قسط رقم \${planNumber}\`,
                                     }] : []),
                                     ...(totalInterest > 0 ? [{
                                         accountId:   interestAcc?.id || salesAcc.id,
                                         debit:       0,
                                         credit:      totalInterest,
-                                        description: `فوائد قسط رقم ${planNumber}`,
+                                        description: \`فوائد قسط رقم \${planNumber}\`,
                                     }] : []),
                                 ],
                             },
@@ -363,8 +364,8 @@ export const POST = withProtection(async (request, session, body) => {
                                     branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
                                     entryNumber:     (lastEntry2?.entryNumber || 0) + 1,
                                     date:            new Date(),
-                                    description:     `دفعة مقدمة لخطة تقسيط ${planNumber}`,
-                                    reference:       `INST-${String(planNumber).padStart(5, '0')}`,
+                                    description:     \`دفعة مقدمة لخطة تقسيط \${planNumber}\`,
+                                    reference:       \`INST-\${String(planNumber).padStart(5, '0')}\`,
                                     referenceType:   'installment_plan',
                                     referenceId:     plan.id,
                                     financialYearId: currentYear.id,
@@ -376,13 +377,13 @@ export const POST = withProtection(async (request, session, body) => {
                                                 accountId: treasury.accountId,
                                                 debit:     down,
                                                 credit:    0,
-                                                description: `مقدم خطة ${planNumber}`,
+                                                description: \`مقدم خطة \${planNumber}\`,
                                             },
                                             {
                                                 accountId: receivablesAcc.id,
                                                 debit:     0,
                                                 credit:    down,
-                                                description: `مقدم خطة ${planNumber}`,
+                                                description: \`مقدم خطة \${planNumber}\`,
                                             }
                                         ]
                                     }
@@ -439,7 +440,7 @@ export const DELETE = withProtection(async (request, session) => {
                     // Reverse stock movements
                     for (const line of inv.lines) {
                         const outMovements = await tx.stockMovement.findMany({
-                            where: { companyId, reference: plan.invoiceId, type: 'out', itemId: line.itemId },
+                            where: { companyId, referenceId: plan.invoiceId, type: 'out', itemId: line.itemId },
                         });
                         for (const mv of outMovements) {
                             await tx.stock.upsert({
@@ -452,8 +453,8 @@ export const DELETE = withProtection(async (request, session) => {
                                     type: 'in', date: new Date(),
                                     itemId: mv.itemId, warehouseId: mv.warehouseId,
                                     quantity: mv.quantity,
-                                    reference: `INST-${plan.planNumber}`,
-                                    notes: `عكس بيع تقسيط - حذف خطة #${plan.planNumber}`,
+                                    reference: \`INST-\${plan.planNumber}\`,
+                                    notes: \`عكس بيع تقسيط - حذف خطة #\${plan.planNumber}\`,
                                     companyId,
                                 }
                             });
@@ -484,3 +485,5 @@ export const DELETE = withProtection(async (request, session) => {
         return NextResponse.json({ error: 'فشل في حذف الخطة' }, { status: 500 });
     }
 });
+`;
+fs.writeFileSync('src/app/api/installments/route.ts', content);

@@ -1,14 +1,16 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function testBackup() {
+async function test() {
     try {
         const companyId = await prisma.company.findFirst().then(c => c?.id);
         if (!companyId) {
             console.log('No company found');
             return;
         }
-
+        
+        console.log('Testing queries for company:', companyId);
+        
         const [
             company, financialYears,
             accounts, customers, suppliers,
@@ -31,20 +33,27 @@ async function testBackup() {
             prisma.employee.findMany({ where: { companyId } }),
         ]);
 
+        console.log('All queries passed successfully!');
         const backup = {
-            company, financialYears, accounts, customers, suppliers,
-            items, warehouses, stocks, invoices, journalEntries,
-            treasuries, installmentPlans, employees
+            version: '1.0',
+            exportedAt: new Date().toISOString(),
+            companyId,
+            companyName: company?.name,
+            data: {
+                company, financialYears, accounts,
+                customers, suppliers, items, warehouses, stocks,
+                invoices, journalEntries,
+                treasuries, installmentPlans, employees,
+            },
         };
+        JSON.stringify(backup);
+        console.log('JSON Stringify passed!');
 
-        const json = JSON.stringify(backup);
-        console.log('JSON size:', json.length);
-        console.log('Success');
-    } catch (err) {
-        console.error('Error:', err);
+    } catch (e) {
+        console.error('CRASH:', e.message);
     } finally {
         await prisma.$disconnect();
     }
 }
 
-testBackup();
+test();
