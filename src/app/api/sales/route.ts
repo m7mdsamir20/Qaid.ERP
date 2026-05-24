@@ -65,6 +65,8 @@ export const GET = withProtection(async (request, session) => {
                     paidAmount: true,
                     remaining: true,
                     type: true,
+                    paymentMethod: true,
+                    notes: true,
                     customer: { select: { id: true, name: true, balance: true } },
                     supplier: { select: { id: true, name: true, balance: true } }
                 }

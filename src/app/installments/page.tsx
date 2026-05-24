@@ -377,6 +377,10 @@ export default function InstallmentsPage() {
                                                             <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
                                                                 <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
                                                             </span>
+                                                        ) : p.status === 'cancelled' ? (
+                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
+                                                                <X size={10} /> {t('ملغاة')}
+                                                            </span>
                                                         ) : p.status === 'completed' ? (
                                                             <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
                                                                 <Check size={10} /> {t('انتهت')}

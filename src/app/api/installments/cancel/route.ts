@@ -43,6 +43,22 @@ export const POST = withProtection(async (request, session, body) => {
                 data: { status: 'cancelled' as any },
             });
 
+            // ③ Revert invoice status if linked
+            if (plan.invoiceId) {
+                const inv = await tx.invoice.findUnique({ where: { id: plan.invoiceId } });
+                if (inv) {
+                    await tx.invoice.update({
+                        where: { id: plan.invoiceId },
+                        data: {
+                            remaining: plan.totalAmount,
+                            paidAmount: { decrement: plan.totalAmount },
+                            paymentMethod: 'credit',
+                            notes: inv.notes?.replace(`تمت جدولتها إلى خطة تقسيط رقم ${plan.planNumber}`, '').trim()
+                        }
+                    });
+                }
+            }
+
             // ③ Decrease customer balance by remaining amount
             await tx.customer.update({
                 where: { id: plan.customerId },

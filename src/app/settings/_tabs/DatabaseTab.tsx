@@ -240,7 +240,7 @@ export default function DatabaseTab({
 
                         <div style={{ padding: '24px' }}>
                             {importStep === 1 && (
-                                <div style={{ padding: '40px 20px', border: '2px dashed rgba(37, 106, 244,0.2)', borderRadius: '16px', background: 'rgba(37, 106, 244,0.02)' }}>
+                                <div style={{ padding: '40px 20px', border: '2px dashed rgba(37, 106, 244,0.2)', borderRadius: '16px', background: 'rgba(37, 106, 244,0.02)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                                     <FileSpreadsheet size={48} style={{ color: '#256af4', marginBottom: '16px', opacity: 0.5 }} />
                                     <h3 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 700 }}>{t('اختر ملف Excel')}</h3>
                                     <p style={{ margin: '0 0 24px', fontSize: '13px', color: '#64748b' }}>
@@ -423,7 +423,7 @@ export default function DatabaseTab({
                             )}
 
                             {importStep === 3 && (
-                                <div style={{ padding: '40px 20px' }}>
+                                <div style={{ padding: '40px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                                     <Loader2 size={48} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '24px' }} />
                                     <h3 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
                                     <p style={{ margin: '0 0 24px', color: C.textSecondary, fontFamily: CAIRO }}>
