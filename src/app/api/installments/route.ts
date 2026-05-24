@@ -95,12 +95,10 @@ export const POST = withProtection(async (request, session, body) => {
                     total: priceWithTax,
                     paidAmount: down,
                     remaining: remaining,
-                    status: down >= priceWithTax ? 'paid' : 'unpaid',
                     notes: notes || `فاتورة مرتبطة بخطة تقسيط رقم ${planNumber}`,
                     companyId,
                     // @ts-ignore
                     branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
-                    financialYearId: currentYear?.id,
                     lines: {
                         create: cart.map((item: any) => ({
                             itemId: item.id,
