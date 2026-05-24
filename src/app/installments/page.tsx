@@ -55,7 +55,7 @@ export default function InstallmentsPage() {
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
                 fetch('/api/items'),
-                fetch('/api/invoices?status=unpaid'),
+                fetch('/api/sales?status=unpaid&limit=1000'),
             ]);
             
             if (pRes.ok) {
