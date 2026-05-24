@@ -525,7 +525,7 @@ export default function InstallmentsPage() {
                     }
                 }}
                 options={unpaidInvoices
-                    .filter(inv => !form.customerId || inv.customerId === form.customerId)
+                    .filter(inv => !form.customerId || inv.customer?.id === form.customerId)
                     .map(inv => ({ value: inv.id, label: `فاتورة #${inv.invoiceNumber} - ${fmtN(inv.remaining || inv.total || 0)} ${cSymbol}`, sub: new Date(inv.date).toLocaleDateString() }))}
                 placeholder={t("اختر الفاتورة لجدولتها...")}
                 icon={ShoppingCart}
