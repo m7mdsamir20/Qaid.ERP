@@ -28,6 +28,7 @@ export const POST = withProtection(async (request, session, body) => {
         const isServices = (session.user as any).businessType === 'SERVICES';
 
         const {
+            type = 'direct', invoiceId,
             customerId, productName, totalAmount, downPayment,
             interestRate, monthsCount, startDate,
             notes, treasuryId, itemId, quantity,
@@ -84,12 +85,13 @@ export const POST = withProtection(async (request, session, body) => {
                     notes:             notes || null,
                     status:            'active',
                     companyId,
+                    invoiceId:         type === 'invoice' ? invoiceId : null,
                 },
             });
 
             await tx.customer.update({
                 where: { id: customerId },
-                data:  { balance: { increment: grandTotal } },
+                data:  { balance: { increment: type === 'invoice' ? totalInterest : grandTotal } },
             });
 
             if (currentYear) {
@@ -136,7 +138,7 @@ export const POST = withProtection(async (request, session, body) => {
                     },
                 });
 
-                if (receivablesAcc && salesAcc) {
+                if (receivablesAcc && salesAcc && type === 'direct') {
                     const lastEntry = await tx.journalEntry.findFirst({
                         where:   { companyId },
                         orderBy: { entryNumber: 'desc' },
@@ -187,9 +189,48 @@ export const POST = withProtection(async (request, session, body) => {
                         },
                     });
                 }
+                if (receivablesAcc && interestAcc && type === 'invoice' && totalInterest > 0) {
+                    const lastEntry = await tx.journalEntry.findFirst({
+                        where:   { companyId },
+                        orderBy: { entryNumber: 'desc' },
+                        select:  { entryNumber: true },
+                    });
+                    await tx.journalEntry.create({
+                        data: {
+                            // @ts-ignore
+                            branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                            entryNumber:     (lastEntry?.entryNumber || 0) + 1,
+                            date:            new Date(),
+                            description:     `إثبات فوائد خطة تقسيط رقم ${planNumber} للعميل ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,
+                            reference:       `INST-${String(planNumber).padStart(5, '0')}`,
+                            referenceType:   'installment_plan',
+                            referenceId:     plan.id,
+                            financialYearId: currentYear.id,
+                            companyId,
+                            isPosted:        true,
+                            lines: {
+                                create: [
+                                    {
+                                        accountId:   receivablesAcc.id,
+                                        debit:       totalInterest,
+                                        credit:      0,
+                                        description: `فوائد عقد تقسيط رقم ${planNumber}`,
+                                    },
+                                    {
+                                        accountId:   interestAcc.id,
+                                        debit:       0,
+                                        credit:      totalInterest,
+                                        description: `إيرادات فوائد تقسيط رقم ${planNumber}`,
+                                    },
+                                ],
+                            },
+                        },
+                    });
+                }
+
             }
 
-            if (!isServices && itemId && currentYear) {
+            if (!isServices && itemId && currentYear && type === 'direct') {
                 const qty = parseInt(quantity) || 1;
                 const item = await tx.item.findUnique({
                     where:  { id: itemId },
@@ -418,6 +459,22 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             }
 
+            
+            if (type === 'invoice' && invoiceId) {
+                const inv = await tx.invoice.findUnique({ where: { id: invoiceId } });
+                if (inv) {
+                    await tx.invoice.update({
+                        where: { id: invoiceId },
+                        data: {
+                            remaining: 0,
+                            paidAmount: { increment: inv.remaining }, // close the invoice completely
+                            paymentMethod: 'installment_plan',
+                            notes: (inv.notes ? inv.notes + '\n' : '') + `تمت جدولتها إلى خطة تقسيط رقم ${planNumber}`
+                        }
+                    });
+                }
+            }
+
             return plan;
         });
 
@@ -448,13 +505,35 @@ export const DELETE = withProtection(async (request, session) => {
 
         await prisma.$transaction(async (tx) => {
             // ① عكس رصيد العميل (grandTotal المضاف عند الإنشاء - المقدم المطروح)
-            const netBalance = plan.grandTotal - plan.downPayment;
+            
+            // ① عكس رصيد العميل (grandTotal المضاف عند الإنشاء - المقدم المطروح)
+            // إذا كانت الخطة مرتبطة بفاتورة، فالمضاف للرصيد كان فقط الفائدة
+            const addedToBalance = plan.invoiceId ? plan.totalInterest : plan.grandTotal;
+            const netBalance = addedToBalance - plan.downPayment;
             if (netBalance > 0) {
                 await tx.customer.update({
                     where: { id: plan.customerId },
                     data: { balance: { decrement: netBalance } },
                 });
             }
+
+            // إرجاع حالة الفاتورة إذا كانت مرتبطة
+            if (plan.invoiceId) {
+                const inv = await tx.invoice.findUnique({ where: { id: plan.invoiceId } });
+                if (inv) {
+                    // We must deduct the principal (totalAmount) from paidAmount and add to remaining
+                    await tx.invoice.update({
+                        where: { id: plan.invoiceId },
+                        data: {
+                            remaining: plan.totalAmount,
+                            paidAmount: { decrement: plan.totalAmount },
+                            paymentMethod: 'credit', // revert to credit
+                            notes: inv.notes?.replace(`تمت جدولتها إلى خطة تقسيط رقم ${plan.planNumber}`, '').trim()
+                        }
+                    });
+                }
+            }
+
 
             // ② حذف القيود المحاسبية المرتبطة بالخطة
             const relatedEntries = await tx.journalEntry.findMany({
@@ -472,7 +551,8 @@ export const DELETE = withProtection(async (request, session) => {
             }
 
             // ③ عكس حركات المخزون لو في صنف مرتبط
-            const outMovements = await tx.stockMovement.findMany({
+            if (!plan.invoiceId) {
+                const outMovements = await tx.stockMovement.findMany({
                 where: { companyId, reference: id, type: 'out' },
             });
             for (const mv of outMovements) {
@@ -491,6 +571,7 @@ export const DELETE = withProtection(async (request, session) => {
                         companyId,
                     }
                 });
+            }
             }
 
             // ④ احذف الخطة (الأقساط بتتحذف cascade)

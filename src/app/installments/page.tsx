@@ -27,6 +27,8 @@ export default function InstallmentsPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [showNew, setShowNew] = useState(false);
+    const [planType, setPlanType] = useState('direct'); // 'direct' or 'invoice'
+    const [unpaidInvoices, setUnpaidInvoices] = useState<any[]>([]);
     const [submitting, setSubmitting] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -48,11 +50,12 @@ export default function InstallmentsPage() {
 
     const fetchData = useCallback(async () => {
         try {
-            const [pRes, cRes, tRes, iRes] = await Promise.all([
+            const [pRes, cRes, tRes, iRes, invRes] = await Promise.all([
                 fetch('/api/installments'),
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
                 fetch('/api/items'),
+                fetch('/api/invoices?status=unpaid'),
             ]);
             
             if (pRes.ok) {
@@ -72,8 +75,11 @@ export default function InstallmentsPage() {
             
             if (iRes.ok) {
                 const data = await iRes.json();
-                // Items API returns { items: [], total: ... } for pagination
                 setItems(Array.isArray(data) ? data : (data.items || []));
+            }
+            if (invRes && invRes.ok) {
+                const data = await invRes.json();
+                setUnpaidInvoices(Array.isArray(data) ? data : (data.invoices || []));
             }
         } catch (error) {
             console.error("Fetch Error:", error);
@@ -112,6 +118,8 @@ export default function InstallmentsPage() {
                 taxAmount: '0',
             });
             setSelectedItem(null);
+            setPlanType('direct');
+            setForm(f => ({ ...f, invoiceId: '' }));
         }
     }, [showNew]);
 
@@ -148,16 +156,18 @@ export default function InstallmentsPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!form.customerId || !form.totalAmount || !selectedItem) {
+        if (!form.customerId || !form.totalAmount || (planType === 'direct' && !selectedItem) || (planType === 'invoice' && !(form as any).invoiceId)) {
             alert(t('يرجى اختيار العميل والمنتج وإدخال المبلغ'));
             return;
         }
-        const selectedItemData = items.find(i => i.id === selectedItem);
-        if (selectedItemData) {
-            const totalInStock = (selectedItemData.stocks || []).reduce((s: number, v: any) => s + v.quantity, 0);
-            if (parseInt(form.quantity) > totalInStock) {
-                alert(t('عفواً، الكمية المطلوبة') + ` (${form.quantity}) ` + t('غير متوفرة بالكامل في المخزن حالياً. المتاح:') + ` ${totalInStock}`);
-                return;
+        if (planType === 'direct') {
+            const selectedItemData = items.find(i => i.id === selectedItem);
+            if (selectedItemData) {
+                const totalInStock = (selectedItemData.stocks || []).reduce((s: number, v: any) => s + v.quantity, 0);
+                if (parseInt(form.quantity) > totalInStock) {
+                    alert(t('عفواً، الكمية المطلوبة') + ` (${form.quantity}) ` + t('غير متوفرة بالكامل في المخزن حالياً. المتاح:') + ` ${totalInStock}`);
+                    return;
+                }
             }
         }
 
@@ -180,6 +190,8 @@ export default function InstallmentsPage() {
                     taxAmount,
                     monthsCount,
                     itemId: selectedItem,
+                    type: planType,
+                    invoiceId: (form as any).invoiceId,
                 }),
             });
             if (res.ok) {
@@ -410,8 +422,18 @@ export default function InstallmentsPage() {
                     icon={Plus} 
                     maxWidth="720px"
                 >
-                    <form onSubmit={handleSubmit}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                    
+<form onSubmit={handleSubmit}>
+    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+        <div onClick={() => setPlanType('direct')} style={{ flex: 1, padding: '12px', textAlign: 'center', borderRadius: '12px', cursor: 'pointer', border: `1px solid ${planType === 'direct' ? C.primary : C.border}`, background: planType === 'direct' ? 'rgba(37,106,244,0.1)' : 'transparent', color: planType === 'direct' ? C.primary : C.textSecondary, fontWeight: 600 }}>
+            {t('تقسيط مباشر (منتج/خدمة)')}
+        </div>
+        <div onClick={() => setPlanType('invoice')} style={{ flex: 1, padding: '12px', textAlign: 'center', borderRadius: '12px', cursor: 'pointer', border: `1px solid ${planType === 'invoice' ? '#10b981' : C.border}`, background: planType === 'invoice' ? 'rgba(16,185,129,0.1)' : 'transparent', color: planType === 'invoice' ? '#10b981' : C.textSecondary, fontWeight: 600 }}>
+            {t('جدولة فاتورة آجلة')}
+        </div>
+    </div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+
                             
                             {/* Section 1: Basic Contract Info */}
                             <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px', borderBottom: `1px solid ${C.border}`, paddingBottom: '6px' }}>
@@ -471,27 +493,52 @@ export default function InstallmentsPage() {
                                 )}
                             </div>
 
-                            <div>
-                                <label style={{ ...LS, fontSize: '11.5px' }}>{t('المنتج / غرض التقسيط')} <span style={{ color: C.danger }}>*</span></label>
-                                <CustomSelect
-                                    value={selectedItem}
-                                    onChange={onSelectItem}
-                                    options={items.map(i => ({ value: i.id, label: i.name, sub: `${t('المتاح')}: ${i.stocks?.reduce((s:number,v:any)=>s+v.quantity,0)||0} | ${t('السعر')}: ${fmtN(i.sellPrice)} ${cSymbol}` }))}
-                                    placeholder={t("اختر منتجاً من القائمة...")}
-                                    icon={Package}
-                                    style={{ height: '36px', background: C.inputBg }}
-                                />
-                            </div>
+                            
+    {planType === 'direct' ? (
+        <>
+            <div>
+                <label style={{ ...LS, fontSize: '11.5px' }}>{t('المنتج / غرض التقسيط')} <span style={{ color: C.danger }}>*</span></label>
+                <CustomSelect
+                    value={selectedItem}
+                    onChange={onSelectItem}
+                    options={items.map(i => ({ value: i.id, label: i.name, sub: `${t('المتاح')}: ${i.stocks?.reduce((s:number,v:any)=>s+v.quantity,0)||0} | ${t('السعر')}: ${fmtN(i.sellPrice)} ${cSymbol}` }))}
+                    placeholder={t("اختر منتجاً من القائمة...")}
+                    icon={Package}
+                    style={{ height: '36px', background: C.inputBg }}
+                />
+            </div>
+            <div>
+                <label style={{ ...LS, fontSize: '11.5px' }}>{t('الكمية')}</label>
+                <input type="number" min="1" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+            </div>
+        </>
+    ) : (
+        <div style={{ gridColumn: 'span 2' }}>
+            <label style={{ ...LS, fontSize: '11.5px' }}>{t('اختر الفاتورة الآجلة')} <span style={{ color: C.danger }}>*</span></label>
+            <CustomSelect
+                value={(form as any).invoiceId || ''}
+                onChange={v => {
+                    setForm(f => ({ ...f, invoiceId: v }));
+                    const inv = unpaidInvoices.find(i => i.id === v);
+                    if (inv) {
+                        setForm(f => ({ ...f, totalAmount: String(inv.remaining || inv.total || 0), productName: `فاتورة مبيعات رقم ${inv.invoiceNumber}` }));
+                    }
+                }}
+                options={unpaidInvoices
+                    .filter(inv => !form.customerId || inv.customerId === form.customerId)
+                    .map(inv => ({ value: inv.id, label: `فاتورة #${inv.invoiceNumber} - ${fmtN(inv.remaining || inv.total || 0)} ${cSymbol}`, sub: new Date(inv.date).toLocaleDateString() }))}
+                placeholder={t("اختر الفاتورة لجدولتها...")}
+                icon={ShoppingCart}
+                style={{ height: '36px', background: C.inputBg }}
+            />
+        </div>
+    )}
 
-                            <div>
-                                <label style={{ ...LS, fontSize: '11.5px' }}>{t('الكمية')}</label>
-                                <input type="number" min="1" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-                            </div>
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('قيمة المنتج الإجمالية')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} disabled={planType === 'invoice'} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>

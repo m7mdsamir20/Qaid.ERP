@@ -34,7 +34,7 @@ interface SaleInvoice {
     total: number;
     paidAmount: number;
     remaining: number;
-    paymentMethod: 'cash' | 'bank' | 'credit';
+    paymentMethod: 'cash' | 'bank' | 'credit' | 'installment_plan';
     taxAmount?: number;
     taxRate?: number;
     notes?: string;
@@ -93,6 +93,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const fmt = (v: number) => formatNumber(v);
 
     const getStatus = () => {
+        if (invoice.paymentMethod === 'installment_plan') return { label: t('مُقسطة'), color: '#a78bfa', icon: Clock, bg: 'rgba(167,139,250,0.1)' };
         if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
         if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
         return { label: t('غير مدفوعة (آجل)'), color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
