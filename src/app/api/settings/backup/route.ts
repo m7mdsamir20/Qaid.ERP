@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
+export const maxDuration = 60;
+
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
