@@ -676,6 +676,7 @@ model Invoice {
   lines               InvoiceLine[]
   stockMovements      StockMovement[]
   PosOrder            PosOrder[]
+  installmentPlans    InstallmentPlan[]
 
   @@index([companyId, type, date])
   @@index([companyId, date])
@@ -858,6 +859,8 @@ model InstallmentPlan {
   installments      Installment[]
   customer          Customer      @relation(fields: [customerId], references: [id])
   company           Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  invoiceId         String?
+  invoice           Invoice?      @relation(fields: [invoiceId], references: [id])
 
   @@unique([planNumber, companyId])
 }
