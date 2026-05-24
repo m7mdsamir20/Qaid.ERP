@@ -27,8 +27,9 @@ export default function InstallmentsPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [showNew, setShowNew] = useState(false);
-    const [planType, setPlanType] = useState('direct'); // 'direct' or 'invoice'
-    const [unpaidInvoices, setUnpaidInvoices] = useState<any[]>([]);
+    const [cart, setCart] = useState<any[]>([]);
+    const [cartQuantity, setCartQuantity] = useState('1');
+    const [cartPrice, setCartPrice] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -50,12 +51,12 @@ export default function InstallmentsPage() {
 
     const fetchData = useCallback(async () => {
         try {
-            const [pRes, cRes, tRes, iRes, invRes] = await Promise.all([
+            const [pRes, cRes, tRes, iRes] = await Promise.all([
                 fetch('/api/installments'),
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
                 fetch('/api/items'),
-                fetch('/api/sales?status=unpaid&limit=1000'),
+                
             ]);
             
             if (pRes.ok) {
@@ -77,10 +78,7 @@ export default function InstallmentsPage() {
                 const data = await iRes.json();
                 setItems(Array.isArray(data) ? data : (data.items || []));
             }
-            if (invRes && invRes.ok) {
-                const data = await invRes.json();
-                setUnpaidInvoices(Array.isArray(data) ? data : (data.invoices || []));
-            }
+            
         } catch (error) {
             console.error("Fetch Error:", error);
         } finally { setLoading(false); }
@@ -118,8 +116,9 @@ export default function InstallmentsPage() {
                 taxAmount: '0',
             });
             setSelectedItem(null);
-            setPlanType('direct');
-            setForm(f => ({ ...f, invoiceId: '' }));
+            setCart([]);
+            setCartQuantity('1');
+            setCartPrice('');
         }
     }, [showNew]);
 
@@ -154,44 +153,58 @@ export default function InstallmentsPage() {
     const grandTotal = remaining + totalInterest;
     const installmentAmt = monthsCount > 0 ? parseFloat((grandTotal / monthsCount).toFixed(2)) : 0;
 
+    
+    const handleAddToCart = () => {
+        if (!selectedItem) return alert(t('اختر الصنف'));
+        const item = items.find(i => i.id === selectedItem);
+        if (!item) return;
+        const q = parseFloat(cartQuantity) || 1;
+        const p = parseFloat(cartPrice) || item.sellPrice || 0;
+        
+        const inStock = (item.stocks || []).reduce((s: number, v: any) => s + v.quantity, 0);
+        if (q > inStock) return alert(t('الكمية المطلوبة غير متوفرة. المتاح: ') + inStock);
+
+        setCart(prev => [...prev, { id: item.id, name: item.name, quantity: q, price: p, total: q * p }]);
+        setSelectedItem(null);
+        setCartQuantity('1');
+        setCartPrice('');
+    };
+    const handleRemoveFromCart = (idx: number) => {
+        setCart(prev => prev.filter((_, i) => i !== idx));
+    };
+
+    useEffect(() => {
+        if (showNew) {
+            const total = cart.reduce((sum, item) => sum + item.total, 0);
+            setForm(f => ({ ...f, totalAmount: String(total) }));
+        }
+    }, [cart, showNew]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!form.customerId || !form.totalAmount || (planType === 'direct' && !selectedItem) || (planType === 'invoice' && !(form as any).invoiceId)) {
-            alert(t('يرجى اختيار العميل والمنتج وإدخال المبلغ'));
+        if (!form.customerId || cart.length === 0) {
+            alert(t('يرجى اختيار العميل وإضافة المنتجات للسلة'));
             return;
-        }
-        if (planType === 'direct') {
-            const selectedItemData = items.find(i => i.id === selectedItem);
-            if (selectedItemData) {
-                const totalInStock = (selectedItemData.stocks || []).reduce((s: number, v: any) => s + v.quantity, 0);
-                if (parseInt(form.quantity) > totalInStock) {
-                    alert(t('عفواً، الكمية المطلوبة') + ` (${form.quantity}) ` + t('غير متوفرة بالكامل في المخزن حالياً. المتاح:') + ` ${totalInStock}`);
-                    return;
-                }
-            }
         }
 
         setSubmitting(true);
         try {
-            const finalProductName = form.quantity && parseInt(form.quantity) > 1
-                ? `${form.productName} (${form.quantity})`
-                : form.productName;
+            const productName = cart.map((i: any) => `${i.name} (${i.quantity})`).join(', ');
 
             const res = await fetch('/api/installments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...form,
-                    productName: finalProductName,
+                    productName,
+                    cart,
                     totalAmount,
                     downPayment,
                     interestRate,
                     taxRate,
                     taxAmount,
                     monthsCount,
-                    itemId: selectedItem,
-                    type: planType,
-                    invoiceId: (form as any).invoiceId,
+                    type: 'invoice', // Force backend to create invoice
                 }),
             });
             if (res.ok) {
@@ -428,14 +441,7 @@ export default function InstallmentsPage() {
                 >
                     
 <form onSubmit={handleSubmit}>
-    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-        <div onClick={() => setPlanType('direct')} style={{ flex: 1, padding: '12px', textAlign: 'center', borderRadius: '12px', cursor: 'pointer', border: `1px solid ${planType === 'direct' ? C.primary : C.border}`, background: planType === 'direct' ? 'rgba(37,106,244,0.1)' : 'transparent', color: planType === 'direct' ? C.primary : C.textSecondary, fontWeight: 600 }}>
-            {t('تقسيط مباشر (منتج/خدمة)')}
-        </div>
-        <div onClick={() => setPlanType('invoice')} style={{ flex: 1, padding: '12px', textAlign: 'center', borderRadius: '12px', cursor: 'pointer', border: `1px solid ${planType === 'invoice' ? '#10b981' : C.border}`, background: planType === 'invoice' ? 'rgba(16,185,129,0.1)' : 'transparent', color: planType === 'invoice' ? '#10b981' : C.textSecondary, fontWeight: 600 }}>
-            {t('جدولة فاتورة آجلة')}
-        </div>
-    </div>
+    
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
                             
@@ -498,51 +504,75 @@ export default function InstallmentsPage() {
                             </div>
 
                             
-    {planType === 'direct' ? (
-        <>
-            <div>
-                <label style={{ ...LS, fontSize: '11.5px' }}>{t('المنتج / غرض التقسيط')} <span style={{ color: C.danger }}>*</span></label>
-                <CustomSelect
-                    value={selectedItem}
-                    onChange={onSelectItem}
-                    options={items.map(i => ({ value: i.id, label: i.name, sub: `${t('المتاح')}: ${i.stocks?.reduce((s:number,v:any)=>s+v.quantity,0)||0} | ${t('السعر')}: ${fmtN(i.sellPrice)} ${cSymbol}` }))}
-                    placeholder={t("اختر منتجاً من القائمة...")}
-                    icon={Package}
-                    style={{ height: '36px', background: C.inputBg }}
-                />
-            </div>
-            <div>
-                <label style={{ ...LS, fontSize: '11.5px' }}>{t('الكمية')}</label>
-                <input type="number" min="1" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-            </div>
-        </>
-    ) : (
-        <div style={{ gridColumn: 'span 2' }}>
-            <label style={{ ...LS, fontSize: '11.5px' }}>{t('اختر الفاتورة الآجلة')} <span style={{ color: C.danger }}>*</span></label>
-            <CustomSelect
-                value={(form as any).invoiceId || ''}
-                onChange={v => {
-                    setForm(f => ({ ...f, invoiceId: v }));
-                    const inv = unpaidInvoices.find(i => i.id === v);
-                    if (inv) {
-                        setForm(f => ({ ...f, totalAmount: String(inv.remaining || inv.total || 0), productName: `فاتورة مبيعات رقم ${inv.invoiceNumber}` }));
-                    }
-                }}
-                options={unpaidInvoices
-                    .filter(inv => !form.customerId || inv.customer?.id === form.customerId)
-                    .map(inv => ({ value: inv.id, label: `فاتورة #${inv.invoiceNumber} - ${fmtN(inv.remaining || inv.total || 0)} ${cSymbol}`, sub: new Date(inv.date).toLocaleDateString() }))}
-                placeholder={t("اختر الفاتورة لجدولتها...")}
-                icon={ShoppingCart}
-                style={{ height: '36px', background: C.inputBg }}
-            />
-        </div>
-    )}
+    
+                            {/* Cart Section */}
+                            <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px', borderBottom: `1px solid ${C.border}`, paddingBottom: '6px' }}>
+                                <Package size={14} color={C.primary} />
+                                <span style={{ fontSize: '12.5px', fontWeight: 600, color: C.primary }}>{t('المنتجات')}</span>
+                            </div>
+                            
+                            <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '8px', alignItems: 'end' }}>
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('المنتج')}</label>
+                                    <CustomSelect
+                                        value={selectedItem}
+                                        onChange={(id) => {
+                                            setSelectedItem(id);
+                                            const it = items.find(i => i.id === id);
+                                            if (it) setCartPrice(String(it.sellPrice || 0));
+                                        }}
+                                        options={items.map(i => ({ value: i.id, label: i.name, sub: `${t('المتاح')}: ${i.stocks?.reduce((s:number,v:any)=>s+v.quantity,0)||0}` }))}
+                                        placeholder={t("اختر المنتج...")}
+                                        style={{ height: '36px', background: C.inputBg }}
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
+                                    <input type="number" min="1" value={cartQuantity} onChange={e => setCartQuantity(e.target.value)} style={{ ...IS, height: '36px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                </div>
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
+                                    <input type="number" min="0" value={cartPrice} onChange={e => setCartPrice(e.target.value)} style={{ ...IS, height: '36px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                </div>
+                                <button type="button" onClick={handleAddToCart} style={{ ...BTN_PRIMARY(false, false), height: '36px', padding: '0 16px', borderRadius: '10px' }}>
+                                    <Plus size={16} /> {t('إضافة')}
+                                </button>
+                            </div>
+
+                            {cart.length > 0 && (
+                                <div style={{ gridColumn: 'span 2', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, overflow: 'hidden', marginBottom: '10px' }}>
+                                    <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse' }}>
+                                        <thead style={{ background: 'rgba(255,255,255,0.03)' }}>
+                                            <tr>
+                                                <th style={{ padding: '8px 12px', textAlign: 'start' }}>{t('المنتج')}</th>
+                                                <th style={{ padding: '8px 12px', textAlign: 'center' }}>{t('الكمية')}</th>
+                                                <th style={{ padding: '8px 12px', textAlign: 'center' }}>{t('السعر')}</th>
+                                                <th style={{ padding: '8px 12px', textAlign: 'center' }}>{t('الإجمالي')}</th>
+                                                <th style={{ padding: '8px 12px', textAlign: 'center' }}></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {cart.map((item, idx) => (
+                                                <tr key={idx} style={{ borderTop: `1px solid ${C.border}` }}>
+                                                    <td style={{ padding: '8px 12px' }}>{item.name}</td>
+                                                    <td style={{ padding: '8px 12px', textAlign: 'center' }}>{item.quantity}</td>
+                                                    <td style={{ padding: '8px 12px', textAlign: 'center' }}>{fMoneyJSX(item.price)}</td>
+                                                    <td style={{ padding: '8px 12px', textAlign: 'center', color: C.primary, fontWeight: 700 }}>{fMoneyJSX(item.total)}</td>
+                                                    <td style={{ padding: '8px 12px', textAlign: 'center' }}>
+                                                        <button type="button" onClick={() => handleRemoveFromCart(idx)} style={{ background: 'none', border: 'none', color: C.danger, cursor: 'pointer' }}><Trash2 size={14} /></button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
 
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('قيمة المنتج الإجمالية')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} disabled={planType === 'invoice'} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} disabled style={{ ...IS, height: '38px',  paddingInlineStart: '40px', paddingInlineEnd: '40px' }} />
                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textSecondary }}>{cSymbol}</span>
                                 </div>
                             </div>
