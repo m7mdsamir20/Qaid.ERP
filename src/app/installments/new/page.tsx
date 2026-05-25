@@ -257,7 +257,7 @@ const handleAddToCart = () => {
                 }),
             });
             if (res.ok) {
-                setShowNew(false);
+                router.push("/installments");
                 fetchData();
             } else {
                 const d = await res.json();
