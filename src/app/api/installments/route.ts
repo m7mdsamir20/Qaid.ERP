@@ -103,8 +103,8 @@ export const POST = withProtection(async (request, session, body) => {
                         create: cart.map((item: any) => ({
                             itemId: item.id,
                             quantity: item.quantity,
-                            unitPrice: item.price,
-                            totalPrice: item.total,
+                            price: item.price,
+                            total: item.total,
                         }))
                     }
                 }
