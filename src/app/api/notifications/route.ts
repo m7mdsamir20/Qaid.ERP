@@ -35,7 +35,7 @@ export const GET = withProtection(async (request, session) => {
                     const uniqueTag = `late_inst_${inst.id}`;
                     // Check if notification already exists
                     const exists = await prisma.notification.findFirst({
-                        where: { companyId, msg: { contains: uniqueTag } }
+                        where: { companyId, link: `/installments/${inst.planId}?inst=${inst.id}` }
                     });
 
                     if (!exists) {
@@ -44,8 +44,8 @@ export const GET = withProtection(async (request, session) => {
                                 companyId,
                                 type: 'overdue_payment',
                                 priority: 'high',
-                                msg: `قسط متأخر للعميل ${inst.plan.customer.name} - المبلغ: ${inst.remaining.toLocaleString()} [${uniqueTag}]`,
-                                link: `/installments/${inst.planId}`,
+                                msg: `قسط متأخر للعميل ${inst.plan.customer.name} - المبلغ: ${inst.remaining.toLocaleString()}`,
+                                link: `/installments/${inst.planId}?inst=${inst.id}`,
                             }
                         });
                     }
