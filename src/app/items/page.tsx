@@ -292,6 +292,8 @@ export default function ItemsPage() {
     const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT', 'RESTAURANTS', 'RETAIL', 'TRADING'].includes(companyBusinessType);
     const isRestaurant = companyBusinessType === 'RESTAURANTS';
     const isRetail = companyBusinessType === 'RETAIL';
+    const isWholesale = companyBusinessType === 'WHOLESALE';
+    const hideAdvancedPriceAndVariants = isRetail || isWholesale;
 
     if (!isMounted) return null;
 
