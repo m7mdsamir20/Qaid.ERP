@@ -331,13 +331,9 @@ const handleAddToCart = () => {
                     title={t("إنشاء خطة تقسيط جديدة")} 
                     subtitle={t("إضافة تفاصيل المنتج، العميل وجدولة الأقساط")} 
                     icon={Plus} 
-                    primaryButton={{
-                        label: t('رجوع للأقساط'),
-                        onClick: () => router.push('/installments'),
-                        icon: ArrowLeftCircle,
-                    }}
+                    backUrl="/installments"
                 />
-                <div style={{ maxWidth: '900px', margin: '0 auto', background: C.card, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: `1px solid ${C.border}` }}>
+                <div style={{ background: C.card, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: `1px solid ${C.border}` }}>
 <form onSubmit={handleSubmit}>
     
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
