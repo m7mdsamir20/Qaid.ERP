@@ -195,9 +195,13 @@ export default function EditCompanyPage() {
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
             if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
             if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
-            if (isRetail && ['installments'].includes(s.featureKey)) return;
+            if (isRetail && ['installments', 'barcode'].includes(s.featureKey)) return;
 
             let section = { ...s };
+
+            if (isRetail && section.links) {
+                section.links = section.links.filter((l: any) => l.id !== '/settlements');
+            }
 
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {

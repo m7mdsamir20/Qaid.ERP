@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield, Barcode
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -90,6 +90,7 @@ export default function POSPage() {
     // Open Orders Modal
     const [showOpenOrders, setShowOpenOrders] = useState(false);
     const [openOrders, setOpenOrders] = useState<any[]>([]);
+    const [suspendedOrders, setSuspendedOrders] = useState<any[]>([]);
     const [payingOrder, setPayingOrder] = useState<any>(null);
     const [cashPaid, setCashPaid] = useState('');
 
@@ -240,6 +241,15 @@ export default function POSPage() {
         }
     }, [load, status, isRestaurants, isRetail, hasPosPerm]);
 
+    useEffect(() => {
+        if (isRetail) {
+            try {
+                const saved = localStorage.getItem('suspended_orders');
+                if (saved) setSuspendedOrders(JSON.parse(saved));
+            } catch (e) { }
+        }
+    }, [isRetail]);
+
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
@@ -257,6 +267,54 @@ export default function POSPage() {
             addToCart(item);
         }
     };
+
+    // --- Global Barcode Scanner Listener ---
+    const barcodeBuffer = useRef('');
+    const barcodeTimeout = useRef<NodeJS.Timeout | null>(null);
+    const latestItems = useRef(items);
+    useEffect(() => { latestItems.current = items; }, [items]);
+    const latestHandleItemClick = useRef(handleItemClick);
+    useEffect(() => { latestHandleItemClick.current = handleItemClick; }, [handleItemClick]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+                if (e.target.type !== 'text' && e.target.type !== 'search') return;
+            }
+
+            if (e.key === 'Enter') {
+                if (barcodeBuffer.current.length >= 3) {
+                    const code = barcodeBuffer.current;
+                    const foundItem = latestItems.current.find((i: any) => i.barcode === code || i.code === code);
+                    if (foundItem) {
+                        latestHandleItemClick.current(foundItem);
+                        setSearch('');
+                    } else {
+                        setErrorMsg('لم يتم العثور على صنف بالباركود: ' + code);
+                        setTimeout(() => setErrorMsg(''), 3000);
+                    }
+                }
+                barcodeBuffer.current = '';
+                if (barcodeTimeout.current) clearTimeout(barcodeTimeout.current);
+                return;
+            }
+
+            if (e.key.length === 1) {
+                barcodeBuffer.current += e.key;
+                if (barcodeTimeout.current) clearTimeout(barcodeTimeout.current);
+                barcodeTimeout.current = setTimeout(() => {
+                    barcodeBuffer.current = ''; 
+                }, 100);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            if (barcodeTimeout.current) clearTimeout(barcodeTimeout.current);
+        };
+    }, []);
+    // ---------------------------------------
 
     const getAppMarkupPercent = useCallback(() => {
         if (!orderType.startsWith('app_')) return 0;
@@ -335,6 +393,39 @@ export default function POSPage() {
         setDeliveryFloor('');
         setDeliveryApartment('');
         setDeliveryFee(0);
+    };
+
+    const suspendOrder = () => {
+        if (cart.length === 0) return;
+        const suspSubtotal = cart.reduce((s, c) => s + (c.unitPrice * c.quantity), 0);
+        const suspTotal = suspSubtotal - discount;
+        const newOrder = {
+            id: `susp_${Date.now()}`,
+            orderNumber: `معلق ${Math.floor(Math.random() * 1000)}`,
+            createdAt: new Date().toISOString(),
+            cart,
+            subtotal: suspSubtotal,
+            discount,
+            taxAmount: 0,
+            total: suspTotal,
+            type: 'retail_suspended',
+            status: 'suspended'
+        };
+        const updated = [...suspendedOrders, newOrder];
+        setSuspendedOrders(updated);
+        localStorage.setItem('suspended_orders', JSON.stringify(updated));
+        clearCart();
+        setSuccessMsg(t('تم تعليق الفاتورة بنجاح'));
+        setTimeout(() => setSuccessMsg(''), 3000);
+    };
+
+    const restoreSuspendedOrder = (order: any) => {
+        setCart(order.cart);
+        setDiscount(order.discount || 0);
+        const updated = suspendedOrders.filter(o => o.id !== order.id);
+        setSuspendedOrders(updated);
+        localStorage.setItem('suspended_orders', JSON.stringify(updated));
+        setShowOpenOrders(false);
     };
 
     const updateQty = (itemId: string, delta: number) => {
@@ -902,9 +993,9 @@ export default function POSPage() {
     const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
         
-        const isPostPay = (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery';
+        const isPostPay = !isRetail && ((orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery');
         
-        if (orderType === 'dine-in' && restaurantSettings.requireTableForDineIn !== false && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
+        if (!isRetail && orderType === 'dine-in' && restaurantSettings.requireTableForDineIn !== false && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
         
         if (!isPostPay) {
             setShowPaymentModal(true);
@@ -1109,7 +1200,7 @@ export default function POSPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', fontFamily: CAIRO, background: C.bg }}>
 
                 {/* --- Locked Overlay --- */}
-                {!currentShift && !loading && (
+                {!isRetail && !currentShift && !loading && (
                     <div style={{ position: 'absolute', inset: 0, zIndex: 50, background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                             <div style={{ display: 'flex', gap: '12px' }}>
@@ -1146,11 +1237,22 @@ export default function POSPage() {
 
                         <div style={{ flex: 1 }}></div>
 
+                        {/* Barcode Scanner Toggle/Status */}
+                        <button onClick={() => {
+                            setShowSearchInput(true);
+                            setTimeout(() => {
+                                const el = document.getElementById('pos-search-input');
+                                if (el) el.focus();
+                            }, 100);
+                        }} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('الباركود يعمل تلقائياً')}>
+                            <Barcode size={18} color={C.teal} />
+                        </button>
+
                         {/* Search */}
                         {showSearchInput ? (
                             <div className="mobile-full" style={{ position: 'relative', width: '250px', display: 'flex', alignItems: 'center' }}>
                                 <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', color: C.textMuted }} />
-                                <input autoFocus value={search} onChange={e => setSearch(e.target.value)} placeholder={t('ابحث عن صنف...')} style={{ ...IS, paddingInlineStart: '36px', paddingInlineEnd: '36px', height: '40px', fontSize: '13px', width: '100%' }} />
+                                <input id="pos-search-input" autoFocus value={search} onChange={e => setSearch(e.target.value)} placeholder={t('ابحث عن صنف...')} style={{ ...IS, paddingInlineStart: '36px', paddingInlineEnd: '36px', height: '40px', fontSize: '13px', width: '100%' }} />
                                 <button onClick={() => { setSearch(''); setShowSearchInput(false); }} style={{ position: 'absolute', insetInlineEnd: '8px', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={16} /></button>
                             </div>
                         ) : (
@@ -1170,7 +1272,7 @@ export default function POSPage() {
                         </button>
 
                         {/* End Shift */}
-                        {currentShift && (
+                        {!isRetail && currentShift && (
                             <button onClick={() => { if (cart.length > 0) setShowUnpaidWarning(true); else setShowEndShift(true); }} title={t('نهاية العمل')} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.primary}40`, background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <Power size={18} />
                             </button>
@@ -1199,7 +1301,7 @@ export default function POSPage() {
                             </div>
                         ) : filteredItems.length === 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '200px', color: C.textMuted, gap: '12px' }}>
-                                <UtensilsCrossed size={40} style={{ opacity: 0.3 }} />
+                                {isRetail ? <Package size={40} style={{ opacity: 0.3 }} /> : <UtensilsCrossed size={40} style={{ opacity: 0.3 }} />}
                                 <p style={{ margin: 0, fontSize: '14px' }}>{t('لا توجد أصناف')}</p>
                             </div>
                         ) : (
@@ -1238,11 +1340,12 @@ export default function POSPage() {
                     <div style={{ padding: '10px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', minHeight: '60px', boxSizing: 'border-box' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                             <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{t('الطلب الحالي')}</h3>
-                            <button onClick={() => { fetchOpenOrders(); setShowOpenOrders(true); }} style={{ position: 'relative', padding: '6px 10px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, fontSize: '12px', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <Clock size={14} /> {t('الطلبات المفتوحة')}
-                                {openOrders.length > 0 && (
-                                    <span style={{ position: 'absolute', top: '-6px', insetInlineEnd: '-6px', background: C.danger, color: 'white', borderRadius: '50%', minWidth: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>
-                                        {openOrders.length}
+                            <button onClick={() => { if(!isRetail) fetchOpenOrders(); setShowOpenOrders(true); }} style={{ position: 'relative', padding: '6px 10px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, fontSize: '12px', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <Clock size={16} color={C.primary} />
+                                {isRetail ? t('الطلبات المعلقة') : t('الطلبات المفتوحة')}
+                                {(isRetail ? suspendedOrders.length : openOrders.length) > 0 && (
+                                    <span style={{ position: 'absolute', top: '-6px', insetInlineEnd: '-6px', background: C.danger, color: '#fff', fontSize: '10px', fontWeight: 700, padding: '2px 6px', borderRadius: '10px', border: `2px solid ${C.card}` }}>
+                                        {isRetail ? suspendedOrders.length : openOrders.length}
                                     </span>
                                 )}
                             </button>
@@ -1299,9 +1402,11 @@ export default function POSPage() {
 
                         {/* 3 أيقونات تحت الملاحظات */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <button onClick={() => !isRetail && setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: isRetail ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s', opacity: isRetail ? 0.8 : 1 }} title={t('نوع الطلب')}>
-                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{isRetail ? t('بيع مباشر') : getCurrentOrderTypeLabel()}</span>
-                            </button>
+                            {!isRetail && (
+                                <button onClick={() => setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('نوع الطلب')}>
+                                    <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrentOrderTypeLabel()}</span>
+                                </button>
+                            )}
                             <button onClick={() => setShowCustomerModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${selectedCustomer ? C.primary : C.border}`, background: selectedCustomer ? `${C.primary}10` : C.card, color: selectedCustomer ? C.primary : C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('العميل')}>
                                 <User size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{selectedCustomer ? customers.find(c => c.id === selectedCustomer)?.name || t('العميل') : t('إضافة عميل')}</span>
                             </button>
@@ -1361,6 +1466,11 @@ export default function POSPage() {
                                     {t('مسح')}
                                 </button>
                             )}
+                            {isRetail && cart.length > 0 && (
+                                <button onClick={suspendOrder} style={{ height: '48px', padding: '0 16px', borderRadius: '12px', border: `1px solid ${C.warning}`, background: `${C.warning}15`, color: C.warning, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <Clock size={16} /> {t('تعليق')}
+                                </button>
+                            )}
                             <button onClick={handleInitialSubmit} disabled={submitting || cart.length === 0}
                                 style={{ ...BTN_PRIMARY(submitting || cart.length === 0, false), flex: 1, height: '48px', borderRadius: '12px', fontSize: '14px', gap: '8px' }}>
                                 {submitting
@@ -1382,16 +1492,18 @@ export default function POSPage() {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الطلبات المفتوحة')} (طاولات مشغولة / قيد التجهيز)</h2>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>
+                                {isRetail ? t('الفواتير المعلقة') : t('الطلبات المفتوحة (طاولات مشغولة / قيد التجهيز)')}
+                            </h2>
                             <button onClick={() => setShowOpenOrders(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            {openOrders.length === 0 ? (
+                            {(isRetail ? suspendedOrders : openOrders).length === 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: C.textMuted, padding: '40px', minHeight: '200px', fontSize: '15px', fontFamily: CAIRO }}>
                                     <Clock size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
-                                    <span style={{ fontWeight: 600 }}>{t('لا توجد طلبات مفتوحة')}</span>
+                                    <span style={{ fontWeight: 600 }}>{isRetail ? t('لا توجد فواتير معلقة') : t('لا توجد طلبات مفتوحة')}</span>
                                 </div>
-                            ) : openOrders.map(o => (
+                            ) : (isRetail ? suspendedOrders : openOrders).map(o => (
                                 <div key={o.id} style={{ border: `1px solid ${o.status === 'pending' ? '#f59e0b50' : C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: o.status === 'pending' ? 'rgba(245, 158, 11, 0.05)' : C.bg, flexShrink: 0 }}>
                                     <div>
                                         <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -1400,10 +1512,15 @@ export default function POSPage() {
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
                                             <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(o.total)}</b></span>
-                                            <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - o.paidAmount)}</b></span>
+                                            {o.status !== 'suspended' && <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - (o.paidAmount || 0))}</b></span>}
+                                            {o.status === 'suspended' && <span style={{ color: C.textMuted }}>{new Date(o.createdAt).toLocaleTimeString('ar-EG')}</span>}
                                         </div>
                                     </div>
-                                    {o.status === 'pending' ? (
+                                    {o.status === 'suspended' ? (
+                                        <button onClick={() => restoreSuspendedOrder(o)} style={{ padding: '8px 16px', borderRadius: '8px', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>
+                                            استرجاع للسلة
+                                        </button>
+                                    ) : o.status === 'pending' ? (
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             <button onClick={() => acceptPendingOrder(o.id)} style={{ padding: '8px 16px', borderRadius: '8px', background: '#10b981', color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                 <CheckCircle2 size={14} /> قبول الطلب
