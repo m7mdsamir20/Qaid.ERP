@@ -306,7 +306,7 @@ export default function RegisterPage() {
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                                     placeholder={getCountryPlaceholders(selectedCountry.code).phone}
-                                    style={{ ...IS, height: '50px', flex: 1, direction: isRtl ? 'rtl' : 'ltr', textAlign: 'center' }}
+                                    style={{ ...IS, height: '50px', flex: 1, direction: 'ltr', textAlign: 'left' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                     spellCheck={false}

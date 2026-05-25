@@ -147,10 +147,11 @@ export default function ItemsPage() {
                 });
                 nextNum = Math.max(...nums, 0) + 1;
             }
-            const nextCode = `ITEM-${String(nextNum).padStart(3, '0')}`;
+            const nextCode = String(nextNum).padStart(4, '0');
+            const autoBarcode = companyBusinessType === 'RETAIL' ? Math.floor(100000000000 + Math.random() * 900000000000).toString() : '';
 
             setForm({
-                id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
+                id: '', code: nextCode, barcode: autoBarcode, imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
                 initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, isPriceVariable: false, variants: [], recipeItems: []
@@ -288,8 +289,9 @@ export default function ItemsPage() {
         return q === 0;
     }).length;
     
-    const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT'].includes(companyBusinessType);
+    const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT', 'RESTAURANTS', 'RETAIL', 'TRADING'].includes(companyBusinessType);
     const isRestaurant = companyBusinessType === 'RESTAURANTS';
+    const isRetail = companyBusinessType === 'RETAIL';
 
     if (!isMounted) return null;
 
@@ -465,7 +467,7 @@ export default function ItemsPage() {
                                                 )}
                                                 <td style={{...TABLE_STYLE.td(false)}}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                        {isRestaurant && item.imageUrl && (
+                                                        {(isRestaurant || isRetail) && item.imageUrl && (
                                                             <img src={item.imageUrl} alt={item.name} style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', border: `1px solid ${C.border}` }} />
                                                         )}
                                                         <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div>
@@ -536,8 +538,8 @@ export default function ItemsPage() {
                             </div>
                         </div>
 
-                        {/* Restaurant-only: Image Upload + Description */}
-                        {isRestaurant && form.type !== 'raw' && (
+                        {/* Image Upload + Description */}
+                        {(isRestaurant || isRetail) && form.type !== 'raw' && (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                 <div>
                                     <label style={LS}>{t('صورة الصنف')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>({t('اختياري')})</span></label>
@@ -583,7 +585,7 @@ export default function ItemsPage() {
                             </div>
                         )}
 
-                        {companyBusinessType === 'RESTAURANTS' && form.type !== 'raw' && (
+                        {(isRestaurant || isRetail) && form.type !== 'raw' && (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', paddingTop: '10px' }}>
                                     <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>

@@ -152,6 +152,9 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
 
             if (businessType === 'RETAIL') {
                 if (section.featureKey === 'installments') return null;
+                if (section.links) {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
             }
 
             if (businessType === 'RESTAURANTS') {
@@ -191,6 +194,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             const posFeatures = ['pos', 'barcode'];
             if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
             if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
+            if (section.featureKey === 'barcode' && businessType === 'RETAIL') return null;
 
 
             const SectionIcon = section.icon;
