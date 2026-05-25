@@ -312,183 +312,32 @@ const handleAddToCart = () => {
 
     return (
         <DashboardLayout>
-            <>
-                <div dir={isRtl ? 'rtl' : 'ltr'} style={{ 
-                    ...PAGE_BASE, 
-                    background: C.bg, 
-                    minHeight: '100%', 
-                    fontFamily: CAIRO,
-                    // Inject CSS Variables for components like CustomSelect
-                    ['--surface-50' as any]: C.card,
-                    ['--surface-100' as any]: C.inputBg,
-                    ['--surface-200' as any]: C.hover,
-                    ['--text-primary' as any]: C.textPrimary,
-                    ['--text-secondary' as any]: C.textSecondary,
-                    ['--text-muted' as any]: C.textMuted,
-                    ['--border-subtle' as any]: C.border,
-                    ['--primary-500' as any]: C.primary,
-                    ['--primary-light' as any]: 'var(--c-primary-bg, rgba(37,106,244,0.15))',
-                }}>
-                
-                {/* Header Section */}
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ 
+                ...PAGE_BASE, 
+                background: C.bg, 
+                minHeight: '100%', 
+                fontFamily: CAIRO,
+                ['--surface-50' as any]: C.card,
+                ['--surface-100' as any]: C.inputBg,
+                ['--surface-200' as any]: C.hover,
+                ['--text-primary' as any]: C.textPrimary,
+                ['--text-secondary' as any]: C.textSecondary,
+                ['--text-muted' as any]: C.textMuted,
+                ['--border-subtle' as any]: C.border,
+                ['--primary-500' as any]: C.primary,
+                ['--primary-light' as any]: 'var(--c-primary-bg, rgba(37,106,244,0.15))',
+            }}>
                 <PageHeader 
-                    title={t("خطط التقسيط")} 
-                    subtitle={t("إدارة وتبقسيط المبيعات — تتبع دورات التحصيل وحالات السداد")} 
-                    icon={CreditCard} 
+                    title={t("إنشاء خطة تقسيط جديدة")} 
+                    subtitle={t("إضافة تفاصيل المنتج، العميل وجدولة الأقساط")} 
+                    icon={Plus} 
                     primaryButton={{
-                        label: t('خطة تقسيط جديدة'),
-                        onClick: () => setShowNew(true),
-                        icon: Plus
+                        label: t('رجوع للأقساط'),
+                        onClick: () => router.push('/installments'),
+                        icon: ArrowLeftCircle,
                     }}
                 />
-
-                {/* KPIs Dashboard */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
-                    {kpiData.map((k, i) => (
-                        <div key={i} style={{
-                            background: `${k.color}08`, border: `1px solid ${k.color}33`, borderRadius: '10px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            transition: 'all 0.2s', position: 'relative'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                        >
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    {typeof k.value === 'string' && k.suffix ? (
-                                        fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
-                                    ) : (
-                                        <>
-                                            <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
-                                        </>
-                                    )}
-                                </div>
-                            </div>
-                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${k.color}15`, border: `1px solid ${k.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: k.color }}>
-                                <k.icon size={20} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* ── Filters ── */}
-                <div style={{ display: 'flex', marginBottom: '16px' }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                        <input
-                            placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")}
-                            value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.inputBg }}
-                            onFocus={focusIn} onBlur={focusOut}
-                        />
-                    </div>
-                </div>
-
-                    {loading ? ( <TableSkeleton /> ) : (
-                        <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                <table style={TABLE_STYLE.table}>
-                                    <thead>
-                                        <tr style={TABLE_STYLE.thead}>
-                                            {[t('الخطة'), t('المنتج'), t('الهاتف'), t('العميل'), t('إجمالي الخطة'), t('المقدم'), t('القسط'), t('المدة'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0, [8, 9].includes(i))}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filtered.map((p, idx) => {
-                                            const paidCount = (p.installments || []).filter((i: any) => i.status === 'paid').length;
-                                            const overdueCount = (p.installments || []).filter((i: any) => i.status !== 'paid' && new Date(i.dueDate) < new Date()).length;
-                                            return (
-                                                <tr key={p.id} 
-                                                    style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                                    onClick={() => router.push(`/installments/${p.id}`)}
-                                                    onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                >
-                                                    <td style={TABLE_STYLE.td(true, true)}>
-                                                        <div style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {p.productName ? (
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                                <Package size={14} style={{ opacity: 0.5 }} />
-                                                                <span style={{ fontWeight: 600 }}>{p.productName}</span>
-                                                            </div>
-                                                        ) : <span style={{ color: C.textSecondary }}>—</span>}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
-                                                    <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
-                                                    <td style={{ padding: '12px 16px',  fontWeight: 600, fontFamily: OUTFIT }}>
-                                                        {fMoneyJSX(p.grandTotal)}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                        {fMoneyJSX(p.downPayment)}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
-                                                        {fMoneyJSX(p.installmentAmount)}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
-                                                        {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {p.monthsCount}
-                                                        <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {overdueCount > 0 ? (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                                                <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
-                                                            </span>
-                                                        ) : p.status === 'cancelled' ? (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                                                <X size={10} /> {t('ملغاة')}
-                                                            </span>
-                                                        ) : p.status === 'completed' ? (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                                                <Check size={10} /> {t('انتهت')}
-                                                            </span>
-                                                        ) : (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                                                <Clock size={10} /> {t('نشطة')}
-                                                            </span>
-                                                        )}
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)} onClick={e => e.stopPropagation()}>
-                                                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                                            <button onClick={() => router.push(`/installments/${p.id}`)}
-                                                                style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}
-                                                                onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                                onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                                title={t("عرض التفاصيل")}
-                                                            >
-                                                                <Eye size={16} />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            {filtered.length === 0 && (
-                                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
-                                    <CreditCard size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                                    <p style={{ fontSize: '15px' }}>{t('لا توجد خطط تقسيط مطابقة للبحث')}</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-
-                {/* ── New Plan Modal (REDESIGNED PREMIUM) ── */}
-                <AppModal 
-                    show={showNew} 
-                    onClose={() => setShowNew(false)} 
-                    title={t("إنشاء خطة تقسيط جديدة")} 
-                    icon={Plus} 
-                    maxWidth="720px"
-                >
-                    
+                <div style={{ maxWidth: '900px', margin: '0 auto', background: C.card, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: `1px solid ${C.border}` }}>
 <form onSubmit={handleSubmit}>
     
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
@@ -854,29 +703,10 @@ const handleAddToCart = () => {
                             >{t('تراجـع')}</button>
                         </div>
                     </form>
-                </AppModal>
+                </div>
 
                 {/* Delete Confirmation Modal */}
-                {deleteId && (
-                    <AppModal 
-                        show={!!deleteId} 
-                        onClose={() => setDeleteId(null)} 
-                        title={t("تأكيد حذف الخطة")} 
-                        icon={AlertTriangle} 
-                        variant="danger"
-                    >
-                        <div style={{ padding: '10px 0' }}>
-                            <p style={{ fontWeight: 700, fontSize: '13px', color: C.textPrimary }}>{t('هل أنت متأكد من حذف هذه الخطة نهائياً؟')}</p>
-                            <p style={{ color: C.textSecondary, fontSize: '13px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
-                            <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                                <button onClick={() => setDeleteId(null)} style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer' }}>{t('تراجع')}</button>
-                                <button onClick={handleDelete} disabled={submitting} style={{ flex: 1.5, height: '46px', borderRadius: '12px', background: C.danger, color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                    {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد الحذف النهائي')}
-                                </button>
-                            </div>
-                        </div>
-                    </AppModal>
-                )}
+                
 
                 {/* Add Customer Modal Integration */}
                 <AppModal
@@ -949,7 +779,6 @@ const handleAddToCart = () => {
                 </AppModal>
             </div>
             
-        </>
         </DashboardLayout>
     );
 }
