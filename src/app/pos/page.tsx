@@ -169,7 +169,10 @@ export default function POSPage() {
             setCustomers(Array.isArray(custs) ? custs : []);
             setTreasuries(Array.isArray(treas) ? treas : []);
             setRestaurantSettings(settings.restaurantSettings || {});
-            if (settings.restaurantSettings?.defaultOrderType) {
+            const bType = (session?.user as any)?.businessType?.toUpperCase();
+            if (bType === 'RETAIL') {
+                setOrderType('takeaway');
+            } else if (settings.restaurantSettings?.defaultOrderType) {
                 setOrderType(settings.restaurantSettings.defaultOrderType);
             }
             const brArr = Array.isArray(branchesData) ? branchesData : [];
@@ -197,7 +200,7 @@ export default function POSPage() {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [session]);
 
     // Variants Modal
     const [activeVariantItem, setActiveVariantItem] = useState<any>(null);
@@ -207,6 +210,7 @@ export default function POSPage() {
     const isAdmin = userRole === 'admin';
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isRestaurants = businessType === 'RESTAURANTS';
+    const isRetail = businessType === 'RETAIL';
     const userPerms = (session?.user as any)?.permissions || {};
     const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
 
@@ -231,10 +235,10 @@ export default function POSPage() {
     };
 
     useEffect(() => { 
-        if (status === 'authenticated' && isRestaurants && hasPosPerm) {
+        if (status === 'authenticated' && (isRestaurants || isRetail) && hasPosPerm) {
             load(); 
         }
-    }, [load, status, isRestaurants, hasPosPerm]);
+    }, [load, status, isRestaurants, isRetail, hasPosPerm]);
 
 
     const filteredItems = items.filter(item => {
@@ -1087,7 +1091,7 @@ export default function POSPage() {
         return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
     }
 
-    if (status === 'unauthenticated' || !isRestaurants || !hasPosPerm) {
+    if (status === 'unauthenticated' || (!isRestaurants && !isRetail) || !hasPosPerm) {
         return (
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
@@ -1295,8 +1299,8 @@ export default function POSPage() {
 
                         {/* 3 أيقونات تحت الملاحظات */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                            <button onClick={() => setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('نوع الطلب')}>
-                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrentOrderTypeLabel()}</span>
+                            <button onClick={() => !isRetail && setShowOrderTypeModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: isRetail ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s', opacity: isRetail ? 0.8 : 1 }} title={t('نوع الطلب')}>
+                                <Utensils size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{isRetail ? t('بيع مباشر') : getCurrentOrderTypeLabel()}</span>
                             </button>
                             <button onClick={() => setShowCustomerModal(true)} style={{ flex: 1, height: '40px', borderRadius: '10px', border: `1px solid ${selectedCustomer ? C.primary : C.border}`, background: selectedCustomer ? `${C.primary}10` : C.card, color: selectedCustomer ? C.primary : C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.2s' }} title={t('العميل')}>
                                 <User size={16} /> <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{selectedCustomer ? customers.find(c => c.id === selectedCustomer)?.name || t('العميل') : t('إضافة عميل')}</span>

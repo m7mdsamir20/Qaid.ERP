@@ -21,8 +21,13 @@ const PLANS = {
 const BUSINESS_TYPES = [
     {
         value: "TRADING",
-        label: "نشاط تجاري (جملة وتجزئة)",
+        label: "نشاط تجارة الجملة",
         modules: ['sales', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
+    },
+    {
+        value: "RETAIL",
+        label: "نشاط تجارة التجزئة",
+        modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports', 'pos', 'barcode']
     },
     {
         value: "SERVICES",
@@ -177,8 +182,10 @@ export default function EditCompanyPage() {
 
     const uniqueSections = (() => {
         const map = new Map<string, any>();
-        const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+        const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
+        const posFeatures = ['pos', 'barcode'];
         const isRestaurants = form.businessType === 'RESTAURANTS';
+        const isRetail = form.businessType === 'RETAIL';
 
         navSections.forEach(s => {
             if (!s.featureKey) return;
@@ -186,7 +193,9 @@ export default function EditCompanyPage() {
 
             // فلترة حسب نوع النشاط
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
+            if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
             if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
+            if (isRetail && ['installments'].includes(s.featureKey)) return;
 
             let section = { ...s };
 

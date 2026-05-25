@@ -150,6 +150,10 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 }
             }
 
+            if (businessType === 'RETAIL') {
+                if (section.featureKey === 'installments') return null;
+            }
+
             if (businessType === 'RESTAURANTS') {
                 if (section.featureKey === 'installments') return null;
                 
@@ -183,8 +187,10 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             if (!section.isStandalone && visibleLinks.length === 0) return null;
 
             // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
-            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
+            const posFeatures = ['pos', 'barcode'];
             if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
+            if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
 
 
             const SectionIcon = section.icon;

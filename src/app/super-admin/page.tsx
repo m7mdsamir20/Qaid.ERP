@@ -16,12 +16,14 @@ const PLANS: Record<string, { label: string; color: string; bg: string }> = {
 };
 
 const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
-    TRADING: { label: 'تجارة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
+    TRADING: { label: 'تجارة الجملة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
     SERVICES: { label: 'خدمات', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-    trading: { label: 'تجارة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
+    trading: { label: 'تجارة الجملة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
     RESTAURANT: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
     RESTAURANTS: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
     restaurants: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    RETAIL: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    retail: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
 };
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
