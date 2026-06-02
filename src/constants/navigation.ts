@@ -130,7 +130,6 @@ export const navSections = [
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
             { id: '/customers', href: '/customers', label: 'العملاء' },
             { id: '/coupons', href: '/coupons', label: 'كوبونات الخصم' },
-            { id: '/settlements', href: '/settlements', label: 'تسوية ديون (حوالة)' },
         ],
     },
     {

@@ -192,6 +192,10 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 }
             }
 
+            if (section.featureKey === 'reports' && businessType !== 'RESTAURANTS') {
+                section.links = section.links?.filter((l: any) => l.id !== 'reports-restaurant');
+            }
+
             const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id)) || [];
             if (!hasFeature(section.featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;
@@ -199,9 +203,11 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
             const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
             const posFeatures = ['pos', 'barcode'];
+            const contractingFeatures = ['projects', 'subcontractors'];
             if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
             if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
             if (section.featureKey === 'barcode' && businessType === 'RETAIL') return null;
+            if (contractingFeatures.includes(section.featureKey || '') && businessType !== 'CONTRACTING') return null;
 
 
             const SectionIcon = section.icon;
