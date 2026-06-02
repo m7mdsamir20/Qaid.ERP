@@ -224,7 +224,7 @@ export default function Sidebar({
                 return (
                     <div key={sectionOrigin.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
                         <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '0' : '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
-                            <SectionIcon size={18} />
+                            <SectionIcon size={20} />
                             {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
                         </Link>
                     </div>
@@ -245,8 +245,8 @@ export default function Sidebar({
                         }
                     }} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: isCollapsed ? '0' : '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                            <SectionIcon size={18} />
-                            {!isCollapsed && <span style={{ marginInlineStart: '12px' }}>{t(section.title)}</span>}
+                            <SectionIcon size={20} />
+                            {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
                         </div>
                         {!isCollapsed && <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>}
                     </button>
@@ -285,17 +285,12 @@ export default function Sidebar({
             <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                justifyContent: isCollapsed ? 'center' : 'space-between', 
+                justifyContent: isCollapsed ? 'center' : 'flex-end', 
                 padding: isCollapsed ? '16px 0' : '16px 20px', 
                 borderBottom: `1px solid ${C.border}15`,
                 height: '64px',
                 boxSizing: 'border-box'
             }}>
-                {!isCollapsed && (
-                    <span style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: '15px', color: C.primary }}>
-                        {t('القائمة الرئيسية')}
-                    </span>
-                )}
                 <button 
                     onClick={onToggle} 
                     style={{ 
