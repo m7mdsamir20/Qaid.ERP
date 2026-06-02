@@ -229,8 +229,10 @@ export default function DashboardLayout({
 
                 /* ── Desktop View (Laptop/PC) ── */
                 @media (min-width: 1024px) {
+                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; z-index: 1000 !important; }
+                    
                     .sidebar-wrapper {
-                        position: fixed; top: 0; bottom: 0; z-index: 950;
+                        position: fixed; top: 64px; bottom: 0; z-index: 950;
                         transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
                         overflow: hidden;
                     }
@@ -259,25 +261,21 @@ export default function DashboardLayout({
                     /* Margins when open */
                     .ltr-mode .sidebar-wrapper.open ~ .dashboard-content { margin-left: 260px; }
                     .rtl-mode .sidebar-wrapper.open ~ .dashboard-content { margin-right: 260px; }
-                    .ltr-mode .sidebar-wrapper.open ~ .dashboard-content .main-header { left: 260px; right: 0; width: calc(100% - 260px); }
-                    .rtl-mode .sidebar-wrapper.open ~ .dashboard-content .main-header { right: 260px; left: 0; width: calc(100% - 260px); }
 
                     /* Margins when collapsed */
                     .ltr-mode .sidebar-wrapper.collapsed ~ .dashboard-content { margin-left: 70px; }
                     .rtl-mode .sidebar-wrapper.collapsed ~ .dashboard-content { margin-right: 70px; }
-                    .ltr-mode .sidebar-wrapper.collapsed ~ .dashboard-content .main-header { left: 70px; right: 0; width: calc(100% - 70px); }
-                    .rtl-mode .sidebar-wrapper.collapsed ~ .dashboard-content .main-header { right: 70px; left: 0; width: calc(100% - 70px); }
                     
                     main { padding: 88px 24px 24px; }
                 }
 
                 /* ── Mobile/Tablet View (Drawer-based layout with mini sidebar) ── */
                 @media (max-width: 1023px) {
-                    .main-header { padding: 0 16px !important; height: 60px !important; }
+                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 16px !important; height: 60px !important; z-index: 1000 !important; }
                     .branch-switcher-wrap { display: none !important; }
                     
                     .sidebar-wrapper {
-                        position: fixed; top: 0; bottom: 0; z-index: 1001; 
+                        position: fixed; top: 60px; bottom: 0; z-index: 990; 
                         background: ${C.card};
                         margin: 0 !important;
                         transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -308,9 +306,6 @@ export default function DashboardLayout({
                     
                     .ltr-mode .dashboard-content { margin-left: 70px !important; margin-right: 0 !important; width: calc(100% - 70px) !important; }
                     .rtl-mode .dashboard-content { margin-right: 70px !important; margin-left: 0 !important; width: calc(100% - 70px) !important; }
-                    
-                    .ltr-mode .main-header { left: 70px !important; right: 0 !important; width: calc(100% - 70px) !important; }
-                    .rtl-mode .main-header { right: 70px !important; left: 0 !important; width: calc(100% - 70px) !important; }
                     
                     main { padding: 76px 16px 20px !important; }
 
