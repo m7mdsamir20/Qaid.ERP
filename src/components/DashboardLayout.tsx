@@ -158,7 +158,11 @@ export default function DashboardLayout({
         }
     }, [pathname, status, user, hasPage, router]);
 
-    const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        setIsSidebarOpen(false);
+    }, [pathname]);
 
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -173,11 +177,11 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'} ${showMobileMenu ? 'menu-open' : ''}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
+        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'} ${isSidebarOpen ? 'menu-open' : ''}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
             {/* Overlay for mobile menu */}
-            {showMobileMenu && (
+            {isSidebarOpen && (
                 <div
-                    onClick={() => setShowMobileMenu(false)}
+                    onClick={() => setIsSidebarOpen(false)}
                     style={{
                         position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
                         backdropFilter: 'blur(4px)', zIndex: 940, animation: 'fadeIn 0.3s ease'
@@ -185,12 +189,12 @@ export default function DashboardLayout({
                 />
             )}
 
-            <div className={`sidebar-wrapper ${showMobileMenu ? 'open' : ''}`} style={{
+            <div className={`sidebar-wrapper ${isSidebarOpen ? 'open' : 'collapsed'}`} style={{
                 opacity: isLockoutActive ? 0.6 : 1,
                 pointerEvents: isLockoutActive ? 'none' : 'auto',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             }}>
-                <Sidebar onLinkClick={() => setShowMobileMenu(false)} />
+                <Sidebar onLinkClick={() => setIsSidebarOpen(false)} />
             </div>
 
             <div className="dashboard-content" style={{
@@ -200,7 +204,7 @@ export default function DashboardLayout({
                 transition: 'all 0.3s ease'
             }}>
                 <div className="print-hide">
-                    <Header onMenuToggle={() => setShowMobileMenu(!showMobileMenu)} />
+                    <Header onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
                 </div>
                 <main style={{ flex: 1, padding: '88px 24px 24px', position: 'relative' }}>
                     <TrialBanner />
@@ -232,7 +236,23 @@ export default function DashboardLayout({
 
                 /* ── Desktop View (Laptop/PC) ── */
                 @media (min-width: 1024px) {
-                    .sidebar-wrapper { width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; }
+                    .sidebar-wrapper {
+                        width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950;
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                    }
+                    .sidebar-wrapper.collapsed {
+                        visibility: hidden;
+                        pointer-events: none;
+                    }
+                    .ltr-mode .sidebar-wrapper.collapsed { transform: translateX(-102%); }
+                    .rtl-mode .sidebar-wrapper.collapsed { transform: translateX(102%); }
+                    
+                    .sidebar-wrapper.open {
+                        visibility: visible;
+                        pointer-events: auto;
+                        transform: translateX(0) !important;
+                    }
+                    
                     .sidebar-wrapper > .sidebar {
                         position: relative !important;
                         inset: auto !important;
@@ -242,11 +262,15 @@ export default function DashboardLayout({
                     .ltr-mode .sidebar-wrapper { left: 0; border-right: 1px solid ${C.border}; }
                     .rtl-mode .sidebar-wrapper { right: 0; border-left: 1px solid ${C.border}; }
 
-                    .ltr-mode .dashboard-content { margin-left: 260px; }
-                    .rtl-mode .dashboard-content { margin-right: 260px; }
-                    
-                    .ltr-mode .main-header { left: 260px; right: 0; width: calc(100% - 260px); }
-                    .rtl-mode .main-header { right: 260px; left: 0; width: calc(100% - 260px); }
+                    /* Margins when open */
+                    .ltr-mode .sidebar-wrapper.open ~ .dashboard-content { margin-left: 260px; }
+                    .rtl-mode .sidebar-wrapper.open ~ .dashboard-content { margin-right: 260px; }
+                    .ltr-mode .sidebar-wrapper.open ~ .dashboard-content .main-header { left: 260px; right: 0; width: calc(100% - 260px); }
+                    .rtl-mode .sidebar-wrapper.open ~ .dashboard-content .main-header { right: 260px; left: 0; width: calc(100% - 260px); }
+
+                    /* Margins when collapsed */
+                    .sidebar-wrapper.collapsed ~ .dashboard-content { margin-left: 0 !important; margin-right: 0 !important; }
+                    .sidebar-wrapper.collapsed ~ .dashboard-content .main-header { left: 0 !important; right: 0 !important; width: 100% !important; }
                     
                     main { padding: 88px 24px 24px; }
                 }
@@ -254,7 +278,7 @@ export default function DashboardLayout({
                 /* ── Mobile/Tablet View (Drawer-based) ── */
                 @media (max-width: 1023px) {
                     .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 16px !important; height: 60px !important; }
-                    .mobile-menu-btn { display: flex !important; }
+                    .menu-toggle-btn { display: flex !important; }
                     .branch-switcher-wrap { display: none !important; }
                     
                     .sidebar-wrapper {
@@ -492,12 +516,9 @@ function DashboardSkeleton({ isRtl }: { isRtl: boolean }) {
     return (
         <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
             {/* Sidebar Skeleton */}
-            <div className="sidebar-wrapper print-hide">
+            <div className="sidebar-wrapper collapsed print-hide">
                 <aside style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column' }}>
-                    {/* Logo area */}
-                    <div style={{ height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 20px', borderBottom: `1px solid ${C.border}05` }}>
-                        <div className="skeleton-pulse" style={{ width: '140px', height: '40px', borderRadius: '8px', background: 'rgba(128,128,128,0.1)' }} />
-                    </div>
+                    <div style={{ height: '24px' }} />
                     {/* Nav Items */}
                     <div style={{ padding: '20px 14px', flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {Array.from({ length: 8 }).map((_, i) => (
