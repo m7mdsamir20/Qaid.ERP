@@ -523,23 +523,9 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
 
             <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
 
-            {/* Menu Toggle (Mobile & Desktop) */}
-            <button
-                className="menu-toggle-btn"
-                onClick={onMenuToggle}
-                style={{
-                    width: '38px', height: '38px', borderRadius: '10px',
-                    border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
-                    color: C.textPrimary, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', cursor: 'pointer', marginInlineEnd: '12px'
-                }}
-            >
-                <Menu size={20} />
-            </button>
-
-            {/* Header Logo */}
-            <Link href="/" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '16px' }}>
-                <div style={{ position: 'relative', width: '100px', height: '32px' }}>
+            {/* Header Logo taking the place of the toggle button */}
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '24px' }}>
+                <div style={{ position: 'relative', width: '130px', height: '36px' }}>
                     <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
                     <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
                 </div>
