@@ -525,7 +525,7 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
 
             {/* Header Logo taking the place of the toggle button */}
             <Link href="/" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '24px' }}>
-                <div style={{ position: 'relative', width: '130px', height: '36px' }}>
+                <div style={{ position: 'relative', width: '160px', height: '46px' }}>
                     <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
                     <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
                 </div>

@@ -223,8 +223,8 @@ export default function Sidebar({
                 const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                 return (
                     <div key={sectionOrigin.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
-                        <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '0' : '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
-                            <SectionIcon size={20} />
+                        <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '0' : '12px', padding: isCollapsed ? '10px 0' : '10px 14px', width: '100%', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
+                            <SectionIcon size={20} style={{ flexShrink: 0 }} />
                             {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
                         </Link>
                     </div>
@@ -243,9 +243,9 @@ export default function Sidebar({
                         } else {
                             setOpenSections(prev => ({ ...prev, [sectionOrigin.title]: !prev[sectionOrigin.title] }));
                         }
-                    }} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
+                    }} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', padding: isCollapsed ? '10px 0' : '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: isCollapsed ? '0' : '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                            <SectionIcon size={20} />
+                            <SectionIcon size={20} style={{ flexShrink: 0 }} />
                             {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
                         </div>
                         {!isCollapsed && <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>}
