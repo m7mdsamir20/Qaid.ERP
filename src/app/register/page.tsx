@@ -34,6 +34,7 @@ const BUSINESS_TYPES = (t: any) => [
     { value: "RETAIL",      label: t('نشاط تجارة التجزئة') },
     { value: "SERVICES",    label: t('نشاط خدمات (استشارات، صيانة، إلخ)') },
     { value: "RESTAURANTS", label: t('مطاعم وكافيهات') },
+    { value: "CONTRACTING", label: t('مقاولات وإنشاءات') },
 ];
 
 export default function RegisterPage() {

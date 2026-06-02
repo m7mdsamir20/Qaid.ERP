@@ -104,7 +104,7 @@ export const POST = withProtection(async (request, session, body) => {
         const {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,
             paidAmount, warehouseId, notes, attachments,
-            financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount
+            financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount, projectId
         } = body;
 
         // Use bankId if treasuryId is missing
@@ -217,6 +217,7 @@ export const POST = withProtection(async (request, session, body) => {
                 customerNewBalance,
                 supplierPrevBalance,
                 supplierNewBalance,
+                projectId: projectId || null,
                 branchId: body.branchId || (session.user as any).activeBranchId || null,
                 lines: {
                     create: lines.map((line: any) => ({

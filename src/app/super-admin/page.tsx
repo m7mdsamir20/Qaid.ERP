@@ -24,6 +24,8 @@ const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
     restaurants: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
     RETAIL: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
     retail: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    CONTRACTING: { label: 'مقاولات وإنشاءات', color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
+    contracting: { label: 'مقاولات وإنشاءات', color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
 };
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });

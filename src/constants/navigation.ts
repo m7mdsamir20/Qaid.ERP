@@ -34,6 +34,8 @@ import {
     Clock,
     AlertTriangle,
     QrCode,
+    HardHat,
+    FolderKanban,
 } from 'lucide-react';
 
 export const navSections = [
@@ -93,6 +95,28 @@ export const navSections = [
         featureKey: 'barcode',
         links: [
             { id: '/barcode', href: '/barcode', label: 'QR الطاولات' },
+        ],
+    },
+    // ═══════════════════════════════════════════════════════
+    // 🏗️  أقسام المقاولات (تظهر فقط لنشاط CONTRACTING)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'المشاريع',
+        icon: FolderKanban,
+        featureKey: 'projects',
+        links: [
+            { id: '/projects', href: '/projects', label: 'قائمة المشاريع' },
+            { id: '/projects/new', href: '/projects/new', label: 'مشروع جديد' },
+            { id: '/progress-bills', href: '/progress-bills', label: 'المستخلصات' },
+        ],
+    },
+    {
+        title: 'مقاولين الباطن',
+        icon: HardHat,
+        featureKey: 'subcontractors',
+        links: [
+            { id: '/subcontractors', href: '/subcontractors', label: 'مقاولين الباطن' },
+            { id: '/sub-contracts', href: '/sub-contracts', label: 'عقود الباطن' },
         ],
     },
     {

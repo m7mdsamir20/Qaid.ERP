@@ -39,6 +39,11 @@ const BUSINESS_TYPES = [
         label: "مطاعم وكافيهات",
         modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
+    {
+        value: "CONTRACTING",
+        label: "مقاولات وإنشاءات",
+        modules: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+    },
 ];
 
 const COUNTRIES = [
@@ -184,8 +189,11 @@ export default function EditCompanyPage() {
         const map = new Map<string, any>();
         const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
         const posFeatures = ['pos', 'barcode'];
+        const contractingFeatures = ['projects', 'subcontractors'];
+        
         const isRestaurants = form.businessType === 'RESTAURANTS';
         const isRetail = form.businessType === 'RETAIL';
+        const isContracting = form.businessType === 'CONTRACTING';
 
         navSections.forEach(s => {
             if (!s.featureKey) return;
@@ -194,13 +202,19 @@ export default function EditCompanyPage() {
             // فلترة حسب نوع النشاط
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
             if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
+            if (contractingFeatures.includes(s.featureKey) && !isContracting) return;
             if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
             if (isRetail && ['installments', 'barcode'].includes(s.featureKey)) return;
+            if (isContracting && ['installments', 'pos', 'barcode'].includes(s.featureKey)) return;
 
             let section = { ...s };
 
             if (isRetail && section.links) {
                 section.links = section.links.filter((l: any) => l.id !== '/settlements');
+            }
+
+            if (isContracting && section.featureKey === 'sales' && section.links) {
+                section.links = section.links.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id));
             }
 
             if (form.businessType === 'SERVICES') {

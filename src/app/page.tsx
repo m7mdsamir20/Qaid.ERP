@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign, UtensilsCrossed } from 'lucide-react';
+import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign, UtensilsCrossed, FolderKanban, Plus, HardHat, ArrowUpDown, Layers } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -43,6 +43,20 @@ const statusLabel: Record<string, { label: string; color: string; bg: string }> 
   payment: { label: 'سند صرف', color: C.danger, bg: C.dangerBg },
   installment: { label: 'تقسيط', color: C.primary, bg: C.primaryBg },
   installment_receipt: { label: 'تحصيل قسط', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
+};
+
+const projectStatusLabels: Record<string, { label: string; color: string; bg: string }> = {
+  active: { label: 'نشط', color: C.success, bg: C.successBg },
+  paused: { label: 'متوقف مؤقتاً', color: C.warning, bg: C.warningBg },
+  completed: { label: 'مكتمل', color: C.primary, bg: C.primaryBg },
+  cancelled: { label: 'ملغي', color: C.danger, bg: C.dangerBg },
+};
+
+const projectTypeLabels: Record<string, string> = {
+  residential: 'سكني',
+  commercial: 'تجاري',
+  government: 'حكومي',
+  maintenance: 'صيانة وتشغيل',
 };
 
 function KpiCard({
@@ -177,6 +191,7 @@ export default function DashboardPage() {
   const businessType = (session?.user as any)?.businessType?.toUpperCase();
   const isServices = businessType === 'SERVICES';
   const isRestaurants = businessType === 'RESTAURANTS';
+  const isContracting = businessType === 'CONTRACTING';
   const isUserAdmin = userRole === 'admin';
 
   // Get subscription features for admin checks
@@ -251,7 +266,10 @@ export default function DashboardPage() {
     setIsError(false);
     try {
       const activeBranchId = (session?.user as any)?.activeBranchId || 'all';
-      const res = await fetch(`/api/stats?period=${period}&b=${activeBranchId}&t=${Date.now()}`);
+      const url = businessType === 'CONTRACTING'
+        ? `/api/projects/stats?b=${activeBranchId}&t=${Date.now()}`
+        : `/api/stats?period=${period}&b=${activeBranchId}&t=${Date.now()}`;
+      const res = await fetch(url);
       const data = await res.json();
       if (data.error) setIsError(true);
       else {
@@ -373,7 +391,22 @@ export default function DashboardPage() {
       { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
     ];
 
-    const currentActions = isRestaurants ? restaurantActions : isServices ? serviceActions : tradingActions;
+    const contractingActions = [
+      { id: '/projects', featureKey: 'projects', href: '/projects', label: t('قائمة المشاريع'), icon: FolderKanban, color: C.primaryBg, iconColor: C.primary },
+      { id: '/projects/new', featureKey: 'projects', href: '/projects/new', label: t('مشروع جديد'), icon: Plus, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
+      { id: '/progress-bills', featureKey: 'projects', href: '/progress-bills', label: t('المستخلصات'), icon: FileText, color: C.successBg, iconColor: C.success },
+      { id: '/subcontractors', featureKey: 'subcontractors', href: '/subcontractors', label: t('مقاولين الباطن'), icon: HardHat, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
+      { id: '/sub-contracts', featureKey: 'subcontractors', href: '/sub-contracts', label: t('عقود الباطن'), icon: HardHat, color: 'rgba(139, 92, 246, 0.12)', iconColor: '#8b5cf6' },
+      { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
+    ];
+
+    const currentActions = isRestaurants 
+      ? restaurantActions 
+      : isServices 
+        ? serviceActions 
+        : isContracting 
+          ? contractingActions 
+          : tradingActions;
 
     return currentActions
       .filter(action => hasPage(action.id, action.featureKey))
@@ -425,7 +458,7 @@ export default function DashboardPage() {
         {/* ── KPI Cards Grid (Dynamic) ── */}
         <div className="kpi-grid" style={{
           display: 'grid',
-          gridTemplateColumns: isServices || isRestaurants ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
+          gridTemplateColumns: isServices || isRestaurants || isContracting ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
           gap: '18px',
           marginBottom: '28px'
         }}>
@@ -452,6 +485,15 @@ export default function DashboardPage() {
               <KpiCard label="مواعيد اليوم" value="0" sub={t("لا يوجد مواعيد مسجلة حالياً")} color={C.warning} icon={Clock} delay={180} />
               <KpiCard label="المصروفات" value={fMoneyJSX(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
               <KpiCard label="صافي الأرباح" value={fMoneyJSX(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
+            </>
+          ) : isContracting ? (
+            <>
+              <KpiCard label="المشاريع الكلية" value={stats.projects?.total || 0} sub={t("إجمالي المشاريع المسجلة")} color={C.primary} icon={FolderKanban} delay={0} />
+              <KpiCard label="المشاريع النشطة" value={stats.projects?.active || 0} sub={t("مشاريع قيد العمل والتنفيذ")} color={C.success} icon={BarChart2} delay={60} />
+              <KpiCard label="قيمة العقود الإجمالية" value={fMoneyJSX(stats.finances?.contractValue || 0)} sub={t("قيمة عقود المشاريع مع الملاك")} color={C.blue} icon={DollarSign} delay={120} />
+              <KpiCard label="المستخلصات المعتمدة" value={fMoneyJSX(stats.finances?.totalBilled || 0)} sub={t("إجمالي المطالبات المالية المعتمدة")} color={C.warning} icon={FileText} delay={180} />
+              <KpiCard label="عقود مقاولي الباطن" value={fMoneyJSX(stats.subcontractors?.contractValue || 0)} sub={t("إجمالي قيم عقود الباطن")} color={C.danger} icon={HardHat} delay={240} />
+              <KpiCard label="مستحقات الباطن المتبقية" value={fMoneyJSX(stats.subcontractors?.remaining || 0)} sub={t("المبالغ المتبقية لمقاولي الباطن")} color={C.danger} icon={Wallet} delay={300} />
             </>
           ) : (
             <>
@@ -511,16 +553,16 @@ export default function DashboardPage() {
         {/* ── Charts & Alerts ── */}
         <div className="charts-alerts-row responsive-grid" style={{
           display: 'grid',
-          gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory') || hasPage('/customers', 'sales')) ? '2fr 1fr' : '1fr',
+          gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases') || isContracting) && (hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory') || hasPage('/customers', 'sales') || isContracting) ? '2fr 1fr' : '1fr',
           gap: '18px',
           marginBottom: '18px'
         }}>
 
-          {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-            <SectionCard title={isRestaurants ? t("إيرادات المطعم مقابل المنصرفات") : isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
+          {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases') || isContracting) && (
+            <SectionCard title={isContracting ? t("مستخلصات المالك مقابل عقود الباطن") : isRestaurants ? t("إيرادات المطعم مقابل المنصرفات") : isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
               action={<div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', gap: '15px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isRestaurants || isServices ? 'إيرادات' : 'مبيعات')}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isRestaurants || isServices ? C.danger : C.warning }} />{t(isRestaurants ? 'منصرفات' : isServices ? 'مصروفات' : 'مشتريات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isContracting ? 'مستخلصات المالك' : isRestaurants || isServices ? 'إيرادات' : 'مبيعات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isContracting || isRestaurants || isServices ? C.danger : C.warning }} />{t(isContracting ? 'عقود الباطن' : isRestaurants ? 'منصرفات' : isServices ? 'مصروفات' : 'مشتريات')}</span>
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px', minWidth: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -540,21 +582,54 @@ export default function DashboardPage() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
-                    <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: OUTFIT }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey={isContracting ? "month" : "label"} tick={{ fill: C.textMuted, fontSize: 11, fontFamily: OUTFIT }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: OUTFIT }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
                     <Tooltip content={<ChartTooltip fMoneyJSX={fMoneyJSX} t={t} />} />
-                    {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isRestaurants || isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
-                    {isRestaurants || isServices
-                      ? <Area type="monotone" dataKey="expenses" name={t(isRestaurants ? "منصرفات" : "مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
-                      : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
-                    }
+                    {isContracting ? (
+                      <>
+                        <Area type="monotone" dataKey="billed" name={t("مستخلصات المالك")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />
+                        <Area type="monotone" dataKey="subcontractVal" name={t("عقود الباطن")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
+                      </>
+                    ) : (
+                      <>
+                        {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isRestaurants || isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
+                        {isRestaurants || isServices
+                          ? <Area type="monotone" dataKey="expenses" name={t(isRestaurants ? "منصرفات" : "مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
+                          : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
+                        }
+                      </>
+                    )}
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </SectionCard>
           )}
 
-          {hasPage('/treasuries', 'treasury') && (
+          {isContracting ? (
+            <SectionCard title={t("أكبر مستحقات مقاولي الباطن")} icon={HardHat}
+              action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 600, background: C.danger, padding: '3px 10px', borderRadius: '20px' }}>{stats.topSubcontractors?.length || 0} {t('مقاولين')}</span>}>
+              <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {!stats.topSubcontractors || stats.topSubcontractors.length === 0 ? (
+                  <div style={{ padding: '30px', color: C.textSecondary, fontSize: '13px', textAlign: 'center' }}>{t('لا يوجد مقاولي باطن مسجلين')}</div>
+                ) : (
+                  stats.topSubcontractors.map((sub: any, i: number) => (
+                    <div key={i} style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      padding: '12px', background: 'rgba(239,68,68,0.03)',
+                      border: `1px solid ${C.danger}15`,
+                      borderRadius: '12px', transition: 'all 0.2s'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: C.danger, boxShadow: `0 0 8px ${C.danger}` }} />
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{sub.name}</span>
+                      </div>
+                      <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>{fMoneyJSX(sub.balance)}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </SectionCard>
+          ) : hasPage('/treasuries', 'treasury') && (
             <SectionCard title={t("توزيع السيولة النقدية")} icon={Landmark}
               action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 600, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -595,15 +670,70 @@ export default function DashboardPage() {
         {/* ── Recent Data Row ── */}
         <div className="recent-data-row responsive-grid" style={{
           display: 'grid',
-          gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && hasPage('/customers', 'sales') ? '1.6fr 1fr' : '1fr',
+          gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases') || isContracting) && (hasPage('/customers', 'sales') || isContracting) ? '1.6fr 1fr' : '1fr',
           gap: '18px'
         }}>
 
-          {(hasPage('/sales', 'sales') || hasPage('/receipts', 'sales') || hasPage('/purchases', 'purchases') || hasPage('/purchase-payments', 'purchases')) && (
+          {isContracting ? (
+            <SectionCard title="أكبر المشاريع من حيث قيمة العقد" icon={FolderKanban}
+              action={
+                <Link href="/projects" style={{ fontSize: '12px', color: C.primary, fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  {t('كل المشاريع')} <ArrowUpDown size={14} />
+                </Link>
+              }>
+              <div style={{ padding: '0', maxHeight: '350px', overflowY: 'auto' }} className="scroll-table custom-scrollbar">
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+                  <thead style={{ position: 'sticky', top: 0, background: C.card, zIndex: 10 }}>
+                    <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                      {[t('المشروع والعميل'), t('قيمة العقد'), t('نسبة الإنجاز'), t('الحالة')].map((h, i) => (
+                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.topProjects?.map((proj: any, i: number, arr: any[]) => {
+                      const status = projectStatusLabels[proj.status] || { label: proj.status, color: C.textSecondary, bg: C.border };
+                      return (
+                        <tr key={proj.id} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                          <td style={{ padding: '14px 16px', textAlign: 'start' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>
+                              <Link href={`/projects/${proj.id}`} style={{ color: C.textPrimary, textDecoration: 'none' }}
+                                onMouseEnter={e => e.currentTarget.style.color = C.primary}
+                                onMouseLeave={e => e.currentTarget.style.color = C.textPrimary}>
+                                {proj.name}
+                              </Link>
+                            </div>
+                            <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px' }}>{proj.customer?.name || t('بدون عميل')}</div>
+                          </td>
+                          <td style={{ padding: '14px 16px', fontSize: '13px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }}>{fMoneyJSX(proj.contractValue)}</td>
+                          <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                              <div style={{ width: '60px', height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '10px', overflow: 'hidden' }}>
+                                <div style={{ width: `${proj.completionPercent}%`, height: '100%', background: C.success }} />
+                              </div>
+                              <span style={{ fontSize: '11px', fontWeight: 600, fontFamily: OUTFIT }}>{proj.completionPercent}%</span>
+                            </div>
+                          </td>
+                          <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                            <span style={{
+                              display: 'inline-flex', padding: '2px 8px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
+                              background: status.bg, color: status.color, border: `1px solid ${status.color}20`
+                            }}>{t(status.label)}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </SectionCard>
+          ) : (hasPage('/sales', 'sales') || hasPage('/receipts', 'sales') || hasPage('/purchases', 'purchases') || hasPage('/purchase-payments', 'purchases')) ? (
             <SectionCard title="آخر الحركات المالية" icon={Receipt}
               action={hasPage('reports-financial', 'reports') && (
                 <Link href="/reports" style={{ fontSize: '12px', color: C.primary, fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  {t('عرض التقارير')} <ArrowUpRight size={14} />
+                  {t('عرض التقارير')} <ArrowUpDown size={14} />
                 </Link>
               )}>
               <div style={{ padding: '0', maxHeight: '350px', overflowY: 'auto' }} className="scroll-table custom-scrollbar">
@@ -617,7 +747,7 @@ export default function DashboardPage() {
                   </thead>
                   <tbody>
                     {stats.recentInvoices
-                      .filter((inv: any) => {
+                      ?.filter((inv: any) => {
                         if (inv.type === 'sale' || inv.type === 'sale_return') return hasPage('/sales', 'sales');
                         if (inv.type === 'receipt') return hasPage('/receipts', 'sales');
                         if (inv.type === 'purchase' || inv.type === 'purchase_return') return hasPage('/purchases', 'purchases');
@@ -648,15 +778,40 @@ export default function DashboardPage() {
                 </table>
               </div>
             </SectionCard>
-          )}
+          ) : null}
 
-          {hasPage('/customers', 'sales') && (
+          {isContracting ? (
+            <SectionCard title={t("توزيع المشاريع حسب النوع")} icon={BarChart2}>
+              <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                  <Layers size={14} /> {t('إجمالي قيمة العقود لكل تصنيف')}
+                </div>
+                {!stats.typeDistribution || stats.typeDistribution.length === 0 ? (
+                  <div style={{ padding: '30px', color: C.textSecondary, fontSize: '13px', textAlign: 'center' }}>{t('لا توجد مشاريع مصنفة')}</div>
+                ) : (
+                  stats.typeDistribution.map((dist: any, i: number) => {
+                    const label = projectTypeLabels[dist.projectType] || dist.projectType;
+                    return (
+                      <div key={i} style={{
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                        padding: '10px 14px', background: 'rgba(255,255,255,0.02)',
+                        borderRadius: '12px', border: `1px solid ${C.border}`
+                      }}>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{label} ({dist._count?.id || 0})</span>
+                        <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>{fMoneyJSX(dist._sum?.contractValue || 0)}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </SectionCard>
+          ) : hasPage('/customers', 'sales') ? (
             <SectionCard title="أكبر مديونيات العملاء" icon={CreditCard}>
               <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                   <Users size={14} /> {t('ذمم العملاء المستحقة')}
                 </div>
-                {stats.topDebtors.map((d: any, i: number) => (
+                {stats.topDebtors?.map((d: any, i: number) => (
                   <div key={i} style={{
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     padding: '10px 14px', background: 'rgba(239,68,68,0.03)',
@@ -673,12 +828,12 @@ export default function DashboardPage() {
                 }}>
                   <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي المطلوب تحصيله')}</span>
                   <div style={{ color: C.danger }}>
-                    {renderCurrency(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))}
+                    {renderCurrency(stats.topDebtors?.reduce((s: any, d: any) => s + d.balance, 0) || 0)}
                   </div>
                 </div>
               </div>
             </SectionCard>
-          )}
+          ) : null}
 
         </div>
 
