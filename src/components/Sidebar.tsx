@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2, Menu } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { navSections } from '@/constants/navigation';
@@ -11,7 +11,15 @@ import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
 
-export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
+export default function Sidebar({ 
+    onLinkClick,
+    isCollapsed = false,
+    onToggle
+}: { 
+    onLinkClick?: () => void;
+    isCollapsed?: boolean;
+    onToggle?: () => void;
+}) {
     const pathname = usePathname();
     const { data: session, status } = useSession();
     const { theme } = useTheme();
@@ -215,9 +223,9 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                 return (
                     <div key={sectionOrigin.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
-                        <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
+                        <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'flex-start', gap: isCollapsed ? '0' : '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
                             <SectionIcon size={18} />
-                            <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
+                            {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
                         </Link>
                     </div>
                 );
@@ -228,13 +236,21 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
 
             return (
                 <div key={sectionOrigin.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
-                    <button onClick={() => setOpenSections(prev => ({ ...prev, [sectionOrigin.title]: !prev[sectionOrigin.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                            <SectionIcon size={18} /> {t(section.title)}
+                    <button onClick={() => {
+                        if (isCollapsed && onToggle) {
+                            onToggle();
+                            setOpenSections(prev => ({ ...prev, [sectionOrigin.title]: true }));
+                        } else {
+                            setOpenSections(prev => ({ ...prev, [sectionOrigin.title]: !prev[sectionOrigin.title] }));
+                        }
+                    }} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: isCollapsed ? 'center' : 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: isCollapsed ? '0' : '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
+                            <SectionIcon size={18} />
+                            {!isCollapsed && <span style={{ marginInlineStart: '12px' }}>{t(section.title)}</span>}
                         </div>
-                        <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
+                        {!isCollapsed && <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>}
                     </button>
-                    {isOpen && (
+                    {!isCollapsed && isOpen && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginInlineEnd: '22px', paddingInlineEnd: '12px', marginTop: '6px', borderInlineEnd: `1px dashed ${C.border}` }}>
                             {visibleLinks.map((link: any) => {
                                 const isActive = pathname === link.href;
@@ -250,7 +266,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 </div>
             );
         });
-    }, [businessType, pathname, hasPage, hasFeature, openSections, onLinkClick, t]);
+    }, [businessType, pathname, hasPage, hasFeature, openSections, onLinkClick, t, isCollapsed, onToggle]);
 
     const isSidebarEmpty = useMemo(() => sidebarItems.every(i => i === null), [sidebarItems]);
 
@@ -264,9 +280,45 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
 
     return (
         <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            <div style={{ height: '24px' }} />
+            
+            {/* Top Toggle Area */}
+            <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: isCollapsed ? 'center' : 'space-between', 
+                padding: isCollapsed ? '16px 0' : '16px 20px', 
+                borderBottom: `1px solid ${C.border}15`,
+                height: '64px',
+                boxSizing: 'border-box'
+            }}>
+                {!isCollapsed && (
+                    <span style={{ fontFamily: CAIRO, fontWeight: 800, fontSize: '15px', color: C.primary }}>
+                        {t('القائمة الرئيسية')}
+                    </span>
+                )}
+                <button 
+                    onClick={onToggle} 
+                    style={{ 
+                        background: 'transparent', 
+                        color: C.textPrimary, 
+                        cursor: 'pointer', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        transition: 'all 0.2s',
+                        border: `1px solid ${C.border}`
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.borderColor = C.primary; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}
+                >
+                    <Menu size={18} />
+                </button>
+            </div>
 
-            <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
+            <nav className="sidebar-nav" style={{ padding: '10px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
                 {isSidebarEmpty ? (
                     <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>
                         <div style={{ marginBottom: '12px', opacity: 0.5 }}><Loader2 size={32} style={{ animation: 'spin 2s linear infinite' }} /></div>
