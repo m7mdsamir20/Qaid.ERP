@@ -245,6 +245,9 @@ export default function EditCompanyPage() {
                 if (section.featureKey === 'sales') {
                     section.links = section.links.filter((l: any) => l.id !== '/coupons');
                 }
+                if (section.featureKey === 'reports') {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-restaurant');
+                }
             }
 
             if (form.businessType === 'RESTAURANTS') {
@@ -694,26 +697,31 @@ export default function EditCompanyPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {uniqueSections.map(section => {
                                     const fk = section.featureKey!;
-                                    const isActive = isSectionActive(fk, section.links);
-                                    const isPartial = isSectionPartial(fk, section.links);
+                                    const isCore = fk === 'dashboard' || fk === 'settings';
+                                    const isActive = isCore || isSectionActive(fk, section.links);
+                                    const isPartial = !isCore && isSectionPartial(fk, section.links);
                                     const isExpanded = expandedSections[fk];
                                     const SectionIcon = section.icon;
 
                                     return (
-                                        <div key={fk} style={{ border: `1px solid ${isActive ? `${C.primary}30` : isPartial ? `${C.warning}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', background: isActive ? `${C.primary}05` : 'transparent', transition: 'all 0.2s' }}>
+                                        <div key={fk} style={{ border: `1px solid ${isActive ? (isCore ? `${C.success}30` : `${C.primary}30`) : isPartial ? `${C.warning}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', background: isActive ? (isCore ? `${C.success}05` : `${C.primary}05`) : 'transparent', transition: 'all 0.2s' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '16px' }}>
-                                                <button type="button" onClick={() => toggleSection(fk, section.links)}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: isActive ? C.primary : isPartial ? C.warning : C.textMuted, display: 'flex' }}>
+                                                <button type="button" onClick={() => { if (!isCore) toggleSection(fk, section.links); }}
+                                                    style={{ background: 'none', border: 'none', cursor: isCore ? 'default' : 'pointer', padding: 0, color: isActive ? (isCore ? C.success : C.primary) : isPartial ? C.warning : C.textMuted, display: 'flex' }}>
                                                     {isActive ? <CheckSquare size={22} /> : isPartial ? <CheckSquare size={22} style={{ opacity: 0.6 }} /> : <Square size={22} />}
                                                 </button>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                                                    <div style={{ color: isActive ? C.primary : C.textMuted }}><SectionIcon size={18} /></div>
+                                                    <div style={{ color: isActive ? (isCore ? C.success : C.primary) : C.textMuted }}><SectionIcon size={18} /></div>
                                                     <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
-                                                    <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
-                                                        {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
-                                                    </div>
+                                                    {isCore ? (
+                                                        <span style={{ fontSize: '10px', color: C.success, background: `${C.success}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: CAIRO }}>أساسي</span>
+                                                    ) : (
+                                                        <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                            {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}
                                                     style={{ border: 'none', cursor: 'pointer', color: C.textSecondary, height: '32px', width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
@@ -724,10 +732,10 @@ export default function EditCompanyPage() {
                                             {isExpanded && (
                                                 <div className="features-grid" style={{ borderTop: `1px solid ${C.border}`, padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
                                                     {section.links.map((link: any) => {
-                                                        const active = (form.features[fk] || []).includes(link.id);
+                                                        const active = isCore || (form.features[fk] || []).includes(link.id);
                                                         return (
-                                                            <button key={link.id} type="button" onClick={() => togglePage(fk, link.id)}
-                                                                style={{ height: '38px', borderRadius: '10px', border: `1px solid ${active ? `${C.primary}30` : C.border}`, background: active ? `${C.primary}10` : 'transparent', color: active ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', transition: 'all 0.1s' }}>
+                                                            <button key={link.id} type="button" onClick={() => { if (!isCore) togglePage(fk, link.id); }}
+                                                                style={{ height: '38px', borderRadius: '10px', border: `1px solid ${active ? (isCore ? `${C.success}30` : `${C.primary}30`) : C.border}`, background: active ? (isCore ? `${C.success}10` : `${C.primary}10`) : 'transparent', color: active ? (isCore ? C.success : C.primary) : C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: isCore ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', transition: 'all 0.1s' }}>
                                                                 {active ? <Check size={14} /> : <div style={{ width: 14, height: 14, borderRadius: '4px', border: `1px solid ${C.border}` }} />}
                                                                 {link.label}
                                                             </button>
