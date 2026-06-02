@@ -75,7 +75,7 @@ export const POST = withProtection(async (request, session, body) => {
         const {
             supplierId, customerId, warehouseId, lines,
             discount, paidAmount, notes, treasuryId, bankId,
-            taxRate, taxAmount
+            taxRate, taxAmount, projectId
         } = body;
 
         const effectiveTreasuryId = treasuryId || bankId;
@@ -152,6 +152,7 @@ export const POST = withProtection(async (request, session, body) => {
                 customerNewBalance,
                 supplierPrevBalance,
                 supplierNewBalance,
+                projectId: projectId || null,
                 lines: {
                     create: lines.map((line: { itemId: string; quantity: number; price: number; discount?: number }) => ({
                         itemId: line.itemId,

@@ -30,7 +30,7 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
-        const { type, amount, description, customerId, supplierId, treasuryId, date } = body;
+        const { type, amount, description, customerId, supplierId, treasuryId, date, projectId } = body;
 
         if (!type || !amount || !treasuryId || (!customerId && !supplierId)) {
             return NextResponse.json({ error: "بيانات غير صالحة" }, { status: 400 });
@@ -70,6 +70,7 @@ export const POST = withProtection(async (request, session, body) => {
                     financialYearId: financialYear.id,
                     companyId,
                     branchId: body.branchId || (session.user as any).activeBranchId || null,
+                    projectId: projectId || null,
                 },
                 include: { customer: true, supplier: true, treasury: true }
             });

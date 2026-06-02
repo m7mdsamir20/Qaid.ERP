@@ -17,6 +17,7 @@ export const POST = withProtection(async (request, session, body) => {
             RETAIL: ['sales', 'purchases', 'inventory', 'financials', 'reports', 'pos'],
             SERVICES: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports'],
             RESTAURANTS: ['pos', 'tables', 'kitchen', 'sales', 'inventory', 'reports'], // Trial features (Delivery, Barcode, Purchases are locked)
+            CONTRACTING: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports'],
         };
 
         const activeModules = MODULES_MAP[businessType] || MODULES_MAP['TRADING'];
