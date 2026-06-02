@@ -525,7 +525,7 @@ export default function DashboardPage() {
             <LayoutDashboard size={16} color={C.primary} />
             <h3 style={{ fontSize: '13px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('الوصول السريع')}</h3>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
             {visibleQuickActions.map((action, i) => (
               <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
                 <div style={{
