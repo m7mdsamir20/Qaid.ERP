@@ -59,6 +59,7 @@ function SettingsContent() {
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices    = businessType === 'SERVICES';
     const isRestaurants = businessType === 'RESTAURANTS';
+    const isContracting = businessType === 'CONTRACTING';
 
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -397,6 +398,12 @@ function SettingsContent() {
     const hasPage = (featureKey: string, pageId: string): boolean => {
         if (isSuperAdmin) return true;
 
+        const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+        const contractingFeatures = ['projects', 'subcontractors'];
+        if (restaurantFeatures.includes(featureKey) && !isRestaurants) return false;
+        if (contractingFeatures.includes(featureKey) && !isContracting) return false;
+        if (pageId === 'reports-restaurant' && !isRestaurants) return false;
+
         const userRole = (session?.user as any)?.role;
         const userPerms = (session?.user as any)?.permissions || {};
         const isUserAdmin = userRole === 'admin';
@@ -437,7 +444,9 @@ function SettingsContent() {
     const permissionHierarchy = navSections
         .filter(sectionOrigin => {
             const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            const contractingFeatures = ['projects', 'subcontractors'];
             if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
+            if (contractingFeatures.includes(sectionOrigin.featureKey || '') && !isContracting) return false;
             if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
             return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })

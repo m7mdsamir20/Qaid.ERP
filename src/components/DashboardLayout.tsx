@@ -106,6 +106,15 @@ export default function DashboardLayout({
             if (isSuperAdmin) return true;
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
+            const businessType = user?.businessType?.toUpperCase() || 'TRADING';
+            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            const contractingFeatures = ['projects', 'subcontractors'];
+
+            if (restaurantFeatures.includes(featureKey) && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return false;
+            if (['tables', 'kitchen', 'delivery', 'barcode'].includes(featureKey) && businessType !== 'RESTAURANTS') return false;
+            if (contractingFeatures.includes(featureKey) && businessType !== 'CONTRACTING') return false;
+            if (pageId === 'reports-restaurant' && businessType !== 'RESTAURANTS') return false;
+
             const userPerms = user?.permissions || {};
             const hasGranularPerms = Object.keys(userPerms).length > 0;
 
