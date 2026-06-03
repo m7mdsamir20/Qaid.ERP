@@ -11,6 +11,21 @@ export interface TableColumn {
     className?: string;
 }
 
+const isCenteredColumn = (col: TableColumn): boolean => {
+    if (col.type && col.type !== 'text') return true;
+    if (!col.header) return false;
+    const h = col.header.toLowerCase();
+    return h.includes('رقم') || 
+           h.includes('كود') || 
+           h.includes('معرف') || 
+           h.includes('الرمز') || 
+           h.includes('no.') || 
+           h.includes('number') || 
+           h.includes('code') || 
+           h.includes('id') || 
+           h.includes('serial');
+};
+
 interface EmptyTableStateProps {
     icon: LucideIcon;
     message: string;
@@ -24,7 +39,7 @@ export const EmptyTableState: React.FC<EmptyTableStateProps> = ({ icon: Icon, me
                 <thead>
                     <tr style={TABLE_STYLE.thead}>
                         {columns.map((col, idx) => {
-                            const isCenter = col.type && col.type !== 'text';
+                            const isCenter = isCenteredColumn(col);
                             const cellAlignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
                             return (
                                 <th

@@ -126,7 +126,7 @@ export default function SaleReturnsListPage() {
 
                 <DataTable
                     columns={[
-                        { header: t('رقم المرتجع'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RET-{String(row.invoiceNumber).padStart(5, '0')}</span> },
+                        { header: t('رقم المرتجع'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RET-{String(row.invoiceNumber).padStart(5, '0')}</span> },
                         { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
                         { header: t('العميل'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.customer?.name || '—'}</span> },
                         { header: t('الإجمالي'), type: 'number', cell: (row) => fMoneyJSX(row.total) },

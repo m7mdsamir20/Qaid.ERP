@@ -124,7 +124,7 @@ export default function PurchaseReturnsListPage() {
 
                 <DataTable
                     columns={[
-                        { header: t('رقم المرتجع'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RTN-{String(row.invoiceNumber).padStart(5, '0')}</span> },
+                        { header: t('رقم المرتجع'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RTN-{String(row.invoiceNumber).padStart(5, '0')}</span> },
                         { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
                         { header: t('المورد'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.supplier?.name || '—'}</span> },
                         { header: t('الإجمالي'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={row.total} /></span> },
