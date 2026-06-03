@@ -342,7 +342,7 @@ export default function InstallmentsPage() {
                     columns={[
                         {
                             header: t('الخطة'),
-                            type: 'text',
+                            type: 'number',
                             cell: (row, idx) => (
                                 <span style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px', display: 'inline-block', direction: 'ltr' }}>
                                     PLAN-{String(row.planNumber || idx + 1).padStart(4, '0')}

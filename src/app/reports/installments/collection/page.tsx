@@ -65,6 +65,7 @@ export default function CollectionReportPage() {
     const columns: TableColumn[] = [
         {
             header: t('تاريخ التحصيل'),
+            type: 'number' as const,
             cell: (row: CollectionInstallment) => (
                 <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>
                     {row.paidAt ? fmt(row.paidAt) : '—'}
@@ -81,6 +82,7 @@ export default function CollectionReportPage() {
         },
         {
             header: t('رقم الخطة'),
+            type: 'number' as const,
             cell: (row: CollectionInstallment) => (
                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
                     PLAN-{String(row.plan?.planNumber || 0).padStart(4, '0')}
@@ -89,6 +91,7 @@ export default function CollectionReportPage() {
         },
         {
             header: t('القسط'),
+            type: 'number' as const,
             cell: (row: CollectionInstallment) => (
                 <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
                     {t('قسط رقم')} {row.installmentNo}

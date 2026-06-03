@@ -115,6 +115,7 @@ function CustomerStatementReportContent() {
         },
         {
             header: t('الاستحقاق'),
+            type: 'number' as const,
             cell: (row: StatementInstallment) => (
                 <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
                     {fmt(row.dueDate)}
@@ -150,6 +151,7 @@ function CustomerStatementReportContent() {
         },
         {
             header: t('الحالة'),
+            type: 'number' as const,
             cell: (row: StatementInstallment) => (
                 <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: row.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: row.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: row.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
                     {row.status === 'paid' ? t('مدفوع') : t('غير مسدد')}

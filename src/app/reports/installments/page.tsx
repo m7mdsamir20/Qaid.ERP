@@ -161,6 +161,7 @@ export default function InstallmentReportsPage() {
     const collectionColumns: TableColumn[] = [
         {
             header: t('تاريخ العملية'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
                     {row.paidAt ? fmt(row.paidAt, lang) : '—'}
@@ -185,6 +186,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('رقم الخطة'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
                     #{row.plan?.planNumber}
@@ -213,6 +215,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('رقم الخطة'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
                     #{row.plan?.planNumber}
@@ -221,6 +224,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('القسط'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: C.textSecondary }}>
                     {t('قسط')} {row.installmentNo}
@@ -229,6 +233,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('موعد الاستحقاق'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>
                     {fmt(row.dueDate, lang)}
@@ -237,6 +242,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('أيام التأخير'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 600, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
                     {row.daysOverdue} {t('يوم تأخير')}
@@ -266,6 +272,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('تاريخ الاستحقاق'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
                     {fmt(row.dueDate, lang)}
@@ -301,6 +308,7 @@ export default function InstallmentReportsPage() {
         },
         {
             header: t('الحالة'),
+            type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <div style={{
                     display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
