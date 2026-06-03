@@ -7,6 +7,7 @@ import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, Trash2
 import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { DataTable } from '@/components/DataTable';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
 import { printInvoiceDirectly } from '@/lib/printDirectly';
@@ -93,8 +94,6 @@ export default function SaleReturnsListPage() {
                         />
                     </div>
                     
-                    {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -106,7 +105,6 @@ export default function SaleReturnsListPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -126,81 +124,39 @@ export default function SaleReturnsListPage() {
                     )}
                 </div>
 
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
+                <DataTable
+                    columns={[
+                        { header: t('رقم المرتجع'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RET-{String(row.invoiceNumber).padStart(5, '0')}</span> },
+                        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t('العميل'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.customer?.name || '—'}</span> },
+                        { header: t('الإجمالي'), type: 'number', cell: (row) => fMoneyJSX(row.total) },
+                        { header: t('تم رده'), type: 'number', cell: (row) => fMoneyJSX(row.paidAmount, '', { color: C.success }) },
+                        { header: t('المتبقي'), type: 'number', cell: (row) => fMoneyJSX(row.remaining, '', { color: (row.remaining > 0) ? C.danger : C.textMuted }) },
+                        { header: t('الحالة'), type: 'status', cell: (row) => {
+                            const st = getStatusStyle(row);
+                            return (
+                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700, background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO }}>
+                                    {st.text}
+                                </div>
+                            );
+                        }},
+                        { header: t('إجراءات'), type: 'action', cell: (row) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                <button onClick={() => handlePrint(row)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                <button onClick={() => router.push(`/sale-returns/${row.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
+                            </div>
+                        )},
+                    ]}
+                    data={filtered}
+                    emptyIcon={RotateCcw}
+                    emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t("لا توجد مرتجعات خدمات") : t("لا توجد مرتجعات مبيعات"))}
+                    isLoading={loading}
+                    loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <RotateCcw size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t("لا توجد مرتجعات خدمات") : t("لا توجد مرتجعات مبيعات"))}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true, true)}>{t('رقم المرتجع')}</th>
-                                        <th style={TABLE_STYLE.th(false, false)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false, false)}>{t('العميل')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('تم رده')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المتبقي')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((r, idx) => {
-                                        const st = getStatusStyle(r);
-                                        const dateStr = new Date(r.date).toLocaleDateString('en-GB');
-                                        return (
-                                            <tr key={r.id} style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
-                                                    RET-{String(r.invoiceNumber).padStart(5, '0')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(r.total)}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(r.paidAmount, '', { color: C.success })}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(r.remaining, '', { color: (r.remaining > 0) ? C.danger : C.textMuted })}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                        background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
-                                                    }}>
-                                                        {st.text}
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => handlePrint(r)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
-                                                            <Printer size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                        <button onClick={() => router.push(`/sale-returns/${r.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
-                                                            <Eye size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                    }
+                />
             </div>
             
         </DashboardLayout>

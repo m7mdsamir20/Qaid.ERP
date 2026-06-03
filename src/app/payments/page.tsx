@@ -12,6 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useCurrency } from '@/hooks/useCurrency';
 import { printVoucherDirectly } from '@/lib/printDirectly';
+import { DataTable } from '@/components/DataTable';
 
 
 /* ── Types ── */
@@ -64,7 +65,6 @@ export default function PaymentVouchersPage() {
         printVoucherDirectly(v.id)
     };
 
-
     const filteredAll = vouchers.filter(v => {
         const matchSearch = String(v.voucherNumber).includes(searchTerm) || (v.supplier?.name || '').includes(searchTerm) || (v.description || '').includes(searchTerm);
         const rDate = new Date(v.date);
@@ -76,8 +76,6 @@ export default function PaymentVouchersPage() {
     const paginated = filteredAll.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
-
-    const fmt = (num: number) => formatNumber(num);
 
     return (
         <DashboardLayout>
@@ -104,8 +102,6 @@ export default function PaymentVouchersPage() {
                         />
                     </div>
                     
-                    {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -117,7 +113,6 @@ export default function PaymentVouchersPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -137,88 +132,49 @@ export default function PaymentVouchersPage() {
                     )}
                 </div>
 
-                {/* Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
+                <DataTable
+                    columns={[
+                        { header: t("رقم السند"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>PMT-{String(row.voucherNumber).padStart(5, '0')}</span> },
+                        { header: t("التاريخ"), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t("المورد"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.supplier?.name || '—'}</span> },
+                        { header: t("طريقة الدفع"), type: 'status', cell: (row) => (
+                            <div style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                                background: row.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(52, 211, 153, 0.1)',
+                                color: row.treasury?.type === 'bank' ? '#60a5fa' : '#34d399',
+                                border: `1px solid ${row.treasury?.type === 'bank' ? '#60a5fa' : '#34d399'}30`, fontFamily: CAIRO
+                            }}>
+                                {row.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
+                            </div>
+                        )},
+                        { header: t("الخزينة / البنك"), type: 'text', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{row.treasury?.name || '—'}</span> },
+                        { header: t("البيان"), type: 'text', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>{row.description || '—'}</span>, style: { maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
+                        { header: t("المبلغ"), type: 'number', cell: (row) => <span style={{ color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}><Currency amount={row.amount} /></span> },
+                        { header: t("إجراءات"), type: 'action', cell: (row) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                <button onClick={() => handlePrint(row)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                <button onClick={() => router.push(`/payments/${row.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
+                            </div>
+                        )},
+                    ]}
+                    data={paginated}
+                    emptyIcon={Receipt}
+                    emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج') : t('لا توجد سندات صرف')}
+                    isLoading={loading}
+                    loadingSkeleton={
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, display: 'block', margin: '0 auto 10px' }} />
                             <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t("جاري تحميل البيانات...")}</span>
                         </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج') : t('لا توجد سندات صرف')}</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="scroll-table">
-                                <table style={TABLE_STYLE.table}>
-                                    <thead>
-                                        <tr style={TABLE_STYLE.thead}>
-                                            <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم السند")}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t("المورد")}</th>
-                                            <th style={TABLE_STYLE.th(false, true)}>{t("طريقة الدفع")}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t("الخزينة / البنك")}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t("البيان")}</th>
-                                            <th style={TABLE_STYLE.th(false, true)}>{t("المبلغ")}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {paginated.map((v, idx) => {
-                                            const dateStr = new Date(v.date).toLocaleDateString('en-GB');
-                                            return (
-                                                <tr key={v.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                    onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                >
-                                                    <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
-                                                        PMT-{String(v.voucherNumber).padStart(5, '0')}
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{v.supplier?.name || '—'}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                        <div style={{
-                                                            display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                            padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                            background: v.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(52, 211, 153, 0.1)',
-                                                            color: v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399',
-                                                            border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399'}30`, fontFamily: CAIRO
-                                                        }}>
-                                                            {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description || '—'}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>
-                                                        <Currency amount={v.amount} />
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                            <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
-                                                                <Printer size={TABLE_STYLE.actionIconSize} />
-                                                            </button>
-                                                            <button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
-                                                                <Eye size={TABLE_STYLE.actionIconSize} />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <Pagination 
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </>
-                    )}
-                </div>
+                    }
+                />
+                <Pagination 
+                    total={filteredAll.length}
+                    pageSize={pageSize}
+                    currentPage={currentPage}
+                    onPageChange={setCurrentPage}
+                />
             </div>
             
         </DashboardLayout>

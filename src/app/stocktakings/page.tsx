@@ -7,6 +7,7 @@ import { ClipboardList, Plus, Printer, Trash2, Loader2, ListChecks, CheckCircle2
 import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
 
 interface StocktakingLine {
     item: { name: string };
@@ -176,121 +177,114 @@ export default function StocktakingsPage() {
                 />
 
                 {/* Main Table Content */}
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('رقم الجرد'),
+                            type: 'text',
+                            cell: (row) => (
+                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
+                                    STK-{row.stocktakingNum}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('التاريخ'),
+                            type: 'number',
+                            cell: (row) => new Date(row.date).toLocaleDateString('en-GB')
+                        },
+                        {
+                            header: t('المخزن'),
+                            type: 'text',
+                            cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.warehouse?.name || '—'}</span>
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => row.status === 'applied' ? (
+                                <span style={{ 
+                                    display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
+                                    background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', fontSize: '11px', fontWeight: 600 
+                                }}>
+                                    <CheckCircle2 size={12} /> {t('مُطبق')}
+                                </span>
+                            ) : (
+                                <span style={{ 
+                                    display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
+                                    background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24', fontSize: '11px', fontWeight: 600 
+                                }}>
+                                    <FileText size={12} /> {t('مسودة')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('التعديلات'),
+                            type: 'number',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                                    {row.lines.filter((l: any) => l.difference !== 0).length > 0 ? row.lines.filter((l: any) => l.difference !== 0).map((l: any, i: number) => (
+                                        <div key={i} style={{ 
+                                            fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', 
+                                            border: `1px solid ${l.difference > 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
+                                            color: l.difference > 0 ? '#34d399' : '#f87171',
+                                            fontWeight: 600,
+                                            width: 'fit-content'
+                                        }}>
+                                            {l.item?.name} ({l.difference > 0 ? '+' : ''}{l.difference})
+                                        </div>
+                                    )) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>{t('لا يوجد فروقات')}</span>}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('ملاحظات'),
+                            type: 'text',
+                            cell: (row) => row.notes || '—'
+                        },
+                        {
+                            header: t('إجراء'),
+                            type: 'number',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
+                                    <button onClick={() => printStocktaking(row)}
+                                        style={{ 
+                                            width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, 
+                                            background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' 
+                                        }}
+                                        onMouseEnter={e => e.currentTarget.style.color = C.blue}
+                                        onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
+                                        title={t("طباعة نموذج الجرد")}
+                                    >
+                                        <Printer size={15} />
+                                    </button>
+                                    {row.status === 'draft' && (
+                                        <button onClick={() => setDeleteItem(row)}
+                                            style={{ 
+                                                width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.danger}30`, 
+                                                background: 'rgba(251,113,133,0.05)', color: C.danger, 
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' 
+                                            }}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.15)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(251,113,133,0.05)'}
+                                            title={t("حذف المسودة")}
+                                        >
+                                            <Trash2 size={15} />
+                                        </button>
+                                    )}
+                                </div>
+                            )
+                        }
+                    ]}
+                    data={stocktakings}
+                    emptyIcon={ClipboardList}
+                    emptyMessage={t('لا توجد سجلات جرد مسجلة حالياً')}
+                    isLoading={loading}
+                    loadingSkeleton={<div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل سجلات الجرد...')}</p>
-                    </div>
-                ) : stocktakings.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <ClipboardList size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('لا توجد سجلات جرد مسجلة حالياً')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم الجرد')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المخزن')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('التعديلات')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('ملاحظات')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {stocktakings.map((st, idx) => (
-                                        <tr key={st.id} 
-                                            style={TABLE_STYLE.row(idx === stocktakings.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                        >
-                                            <td style={{ ...TABLE_STYLE.td(true), width: '100px' }}>
-                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
-                                                    STK-{st.stocktakingNum}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
-                                                {new Date(st.date).toLocaleDateString('en-GB')}
-                                            </td>
-                                            <td style={{...TABLE_STYLE.td(false)}}>
-                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{st.warehouse?.name || '—'}</div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                {st.status === 'applied' ? (
-                                                    <span style={{ 
-                                                        display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
-                                                        background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', fontSize: '11px', fontWeight: 600 
-                                                    }}>
-                                                        <CheckCircle2 size={12} /> {t('مُطبق')}
-                                                    </span>
-                                                ) : (
-                                                    <span style={{ 
-                                                        display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
-                                                        background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24', fontSize: '11px', fontWeight: 600 
-                                                    }}>
-                                                        <FileText size={12} /> {t('مسودة')}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={{...TABLE_STYLE.td(false, true)}}>
-                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-                                                    {st.lines.filter(l => l.difference !== 0).length > 0 ? st.lines.filter(l => l.difference !== 0).map((l, i) => (
-                                                        <div key={i} style={{ 
-                                                            fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', 
-                                                            border: `1px solid ${l.difference > 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
-                                                            color: l.difference > 0 ? '#34d399' : '#f87171',
-                                                            fontWeight: 600,
-                                                            width: 'fit-content'
-                                                        }}>
-                                                            {l.item?.name} ({l.difference > 0 ? '+' : ''}{l.difference})
-                                                        </div>
-                                                    )) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>{t('لا يوجد فروقات')}</span>}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontWeight: 500, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {st.notes || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                                                    <button onClick={() => printStocktaking(st)}
-                                                        style={{ 
-                                                            width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, 
-                                                            background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
-                                                            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' 
-                                                        }}
-                                                        onMouseEnter={e => e.currentTarget.style.color = C.blue}
-                                                        onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                        title={t("طباعة نموذج الجرد")}
-                                                    >
-                                                        <Printer size={15} />
-                                                    </button>
-                                                    {st.status === 'draft' && (
-                                                        <button onClick={() => setDeleteItem(st)}
-                                                            style={{ 
-                                                                width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.danger}30`, 
-                                                                background: 'rgba(251,113,133,0.05)', color: C.danger, 
-                                                                display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' 
-                                                            }}
-                                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.15)'}
-                                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(251,113,133,0.05)'}
-                                                            title={t("حذف المسودة")}
-                                                        >
-                                                            <Trash2 size={15} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
+                    </div>}
+                />
 
                 {/* Delete Confirmation Modal */}
                 <AppModal

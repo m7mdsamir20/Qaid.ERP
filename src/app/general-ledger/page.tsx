@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { ScrollText, Search, Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, FileText, Trash2, Receipt } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 /* ── Types ── */
 interface Account { id: string; code: string; name: string; type: string; accountCategory?: string; nature: string; }
@@ -99,6 +101,31 @@ export default function GeneralLedgerPage() {
     const filteredAccounts = accounts.filter(a =>
         a.name.includes(accountSearch) || a.code.includes(accountSearch)
     ).slice(0, 30);
+
+    /* DataTable columns */
+    const ledgerColumns: TableColumn[] = [
+        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+        { header: t('رقم القيد'), type: 'text', cell: (row) => (
+            <>
+                <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{row.entryNumber}</span>
+                {row.reference && <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '8px' }}>· {row.reference}</span>}
+            </>
+        )},
+        { header: t('البيان'), type: 'text', cell: (row) => <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 500 }}>{row.description}</span>, style: { maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
+        { header: t('مراكز التكلفة'), type: 'text', cell: (row) => row.costCenter?.name
+            ? <span style={{ fontSize: '11px', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '2px 8px', color: '#a78bfa', fontFamily: CAIRO }}>{row.costCenter.name}</span>
+            : <span style={{ color: C.textSecondary, fontSize: '12px' }}>—</span>
+        },
+        { header: t('مدين'), type: 'number', cell: (row) => row.debit > 0
+            ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '13px', fontWeight: 700, color: '#10b981' }}><ArrowUpRight size={13} /> {fmt(row.debit)}</span>
+            : <span style={{ color: 'rgba(255,255,255,0.05)', fontSize: '12px' }}>—</span>
+        },
+        { header: t('دائن'), type: 'number', cell: (row) => row.credit > 0
+            ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '13px', fontWeight: 700, color: C.danger }}><ArrowDownRight size={13} /> {fmt(row.credit)}</span>
+            : <span style={{ color: 'rgba(255,255,255,0.05)', fontSize: '12px' }}>—</span>
+        },
+        { header: t('الرصيد'), type: 'number', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 600, color: row.balance >= 0 ? C.primary : C.danger, direction: 'ltr' }}>{fmt(row.balance)}</span> },
+    ];
 
     return (
         <DashboardLayout>
@@ -248,121 +275,51 @@ export default function GeneralLedgerPage() {
                     </div>
 
                     {/* ── Ledger Table ── */}
-                    {filtered.length === 0 ? (
-                        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '14px' }}>
-                            <FileText size={48} style={{ margin: '0 auto 12px', display: 'block', opacity: 0.08 }} />
-                            <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات في هذه الفترة')}</p>
-                        </div>
-                    ) : (
-                        <div style={TABLE_STYLE.container}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('مراكز التكلفة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('مدين')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('دائن')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    {/* Opening Balance Row */}
-                                    <tr style={{ background: 'rgba(37, 106, 244,0.06)', borderBottom: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
-                                            {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
-                                        </td>
-                                        <td colSpan={2} style={TABLE_STYLE.td(false)} />
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
-                                            {fmt(openingBalance)}
-                                        </td>
-                                    </tr>
-
-                                    {/* Lines */}
-                                    {filtered.map((line, idx) => (
-                                        <tr key={line.id}
-                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-
-                                            {/* Date */}
-                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                {new Date(line.date).toLocaleDateString('en-GB')}
-                                            </td>
-
-                                            {/* Entry Number */}
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                                                    {line.entryNumber}
-                                                </span>
-                                                {line.reference && (
-                                                    <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '8px' }}>· {line.reference}</span>
-                                                )}
-                                            </td>
-
-                                            {/* Description */}
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '13px', color: C.textSecondary, fontWeight: 500, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {line.description}
-                                            </td>
-
-                                            {/* Cost Center */}
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                {line.costCenter?.name
-                                                    ? <span style={{ fontSize: '11px', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '2px 8px', color: '#a78bfa', fontFamily: CAIRO }}>{line.costCenter.name}</span>
-                                                    : <span style={{ color: C.textSecondary, fontSize: '12px' }}>—</span>
-                                                }
-                                            </td>
-
-                                            {/* Debit */}
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                {line.debit > 0
-                                                    ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '13px', fontWeight: 700, color: '#10b981' }}>
-                                                        <ArrowUpRight size={13} /> {fmt(line.debit)}
-                                                    </span>
-                                                    : <span style={{ color: 'rgba(255,255,255,0.05)', fontSize: '12px' }}>—</span>
-                                                }
-                                            </td>
-
-                                            {/* Credit */}
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                {line.credit > 0
-                                                    ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '13px', fontWeight: 700, color: C.danger }}>
-                                                        <ArrowDownRight size={13} /> {fmt(line.credit)}
-                                                    </span>
-                                                    : <span style={{ color: 'rgba(255,255,255,0.05)', fontSize: '12px' }}>—</span>
-                                                }
-                                            </td>
-
-                                            {/* Running Balance */}
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: line.balance >= 0 ? C.primary : C.danger, direction: 'ltr' }}>
-                                                {fmt(line.balance)}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-
-                                {/* Footer */}
-                                <tfoot>
-                                    <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
-                                            {t('الإجمالي')} — {filtered.length} {t('حركة')}
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: '#10b981', direction: 'ltr' }}>
-                                            {fmt(totalDebit)}
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.danger, direction: 'ltr' }}>
-                                            {fmt(totalCredit)}
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
-                                            {fmt(closingBalance)}
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    )}
+                    <DataTable
+                        columns={ledgerColumns}
+                        data={filtered}
+                        emptyIcon={FileText}
+                        emptyMessage={t('لا توجد حركات في هذه الفترة')}
+                        customHeader={
+                            <>
+                                <tr style={TABLE_STYLE.thead}>
+                                    {ledgerColumns.map((col, idx) => {
+                                        const isCenter = col.type && col.type !== 'text';
+                                        return (
+                                            <th key={idx} style={{ ...TABLE_STYLE.th(idx === 0, isCenter), ...col.style }} className={isCenter ? 'table-cell-center' : 'table-cell-text'}>
+                                                {col.header}
+                                            </th>
+                                        );
+                                    })}
+                                </tr>
+                                <tr style={{ background: 'rgba(37, 106, 244,0.06)', borderBottom: `1px solid ${C.border}` }}>
+                                    <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
+                                        {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
+                                    </td>
+                                    <td colSpan={2} style={TABLE_STYLE.td(false)} />
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
+                                        {fmt(openingBalance)}
+                                    </td>
+                                </tr>
+                            </>
+                        }
+                        footer={
+                            <tr style={{ background: 'rgba(255,255,255,0.04)' }}>
+                                <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
+                                    {t('الإجمالي')} — {filtered.length} {t('حركة')}
+                                </td>
+                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: '#10b981', direction: 'ltr' }}>
+                                    {fmt(totalDebit)}
+                                </td>
+                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.danger, direction: 'ltr' }}>
+                                    {fmt(totalCredit)}
+                                </td>
+                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
+                                    {fmt(closingBalance)}
+                                </td>
+                            </tr>
+                        }
+                    />
                 </>
             )}
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>

@@ -7,6 +7,8 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE, IS, LS } from '@/constants/th
 import { Truck, Plus, Trash2, CheckCircle2, AlertCircle, Save, Edit2, Loader2 } from 'lucide-react';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface DeliveryApp {
     id: string;
@@ -42,6 +44,44 @@ export default function DeliveryAppsPage() {
         setToastType(type);
         setTimeout(() => setToastMsg(''), 3500);
     };
+
+    const columns: TableColumn[] = [
+        {
+            header: t('اسم التطبيق'),
+            type: 'text',
+            cell: (row: DeliveryApp) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>
+                        {row.name.charAt(0)}
+                    </div>
+                    {row.name}
+                </div>
+            )
+        },
+        {
+            header: t('نسبة الزيادة'),
+            type: 'number',
+            cell: (row: DeliveryApp) => (
+                <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '13px' }}>
+                    {row.markupPercent}%
+                </span>
+            )
+        },
+        {
+            header: t('إجراءات'),
+            type: 'number',
+            cell: (row: DeliveryApp) => (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={() => setFormModal({ show: true, isEdit: true, data: row })} style={TABLE_STYLE.actionBtn()}>
+                        <Edit2 size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button onClick={() => handleDelete(row.id)} style={TABLE_STYLE.actionBtn(C.danger)}>
+                        <Trash2 size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                </div>
+            )
+        }
+    ];
 
     useEffect(() => {
         const loadSettings = async () => {
@@ -139,61 +179,14 @@ export default function DeliveryAppsPage() {
                     }}
                 />
 
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="spin" /></div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('اسم التطبيق')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('نسبة الزيادة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {deliveryApps.map((app, i) => (
-                                    <tr key={app.id} style={TABLE_STYLE.row(i === deliveryApps.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    {app.name.charAt(0)}
-                                                </div>
-                                                {app.name}
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '13px' }}>
-                                            {app.markupPercent}%
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                <button onClick={() => setFormModal({ show: true, isEdit: true, data: app })} style={TABLE_STYLE.actionBtn()}>
-                                                    <Edit2 size={TABLE_STYLE.actionIconSize} />
-                                                </button>
-                                                <button onClick={() => handleDelete(app.id)} style={TABLE_STYLE.actionBtn(C.danger)}>
-                                                    <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {deliveryApps.length === 0 && (
-                                    <tr>
-                                        <td colSpan={3} style={{ textAlign: 'center', padding: '60px 0', verticalAlign: 'middle' }}>
-                                            <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Truck size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                                                <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{t('لا يوجد تطبيقات توصيل مضافة حالياً')}</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    columns={columns}
+                    data={deliveryApps}
+                    emptyIcon={Truck}
+                    emptyMessage={t('لا يوجد تطبيقات توصيل مضافة حالياً')}
+                    isLoading={loading}
+                    loadingSkeleton={<div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="spin" /></div>}
+                />
 
                 {/* Modal */}
                 <AppModal show={formModal.show} onClose={() => setFormModal(p => ({ ...p, show: false }))} title={formModal.isEdit ? t('تعديل تطبيق التوصيل') : t('إضافة تطبيق توصيل')} maxWidth="520px">

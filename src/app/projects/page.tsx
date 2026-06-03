@@ -11,6 +11,7 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
+import DataTable from '@/components/DataTable';
 
 interface Project {
     id: string;
@@ -208,110 +209,106 @@ export default function ProjectsPage() {
                     </div>
                 </div>
 
-                {/* Projects Table */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <FolderKanban size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد مشاريع مسجلة حالياً')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم المشروع')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المشروع')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العميل')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('نوع المشروع')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('قيمة العقد')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), width: '150px' }}>{t('نسبة الإنجاز')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((p, idx) => {
-                                        const status = statusLabels[p.status] || { label: p.status, color: C.textSecondary, bg: C.border };
-                                        return (
-                                            <tr key={p.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                {/* Project Number */}
-                                                <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>
-                                                    PRJ-{String(p.projectNumber).padStart(5, '0')}
-                                                </td>
-                                                {/* Project Name */}
-                                                <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <Link href={`/projects/${p.id}`} style={{ fontWeight: 600, color: C.textPrimary, textDecoration: 'none' }}
-                                                        onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                        onMouseLeave={e => e.currentTarget.style.color = C.textPrimary}>
-                                                        {p.name}
-                                                    </Link>
-                                                    {p.location && (
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: C.textSecondary, marginTop: '2px' }}>
-                                                            <MapPin size={10} />
-                                                            <span>{p.location}</span>
-                                                        </div>
-                                                    )}
-                                                </td>
-                                                {/* Customer */}
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary }}>
-                                                    {p.customer?.name || '—'}
-                                                </td>
-                                                {/* Project Type */}
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary }}>
-                                                    {projectTypeLabels[p.projectType] || p.projectType}
-                                                </td>
-                                                {/* Contract Value */}
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>
-                                                    {fMoney(p.contractValue)}
-                                                </td>
-                                                {/* Progress Percent */}
-                                                <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                        <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
-                                                            <div style={{ width: `${p.completionPercent}%`, height: '100%', background: p.status === 'completed' ? C.primary : C.success, borderRadius: '10px' }} />
-                                                        </div>
-                                                        <span style={{ fontSize: '11px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{p.completionPercent}%</span>
-                                                    </div>
-                                                </td>
-                                                {/* Status */}
-                                                <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
-                                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
-                                                    }}>
-                                                        {status.label}
-                                                    </span>
-                                                </td>
-                                                {/* Actions */}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <Link href={`/projects/${p.id}`} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
-                                                        <Link href={`/projects/edit/${p.id}`} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></Link>
-                                                        <button onClick={() => setDeleteItem(p)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filtered.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
-                </div>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('رقم المشروع'),
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>
+                                    PRJ-{String(row.projectNumber).padStart(5, '0')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('اسم المشروع'),
+                            type: 'text',
+                            cell: (row) => (
+                                <div>
+                                    <Link href={`/projects/${row.id}`} style={{ fontWeight: 600, color: C.textPrimary, textDecoration: 'none' }}
+                                        onMouseEnter={e => e.currentTarget.style.color = C.primary}
+                                        onMouseLeave={e => e.currentTarget.style.color = C.textPrimary}>
+                                        {row.name}
+                                    </Link>
+                                    {row.location && (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '11px', color: C.textSecondary, marginTop: '2px' }}>
+                                            <MapPin size={10} />
+                                            <span>{row.location}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('العميل'),
+                            type: 'text',
+                            cell: (row) => row.customer?.name || '—'
+                        },
+                        {
+                            header: t('نوع المشروع'),
+                            type: 'text',
+                            cell: (row) => projectTypeLabels[row.projectType] || row.projectType
+                        },
+                        {
+                            header: t('قيمة العقد'),
+                            type: 'number',
+                            cell: (row) => fMoney(row.contractValue)
+                        },
+                        {
+                            header: t('نسبة الإنجاز'),
+                            type: 'number',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.06)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
+                                        <div style={{ width: `${row.completionPercent}%`, height: '100%', background: row.status === 'completed' ? C.primary : C.success, borderRadius: '10px' }} />
+                                    </div>
+                                    <span style={{ fontSize: '11px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{row.completionPercent}%</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => {
+                                const status = statusLabels[row.status] || { label: row.status, color: C.textSecondary, bg: C.border };
+                                return (
+                                    <span style={{
+                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
+                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
+                                    }}>
+                                        {status.label}
+                                    </span>
+                                );
+                            }
+                        },
+                        {
+                            header: t('إجراءات'),
+                            type: 'number',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                                    <Link href={`/projects/${row.id}`} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
+                                    <Link href={`/projects/edit/${row.id}`} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></Link>
+                                    <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                                </div>
+                            )
+                        }
+                    ]}
+                    data={paginated}
+                    emptyIcon={FolderKanban}
+                    emptyMessage={t('لا توجد مشاريع مسجلة حالياً')}
+                    isLoading={loading}
+                    onRowClick={(row) => window.location.href = `/projects/${row.id}`}
+                />
+                {!loading && filtered.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                        <Pagination
+                            total={filtered.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
+                )}
 
                 {deleteItem && (
                     <AppModal

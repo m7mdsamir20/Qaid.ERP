@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { Shield, Plus, Loader2, CheckCircle2, Building2, Users, Search, AlertTriangle, Clock, Check, Trash2, X, FileText, Pencil, Globe, RefreshCcw } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 const PLANS: Record<string, { label: string; color: string; bg: string }> = {
     trial: { label: 'تجريبي', color: '#fb923c', bg: 'rgba(251,146,60,0.1)' },
@@ -44,6 +46,103 @@ export default function SuperAdminPage() {
     const [search, setSearch] = useState('');
     const [deleteTarget, setDeleteTarget] = useState<any | null>(null);
     const [deleting, setDeleting] = useState(false);
+
+    const columns: TableColumn[] = [
+        {
+            header: t('معلومات الشركة'),
+            type: 'text',
+            cell: (row) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'flex-start' }}>
+                    <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
+                        {row.name.charAt(0)}
+                    </div>
+                    <div style={{ textAlign: 'start' }}>
+                        <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{row.name}</div>
+                        <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{row.email || '—'}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            header: t('النشاط'),
+            type: 'text',
+            cell: (row) => {
+                const bType = B_TYPES[(row.businessType || 'TRADING').toUpperCase()] || { label: row.businessType || 'غير محدد', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
+                return (
+                    <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 600, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
+                        {bType.label}
+                    </span>
+                );
+            }
+        },
+        {
+            header: t('الباقة والمستخدمين'),
+            type: 'number',
+            cell: (row) => {
+                const sub = row.subscription;
+                const plan = PLANS[sub?.plan] || PLANS.basic;
+                return (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+                        <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 600 }}>
+                            {plan.label}
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>
+                            <Users size={14} /> {row._count?.users || 0}/{sub?.maxUsers || row.maxUsers}
+                        </div>
+                    </div>
+                );
+            }
+        },
+        {
+            header: t('تاريخ الانتهاء'),
+            type: 'number',
+            cell: (row) => {
+                const sub = row.subscription;
+                if (!sub) {
+                    return <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجد اشتراك</span>;
+                }
+                const days = sub?.endDate ? daysLeft(sub.endDate) : 0;
+                const isExpired = days < 0;
+                const isWarn = days >= 0 && days <= 30;
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
+                            {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? 'ينتهي اليوم ⚠️' : `${days} يوم`}
+                        </div>
+                        <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
+                            {fmt(sub.endDate)}
+                        </div>
+                    </div>
+                );
+            }
+        },
+        {
+            header: t('حالة الحساب'),
+            type: 'number',
+            cell: (row) => (
+                <button onClick={() => handleToggle(row.id, row.isActive)}
+                    style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${row.isActive ? C.success : C.danger}40`, background: row.isActive ? `${C.success}15` : `${C.danger}15`, color: row.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                    {row.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
+                </button>
+            )
+        },
+        {
+            header: t('إجراءات'),
+            type: 'number',
+            cell: (row) => (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                    <button onClick={() => router.push(`/super-admin/edit/${row.id}`)}
+                        style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.primary}10`, color: C.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        <Pencil size={16} />
+                    </button>
+                    <button onClick={() => setDeleteTarget(row)}
+                        style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.danger}10`, color: C.danger, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        <Trash2 size={16} />
+                    </button>
+                </div>
+            )
+        }
+    ];
 
     useEffect(() => {
         if (status === 'loading') return;
@@ -201,115 +300,19 @@ export default function SuperAdminPage() {
             </div>
 
             {/* Data Grid */}
-            {loading ? (
-                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
-                    <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
-                    <div style={{ fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>جاري استخراج بيانات الشركات والأنشطة...</div>
-                </div>
-            ) : (
-                <div className="scroll-table" style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
-                    <table style={{ ...TABLE_STYLE.table, width: '100%', borderCollapse: 'collapse' }}>
-                        <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
-                            <tr>
-                                {['معلومات الشركة', 'النشاط', 'الباقة والمستخدمين', 'تاريخ الانتهاء', 'حالة الحساب', 'إجراءات'].map((h, i) => (
-                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i >= 2 ? 'center' : 'start' }}>{h}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filtered.map((c, index) => {
-                                const sub = c.subscription;
-                                const plan = PLANS[sub?.plan] || PLANS.basic;
-                                const days = sub?.endDate ? daysLeft(sub.endDate) : 0;
-                                const isExpired = days < 0;
-                                const isWarn = days >= 0 && days <= 30;
-                                const bType = B_TYPES[(c.businessType || 'TRADING').toUpperCase()] || { label: c.businessType || 'غير محدد', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
-
-                                return (
-                                    <tr key={c.id} style={{ borderBottom: index === filtered.length - 1 ? 'none' : `1px solid ${C.border}`, background: 'transparent' }}>
-                                        {/* Company Info */}
-                                        <td style={{ padding: '16px', }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'flex-start' }}>
-                                                <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
-                                                    {c.name.charAt(0)}
-                                                </div>
-                                                <div style={{ textAlign: 'start' }}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
-                                                    <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        {/* Activity/Business Type */}
-                                        <td style={{ padding: '16px', }}>
-                                            <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 600, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
-                                                {bType.label}
-                                            </span>
-                                        </td>
-
-                                        {/* Plan & Users */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                                                <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 600 }}>
-                                                    {plan.label}
-                                                </span>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    <Users size={14} /> {c._count?.users || 0}/{sub?.maxUsers || c.maxUsers}
-                                                </div>
-                                            </div>
-                                        </td>
-
-                                        {/* Subscription End Date */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
-                                            {sub ? (
-                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
-                                                        {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? 'ينتهي اليوم ⚠️' : `${days} يوم`}
-                                                    </div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
-                                                        {fmt(sub.endDate)}
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجد اشتراك</span>
-                                            )}
-                                        </td>
-
-                                        {/* Status */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
-                                            <button onClick={() => handleToggle(c.id, c.isActive)}
-                                                style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${c.isActive ? C.success : C.danger}40`, background: c.isActive ? `${C.success}15` : `${C.danger}15`, color: c.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                                                {c.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
-                                            </button>
-                                        </td>
-
-                                        {/* Actions */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                                                <button onClick={() => router.push(`/super-admin/edit/${c.id}`)}
-                                                    style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.primary}10`, color: C.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                                                    <Pencil size={16} />
-                                                </button>
-                                                <button onClick={() => setDeleteTarget(c)}
-                                                    style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.danger}10`, color: C.danger, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-
-                    {filtered.length === 0 && (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
-                            <FileText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
-                            <p style={{ margin: 0, fontWeight: 600, fontSize: '13px' }}>لا توجد حسابات مسجلة تطابق البحث</p>
-                        </div>
-                    )}
-                </div>
-            )}
+            <DataTable
+                columns={columns}
+                data={filtered}
+                emptyIcon={FileText}
+                emptyMessage={t("لا توجد حسابات مسجلة تطابق البحث")}
+                isLoading={loading}
+                loadingSkeleton={
+                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
+                        <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
+                        <div style={{ fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>جاري استخراج بيانات الشركات والأنشطة...</div>
+                    </div>
+                }
+            />
 
             {/* ── Delete Confirmation Modal ── */}
             {deleteTarget && (

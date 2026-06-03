@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Activity, ArrowDownRight, ArrowUpRight, Search, FileText, Loader2, Filter, ArrowRightLeft, Package, Warehouse } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
+import { DataTable } from '@/components/DataTable';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 
@@ -144,70 +145,36 @@ export default function StockMovementsPage() {
                         </div>
                     </div>
 
-                    {loading ? (
-                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                            <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
-                        </div>
-                    ) : filteredMovements.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                            <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حركات مخزنية')}</h3>
-                            <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي عمليات مخزنية تطابق بحثك.')}</p>
-                        </div>
-                    ) : (
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('التاريخ والوقت'), t('نوع الحركة'), t('المرجع'), t('الصنف'), t('المخزن'), t('الكمية')].map((h, i) => (
-                                            <th key={i} style={{ 
-                                                padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: i === 5 ? 'center' : 'start',
-                                                fontWeight: 600, fontFamily: CAIRO 
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredMovements.map((m, idx) => {
-                                        const typeConfig = getTypeLabel(m.type, m.reference);
-                                        return (
-                                            <tr key={m.id} 
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px',  fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                    {new Date(m.date).toLocaleDateString('en-GB')} {new Date(m.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}
-                                                </td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                                                        padding: '4px 12px', borderRadius: '10px',
-                                                        background: typeConfig.bg, border: `1px solid ${typeConfig.border}`,
-                                                        color: typeConfig.color, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO
-                                                    }}>
-                                                        {typeConfig.icon}
-                                                        {typeConfig.label}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{m.reference || '—'}</span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{m.item?.name || '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse?.name || '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: typeConfig.color, fontFamily: OUTFIT }}>
-                                                        {m.quantity > 0 ? '+' : ''}{formatNumber(m.quantity)}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                    <DataTable
+                        columns={[
+                            { header: t('التاريخ والوقت'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')} {new Date(row.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</span> },
+                            { header: t('نوع الحركة'), type: 'status', cell: (row) => {
+                                const tc = getTypeLabel(row.type, row.reference);
+                                return (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '10px', background: tc.bg, border: `1px solid ${tc.border}`, color: tc.color, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>
+                                        {tc.icon} {tc.label}
+                                    </span>
+                                );
+                            }},
+                            { header: t('المرجع'), type: 'text', cell: (row) => <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{row.reference || '—'}</span> },
+                            { header: t('الصنف'), type: 'text', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.item?.name || '—'}</span> },
+                            { header: t('المخزن'), type: 'text', cell: (row) => <span style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{row.warehouse?.name || '—'}</span> },
+                            { header: t('الكمية'), type: 'number', cell: (row) => {
+                                const tc = getTypeLabel(row.type, row.reference);
+                                return <span style={{ fontSize: '13px', fontWeight: 600, color: tc.color, fontFamily: OUTFIT }}>{row.quantity > 0 ? '+' : ''}{formatNumber(row.quantity)}</span>;
+                            }},
+                        ]}
+                        data={filteredMovements}
+                        emptyIcon={Activity}
+                        emptyMessage={t('لا توجد حركات مخزنية')}
+                        isLoading={loading}
+                        loadingSkeleton={
+                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
+                            </div>
+                        }
+                    />
                 </div>
             </div>
             <style>{`

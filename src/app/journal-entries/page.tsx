@@ -12,6 +12,7 @@ import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE,
 import Pagination from '@/components/Pagination';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
+import { DataTable } from '@/components/DataTable';
 
 /* ── Types ── */
 interface AccountInfo { id: string; code: string; name: string; type: string; accountCategory?: string; nature?: string; }
@@ -248,103 +249,63 @@ export default function JournalEntriesPage() {
                         </div>
                     </div>
 
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم القيد')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
-                                    <th style={{...TABLE_STYLE.th(false)}}>{t('البيان / الوصف العام')}</th>
-                                    <th style={{...TABLE_STYLE.th(false)}}>{t('المرجع')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('التفاصيل')}</th>
+                    <DataTable
+                        columns={[
+                            { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{formatEntryCode(row.entryNumber)}</span> },
+                            { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                            { header: t('البيان / الوصف العام'), type: 'text', cell: (row) => <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</div> },
+                            { header: t('المرجع'), type: 'text', cell: (row) => row.reference ? <span style={{ fontSize: '10px', color: C.textSecondary, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{row.reference}</span> : <>—</> },
+                            { header: t('المبلغ'), type: 'number', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fMoney(row.lines.reduce((s: number, l: JournalLine) => s + l.debit, 0))}</span> },
+                            { header: t('الحالة'), type: 'status', cell: (row) => (
+                                <button onClick={() => togglePost(row)} disabled={posting === row.id}
+                                    style={{ 
+                                        display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
+                                        border: '1px solid', fontSize: '10px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO,
+                                        ...(row.isPosted ? { background: C.successBg, color: C.success, borderColor: C.successBorder } : { background: C.warningBg, color: C.warning, borderColor: C.warningBorder }) 
+                                    }}
+                                >
+                                    {posting === row.id ? <Loader2 size={11} className="animate-spin" /> : row.isPosted ? <CheckCircle2 size={11} /> : <Clock size={11} />}
+                                    {row.isPosted ? t('مرحّل') : t('مسودة')}
+                                </button>
+                            )},
+                            { header: t('التفاصيل'), type: 'action', cell: (row) => (
+                                <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                    <button onClick={() => setExpandedId(expandedId === row.id ? null : row.id)} style={TABLE_STYLE.actionBtn(expandedId === row.id ? C.primary : C.textMuted)}><ChevronRight size={16} /></button>
+                                    <button onClick={() => handlePrintEntry(row)} style={TABLE_STYLE.actionBtn(C.textSecondary)}><Printer size={16} /></button>
+                                </div>
+                            )},
+                        ]}
+                        data={paginated}
+                        emptyIcon={FileText}
+                        emptyMessage={t('لا توجد قيود يومية')}
+                        expandableRow={(row) => {
+                            if (expandedId !== row.id) return null;
+                            return (
+                                <tr>
+                                    <td colSpan={7} style={{ padding: '0 20px 20px' }}>
+                                        <DataTable
+                                            columns={[
+                                                { header: t('الحساب'), type: 'text', cell: (line) => (
+                                                    <>
+                                                        <div style={{ fontWeight: 700, fontSize: '13px' }}>{line.account.name}</div>
+                                                        <div style={{ fontSize: '10px', color: C.primary, fontFamily: OUTFIT }}>{line.account.code}</div>
+                                                    </>
+                                                )},
+                                                { header: t('مركز التكلفة'), type: 'text', cell: (line) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</span> },
+                                                { header: t('مدين'), type: 'number', cell: (line) => <span style={{ fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</span> },
+                                                { header: t('دائن'), type: 'number', cell: (line) => <span style={{ fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</span> },
+                                                { header: t('البيان'), type: 'text', cell: (line) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{line.description || '—'}</span> },
+                                            ]}
+                                            data={row.lines}
+                                            emptyIcon={FileText}
+                                            emptyMessage={t('لا توجد حركات')}
+                                        />
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {paginated.map((entry, idx) => {
-                                    const isExpanded = expandedId === entry.id;
-                                    const dr = entry.lines.reduce((s, l) => s + l.debit, 0);
-                                    return (
-                                        <React.Fragment key={entry.id}>
-                                            <tr style={TABLE_STYLE.row(idx === paginated.length - 1 && !isExpanded)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, }}>
-                                                    {formatEntryCode(entry.entryNumber)}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, }}>
-                                                    {new Date(entry.date).toLocaleDateString('en-GB')}
-                                                </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{entry.description}</div>
-                                                </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
-                                                    {entry.reference ? <span style={{ fontSize: '10px', color: C.textSecondary, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {fMoney(dr)}
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
-                                                    <button onClick={() => togglePost(entry)} disabled={posting === entry.id}
-                                                        style={{ 
-                                                            display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
-                                                            border: '1px solid', fontSize: '10px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO,
-                                                            ...(entry.isPosted ? { background: C.successBg, color: C.success, borderColor: C.successBorder } : { background: C.warningBg, color: C.warning, borderColor: C.warningBorder }) 
-                                                        }}
-                                                    >
-                                                        {posting === entry.id ? <Loader2 size={11} className="animate-spin" /> : entry.isPosted ? <CheckCircle2 size={11} /> : <Clock size={11} />}
-                                                        {entry.isPosted ? t('مرحّل') : t('مسودة')}
-                                                    </button>
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
-                                                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                                                        <button onClick={() => setExpandedId(isExpanded ? null : entry.id)} style={TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textMuted)}><ChevronRight size={16} /></button>
-                                                        <button onClick={() => handlePrintEntry(entry)} style={TABLE_STYLE.actionBtn(C.textSecondary)}><Printer size={16} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {isExpanded && (
-                                                <tr>
-                                                    <td colSpan={7} style={{ padding: '0 20px 20px' }}>
-                                                        <div style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-                                                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                                <thead style={{ background: C.subtle }}>
-                                                                    <tr>
-                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('الحساب')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('مركز التكلفة')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('مدين')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('دائن')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('البيان')}</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {entry.lines.map((line, lidx) => (
-                                                                        <tr key={lidx} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                                            <td style={{ padding: '10px 12px', textAlign: 'start' }}>
-                                                                                <div style={{ fontWeight: 700, fontSize: '13px' }}>{line.account.name}</div>
-                                                                                <div style={{ fontSize: '10px', color: C.primary, fontFamily: OUTFIT }}>{line.account.code}</div>
-                                                                            </td>
-                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary, textAlign: 'start' }}>{line.costCenter?.name || '—'}</td>
-                                                                            <td style={{ textAlign: 'center', fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
-                                                                            <td style={{ textAlign: 'center', fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
-                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary, textAlign: 'start' }}>{line.description || '—'}</td>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                        <Pagination total={filteredAll.length} pageSize={pageSize} currentPage={currentPage} onPageChange={setCurrentPage} />
-                    </div>
+                            );
+                        }}
+                    />
+                    <Pagination total={filteredAll.length} pageSize={pageSize} currentPage={currentPage} onPageChange={setCurrentPage} />
                 </>
             ) : (
                 <div style={PAGE_BASE}>

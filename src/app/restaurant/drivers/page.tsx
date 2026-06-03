@@ -7,6 +7,8 @@ import { Truck, Plus, Edit2, Trash2, Loader2, CheckCircle2 } from 'lucide-react'
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_DANGER, IS, LS, BTN_PRIMARY, TABLE_STYLE } from '@/constants/theme';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 export default function DriversPage() {
     const { lang, t } = useTranslation();
@@ -86,72 +88,65 @@ export default function DriversPage() {
                     }}
                 />
 
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="spin" /></div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('اسم السائق')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الطلبات الموصلة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {drivers.map((d, i) => (
-                                    <tr key={d.id} style={TABLE_STYLE.row(i === drivers.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    {d.name.charAt(0)}
-                                                </div>
-                                                {d.name}
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{d.phone || '—'}</td>
-                                        <td style={TABLE_STYLE.td(false)}>
-                                            <span style={{
-                                                display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
-                                                background: d.status === 'available' ? 'rgba(74,222,128,0.12)' : d.status === 'busy' ? 'rgba(245,158,11,0.12)' : 'rgba(239, 68, 68, 0.12)',
-                                                color: d.status === 'available' ? '#4ade80' : d.status === 'busy' ? '#f59e0b' : '#fb7185',
-                                                border: `1px solid ${d.status === 'available' ? 'rgba(74,222,128,0.22)' : d.status === 'busy' ? 'rgba(245,158,11,0.22)' : 'rgba(239, 68, 68, 0.22)'}`
-                                            }}>
-                                                {d.status === 'available' ? t('متاح') : d.status === 'busy' ? t('مشغول') : t('غير متصل')}
-                                            </span>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{d._count?.orders || 0}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                <button onClick={() => setFormModal({ show: true, isEdit: true, data: d })} style={TABLE_STYLE.actionBtn()}>
-                                                    <Edit2 size={TABLE_STYLE.actionIconSize} />
-                                                </button>
-                                                <button onClick={() => handleDelete(d.id)} style={TABLE_STYLE.actionBtn(C.danger)}>
-                                                    <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {drivers.length === 0 && (
-                                    <tr>
-                                        <td colSpan={5} style={{ textAlign: 'center', padding: '60px 0', verticalAlign: 'middle' }}>
-                                            <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Truck size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                                                <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{t('لا يوجد سائقين مضافين حالياً')}</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    columns={[
+                        {
+                            header: t('اسم السائق'),
+                            type: 'text',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>
+                                        {row.name.charAt(0)}
+                                    </div>
+                                    {row.name}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('رقم الهاتف'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{row.phone || '—'}</span>
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => (
+                                <span style={{
+                                    display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
+                                    background: row.status === 'available' ? 'rgba(74,222,128,0.12)' : row.status === 'busy' ? 'rgba(245,158,11,0.12)' : 'rgba(239, 68, 68, 0.12)',
+                                    color: row.status === 'available' ? '#4ade80' : row.status === 'busy' ? '#f59e0b' : '#fb7185',
+                                    border: `1px solid ${row.status === 'available' ? 'rgba(74,222,128,0.22)' : row.status === 'busy' ? 'rgba(245,158,11,0.22)' : 'rgba(239, 68, 68, 0.22)'}`
+                                }}>
+                                    {row.status === 'available' ? t('متاح') : row.status === 'busy' ? t('مشغول') : t('غير متصل')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('الطلبات الموصلة'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{row._count?.orders || 0}</span>
+                        },
+                        {
+                            header: t('إجراءات'),
+                            type: 'number',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    <button onClick={() => setFormModal({ show: true, isEdit: true, data: row })} style={TABLE_STYLE.actionBtn()}>
+                                        <Edit2 size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                    <button onClick={() => handleDelete(row.id)} style={TABLE_STYLE.actionBtn(C.danger)}>
+                                        <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                </div>
+                            )
+                        }
+                    ]}
+                    data={drivers}
+                    emptyIcon={Truck}
+                    emptyMessage={t('لا يوجد سائقين مضافين حالياً')}
+                    isLoading={loading}
+                    loadingSkeleton={<TableSkeleton />}
+                />
 
                 {/* Modal */}
                 <AppModal show={formModal.show} onClose={() => setFormModal(p => ({ ...p, show: false }))} title={formModal.isEdit ? t('تعديل سائق') : t('إضافة سائق')} maxWidth="520px">

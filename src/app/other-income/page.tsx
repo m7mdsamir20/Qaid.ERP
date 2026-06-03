@@ -12,6 +12,7 @@ import { TrendingUp, Plus, Search, Loader2, Calendar, Building2, Banknote, X, Ta
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY, SEARCH_STYLE } from '@/constants/theme';
+import { DataTable } from '@/components/DataTable';
 
 export default function OtherIncomePage() {
     const { lang, t } = useTranslation();
@@ -118,78 +119,55 @@ export default function OtherIncomePage() {
                     </div>
                 </div>
 
-                <div style={TABLE_STYLE.container}>
-                    <table style={TABLE_STYLE.table}>
-                        <thead>
-                            <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('بند الإيراد')}</th>
-                                <th style={TABLE_STYLE.th(false, true)}>{t('الخزينة / البنك')}</th>
-                                <th style={TABLE_STYLE.th(false, true)}>{t('البيان / التفاصيل')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr><td colSpan={6} style={{ padding: '60px', }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
-                            ) : filteredAll.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '80px',  color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
-                            ) : paginated.map((e, idx) => {
-                                const creditLine = e.lines.find((l: any) => l.credit > 0);
-                                const debitLine = e.lines.find((l: any) => l.debit > 0);
-                                return (
-                                    <tr key={e.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px' }}>
-                                            <span style={{ 
-                                                fontFamily: OUTFIT, fontSize: '11px', fontWeight: 600, color: C.primary, opacity: 0.7
-                                            }}>
-                                                JV-{e.entryNumber.toString().padStart(5, '0')}
-                                            </span>
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false)}>
-                                            <div style={{ fontWeight: 600, color: C.textPrimary }}>{creditLine?.account?.name}</div>
-                                            <div style={{ fontSize: '10px', color: C.textSecondary }}>{creditLine?.account?.code}</div>
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.textPrimary, fontWeight: 700, fontSize: '13px' }}>
-                                                    <Banknote size={14} style={{ color: e.sourceType === 'bank' ? '#60a5fa' : C.success, opacity: 0.8 }} />
-                                                    {e.sourceName || debitLine?.account?.name || '—'}
-                                                </div>
-                                                <div style={{ 
-                                                    display: 'inline-flex', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600,
-                                                    background: e.sourceType === 'bank' ? 'rgba(96, 165, 250, 0.1)' : 'rgba(52, 211, 153, 0.1)',
-                                                    color: e.sourceType === 'bank' ? '#60a5fa' : '#34d399',
-                                                    fontFamily: CAIRO
-                                                }}>
-                                                    {e.sourceType === 'bank' ? t('تحويل بنكي') : t('نقدية / خزينة')}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), maxWidth: '180px', color: C.textSecondary, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                            {e.description || '—'}
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {fMoneyJSX(creditLine?.credit || 0)}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                );
-                        })}
-                    </tbody>
-                </table>
+                <DataTable
+                    columns={[
+                        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ fontFamily: OUTFIT, fontSize: '11px', fontWeight: 600, color: C.primary, opacity: 0.7 }}>JV-{row.entryNumber.toString().padStart(5, '0')}</span> },
+                        { header: t('بند الإيراد'), type: 'text', cell: (row) => {
+                            const creditLine = row.lines.find((l: any) => l.credit > 0);
+                            return (
+                                <>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary }}>{creditLine?.account?.name}</div>
+                                    <div style={{ fontSize: '10px', color: C.textSecondary }}>{creditLine?.account?.code}</div>
+                                </>
+                            );
+                        }},
+                        { header: t('الخزينة / البنك'), type: 'status', cell: (row) => {
+                            const debitLine = row.lines.find((l: any) => l.debit > 0);
+                            return (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.textPrimary, fontWeight: 700, fontSize: '13px' }}>
+                                        <Banknote size={14} style={{ color: row.sourceType === 'bank' ? '#60a5fa' : C.success, opacity: 0.8 }} />
+                                        {row.sourceName || debitLine?.account?.name || '—'}
+                                    </div>
+                                    <div style={{ display: 'inline-flex', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, background: row.sourceType === 'bank' ? 'rgba(96, 165, 250, 0.1)' : 'rgba(52, 211, 153, 0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399', fontFamily: CAIRO }}>
+                                        {row.sourceType === 'bank' ? t('تحويل بنكي') : t('نقدية / خزينة')}
+                                    </div>
+                                </div>
+                            );
+                        }},
+                        { header: t('البيان / التفاصيل'), type: 'text', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{row.description || '—'}</span>, style: { maxWidth: '180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } },
+                        { header: t('المبلغ'), type: 'number', cell: (row) => {
+                            const creditLine = row.lines.find((l: any) => l.credit > 0);
+                            return <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(creditLine?.credit || 0)}</span>;
+                        }},
+                    ]}
+                    data={paginated}
+                    emptyIcon={TrendingUp}
+                    emptyMessage={t('لا توجد بيانات مسجلة مطابقة للبحث')}
+                    isLoading={loading}
+                    loadingSkeleton={
+                        <div style={{ ...TABLE_STYLE.container, display: 'flex', justifyContent: 'center', padding: '60px' }}>
+                            <Loader2 size={32} className="animate-spin" style={{ color: C.primary }} />
+                        </div>
+                    }
+                />
                 <Pagination 
                     total={filteredAll.length}
                     pageSize={pageSize}
                     currentPage={currentPage}
                     onPageChange={setCurrentPage}
                 />
-            </div>
 
                 <AppModal 
                     show={showForm} 

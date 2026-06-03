@@ -10,6 +10,8 @@ import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 interface Subcontractor {
     id: string;
@@ -173,64 +175,70 @@ export default function SubcontractorsPage() {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <HardHat size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا يوجد مقاولي باطن مسجلين')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('اسم المقاول')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التخصص')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الرقم الضريبي')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المستحقات الحالية')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((s, idx) => (
-                                        <tr key={s.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                            <td style={{ ...TABLE_STYLE.td(true) }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{s.name.charAt(0)}</div>
-                                                    <span style={{ fontWeight: 600, color: C.textPrimary }}>{s.name}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary }}>{s.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary }}>{s.specialty || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary }}>{s.taxNumber || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', fontWeight: 600, color: s.balance > 0 ? '#fb7185' : C.textMuted }}>
-                                                {fMoney(s.balance)}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    <button onClick={() => openEdit(s)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    <button onClick={() => setDeleteItem(s)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filtered.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
-                </div>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('اسم المقاول'),
+                            type: 'text',
+                            cell: (row: Subcontractor) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{row.name.charAt(0)}</div>
+                                    <span style={{ fontWeight: 600, color: C.textPrimary }}>{row.name}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('رقم الهاتف'),
+                            type: 'number',
+                            cell: (row: Subcontractor) => <span style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{row.phone || '—'}</span>
+                        },
+                        {
+                            header: t('التخصص'),
+                            type: 'text',
+                            cell: (row: Subcontractor) => <span style={{ color: C.textSecondary }}>{row.specialty || '—'}</span>
+                        },
+                        {
+                            header: t('الرقم الضريبي'),
+                            type: 'text',
+                            cell: (row: Subcontractor) => <span style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{row.taxNumber || '—'}</span>
+                        },
+                        {
+                            header: t('المستحقات الحالية'),
+                            type: 'number',
+                            cell: (row: Subcontractor) => (
+                                <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: row.balance > 0 ? '#fb7185' : C.textMuted }}>
+                                    {fMoney(row.balance)}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('إجراءات'),
+                            type: 'number',
+                            cell: (row: Subcontractor) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    <button onClick={() => openEdit(row)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
+                                    <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                                </div>
+                            )
+                        }
+                    ]}
+                    data={paginated}
+                    emptyIcon={HardHat}
+                    emptyMessage={t('لا يوجد مقاولي باطن مسجلين')}
+                    isLoading={loading}
+                    loadingSkeleton={<TableSkeleton />}
+                />
+
+                {!loading && filtered.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                        <Pagination
+                            total={filtered.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
+                )}
 
                 {/* MODAL: ADD/EDIT SUBCONTRACTOR */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} icon={HardHat} title={editingId ? t('تعديل بيانات المقاول') : t('إضافة مقاول باطن جديد')} maxWidth="500px">

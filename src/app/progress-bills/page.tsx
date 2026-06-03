@@ -11,6 +11,7 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
+import DataTable from '@/components/DataTable';
 
 interface BillLine {
     phaseId: string | null;
@@ -259,66 +260,82 @@ export default function ProgressBillsPage() {
                     </div>
                 </div>
 
-                {/* Bills Table */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <FileText size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد مستخلصات مسجلة حالياً')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم المستخلص')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المشروع')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('مبلغ الأعمال')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('ضمان الأعمال %')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('صافي المستحق')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المحصل')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الحالة')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((b, idx) => {
-                                        const status = statusLabels[b.status] || { label: b.status, color: C.textSecondary, bg: C.border };
-                                        return (
-                                            <tr key={b.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>BIL-{String(b.billNumber).padStart(5, '0')}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600 }}>{b.project?.name}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{new Date(b.date).toLocaleDateString()}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center' }}>{fMoney(b.subtotal)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', color: C.warning }}>{fMoney(b.retentionAmount)} ({b.retentionRate}%)</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', fontWeight: 600, color: C.primary }}>{fMoney(b.netAmount)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', color: C.success }}>{fMoney(b.paidAmount)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
-                                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
-                                                    }}>
-                                                        {status.label}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filtered.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
-                </div>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('رقم المستخلص'),
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>
+                                    BIL-{String(row.billNumber).padStart(5, '0')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('المشروع'),
+                            type: 'text',
+                            cell: (row) => <span style={{ fontWeight: 600 }}>{row.project?.name}</span>
+                        },
+                        {
+                            header: t('التاريخ'),
+                            type: 'number',
+                            cell: (row) => new Date(row.date).toLocaleDateString()
+                        },
+                        {
+                            header: t('مبلغ الأعمال'),
+                            type: 'number',
+                            cell: (row) => fMoney(row.subtotal)
+                        },
+                        {
+                            header: t('ضمان الأعمال %'),
+                            type: 'number',
+                            cell: (row) => (
+                                <span style={{ color: C.warning }}>
+                                    {fMoney(row.retentionAmount)} ({row.retentionRate}%)
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('صافي المستحق'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontWeight: 600, color: C.primary }}>{fMoney(row.netAmount)}</span>
+                        },
+                        {
+                            header: t('المحصل'),
+                            type: 'number',
+                            cell: (row) => <span style={{ color: C.success }}>{fMoney(row.paidAmount)}</span>
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => {
+                                const status = statusLabels[row.status] || { label: row.status, color: C.textSecondary, bg: C.border };
+                                return (
+                                    <span style={{
+                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
+                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
+                                    }}>
+                                        {status.label}
+                                    </span>
+                                );
+                            }
+                        }
+                    ]}
+                    data={paginated}
+                    emptyIcon={FileText}
+                    emptyMessage={t('لا توجد مستخلصات مسجلة حالياً')}
+                    isLoading={loading}
+                />
+                {!loading && filtered.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                        <Pagination
+                            total={filtered.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
+                )}
 
                 {/* MODAL: CREATE PROGRESS BILL */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} icon={FileText} title={t('إنشاء مستخلص مالك جديد')} maxWidth="800px">

@@ -11,6 +11,8 @@ import { TrendingDown, Calendar, Calculator, FileText, AlertCircle, CheckCircle2
 import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 /* ── Types ── */
 interface FixedAsset {
@@ -209,49 +211,68 @@ export default function DepreciationPage() {
 
                 {/* Results Table */}
                 {calculated && lines.length > 0 ? (
-                    <div style={TABLE_STYLE.container}>
-                        <div style={{ padding: '14px 20px',  background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
-                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
-                                <span>{t('عدد الأصول')}: <b style={{ fontFamily: OUTFIT }}>{lines.length}</b></span>
+                    <>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', padding: '0 4px' }}>
+                            <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
+                            <div style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO, display: 'flex', gap: '16px' }}>
+                                <span>{t('عدد الأصول')}: <b style={{ color: C.primary, fontFamily: OUTFIT }}>{lines.length}</b></span>
                                 <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}><Currency amount={totalCalculatedDep} /></b></span>
                             </div>
                         </div>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('كود الأصل')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('اسم الأصل')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('تكلفة الشراء')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('مجمع قبل')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), color: C.danger }}>{t('قسط الفترة')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('مجمع بعد')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), color: '#10b981' }}>{t('الصافي الباقي')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {lines.map((l, i) => (
-                                    <tr key={l.asset.id} style={TABLE_STYLE.row(i === lines.length - 1)}>
-                                        <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.purchaseCost} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.accumulatedDepreciation} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.danger }}><Currency amount={l.depAmount} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.accumulatedDepreciation + l.depAmount} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981' }}><Currency amount={l.netBook} /></td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            {l.alreadyDone ? (
-                                                <span style={{ fontSize: '10px', fontWeight: 600, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
-                                            ) : (
-                                                <span style={{ fontSize: '10px', fontWeight: 600, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>{t('معاينة قيد')}</span>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                        <DataTable
+                            columns={[
+                                {
+                                    header: t('كود الأصل'),
+                                    type: 'text',
+                                    cell: (row: DepLine) => <span style={{ fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{row.asset.code}</span>
+                                },
+                                {
+                                    header: t('اسم الأصل'),
+                                    type: 'text',
+                                    cell: (row: DepLine) => <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.asset.name}</span>
+                                },
+                                {
+                                    header: t('تكلفة الشراء'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => <Currency amount={row.asset.purchaseCost} />
+                                },
+                                {
+                                    header: t('مجمع قبل'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => <Currency amount={row.asset.accumulatedDepreciation} />
+                                },
+                                {
+                                    header: t('قسط الفترة'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => <span style={{ color: C.danger }}><Currency amount={row.depAmount} /></span>
+                                },
+                                {
+                                    header: t('مجمع بعد'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => <Currency amount={row.asset.accumulatedDepreciation + row.depAmount} />
+                                },
+                                {
+                                    header: t('الصافي الباقي'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => <span style={{ color: '#10b981' }}><Currency amount={row.netBook} /></span>
+                                },
+                                {
+                                    header: t('الحالة'),
+                                    type: 'number',
+                                    cell: (row: DepLine) => row.alreadyDone ? (
+                                        <span style={{ fontSize: '10px', fontWeight: 600, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
+                                    ) : (
+                                        <span style={{ fontSize: '10px', fontWeight: 600, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>{t('معاينة قيد')}</span>
+                                    )
+                                }
+                            ]}
+                            data={lines}
+                            emptyIcon={Calculator}
+                            emptyMessage={t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}
+                            isLoading={loading}
+                            loadingSkeleton={<TableSkeleton />}
+                        />
+                    </>
                 ) : calculated ? (
                     <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />

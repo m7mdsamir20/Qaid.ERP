@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRightLeft, Plus, Search, ChevronDown, Loader2, UserCheck, UserMinus, UserPlus, CheckCircle2, ArrowRight, Info, History, DollarSign, Calendar, Building2, Banknote, Users, X, Wallet, RefreshCw, ShieldAlert, FileText, ArrowLeftRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
+import { DataTable } from '@/components/DataTable';
 import PageHeader from '@/components/PageHeader';
 
 
@@ -327,56 +328,35 @@ export default function ComprehensiveSettlementPage() {
                             </div>
                         )}
 
-                        {filteredSettlements.length === 0 ? (
-                            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
-                                <div style={{ width: 80, height: 80, borderRadius: '50%', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}><ArrowRightLeft size={36} opacity={0.5} /></div>
-                                <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
-                                <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
-                            </div>
-                        ) : (
-                            <div style={TABLE_STYLE.container}>
-                                <table style={TABLE_STYLE.table}>
-                                    <thead>
-                                        <tr style={TABLE_STYLE.thead}>
-                                            <th style={TABLE_STYLE.th(true)}>{t('رقم القيد')}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t('من حساب')}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t('إلى حساب')}</th>
-                                            <th style={TABLE_STYLE.th(false, true)}>{t('المبلغ')}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredSettlements.map((s, idx) => (
-                                            <tr key={s.id} style={TABLE_STYLE.row(idx === filteredSettlements.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ ...TABLE_STYLE.td(true), color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>JV-{String(s.entryNumber || '').replace(/\D/g, '').padStart(5, '0')}</td>
-                                                <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.fromConfig?.name || '-'}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{t(s.fromConfig?.type || '-')}</div>
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.toConfig?.name || '-'}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{t(s.toConfig?.type || '-')}</div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{currencySign}</span>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                    {new Date(s.date).toLocaleDateString('ar-EG-u-nu-latn')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        <button onClick={() => setDetailsModal(s)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
-                                                            <FileText size={14} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                        <DataTable
+                            columns={[
+                                { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>JV-{String(row.entryNumber || '').replace(/\D/g, '').padStart(5, '0')}</span> },
+                                { header: t('من حساب'), type: 'text', cell: (row) => (
+                                    <>
+                                        <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{row.fromConfig?.name || '-'}</div>
+                                        <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{t(row.fromConfig?.type || '-')}</div>
+                                    </>
+                                )},
+                                { header: t('إلى حساب'), type: 'text', cell: (row) => (
+                                    <>
+                                        <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{row.toConfig?.name || '-'}</div>
+                                        <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{t(row.toConfig?.type || '-')}</div>
+                                    </>
+                                )},
+                                { header: t('المبلغ'), type: 'number', cell: (row) => <span style={{ fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{row.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{currencySign}</span></span> },
+                                { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('ar-EG-u-nu-latn')}</span> },
+                                { header: t('الإجراءات'), type: 'action', cell: (row) => (
+                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <button onClick={() => setDetailsModal(row)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
+                                            <FileText size={14} />
+                                        </button>
+                                    </div>
+                                )},
+                            ]}
+                            data={filteredSettlements}
+                            emptyIcon={ArrowRightLeft}
+                            emptyMessage={settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}
+                        />
                     </>
                 )}
             </div>

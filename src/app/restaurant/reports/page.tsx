@@ -6,6 +6,8 @@ import { BarChart3, TrendingUp, ShoppingCart, DollarSign, Clock, Package, Users,
 import { C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE, IS, focusIn, focusOut } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 const ORDER_TYPE_LABELS: Record<string, string> = {
     'dine-in': 'صالة',
@@ -147,28 +149,38 @@ export default function RestaurantReportsPage() {
 
                         {/* Top Selling Items */}
                         <SectionTitle icon={Package} label={t('أكثر الأصناف مبيعاً')} />
-                        <div style={TABLE_STYLE.container}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        {[t('#'), t('الصنف'), t('الكمية المباعة'), t('الإيراد'), t('عدد الطلبات')].map((h, i) => (
-                                            <th key={h} style={TABLE_STYLE.th(i === 0, i > 1)}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.topItems.map((item: any, idx: number) => (
-                                        <tr key={item.itemId} style={TABLE_STYLE.row(idx === data.topItems.length - 1)}>
-                                            <td style={TABLE_STYLE.td(true, true)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>{idx + 1}</span></td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 700, fontSize: '13px' }}>{item.itemName}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600 }}>{fNum(item.quantitySold)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600 }}>{fNum(item.totalRevenue)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT }}>{fNum(item.orderCount)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={[
+                                {
+                                    header: t('#'),
+                                    type: 'number',
+                                    cell: (row, idx) => <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>{idx + 1}</span>
+                                },
+                                {
+                                    header: t('الصنف'),
+                                    type: 'text',
+                                    cell: (row) => <span style={{ fontWeight: 700, fontSize: '13px' }}>{row.itemName}</span>
+                                },
+                                {
+                                    header: t('الكمية المباعة'),
+                                    type: 'number',
+                                    cell: (row) => fNum(row.quantitySold)
+                                },
+                                {
+                                    header: t('الإيراد'),
+                                    type: 'number',
+                                    cell: (row) => fNum(row.totalRevenue)
+                                },
+                                {
+                                    header: t('عدد الطلبات'),
+                                    type: 'number',
+                                    cell: (row) => fNum(row.orderCount)
+                                }
+                            ]}
+                            data={data.topItems}
+                            emptyIcon={Package}
+                            emptyMessage={t('لا توجد أصناف مباعة في هذه الفترة')}
+                        />
 
                         {/* Hourly Distribution */}
                         {data.hourlyDistribution.length > 0 && (
@@ -197,37 +209,49 @@ export default function RestaurantReportsPage() {
                         {data.recentShifts.length > 0 && (
                             <>
                                 <SectionTitle icon={Users} label={t('آخر الورديات')} />
-                                <div style={TABLE_STYLE.container}>
-                                    <table style={TABLE_STYLE.table}>
-                                        <thead>
-                                            <tr style={TABLE_STYLE.thead}>
-                                                {[t('الوردية'), t('الحالة'), t('المبيعات'), t('الطلبات'), t('الفرق')].map((h, i) => (
-                                                    <th key={h} style={TABLE_STYLE.th(i === 0, i > 1)}>{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.recentShifts.map((s: any, idx: number) => (
-                                                <tr key={s.id} style={TABLE_STYLE.row(idx === data.recentShifts.length - 1)}>
-                                                    <td style={TABLE_STYLE.td(true)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{s.shiftNumber}</span></td>
-                                                    <td style={TABLE_STYLE.td(false)}>
-                                                        <span style={{
-                                                            padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
-                                                            background: s.status === 'open' ? 'rgba(16,185,129,0.1)' : 'rgba(107,114,128,0.1)',
-                                                            color: s.status === 'open' ? '#10b981' : '#6b7280',
-                                                            border: `1px solid ${s.status === 'open' ? '#10b98140' : '#6b728040'}`
-                                                        }}>{s.status === 'open' ? t('مفتوحة') : t('مغلقة')}</span>
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600 }}>{fNum(s.totalSales)}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT }}>{s.totalOrders}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 700, color: (s.difference ?? 0) >= 0 ? '#10b981' : '#ef4444' }}>
-                                                        {s.difference != null ? ((s.difference >= 0 ? '+' : '') + fNum(s.difference)) : '—'}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <DataTable
+                                    columns={[
+                                        {
+                                            header: t('الوردية'),
+                                            type: 'text',
+                                            cell: (row) => <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{row.shiftNumber}</span>
+                                        },
+                                        {
+                                            header: t('الحالة'),
+                                            type: 'text',
+                                            cell: (row) => (
+                                                <span style={{
+                                                    padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
+                                                    background: row.status === 'open' ? 'rgba(16,185,129,0.1)' : 'rgba(107,114,128,0.1)',
+                                                    color: row.status === 'open' ? '#10b981' : '#6b7280',
+                                                    border: `1px solid ${row.status === 'open' ? '#10b98140' : '#6b728040'}`
+                                                }}>{row.status === 'open' ? t('مفتوحة') : t('مغلقة')}</span>
+                                            )
+                                        },
+                                        {
+                                            header: t('المبيعات'),
+                                            type: 'number',
+                                            cell: (row) => fNum(row.totalSales)
+                                        },
+                                        {
+                                            header: t('الطلبات'),
+                                            type: 'number',
+                                            cell: (row) => row.totalOrders
+                                        },
+                                        {
+                                            header: t('الفرق'),
+                                            type: 'number',
+                                            cell: (row) => (
+                                                <span style={{ fontWeight: 700, color: (row.difference ?? 0) >= 0 ? '#10b981' : '#ef4444' }}>
+                                                    {row.difference != null ? ((row.difference >= 0 ? '+' : '') + fNum(row.difference)) : '—'}
+                                                </span>
+                                            )
+                                        }
+                                    ]}
+                                    data={data.recentShifts}
+                                    emptyIcon={Users}
+                                    emptyMessage={t('لا توجد ورديات مسجلة حالياً')}
+                                />
                             </>
                         )}
                     </>

@@ -5,6 +5,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import Currency from '@/components/Currency';
+import DataTable from '@/components/DataTable';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
 import { Clock, Plus, Loader2, X, Check, AlertCircle, RefreshCw, TrendingUp, Package, DollarSign, Printer } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -154,57 +155,86 @@ export default function ShiftsPage() {
                     </div>
                 )}
 
-                {/* الجدول */}
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /></div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead style={TABLE_STYLE.thead}>
-                                <tr>{['#', 'الكاشير', 'وقت الفتح', 'وقت الإغلاق', 'عهدة الفتح', 'مبيعات', 'طلبات', 'الفرق', 'الحالة'].map(h => (
-                                    <th key={h} style={TABLE_STYLE.th(false)}>{h}</th>
-                                ))}</tr>
-                            </thead>
-                            <tbody>
-                                {shifts.length === 0 ? (
-                                    <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: C.textMuted, fontFamily: CAIRO }}>
-                                        <Clock size={36} style={{ opacity: 0.2, display: 'block', margin: '0 auto 10px' }} />لا توجد ورديات بعد
-                                    </td></tr>
-                                ) : shifts.map((shift, i) => {
-                                    const st = STATUS_COLOR[shift.status] ?? STATUS_COLOR.closed;
-                                    const diff = shift.difference;
-                                    return (
-                                        <tr key={shift.id} style={TABLE_STYLE.row(i === shifts.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(false)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{arNum(shift.shiftNumber)}</span></td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>{shift.user?.name || shift.user?.username || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{formatDate(shift.openedAt)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{shift.closedAt ? formatDate(shift.closedAt) : '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}><Currency amount={shift.openingBalance} /></td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}><Currency amount={shift.totalSales} /></td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{arNum(shift.totalOrders)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: diff == null ? C.textMuted : diff >= 0 ? '#10b981' : '#ef4444' }}>
-                                                {diff == null ? '—' : (
-                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '2px', color: 'inherit' }}>
-                                                        {diff > 0 && '+'}
-                                                        <Currency amount={diff} />
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>{st.label}</span>
-                                                    <button onClick={() => printShiftReport(shift)} style={{ background: 'transparent', border: 'none', color: C.textMuted, cursor: 'pointer', padding: '4px' }} title="طباعة تقرير الوردية">
-                                                        <Printer size={15} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    columns={[
+                        {
+                            header: '#',
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>
+                                    #{arNum(row.shiftNumber)}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('الكاشير'),
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontSize: '12px', color: C.textSecondary }}>
+                                    {row.user?.name || row.user?.username || '—'}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('وقت الفتح'),
+                            type: 'number',
+                            cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{formatDate(row.openedAt)}</span>
+                        },
+                        {
+                            header: t('وقت الإغلاق'),
+                            type: 'number',
+                            cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{row.closedAt ? formatDate(row.closedAt) : '—'}</span>
+                        },
+                        {
+                            header: t('عهدة الفتح'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT }}><Currency amount={row.openingBalance} /></span>
+                        },
+                        {
+                            header: t('مبيعات'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT }}><Currency amount={row.totalSales} /></span>
+                        },
+                        {
+                            header: t('طلبات'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT }}>{arNum(row.totalOrders)}</span>
+                        },
+                        {
+                            header: t('الفرق'),
+                            type: 'number',
+                            cell: (row) => {
+                                const diff = row.difference;
+                                return diff == null ? '—' : (
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: diff >= 0 ? '#10b981' : '#ef4444' }}>
+                                        {diff > 0 && '+'}
+                                        <Currency amount={diff} />
+                                    </span>
+                                );
+                            }
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => {
+                                const st = STATUS_COLOR[row.status] ?? STATUS_COLOR.closed;
+                                return (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                                        <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>{st.label}</span>
+                                        <button onClick={() => printShiftReport(row)} style={{ background: 'transparent', border: 'none', color: C.textMuted, cursor: 'pointer', padding: '4px' }} title={t("طباعة تقرير الوردية")}>
+                                            <Printer size={15} />
+                                        </button>
+                                    </div>
+                                );
+                            }
+                        }
+                    ]}
+                    data={shifts}
+                    emptyIcon={Clock}
+                    emptyMessage={t('لا توجد ورديات بعد')}
+                    isLoading={loading}
+                    loadingSkeleton={<div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /></div>}
+                />
             </div>
 
             {/* Modal فتح وردية */}
