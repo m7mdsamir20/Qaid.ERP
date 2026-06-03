@@ -6,10 +6,21 @@ import { formatNumber } from '@/lib/currency';
 // Regular expression to match currency symbols and common units (including percentage)
 const currencyRegex = /(SAR|EGP|AED|KWD|QAR|BHD|OMR|JOD|LYD|IQD|USD|EUR|GBP|TRY|SDG|\$|€|£|¥|₺|ر\.س|ج\.م|د\.إ|د\.ك|ر\.ق|د\.ب|ر\.ع|د\.أ|د\.ل|د\.ع|ج\.س|ريال|جنيه|%)/gi;
 
+// List of typical keywords indicating empty results / no data
+const emptyMessages = [
+    'لا توجد',
+    'لا يوجد',
+    'لم يتم العثور',
+    'لا نتائج',
+    'empty',
+    'no data',
+    'no results',
+    'لم يسجل',
+    'ليست هناك'
+];
+
 function isPhone(text: string): boolean {
     const clean = text.trim();
-    // Phone number criteria:
-    // Starts with + or 0, contains only digits, spaces, hyphens, and has 9 to 15 digits
     const digitsOnly = clean.replace(/\D/g, '');
     const hasInvalidChars = /[a-zA-Z\u0600-\u06FF.]/.test(clean); // no letters or dots
     const phonePattern = /^(\+?)[0-9\s-]{9,18}$/;
@@ -23,7 +34,6 @@ function isPhone(text: string): boolean {
 
 function isDate(text: string): boolean {
     const clean = text.trim();
-    // Match YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, and short year dates separated by -, / or .
     const dateRegex = /^(\d{4}[-/.]\d{1,2}[-/.]\d{1,2})|(\d{1,2}[-/.]\d{1,2}[-/.]\d{4})|(\d{1,2}[-/.]\d{1,2}[-/.]\d{2})$/;
     return dateRegex.test(clean);
 }
@@ -54,6 +64,53 @@ function applyAlignment(node: Node, type: 'center' | 'start') {
             target.style.setProperty('text-align', newAlign, 'important');
         }
     }
+}
+
+function checkAndFormatEmptyState(el: HTMLElement) {
+    const tag = el.tagName.toLowerCase();
+    if (tag !== 'div' && tag !== 'p' && tag !== 'td') return;
+    
+    // If already formatted, skip
+    if (el.querySelector('.lucide-inbox')) return;
+    
+    // For div or p, only process if they are leaf elements (no element children)
+    if ((tag === 'div' || tag === 'p') && el.children.length > 0) return;
+    
+    // For td, check colSpan (usually indicates an empty row message)
+    if (tag === 'td') {
+        const td = el as HTMLTableCellElement;
+        if (td.colSpan <= 1) return;
+    }
+    
+    const text = el.textContent || "";
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    
+    // Check if the text matches any of our empty messages
+    const isMatch = emptyMessages.some(msg => trimmed.toLowerCase().includes(msg));
+    if (!isMatch) return;
+    
+    // Ensure we don't format long instructional paragraphs
+    if (trimmed.length > 80) return;
+    
+    el.style.setProperty('text-align', 'center', 'important');
+    if (tag === 'td') {
+        el.style.setProperty('padding', '60px 20px', 'important');
+    } else {
+        el.style.setProperty('padding', '40px 20px', 'important');
+    }
+    
+    el.innerHTML = `
+        <div class="empty-state-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; width: 100%;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(148,163,184,0.5)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-inbox" style="display: block; margin: 0 auto;">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+            </svg>
+            <span style="color: var(--c-text-secondary, #94a3b8); font-size: 13.5px; font-weight: 500; font-family: 'Cairo', sans-serif;">
+                ${trimmed}
+            </span>
+        </div>
+    `;
 }
 
 function classifyAndProcessTextNode(node: Node) {
@@ -109,6 +166,9 @@ function traverseAndProcess(node: Node) {
         const el = node as HTMLElement;
         const tag = el.tagName.toLowerCase();
         
+        // Check for empty state elements (div, p, td)
+        checkAndFormatEmptyState(el);
+        
         // Exclude inputs, textareas, selects, and non-display tags
         if (['script', 'style', 'textarea', 'input', 'select', 'option', 'code', 'pre', 'noscript', 'iframe'].includes(tag)) {
             return;
@@ -140,6 +200,10 @@ export default function GlobalAutoAligner() {
                     });
                 } else if (mutation.type === 'characterData') {
                     classifyAndProcessTextNode(mutation.target);
+                    // Also check parent for empty state if updated
+                    if (mutation.target.parentElement) {
+                        checkAndFormatEmptyState(mutation.target.parentElement);
+                    }
                 }
             }
             
