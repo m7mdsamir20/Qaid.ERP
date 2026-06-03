@@ -17,6 +17,7 @@ export default function EditProjectPage() {
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const params = useParams();
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
     const id = params.id as string;
 
     const [loading, setLoading] = useState(true);
@@ -199,9 +200,9 @@ export default function EditProjectPage() {
                             {/* Section 2: Clients & Location */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
                                 <div>
-                                    <label style={LS}>{t('العميل / المالك')}</label>
+                                    <label style={LS}>{isContracting ? t('المالك / صاحب المشروع') : t('العميل / المالك')}</label>
                                     <select style={{ ...IS, cursor: 'pointer' }} value={form.customerId} onChange={e => setForm({ ...form, customerId: e.target.value })} onFocus={focusIn} onBlur={focusOut}>
-                                        <option value="">{t('اختر العميل...')}</option>
+                                        <option value="">{isContracting ? t('اختر المالك...') : t('اختر العميل...')}</option>
                                         {customers.map((c: any) => (
                                             <option key={c.id} value={c.id}>{c.name}</option>
                                         ))}

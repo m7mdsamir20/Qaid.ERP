@@ -15,6 +15,7 @@ export default function NewProjectPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
 
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');
@@ -163,9 +164,9 @@ export default function NewProjectPage() {
                             {/* Section 2: Clients & Location */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
                                 <div>
-                                    <label style={LS}>{t('العميل / المالك')}</label>
+                                    <label style={LS}>{isContracting ? t('المالك / صاحب المشروع') : t('العميل / المالك')}</label>
                                     <select style={{ ...IS, cursor: 'pointer' }} value={form.customerId} onChange={e => setForm({ ...form, customerId: e.target.value })} onFocus={focusIn} onBlur={focusOut}>
-                                        <option value="">{t('اختر العميل...')}</option>
+                                        <option value="">{isContracting ? t('اختر المالك...') : t('اختر العميل...')}</option>
                                         {customers.map((c: any) => (
                                             <option key={c.id} value={c.id}>{c.name}</option>
                                         ))}
@@ -206,7 +207,7 @@ export default function NewProjectPage() {
                                 </h3>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
                                     <div>
-                                        <label style={LS}>{t('قيمة عقد المشروع (سعر البيع)')} <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={LS}>{isContracting ? t('قيمة عقد المشروع') : t('قيمة عقد المشروع (سعر البيع)')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <input required type="number" step="any" placeholder="0.00" value={form.contractValue} onChange={e => setForm({ ...form, contractValue: e.target.value })} style={{ ...IS, paddingInlineEnd: '45px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textSecondary }}>{cSymbol}</span>

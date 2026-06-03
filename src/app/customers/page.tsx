@@ -418,7 +418,7 @@ export default function CustomersPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label style={LS}>{form.type === 'company' ? (isContracting ? t('اسم الشركة / المؤسسة') : t('اسم الشركة')) : (isContracting ? t('اسم العميل / المالك') : t('اسم العميل'))} <span style={{ color: C.danger }}>*</span></label>
+                                            <label style={LS}>{form.type === 'company' ? (isContracting ? t('اسم الشركة / المؤسسة') : t('اسم الشركة')) : (isContracting ? t('اسم صاحب المشروع / المالك') : t('اسم العميل'))} <span style={{ color: C.danger }}>*</span></label>
                                             <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? (isContracting ? t('مثال: شركة المقاولات الحديثة') : t('مثال: شركة النور للتجارة')) : t('مثال: أحمد محمد')} autoFocus />
                                         </div>
                                     </div>

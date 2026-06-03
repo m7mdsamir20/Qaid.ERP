@@ -42,6 +42,7 @@ export default function ProjectsPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { fMoney } = useCurrency();
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
 
     const [projects, setProjects] = useState<Project[]>([]);
     const [stats, setStats] = useState<any>(null);
@@ -185,7 +186,7 @@ export default function ProjectsPage() {
                         <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
-                            placeholder={t("ابحث برقم المشروع، الاسم، العميل، الموقع...")}
+                            placeholder={isContracting ? t("ابحث برقم المشروع، الاسم، صاحب المشروع، الموقع...") : t("ابحث برقم المشروع، الاسم، العميل، الموقع...")}
                             style={{ ...IS, paddingInlineStart: '40px', height: '40px', fontSize: '13px', background: C.card, borderRadius: '12px' }}
                             onFocus={focusIn}
                             onBlur={focusOut}
@@ -240,7 +241,7 @@ export default function ProjectsPage() {
                             )
                         },
                         {
-                            header: t('العميل'),
+                            header: isContracting ? t('المالك / صاحب المشروع') : t('العميل'),
                             type: 'text',
                             cell: (row) => row.customer?.name || '—'
                         },

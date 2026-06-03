@@ -37,6 +37,7 @@ function NewSalePageInner() {
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isContracting = businessType === 'CONTRACTING';
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
@@ -602,8 +603,8 @@ function NewSalePageInner() {
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('اسم العميل')}</label>
-                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>+ {t('عميل جديد')}</button>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{isContracting ? t('صاحب المشروع') : t('اسم العميل')}</label>
+                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>+ {isContracting ? t('صاحب مشروع جديد') : t('عميل جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
@@ -682,7 +683,7 @@ function NewSalePageInner() {
                                 marginBottom: '20px'
                             }}>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{isServices ? t('اسم الخدمة') : isContracting ? t('المادة / بند العمل') : t('اسم الصنف')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
                                             ref={itemSelectRef}
@@ -693,7 +694,7 @@ function NewSalePageInner() {
                                                 setTimeout(() => qtyRef.current?.focus(), 50);
                                             }}
                                             icon={Search}
-                                            placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")}
+                                            placeholder={isServices ? t("اختر الخدمة...") : isContracting ? t("اختر المادة/البند...") : t("اختر الصنف...")}
                                             onCreate={isServices ? (val) => {
                                                 // Quick create service logic
                                                 fetch('/api/items', {
@@ -1164,7 +1165,7 @@ function NewSalePageInner() {
             <AppModal
                 show={showAddCust}
                 onClose={() => setShowAddCust(false)}
-                title={t('إضافة عميل جديد')}
+                title={isContracting ? t('إضافة صاحب مشروع جديد') : t('إضافة عميل جديد')}
                 icon={UserPlus}
                 maxWidth="440px"
             >
@@ -1197,7 +1198,7 @@ function NewSalePageInner() {
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
                             <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
-                            <input name="pName" required placeholder={t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            <input name="pName" required placeholder={isContracting ? t('اسم صاحب المشروع...') : t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
 
