@@ -256,22 +256,22 @@ export default function InstallmentDetailPage() {
                                                     onMouseEnter={e => inst.status !== 'cancelled' && (e.currentTarget.style.background = C.hover)}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={{ padding: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {inst.installmentNo}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
-                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {fMoneyJSX(inst.amount)}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {fMoneyJSX(inst.paidAmount || 0)}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
-                                                    <td style={{ padding: '16px' }}>
+                                                    <td style={{ padding: '16px', textAlign: 'center' }}>
                                                         <div style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px', 
                                                             padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,

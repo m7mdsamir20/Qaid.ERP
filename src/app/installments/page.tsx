@@ -344,9 +344,9 @@ export default function InstallmentsPage() {
                             header: t('الخطة'),
                             type: 'text',
                             cell: (row, idx) => (
-                                <div style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>
+                                <span style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px', display: 'inline-block', direction: 'ltr' }}>
                                     PLAN-{String(row.planNumber || idx + 1).padStart(4, '0')}
-                                </div>
+                                </span>
                             )
                         },
                         {
@@ -361,8 +361,12 @@ export default function InstallmentsPage() {
                         },
                         {
                             header: t('الهاتف'),
-                            type: 'number',
-                            cell: (row) => <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>{row.customer?.phone || '—'}</span>
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, display: 'inline-block', direction: 'ltr' }}>
+                                    {row.customer?.phone || '—'}
+                                </span>
+                            )
                         },
                         {
                             header: t('العميل'),

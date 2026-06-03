@@ -131,9 +131,9 @@ export default function DuePage() {
                                 header: t('العميل المستفيد'),
                                 type: 'text',
                                 cell: (row) => (
-                                    <div>
+                                    <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.customer?.name}</div>
-                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{row.customer?.phone}</div>
+                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT, direction: 'ltr', textAlign: 'right' }}>{row.customer?.phone}</div>
                                     </div>
                                 )
                             },
@@ -141,7 +141,7 @@ export default function DuePage() {
                                 header: t('رقم الخطة'),
                                 type: 'text',
                                 cell: (row) => (
-                                    <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}</span>
+                                    <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT, display: 'inline-block', direction: 'ltr' }}>PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}</span>
                                 )
                             },
                             {

@@ -132,11 +132,11 @@ export default function OverduePage() {
                                 header: t('العميل المتأخر'),
                                 type: 'text',
                                 cell: (row) => (
-                                    <div>
+                                    <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                             {row.plan?.customer?.name}
                                         </div>
-                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>
+                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT, direction: 'ltr', textAlign: 'right' }}>
                                             {row.plan?.customer?.phone}
                                         </div>
                                     </div>
@@ -146,9 +146,9 @@ export default function OverduePage() {
                                 header: t('رقم الخطة'),
                                 type: 'text',
                                 cell: (row) => (
-                                    <div style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
+                                    <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT, display: 'inline-block', direction: 'ltr' }}>
                                         #{row.plan?.planNumber}
-                                    </div>
+                                    </span>
                                 )
                             },
                             {
