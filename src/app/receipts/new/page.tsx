@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -23,6 +24,8 @@ export default function NewReceiptPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
+    const { data: session } = useSession();
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [partners, setPartners] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -196,7 +199,7 @@ export default function NewReceiptPage() {
                                         />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>المستفيد (عميل/مورد) <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{isContracting ? t('المستفيد (صاحب المشروع/مورد)') : t('المستفيد (عميل/مورد)')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
                                                 value={form.customerId}
@@ -206,11 +209,11 @@ export default function NewReceiptPage() {
                                                     clearError('customerId');
                                                 }}
                                                 icon={Search}
-                                                placeholder="بحث باسم العميل أو المورد..."
+                                                placeholder={isContracting ? t("بحث باسم صاحب المشروع أو المورد...") : t("بحث باسم العميل أو المورد...")}
                                                 options={partners.map(p => ({
                                                     value: p.id,
                                                     label: p.name,
-                                                    sub: p.ptype === 'supplier' ? 'مورد' : 'عميل'
+                                                    sub: p.ptype === 'supplier' ? t('مورد') : isContracting ? t('صاحب المشروع') : t('عميل')
                                                 }))}
                                             />
                                             <InlineError field="customerId" />

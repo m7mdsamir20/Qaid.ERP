@@ -715,7 +715,7 @@ export default function ItemsPage() {
 
                                 {/* Row 2: Sell Price and Variable Price Toggle (only for products) */}
                                 {form.type === 'product' && (
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: companyBusinessType === 'CONTRACTING' ? '1fr' : '1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
                                         <div>
                                             <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية (سعر البيع للعميل)') : t('سعر البيع')}</label>
                                             <div style={{ position: 'relative', opacity: form.isPriceVariable ? 0.5 : 1, transition: '0.2s' }}>
@@ -723,24 +723,26 @@ export default function ItemsPage() {
                                                 <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', height: '38px', marginTop: '18px' }}>
-                                            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
-                                                <div style={{ position: 'relative', width: '22px', height: '22px' }}>
-                                                    <input type="checkbox" checked={form.isPriceVariable} onChange={e => {
-                                                        const isVar = e.target.checked;
-                                                        setForm({ ...form, isPriceVariable: isVar, sellPrice: isVar ? 0 : form.sellPrice });
-                                                    }} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
-                                                    <div style={{ position: 'absolute', inset: 0, background: form.isPriceVariable ? C.primary : 'transparent', border: `2px solid ${form.isPriceVariable ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                                                        {form.isPriceVariable && <Check size={14} color="#fff" strokeWidth={3} />}
+                                        {companyBusinessType !== 'CONTRACTING' && (
+                                            <div style={{ display: 'flex', alignItems: 'center', height: '38px', marginTop: '18px' }}>
+                                                <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
+                                                    <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                                        <input type="checkbox" checked={form.isPriceVariable} onChange={e => {
+                                                            const isVar = e.target.checked;
+                                                            setForm({ ...form, isPriceVariable: isVar, sellPrice: isVar ? 0 : form.sellPrice });
+                                                        }} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
+                                                        <div style={{ position: 'absolute', inset: 0, background: form.isPriceVariable ? C.primary : 'transparent', border: `2px solid ${form.isPriceVariable ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                                            {form.isPriceVariable && <Check size={14} color="#fff" strokeWidth={3} />}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                {companyBusinessType === 'CONTRACTING' ? t('سعر متغير في الفواتير') : t('سعر متغير (سعر مفتوح في الكاشير)')}
-                                            </label>
-                                        </div>
+                                                    {t('سعر متغير (سعر مفتوح في الكاشير)')}
+                                                </label>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 
-                                {form.type === 'product' && (
+                                {form.type === 'product' && companyBusinessType !== 'CONTRACTING' && (
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
                                         <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span><Boxes size={14} style={{ marginInlineEnd: '6px' }}/> {t('أنواع ومقاسات الصنف (اختياري)')}</span>

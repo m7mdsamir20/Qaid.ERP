@@ -29,6 +29,7 @@ export default function ReceiptVouchersPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [vouchers, setVouchers] = useState<Voucher[]>([]);
@@ -90,7 +91,7 @@ export default function ReceiptVouchersPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={t("ابحث برقم السند أو اسم العميل...")}
+                            placeholder={isContracting ? t("ابحث برقم السند أو اسم صاحب المشروع...") : t("ابحث برقم السند أو اسم العميل...")}
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input}
@@ -133,7 +134,7 @@ export default function ReceiptVouchersPage() {
                     columns={[
                         { header: t('رقم السند'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RCP-{String(row.voucherNumber).padStart(5, '0')}</span> },
                         { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
-                        { header: t('العميل'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{row.customer?.name || '—'}</span> },
+                        { header: isContracting ? t('المالك / صاحب المشروع') : t('العميل'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{row.customer?.name || '—'}</span> },
                         { header: t('طريقة الدفع'), type: 'status', cell: (row) => (
                             <div style={{
                                 display: 'inline-flex', alignItems: 'center', gap: '5px',

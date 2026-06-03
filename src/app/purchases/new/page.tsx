@@ -46,6 +46,7 @@ export default function NewPurchasePage() {
     const [items, setItems] = useState<Item[]>([]);
     const [nextNum, setNextNum] = useState(1);
     const [company, setCompany] = useState<CompanyInfo>({});
+    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING' || company?.businessType?.toUpperCase() === 'CONTRACTING';
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -194,7 +195,7 @@ export default function NewPurchasePage() {
 
         if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
         if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد أولاً');
-        if (!entryItemId) errors.entryItemId = t('يرجى اختيار الصنف');
+        if (!entryItemId) errors.entryItemId = isContracting ? t('يرجى اختيار البند / المادة') : t('يرجى اختيار الصنف');
         if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = t('الكمية؟');
         if (entryPrice === '') errors.entryPrice = t('السعر؟');
 
@@ -496,11 +497,11 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#256af4' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
+                            <div style={{ ...STitleStyle, color: '#256af4' }}><Package size={12} /> {isContracting ? t('اضافة المواد والبنود') : t('اضافة الاصناف')}</div>
                             <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 110px 110px 44px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{isContracting ? t('بند / مادة') : t('الصنف')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId}
@@ -510,7 +511,7 @@ export default function NewPurchasePage() {
                                                 setTimeout(() => qtyRef.current?.focus(), 50);
                                             }}
                                             onCreate={handleCreateItem}
-                                            icon={Search} placeholder={t("اختر الصنف...")} 
+                                            icon={Search} placeholder={isContracting ? t("اختر البند/المادة...") : t("اختر الصنف...")} 
                                             options={items.map(i => {
                                                 const s = i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0;
                                                 return {
@@ -569,7 +570,7 @@ export default function NewPurchasePage() {
                                 <table className="table">
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => (
+                                            {[isContracting ? t('المادة / بند العمل') : t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     textAlign: i === 0 ? 'start' : 'center', 
                                                     padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO 
@@ -601,7 +602,7 @@ export default function NewPurchasePage() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
+                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {isContracting ? t('المواد/البنود') : t('الأصناف')}</td>
                                                 <td style={{ padding: '12px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
                                                 <td />
                                             </tr>
@@ -643,7 +644,7 @@ export default function NewPurchasePage() {
                             <div style={{ ...STitleStyle, color: '#256af4' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: C.textSecondary }}>{isContracting ? t('إجمالي المواد/البنود') : t('إجمالي الأصناف')}</span>
                                     <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
                                 </div>
                                 <div style={{ background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 12px' }}>
