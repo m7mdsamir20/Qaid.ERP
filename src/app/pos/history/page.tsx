@@ -4,6 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
@@ -444,84 +445,83 @@ export default function OrdersHistoryPage() {
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead style={TABLE_STYLE.thead}>
-                                <tr>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>فاتورة</th>
-                                    <th style={TABLE_STYLE.th(false)}>العملاء</th>
-                                    <th style={TABLE_STYLE.th(false)}>نوع الخدمة</th>
-                                    <th style={TABLE_STYLE.th(false)}>الكاشير</th>
-                                    <th style={TABLE_STYLE.th(false)}>المجموع</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المدفوعات</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>حالة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredOrders.length === 0 && (
-                                    <tr>
-                                        <td colSpan={7} style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
-                                            <History size={40} style={{ opacity: 0.3, display: 'block', margin: '0 auto 12px' }} />
-                                            {t("لا توجد طلبات")}
-                                        </td>
-                                    </tr>
-                                )}
-                                {filteredOrders.map((order, i) => {
-                                    const st = STATUS_INFO[order.status] ?? STATUS_INFO.pending;
-                                    const isPaid = order.paidAmount >= order.total && order.total > 0;
-
-                                    return (
-                                        <tr key={order.id}
-                                            onClick={() => setSelectedOrder(order)}
-                                            style={{ ...TABLE_STYLE.row(i === filteredOrders.length - 1), cursor: 'pointer' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                        >
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: C.primary, fontSize: '14px' }}>
-                                                        {`#${order.orderNumber.toString().padStart(4, '0')}`}
-                                                    </span>
-                                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{formatDate(order.createdAt)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>
-                                                {order.customer?.name || 'عميل عام'}
-                                                {order.customer?.phone && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, display: 'inline-block', marginInlineStart: '6px' }}>{order.customer.phone}</span>}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                    {order.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : order.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : order.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />}
-                                                    {TYPE_LABELS[order.type] ?? order.type}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>
-                                                {order.shift?.user?.name || '-'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, fontSize: '14px', color: C.textPrimary }}>
-                                                {fMoneyJSX(order.total)}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
-                                                    {isPaid ? 'مدفوع' : 'غير مدفوع'}
-                                                    {isPaid ? <CheckCircle2 size={16} color="#10b981" /> : <XCircle size={16} color="#ef4444" />}
-                                                </span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: `1px solid ${st.color}50`, background: C.card, borderRadius: '20px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>
-                                                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: st.color }}></span> {st.label}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <DataTable
+                    columns={[
+                        {
+                            header: t('فاتورة'),
+                            type: 'text',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: C.primary, fontSize: '14px' }}>
+                                        {`#${row.orderNumber.toString().padStart(4, '0')}`}
+                                    </span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{formatDate(row.createdAt)}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('العملاء'),
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>
+                                    {row.customer?.name || t('عميل عام')}
+                                    {row.customer?.phone && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, display: 'inline-block', marginInlineStart: '6px' }}>{row.customer.phone}</span>}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('نوع الخدمة'),
+                            type: 'text',
+                            cell: (row) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    {row.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : row.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : row.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />}
+                                    {TYPE_LABELS[row.type] ?? row.type}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الكاشير'),
+                            type: 'text',
+                            cell: (row) => row.shift?.user?.name || '-'
+                        },
+                        {
+                            header: t('المجموع'),
+                            type: 'number',
+                            cell: (row) => <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '14px', color: C.textPrimary }}>{fMoneyJSX(row.total)}</span>
+                        },
+                        {
+                            header: t('المدفوعات'),
+                            type: 'number',
+                            cell: (row) => {
+                                const isPaid = row.paidAmount >= row.total && row.total > 0;
+                                return (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
+                                        {isPaid ? t('مدفوع') : t('غير مدفوع')}
+                                        {isPaid ? <CheckCircle2 size={16} color="#10b981" /> : <XCircle size={16} color="#ef4444" />}
+                                    </span>
+                                );
+                            }
+                        },
+                        {
+                            header: t('حالة'),
+                            type: 'number',
+                            cell: (row) => {
+                                const st = STATUS_INFO[row.status] ?? STATUS_INFO.pending;
+                                return (
+                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: `1px solid ${st.color}50`, background: C.card, borderRadius: '20px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>
+                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: st.color }}></span> {st.label}
+                                    </span>
+                                );
+                            }
+                        }
+                    ]}
+                    data={filteredOrders}
+                    emptyIcon={History}
+                    emptyMessage={t('لا توجد طلبات')}
+                    isLoading={loading}
+                    loadingSkeleton={<div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>}
+                    onRowClick={(row) => setSelectedOrder(row)}
+                />
 
                 {/* Modal for Order Details */}
                 <AppModal

@@ -10,6 +10,8 @@ import PageHeader from '@/components/PageHeader';
 import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE, SC } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import Currency from '@/components/Currency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 /* ── Types ── */
 interface FinancialYear { id: string; name: string; isOpen: boolean; startDate: string; endDate: string; }
@@ -469,39 +471,41 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
 }
 
 function DetailTable({ title, accounts, color, t, currencySign }: any) {
+    const columns: TableColumn[] = [
+        {
+            header: t('الحساب'),
+            cell: (row: any) => (
+                <div style={{ textAlign: 'start' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.name}</div>
+                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
+                </div>
+            )
+        },
+        {
+            header: t('الرصيد'),
+            type: 'number' as const,
+            cell: (row: any) => (
+                <Currency 
+                    amount={row.balance}
+                    style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
+                />
+            )
+        }
+    ];
+
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
             <div style={{ padding: '16px 20px',  background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color }}>{title}</span>
                 <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textSecondary, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
             </div>
-            <div style={{ maxHeight: '420px', overflowY: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <tbody>
-                        {accounts.length > 0 ? accounts.map((acc: any, i: number) => (
-                            <tr key={i} style={{ borderBottom: i < accounts.length - 1 ? `1px solid ${C.border}` : 'none', transition: '0.2s' }}
-                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                            >
-                                <td style={{ padding: '14px 20px' }}>
-                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>{acc.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'center' }}>{acc.code}</div>
-                                </td>
-                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
-                                    <Currency 
-                                        amount={acc.balance}
-                                        style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
-                                    />
-                                </td>
-                            </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan={2} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد أرصدة حالياً')}</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <DataTable
+                columns={columns}
+                data={accounts}
+                emptyIcon={Info}
+                emptyMessage={t('لا توجد أرصدة حالياً')}
+            />
         </div>
     );
 }
+

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, CreditCard, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { DataTable } from '@/components/DataTable';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
@@ -225,86 +226,44 @@ export default function PurchasePaymentsPage() {
                     )}
                 </div>
 
-                {/* ── Table Section ── */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
+                <DataTable
+                    columns={[
+                        { header: 'رقم السند', type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO }}>PMT-{String(row.voucherNumber).padStart(5, '0')}</span> },
+                        { header: 'التاريخ', type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: 'المورد', type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.supplier?.name || '—'}</span> },
+                        { header: 'طريقة الدفع', type: 'status', cell: (row) => (
+                            <div style={{ 
+                                display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                                background: row.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                color: row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
+                                border: `1px solid ${row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
+                            }}>
+                                {row.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                            </div>
+                        )},
+                        { header: 'الخزينة / البنك', type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.treasury?.name || '—'}</span> },
+                        { header: 'البيان', type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.description || '—'}</span>, style: { maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
+                        { header: 'المبلغ', type: 'number', cell: (row) => <span style={{ color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}><Currency amount={row.amount} /></span> },
+                        { header: 'إجراءات', type: 'action', cell: (row) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); printPayVoucher(row, suppliers.find(s => s.id === row.supplier?.id), row.voucherNumber, { paymentType: row.paymentType, date: row.date, description: row.description }); }}
+                                    style={TABLE_STYLE.actionBtn()} title="طباعة"><Printer size={TABLE_STYLE.actionIconSize} />
+                                </button>
+                            </div>
+                        )},
+                    ]}
+                    data={filtered}
+                    emptyIcon={Receipt}
+                    emptyMessage={'لا توجد سندات صرف'}
+                    isLoading={loading}
+                    loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد سندات صرف</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم السند</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>المورد</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>طريقة الدفع</th>
-                                        <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((v, idx) => (
-                                        <tr key={v.id} 
-                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
-                                                PMT-{String(v.voucherNumber).padStart(5, '0')}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
-                                                {new Date(v.date).toLocaleDateString('en-GB')}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
-                                                {v.supplier?.name || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ 
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px', 
-                                                    padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                    background: v.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                                    color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
-                                                    border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
-                                                }}>
-                                                    {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
-                                                {v.treasury?.name || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {v.description || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>
-                                                <Currency amount={v.amount} />
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    <button 
-                                                        onClick={(e) => { e.stopPropagation(); printPayVoucher(v, suppliers.find(s => s.id === v.supplier?.id), v.voucherNumber, { paymentType: v.paymentType, date: v.date, description: v.description }); }}
-                                                        style={{ background: 'transparent', border: 'none', color: "#64748b", cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
-                                                        onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                        onMouseLeave={e => e.currentTarget.style.color = "#64748b"}
-                                                        title="طباعة">
-                                                        <Printer size={16} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                    }
+                />
                 
             </div>
         </DashboardLayout>

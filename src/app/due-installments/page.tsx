@@ -11,6 +11,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BT
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
 
 const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => formatNumber(n);
@@ -124,122 +125,111 @@ export default function DuePage() {
                             </div>
                         </div>
                     </div>
-
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
-                        </div>
-                    ) : (
-                        <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                <table style={TABLE_STYLE.table}>
-                                    <thead>
-                                        <tr style={TABLE_STYLE.thead}>
-                                            {[
-                                                t('العميل المستفيد'), 
-                                                t('رقم الخطة'), 
-                                                t('رقم القسط'), 
-                                                t('تاريخ الاستحقاق'), 
-                                                t('المبلغ المقرر'), 
-                                                t('المتبقي'), 
-                                                t('الحالة'), 
-                                                t('إجراء')
-                                            ].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0, [1, 2, 3, 4, 5, 6, 7].includes(i))}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {installments.map((inst, idx) => {
-                                            const isOverdue = new Date(inst.dueDate) < new Date();
-                                            return (
-                                                <tr key={inst.id}
-                                                    style={TABLE_STYLE.row(idx === installments.length - 1)}
-                                                    onClick={() => router.push(`/installments/${inst.plan?.id}`)}
-                                                    onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                >
-                                                    <td style={TABLE_STYLE.td(true)}>
-                                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{inst.customer?.name}</div>
-                                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {inst.installmentNo}
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {fmt(inst.dueDate, lang)}
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {fMoneyJSX(inst.amount)}
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        {fMoneyJSX(inst.remaining || 0)}
-                                                    </td>
-                                                    <td style={TABLE_STYLE.td(false, true)}>
-                                                        <div style={{
-                                                            display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                            padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
-                                                            background: isOverdue ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)',
-                                                            color: isOverdue ? C.danger : C.warning, border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.22)' : 'rgba(245,158,11,0.22)'}`
-                                                        }}>
-                                                            {isOverdue ? <AlertTriangle size={10} /> : <Clock size={10} />}
-                                                            {isOverdue ? t('متأخر') : t('قادم')}
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }} onClick={e => e.stopPropagation()}>
-                                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                            <button onClick={() => {
-                                                                setCollectTarget(inst);
-                                                                const amt = (inst.remaining || inst.amount || 0).toFixed(2);
-                                                                // Auto-select first cash treasury as default if exists
-                                                                const firstCash = treasuries.find(t => t.type === 'cash');
-                                                                const defTr = firstCash || treasuries[0];
-
-                                                                setCollectForm({
-                                                                    amount: amt,
-                                                                    treasuryId: defTr?.id || '',
-                                                                    selectedType: defTr?.type || 'cash',
-                                                                    notes: ''
-                                                                } as any);
-                                                            }}
-                                                                style={{
-                                                                    height: '32px', padding: '0 16px', borderRadius: '10px', border: 'none',
-                                                                    background: isOverdue ? C.danger : C.primary, color: 'white',
-                                                                    fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
-                                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
-                                                                }}
-                                                                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
-                                                                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-                                                            >
-                                                                {t('تحصيل')}
-                                                            </button>
-                                                            <button onClick={() => router.push(`/installments/${inst.plan?.id}`)}
-                                                                style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
-                                                                onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                                onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                            >
-                                                                <Eye size={15} />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                                {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
-                                        <Clock size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                                        <p style={{ fontSize: '15px' }}>{t('لا توجد أقساط مستحقة للفترة المختارة')}</p>
+                    <DataTable
+                        columns={[
+                            {
+                                header: t('العميل المستفيد'),
+                                type: 'text',
+                                cell: (row) => (
+                                    <div>
+                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.customer?.name}</div>
+                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{row.customer?.phone}</div>
                                     </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
+                                )
+                            },
+                            {
+                                header: t('رقم الخطة'),
+                                type: 'text',
+                                cell: (row) => (
+                                    <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}</span>
+                                )
+                            },
+                            {
+                                header: t('رقم القسط'),
+                                type: 'number',
+                                cell: (row) => row.installmentNo
+                            },
+                            {
+                                header: t('تاريخ الاستحقاق'),
+                                type: 'number',
+                                cell: (row) => fmt(row.dueDate, lang)
+                            },
+                            {
+                                header: t('المبلغ المقرر'),
+                                type: 'number',
+                                cell: (row) => fMoneyJSX(row.amount)
+                            },
+                            {
+                                header: t('المتبقي'),
+                                type: 'number',
+                                cell: (row) => fMoneyJSX(row.remaining || 0)
+                            },
+                            {
+                                header: t('الحالة'),
+                                type: 'number',
+                                cell: (row) => {
+                                    const isOverdue = new Date(row.dueDate) < new Date();
+                                    return (
+                                        <div style={{
+                                            display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                            padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
+                                            background: isOverdue ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)',
+                                            color: isOverdue ? C.danger : C.warning, border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.22)' : 'rgba(245,158,11,0.22)'}`
+                                        }}>
+                                            {isOverdue ? <AlertTriangle size={10} /> : <Clock size={10} />}
+                                            {isOverdue ? t('متأخر') : t('قادم')}
+                                        </div>
+                                    );
+                                }
+                            },
+                            {
+                                header: t('إجراء'),
+                                type: 'number',
+                                cell: (row) => {
+                                    const isOverdue = new Date(row.dueDate) < new Date();
+                                    return (
+                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                                            <button onClick={() => {
+                                                setCollectTarget(row);
+                                                const amt = (row.remaining || row.amount || 0).toFixed(2);
+                                                const firstCash = treasuries.find(t => t.type === 'cash');
+                                                const defTr = firstCash || treasuries[0];
+                                                setCollectForm({
+                                                    amount: amt,
+                                                    treasuryId: defTr?.id || '',
+                                                    selectedType: defTr?.type || 'cash',
+                                                    notes: ''
+                                                } as any);
+                                            }}
+                                                style={{
+                                                    height: '32px', padding: '0 16px', borderRadius: '10px', border: 'none',
+                                                    background: isOverdue ? C.danger : C.primary, color: 'white',
+                                                    fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
+                                                    boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
+                                                }}
+                                                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                                                onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                            >
+                                                {t('تحصيل')}
+                                            </button>
+                                            <button onClick={() => router.push(`/installments/${row.plan?.id}`)}
+                                                style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
+                                                onMouseEnter={e => e.currentTarget.style.color = C.primary}
+                                                onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
+                                            >
+                                                <Eye size={15} />
+                                            </button>
+                                        </div>
+                                    );
+                                }
+                            }
+                        ]}
+                        data={installments}
+                        emptyIcon={Clock}
+                        emptyMessage={t('لا توجد أقساط مستحقة للفترة المختارة')}
+                        isLoading={loading}
+                        onRowClick={(row) => router.push(`/installments/${row.plan?.id}`)}
+                    />
                 </div>
 
                 {/* Collection Modal (Redesigned with AppModal) */}

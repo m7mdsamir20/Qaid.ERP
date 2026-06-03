@@ -8,6 +8,7 @@ import { FileText, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, Aler
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
+import { DataTable } from '@/components/DataTable';
 import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
@@ -124,8 +125,6 @@ export default function QuotationsPage() {
                         />
                     </div>
                     
-                    {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -137,7 +136,6 @@ export default function QuotationsPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -157,91 +155,47 @@ export default function QuotationsPage() {
                     )}
                 </div>
 
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
+                <DataTable
+                    columns={[
+                        { header: t("رقم العرض"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>QUO-{row.quotationNumber.toString().padStart(5, '0')}</span> },
+                        { header: t("العميل"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.customer?.name || t('عميل نقدي')}</span> },
+                        { header: t("التاريخ"), type: 'date', cell: (row) => <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t("الإجمالي"), type: 'number', cell: (row) => fMoneyJSX(row.total) },
+                        { header: t("الحالة"), type: 'status', cell: (row) => {
+                            const status = getStatusStyle(row.status);
+                            return (
+                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700, background: status.bg, color: status.color, border: `1px solid ${status.color}30`, fontFamily: CAIRO }}>
+                                    {status.text} <status.icon size={12} />
+                                </div>
+                            );
+                        }},
+                        { header: t("إجراءات"), type: 'action', cell: (row) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                <Link href={`/quotations/${row.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
+                                <button onClick={() => printQuotationDirectly(row.id)} title={t("طباعة")} style={TABLE_STYLE.actionBtn()}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                {row.status === 'pending' && (
+                                    <Link href={`/sales/new?quotationId=${row.id}`} title={t("تحويل لفاتورة")} style={TABLE_STYLE.actionBtn(C.success)}><Send size={TABLE_STYLE.actionIconSize} /></Link>
+                                )}
+                                <button onClick={() => handleDelete(row.id, row.quotationNumber)} title={t("حذف")} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                            </div>
+                        )},
+                    ]}
+                    data={paginated}
+                    emptyIcon={FileText}
+                    emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عروض أسعار مسجلة حالياً')}
+                    isLoading={loading}
+                    loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
-                            <FileText size={48} style={{ color: C.textSecondary, opacity: 0.2, margin: '0 auto 15px' }} />
-                            <p style={{ fontSize: '13px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>
-                                {searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عروض أسعار مسجلة حالياً')}
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true, true) }}>{t("رقم العرض")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("الحالة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("إجراءات")}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((quo, idx) => {
-                                        const status = getStatusStyle(quo.status);
-                                        return (
-                                            <tr key={quo.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
-                                                    QUO-{quo.quotationNumber.toString().padStart(5, '0')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
-                                                    {quo.customer?.name || t('عميل نقدي')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
-                                                    {new Date(quo.date).toLocaleDateString('en-GB')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(quo.total)}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                        background: status.bg, color: status.color, border: `1px solid ${status.color}30`, fontFamily: CAIRO
-                                                    }}>
-                                                        {status.text} <status.icon size={12} />
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
-                                                        <button
-                                                            onClick={() => printQuotationDirectly(quo.id)}
-                                                            title={t("طباعة")}
-                                                            style={TABLE_STYLE.actionBtn()}
-                                                        >
-                                                            <Printer size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                        {quo.status === 'pending' && (
-                                                            <Link href={`/sales/new?quotationId=${quo.id}`} title={t("تحويل لفاتورة")} style={TABLE_STYLE.actionBtn(C.success)}><Send size={TABLE_STYLE.actionIconSize} /></Link>
-                                                        )}
-                                                        <button onClick={() => handleDelete(quo.id, quo.quotationNumber)} title={t("حذف")} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-
-                    <Pagination
-                        currentPage={currentPage}
-                        total={filteredAll.length}
-                        pageSize={pageSize}
-                        onPageChange={setCurrentPage}
-                    />
-                </div>
+                    }
+                />
+                <Pagination
+                    currentPage={currentPage}
+                    total={filteredAll.length}
+                    pageSize={pageSize}
+                    onPageChange={setCurrentPage}
+                />
             </div>
             
         </DashboardLayout>

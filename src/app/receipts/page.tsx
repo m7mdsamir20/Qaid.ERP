@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { printVoucherDirectly } from '@/lib/printDirectly';
+import { DataTable } from '@/components/DataTable';
 
 
 /* ── Types ── */
@@ -70,7 +71,6 @@ export default function ReceiptVouchersPage() {
         printVoucherDirectly(v.id)
     };
 
-
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -98,8 +98,6 @@ export default function ReceiptVouchersPage() {
                         />
                     </div>
                     
-                    {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -111,7 +109,6 @@ export default function ReceiptVouchersPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -132,89 +129,42 @@ export default function ReceiptVouchersPage() {
                 </div>
 
                 {/* ── Table Section ── */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
+                <DataTable
+                    columns={[
+                        { header: t('رقم السند'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>RCP-{String(row.voucherNumber).padStart(5, '0')}</span> },
+                        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t('العميل'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{row.customer?.name || '—'}</span> },
+                        { header: t('طريقة الدفع'), type: 'status', cell: (row) => (
+                            <div style={{
+                                display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                                background: row.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                color: row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
+                                border: `1px solid ${row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
+                            }}>
+                                {row.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
+                            </div>
+                        )},
+                        { header: t('الخزينة / البنك'), type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{row.treasury?.name || '—'}</span> },
+                        { header: t('البيان'), type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{row.description || '—'}</span>, style: { maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
+                        { header: t('المبلغ'), type: 'number', cell: (row) => <span style={{ color: C.success, fontWeight: 700, fontFamily: OUTFIT }}><Currency amount={row.amount} /></span> },
+                        { header: t('إجراءات'), type: 'action', cell: (row) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                <button onClick={(e) => { e.stopPropagation(); handlePrint(row); }} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                <button onClick={(e) => { e.stopPropagation(); router.push(`/receipts/${row.id}`); }} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
+                            </div>
+                        )},
+                    ]}
+                    data={filtered}
+                    emptyIcon={Receipt}
+                    emptyMessage={t('لا توجد سندات قبض')}
+                    isLoading={loading}
+                    loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد سندات قبض')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم السند')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('التاريخ')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العميل')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('طريقة الدفع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((v, idx) => (
-                                        <tr key={v.id}
-                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
-                                                RCP-{String(v.voucherNumber).padStart(5, '0')}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                                                {new Date(v.date).toLocaleDateString('en-GB')}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>
-                                                {v.customer?.name || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                    background: v.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                                    color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
-                                                    border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
-                                                }}>
-                                                    {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                {v.treasury?.name || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: CAIRO }}>
-                                                {v.description || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: C.success, fontWeight: 700, fontFamily: OUTFIT }}>
-                                                <Currency amount={v.amount} />
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); handlePrint(v); }}
-                                                        style={TABLE_STYLE.actionBtn()}
-                                                        title={t("طباعة")}>
-                                                        <Printer size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); router.push(`/receipts/${v.id}`); }}
-                                                        style={TABLE_STYLE.actionBtn()}
-                                                        title={t("عرض")}>
-                                                        <Eye size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                    }
+                />
                 
             </div>
             

@@ -10,6 +10,7 @@ import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
+import DataTable from '@/components/DataTable';
 
 interface SubContract {
     id: string;
@@ -207,66 +208,82 @@ export default function SubContractsPage() {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <HardHat size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد عقود باطن مسجلة حالياً')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم العقد')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المشروع')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المقاول')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('توصيف الأعمال')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('قيمة العقد')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المدفوع')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المتبقي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الحالة')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((c, idx) => {
-                                        const status = statusLabels[c.status] || { label: c.status, color: C.textSecondary, bg: C.border };
-                                        return (
-                                            <tr key={c.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>CNT-{String(c.contractNumber).padStart(5, '0')}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600 }}>{c.project?.name}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600 }}>{c.subcontractor?.name}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary }}>{c.description || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center' }}>{fMoney(c.contractValue)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', color: C.success }}>{fMoney(c.paidAmount)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', color: c.remaining > 0 ? '#fb7185' : C.textMuted }}>{fMoney(c.remaining)}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
-                                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
-                                                    }}>
-                                                        {status.label}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filtered.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
-                </div>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('رقم العقد'),
+                            type: 'text',
+                            cell: (row) => (
+                                <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>
+                                    CNT-{String(row.contractNumber).padStart(5, '0')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('المشروع'),
+                            type: 'text',
+                            cell: (row) => <span style={{ fontWeight: 600 }}>{row.project?.name}</span>
+                        },
+                        {
+                            header: t('المقاول'),
+                            type: 'text',
+                            cell: (row) => <span style={{ fontWeight: 600 }}>{row.subcontractor?.name}</span>
+                        },
+                        {
+                            header: t('توصيف الأعمال'),
+                            type: 'text',
+                            cell: (row) => row.description || '—'
+                        },
+                        {
+                            header: t('قيمة العقد'),
+                            type: 'number',
+                            cell: (row) => fMoney(row.contractValue)
+                        },
+                        {
+                            header: t('المدفوع'),
+                            type: 'number',
+                            cell: (row) => <span style={{ color: C.success }}>{fMoney(row.paidAmount)}</span>
+                        },
+                        {
+                            header: t('المتبقي'),
+                            type: 'number',
+                            cell: (row) => (
+                                <span style={{ color: row.remaining > 0 ? '#fb7185' : C.textMuted }}>
+                                    {fMoney(row.remaining)}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'number',
+                            cell: (row) => {
+                                const status = statusLabels[row.status] || { label: row.status, color: C.textSecondary, bg: C.border };
+                                return (
+                                    <span style={{
+                                        display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600,
+                                        background: status.bg, color: status.color, border: `1px solid ${status.color}20`
+                                    }}>
+                                        {status.label}
+                                    </span>
+                                );
+                            }
+                        }
+                    ]}
+                    data={paginated}
+                    emptyIcon={HardHat}
+                    emptyMessage={t('لا توجد عقود باطن مسجلة حالياً')}
+                    isLoading={loading}
+                />
+                {!loading && filtered.length > 0 && (
+                    <div style={{ marginTop: '16px' }}>
+                        <Pagination
+                            total={filtered.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
+                )}
 
                 {/* MODAL: ADD SUB-CONTRACT */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} icon={HardHat} title={t('إنشاء عقد مقاول باطن جديد')} maxWidth="600px">

@@ -22,6 +22,8 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABL
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 const AC = C.primary;
 
@@ -170,89 +172,90 @@ export default function CostCentersPage() {
             </div>
 
             {/* ── Table View ── */}
-            <div style={TABLE_STYLE.container}>
-                {loading ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textSecondary }}>
-                        <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                        <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
-                    </div>
-                ) : filteredAll.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <Layers size={60} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}</p>
-                    </div>
-                ) : (
-                    <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={{ ...TABLE_STYLE.th(true) }}>{t('رمز المركز')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المركز التكاليفي')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('البيان / الملاحظات')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('إجمالي المصروفات')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {paginated.map((cc, idx) => (
-                                    <tr key={cc.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                                            {cc.code}
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false)}>
-                                            <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{cc.name}</div>
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false, true)}>
-                                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {cc.description || '—'}
-                                            </div>
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false, true)}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, color: cc.isActive ? C.success : C.danger, background: cc.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${cc.isActive ? C.successBorder : C.dangerBorder}` }}>
-                                                <div style={{ width: 6, height: 6, borderRadius: '50%', background: cc.isActive ? C.success : C.danger }} />
-                                                {cc.isActive ? t('نشط') : t('موقوف')}
-                                            </div>
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {cc.totalExpenses ? formatNumber(cc.totalExpenses) : '0.00'} 
-                                                <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '4px' }}>{cSymbol}</span>
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                {canEdit && (
-                                                    <button onClick={() => openEdit(cc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
-                                                        <Pencil size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                )}
-                                                {canDelete && (
-                                                    <button onClick={() => setDeleteItem(cc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')}>
-                                                        <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                )}
-                                                <button onClick={() => window.location.href = `/cost-centers/${cc.id}`} style={TABLE_STYLE.actionBtn()} title={t('عرض التفاصيل')}>
-                                                    <Eye size={TABLE_STYLE.actionIconSize} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <Pagination 
-                            total={filteredAll.length} 
-                            pageSize={pageSize} 
-                            currentPage={currentPage} 
-                            onPageChange={setCurrentPage} 
-                        />
-                    </div>
-                )}
-            </div>
+            <DataTable
+                columns={[
+                    {
+                        header: t('رمز المركز'),
+                        type: 'text',
+                        cell: (row: CostCenter) => (
+                            <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
+                                {row.code}
+                            </span>
+                        )
+                    },
+                    {
+                        header: t('اسم المركز التكاليفي'),
+                        type: 'text',
+                        cell: (row: CostCenter) => <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                    },
+                    {
+                        header: t('البيان / الملاحظات'),
+                        type: 'text',
+                        cell: (row: CostCenter) => (
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                {row.description || '—'}
+                            </div>
+                        )
+                    },
+                    {
+                        header: t('الحالة'),
+                        type: 'number',
+                        cell: (row: CostCenter) => (
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, color: row.isActive ? C.success : C.danger, background: row.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${row.isActive ? C.successBorder : C.dangerBorder}` }}>
+                                <div style={{ width: 6, height: 6, borderRadius: '50%', background: row.isActive ? C.success : C.danger }} />
+                                {row.isActive ? t('نشط') : t('موقوف')}
+                            </div>
+                        )
+                    },
+                    {
+                        header: t('إجمالي المصروفات'),
+                        type: 'number',
+                        cell: (row: CostCenter) => (
+                            <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                {row.totalExpenses ? formatNumber(row.totalExpenses) : '0.00'} 
+                                <span style={{ fontSize: '10px', color: C.textSecondary, marginInlineEnd: '4px' }}>{cSymbol}</span>
+                            </div>
+                        )
+                    },
+                    {
+                        header: t('إجراءات'),
+                        type: 'number',
+                        cell: (row: CostCenter) => (
+                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                {canEdit && (
+                                    <button onClick={() => openEdit(row)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
+                                        <Pencil size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                )}
+                                {canDelete && (
+                                    <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')}>
+                                        <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                )}
+                                <button onClick={() => window.location.href = `/cost-centers/${row.id}`} style={TABLE_STYLE.actionBtn()} title={t('عرض التفاصيل')}>
+                                    <Eye size={TABLE_STYLE.actionIconSize} />
+                                </button>
+                            </div>
+                        )
+                    }
+                ]}
+                data={paginated}
+                emptyIcon={Layers}
+                emptyMessage={search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}
+                isLoading={loading}
+                loadingSkeleton={<TableSkeleton />}
+            />
+
+            {!loading && filteredAll.length > 0 && (
+                <div style={{ marginTop: '16px' }}>
+                    <Pagination 
+                        total={filteredAll.length} 
+                        pageSize={pageSize} 
+                        currentPage={currentPage} 
+                        onPageChange={setCurrentPage} 
+                    />
+                </div>
+            )}
 
 
             {/* ── Modal ── */}

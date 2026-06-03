@@ -202,42 +202,51 @@ export default function PartnerAccountsPage() {
                                         ) : txs.length === 0 ? (
                                             <div style={{ padding: '12px', color: C.textSecondary, fontSize: '12px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
                                         ) : (
-                                            <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
-                                                <thead>
-                                                    <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
-                                                        <th style={{ ...TABLE_STYLE.th(true), padding: '10px 16px' }}>{t('التاريخ')}</th>
-                                                        <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('نوع العملية')}</th>
-                                                        <th style={{ ...TABLE_STYLE.th(false, true), padding: '10px 16px' }}>{t('المبلغ')}</th>
-                                                        <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('البيان والملاحظات')}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {txs.map((tx, tIdx) => {
-                                                        const meta = TX_LABELS[tx.type] || { label: tx.type, color: '#94a3b8', bg: 'rgba(255,255,255,0.05)' };
-                                                        return (
-                                                            <tr key={tx.id} style={{ ...TABLE_STYLE.row(tIdx === txs.length - 1), background: 'transparent' }}>
-                                                                <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                                    {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
-                                                                </td>
-                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px' }}>
-                                                                    <span style={{ 
-                                                                        display: 'inline-flex', alignItems: 'center',
-                                                                        padding: '2px 10px', borderRadius: '12px', fontSize: '11px', 
-                                                                        fontWeight: 600, background: meta.bg, color: meta.color,
-                                                                        fontFamily: CAIRO
-                                                                    }}>{t(meta.label)}</span>
-                                                                </td>
-                                                                <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                                    <Currency amount={tx.amount} />
-                                                                </td>
-                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                                    {tx.notes || '—'}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
+                                            <DataTable
+                                                columns={[
+                                                    {
+                                                        header: t('التاريخ'),
+                                                        type: 'date',
+                                                        cell: (tx: Transaction) => (
+                                                            <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
+                                                                {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                            </span>
+                                                        )
+                                                    },
+                                                    {
+                                                        header: t('نوع العملية'),
+                                                        type: 'text',
+                                                        cell: (tx: Transaction) => {
+                                                            const meta = TX_LABELS[tx.type] || { label: tx.type, color: '#94a3b8', bg: 'rgba(255,255,255,0.05)' };
+                                                            return (
+                                                                <span style={{ 
+                                                                    display: 'inline-flex', alignItems: 'center',
+                                                                    padding: '2px 10px', borderRadius: '12px', fontSize: '11px', 
+                                                                    fontWeight: 600, background: meta.bg, color: meta.color,
+                                                                    fontFamily: CAIRO
+                                                                }}>{t(meta.label)}</span>
+                                                            );
+                                                        }
+                                                    },
+                                                    {
+                                                        header: t('المبلغ'),
+                                                        type: 'number',
+                                                        cell: (tx: Transaction) => <Currency amount={tx.amount} />
+                                                    },
+                                                    {
+                                                        header: t('البيان والملاحظات'),
+                                                        type: 'text',
+                                                        cell: (tx: Transaction) => (
+                                                            <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
+                                                                {tx.notes || '—'}
+                                                            </span>
+                                                        )
+                                                    }
+                                                ]}
+                                                data={txs}
+                                                emptyIcon={History}
+                                                emptyMessage={t('لا توجد حركات مسجلة لهذا الشريك')}
+                                            />
                                         )}
                                     </div>
                                 </td>

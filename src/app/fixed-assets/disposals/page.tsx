@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation';
 import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import TableSkeleton from '@/components/TableSkeleton';
 
 /* ── Types ── */
 interface FixedAsset {
@@ -171,60 +173,67 @@ export default function DisposalsPage() {
                     </div>
                 </div>
 
-                {/* Table */}
-                <div style={TABLE_STYLE.container}>
-                    <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('الأصل الثابت')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('السبب')}</th>
-                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('تاريخ الاستبعاد')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('العائد / البيع')}</th>
-                                    <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('القيمة الدفترية')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('نتيجة التخلص')}</th>
-                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loadingList ? (
-                                    <tr><td colSpan={7} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
-                                ) : filtered.length === 0 ? (
-                                    <tr><td colSpan={7} style={{ padding: '80px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
-                                ) : filtered.map((d, i) => {
-                                    const isG = d.gainLoss > 0;
-                                    return (
-                                        <tr key={d.id} style={TABLE_STYLE.row(i === filtered.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{d.assetName}</div>
-                                                <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px', textAlign: 'center' }}>{d.assetCode}</div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
-                                                    {REASON_LABELS[d.reason] || d.reason}
-                                                </span>
-                                            </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={d.salePrice} /></div>
-                                            </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}><Currency amount={d.netBookValue} /></div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
-                                                    {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
-                                                    <Currency amount={Math.abs(d.gainLoss)} />
-                                                </div>
-                                            </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <DataTable
+                    columns={[
+                        {
+                            header: t('الأصل الثابت'),
+                            type: 'text',
+                            cell: (row: Disposal) => (
+                                <div>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.assetName}</div>
+                                    <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px' }}>{row.assetCode}</div>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('السبب'),
+                            type: 'text',
+                            cell: (row: Disposal) => (
+                                <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[row.reason] || '#64748b'}15`, color: REASON_COLORS[row.reason] || '#64748b', border: `1px solid ${REASON_COLORS[row.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
+                                    {REASON_LABELS[row.reason] || row.reason}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('تاريخ الاستبعاد'),
+                            type: 'date',
+                            className: 'hide-mobile',
+                            cell: (row: Disposal) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</span>
+                        },
+                        {
+                            header: t('العائد / البيع'),
+                            type: 'number',
+                            cell: (row: Disposal) => <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={row.salePrice} /></div>
+                        },
+                        {
+                            header: t('القيمة الدفترية'),
+                            type: 'number',
+                            className: 'hide-mobile',
+                            cell: (row: Disposal) => <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}><Currency amount={row.netBookValue} /></div>
+                        },
+                        {
+                            header: t('نتيجة التخلص'),
+                            type: 'number',
+                            cell: (row: Disposal) => (
+                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: row.gainLoss >= 0 ? '#10b981' : C.danger }}>
+                                    {row.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
+                                    <Currency amount={Math.abs(row.gainLoss)} />
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('ملاحظات'),
+                            type: 'text',
+                            className: 'hide-mobile',
+                            cell: (row: Disposal) => <span style={{ color: C.textSecondary, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{row.notes || '—'}</span>
+                        }
+                    ]}
+                    data={filtered}
+                    emptyIcon={ArrowRightLeft}
+                    emptyMessage={t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}
+                    isLoading={loadingList}
+                    loadingSkeleton={<TableSkeleton />}
+                />
 
                 {/* Disposal Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={t("تسجيل عملية استبعاد / بيع أصل")} icon={ArrowRightLeft}>
