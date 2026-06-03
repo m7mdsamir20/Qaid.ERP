@@ -144,7 +144,7 @@ export default function OverduePage() {
                             },
                             {
                                 header: t('رقم الخطة'),
-                                type: 'text',
+                                type: 'number',
                                 cell: (row) => (
                                     <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT, display: 'inline-block', direction: 'ltr' }}>
                                         #{row.plan?.planNumber}

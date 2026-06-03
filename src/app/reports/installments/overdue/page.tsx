@@ -83,6 +83,7 @@ export default function OverdueReportPage() {
         },
         {
             header: t('رقم الخطة'),
+            type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
                     PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}
@@ -91,6 +92,7 @@ export default function OverdueReportPage() {
         },
         {
             header: t('القسط'),
+            type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
                     {t('قسط رقم')} {row.installmentNo}
@@ -99,6 +101,7 @@ export default function OverdueReportPage() {
         },
         {
             header: t('موعد الاستحقاق'),
+            type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '13px', color: '#f87171', fontWeight: 700, fontFamily: OUTFIT }}>
                     {fmt(row.dueDate)}
@@ -107,6 +110,7 @@ export default function OverdueReportPage() {
         },
         {
             header: t('أيام التأخير'),
+            type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 600, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                     {row.daysOverdue} {t('يوم تأخير')}

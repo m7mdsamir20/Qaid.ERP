@@ -139,7 +139,7 @@ export default function DuePage() {
                             },
                             {
                                 header: t('رقم الخطة'),
-                                type: 'text',
+                                type: 'number',
                                 cell: (row) => (
                                     <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT, display: 'inline-block', direction: 'ltr' }}>PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}</span>
                                 )

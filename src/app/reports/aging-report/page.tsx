@@ -107,12 +107,12 @@ export default function AgingReportPage() {
     const columns: TableColumn[] = [
         {
             header: t('رقم الفاتورة'),
+            type: 'number' as const,
             cell: (row: AgingInvoice) => (
                 <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
                     SAL-{String(row.invoiceNumber).padStart(4, '0')}
                 </span>
-            ),
-            style: { textAlign: 'center' } as React.CSSProperties
+            )
         },
         {
             header: t('تاريخ الإصدار'),

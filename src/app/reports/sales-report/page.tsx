@@ -207,6 +207,7 @@ export default function SalesReportPage() {
                             const columns: TableColumn[] = [
                                 {
                                     header: t('رقم الفاتورة'),
+                                    type: 'number' as const,
                                     cell: (row: Invoice) => (
                                         <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
                                             SAL-{String(row.invoiceNumber).padStart(5, '0')}

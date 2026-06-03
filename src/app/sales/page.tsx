@@ -101,7 +101,7 @@ export default function SalesPage() {
     const columns: TableColumn[] = [
         {
             header: t("رقم الفاتورة"),
-            type: 'text',
+            type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
                     {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}

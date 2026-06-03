@@ -83,10 +83,11 @@ export default function ReturnsReportPage() {
     const columns: TableColumn[] = [
         {
             header: t('رقم الفاتورة'),
+            type: 'number' as const,
             cell: (row: ReturnInvoice) => (
                 row.type === 'sale_return' ? 'RET-' : 'RTN-'
             ) + String(row.invoiceNumber).padStart(5, '0'),
-            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textPrimary } as React.CSSProperties
         },
         {
             header: t('التاريخ'),

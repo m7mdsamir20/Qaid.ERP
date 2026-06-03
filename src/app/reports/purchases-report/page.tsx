@@ -93,6 +93,7 @@ export default function PurchasesReportPage() {
     const columns: TableColumn[] = [
         {
             header: t('رقم الفاتورة'),
+            type: 'number' as const,
             cell: (row: Invoice) => (
                 <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
                     PUR-{String(row.invoiceNumber).padStart(5, '0')}
