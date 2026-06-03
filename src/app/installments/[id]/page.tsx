@@ -243,7 +243,7 @@ export default function InstallmentDetailPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('رقم القسط'), t('تاريخ الاستحقاق'), t('المبلغ المستحق'), t('المدفوع'), t('المتبقي'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                                <th key={i} style={{ textAlign: [5, 6].includes(i) ? 'center' : 'start', padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{h}</th>
+                                                <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -259,16 +259,16 @@ export default function InstallmentDetailPage() {
                                                     <td style={{ padding: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT, textAlign: 'start' }}>
                                                         {inst.installmentNo}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT, textAlign: 'start' }}>
+                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
-                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'start' }}>
+                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {fMoneyJSX(inst.amount)}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'start' }}>
+                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {fMoneyJSX(inst.paidAmount || 0)}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'start' }}>
+                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
                                                     <td style={{ padding: '16px', textAlign: 'center' }}>
@@ -280,8 +280,8 @@ export default function InstallmentDetailPage() {
                                                             {t(st.label)}
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '16px' }}>
-                                                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                                    <td style={{ padding: '16px', textAlign: 'center' }}>
+                                                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center', justifyContent: 'center' }}>
                                                             {inst.status !== 'paid' && inst.status !== 'cancelled' && !isCancelled && (
                                                                 <button onClick={() => { 
                                                                     setCollectTarget(inst); 
