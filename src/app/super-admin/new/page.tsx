@@ -256,6 +256,15 @@ export default function NewCompanyPage() {
                 section.links = section.links.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id));
             }
 
+            if (isContracting && section.links) {
+                if (section.featureKey === 'treasury') {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
+                if (section.featureKey === 'reports') {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments');
+                }
+            }
+
             // تعديلات ديناميكية للمسميات بناءً على نوع النشاط
 
             if (form.businessType === 'SERVICES') {

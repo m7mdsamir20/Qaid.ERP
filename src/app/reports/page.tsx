@@ -41,6 +41,7 @@ function ReportsHubPageInner() {
 
     const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isContracting = businessType === 'CONTRACTING';
 
     const REPORTS_DATA: Record<string, ReportLink[]> = {
         'financial': [
@@ -54,16 +55,16 @@ function ReportsHubPageInner() {
             { title: t('قائمة التدفق النقدي'), description: t('حركة السيولة والتحليل النقدي الشامل'), href: '/reports/cash-flow', icon: Activity, color: '#f43f5e', status: 'ready', requiredPages: ['/accounts'] },
         ],
         'sales-purchases': [
-            { title: isServices ? t('تقرير الخدمات') : t('تقرير المبيعات'), description: isServices ? t('حركة طلب الخدمات خلال فترة زمنية') : t('حركة المبيعات خلال فترة زمنية'), href: '/reports/sales-report', icon: BarChart3, color: '#0ea5e9', status: 'ready', requiredPages: ['/sales'] },
-            { title: t('تقرير المشتريات'), description: t('إجمالي المشتريات وتفاصيل الفواتير'), href: '/reports/purchases-report', icon: ShoppingCart, color: '#fb923c', status: 'ready', requiredPages: ['/purchases'] },
-            { title: isServices ? t('أكثر الخدمات طلباً') : t('أكثر الأصناف مبيعاً'), description: isServices ? t('الخدمات الأعلى طلباً في المنشأة') : t('المنتجات الأعلى حركة طلباً ومبيعاً'), href: '/reports/top-selling-items', icon: TrendingUp, color: '#eab308', status: 'ready', requiredPages: ['/sales'] },
-            { title: isServices ? t('مرتجعات الخدمات') : t('تقرير المرتجعات'), description: isServices ? t('تحليل مرتجعات الخدمات لمعرفة الأسباب') : t('تحليل المرتجعات لمعرفة أسباب الخسارة'), href: '/reports/returns-report', icon: ArrowRightLeft, color: '#f43f5e', status: 'ready', requiredPages: ['/sale-returns'] },
+            { title: isContracting ? t('تقرير المبيعات وفواتير الأعمال') : isServices ? t('تقرير الخدمات') : t('تقرير المبيعات'), description: isContracting ? t('حركة المبيعات وفواتير بنود الأعمال خلال فترة زمنية') : isServices ? t('حركة طلب الخدمات خلال فترة زمنية') : t('حركة المبيعات خلال فترة زمنية'), href: '/reports/sales-report', icon: BarChart3, color: '#0ea5e9', status: 'ready', requiredPages: ['/sales'] },
+            { title: isContracting ? t('تقرير المشتريات ومواد البناء') : t('تقرير المشتريات'), description: isContracting ? t('إجمالي مشتريات مواد البناء وتكاليف الموردين وتفاصيل الفواتير') : t('إجمالي المشتريات وتفاصيل الفواتير'), href: '/reports/purchases-report', icon: ShoppingCart, color: '#fb923c', status: 'ready', requiredPages: ['/purchases'] },
+            { title: isContracting ? t('البنود والمواد الأكثر استخداماً') : isServices ? t('أكثر الخدمات طلباً') : t('أكثر الأصناف مبيعاً'), description: isContracting ? t('المواد وبنود الأعمال الأعلى استخداماً في المشاريع') : isServices ? t('الخدمات الأعلى طلباً في المنشأة') : t('المنتجات الأعلى حركة طلباً ومبيعاً'), href: '/reports/top-selling-items', icon: TrendingUp, color: '#eab308', status: 'ready', requiredPages: ['/sales'] },
+            { title: isContracting ? t('تقرير المرتجعات وإلغاء الأعمال') : isServices ? t('مرتجعات الخدمات') : t('تقرير المرتجعات'), description: isContracting ? t('تحليل مرتجعات المواد وإلغاء بنود الأعمال لمعرفة أسبابها') : isServices ? t('تحليل مرتجعات الخدمات لمعرفة الأسباب') : t('تحليل المرتجعات لمعرفة أسباب الخسارة'), href: '/reports/returns-report', icon: ArrowRightLeft, color: '#f43f5e', status: 'ready', requiredPages: ['/sale-returns'] },
         ],
         'inventory': [
-            { title: isServices ? t('قائمة الخدمات') : t('تقرير المخزون'), description: isServices ? t('قائمة جميع الخدمات المسجلة وأسعارها') : t('حالة المخازن وأرصدة الأصناف والجرد'), href: '/reports/inventory-report', icon: Package, color: '#8b5cf6', status: 'ready', requiredPages: ['/items'] },
-            { title: isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#256af4', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
-            { title: isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
-            ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as const, requiredPages: ['/items'] }] : []),
+            { title: isContracting ? t('تقرير المواد ومخازن المواقع') : isServices ? t('قائمة الخدمات') : t('تقرير المخزون'), description: isContracting ? t('حالة المخازن والمواقع وأرصدة المواد والبنود والجرد') : isServices ? t('قائمة جميع الخدمات المسجلة وأسعارها') : t('حالة المخازن وأرصدة الأصناف والجرد'), href: '/reports/inventory-report', icon: Package, color: '#8b5cf6', status: 'ready', requiredPages: ['/items'] },
+            { title: isContracting ? t('سجل حركات المواد والعهدة') : isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isContracting ? t('سجل شامل لعمليات صرف وتوريد وتحويل المواد بين المخازن والمواقع') : isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#256af4', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
+            { title: isContracting ? t('حركة بند / مادة') : isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isContracting ? t('مراقبة الصادر والوارد لبند أو مادة معينة بكافة المواقع') : isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
+            ...(!isServices ? [{ title: isContracting ? t('مواد تحت الحد الأدنى') : t('أصناف تحت الحد الأدنى'), description: isContracting ? t('تنبيهات بنود المواد التي تجاوزت حد إعادة الطلب لتفادي توقف العمل') : t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as const, requiredPages: ['/items'] }] : []),
         ],
         'restaurant': [
             { title: t('تقرير وصفات الطبخ (المنيو)'), description: t('عرض جميع الوجبات والمكونات وحساب التكلفة التقديرية وهامش الربح'), href: '/reports/recipes-report', icon: BookOpen, color: '#f43f5e', status: 'ready', requiredPages: ['/items'] },
@@ -156,20 +157,20 @@ function ReportsHubPageInner() {
         { 
             key: 'sales-purchases', 
             label: (() => {
-                const salesLabel = isServices ? t('الخدمات') : t('المبيعات');
+                const salesLabel = isContracting ? t('الأعمال والمبيعات') : isServices ? t('الخدمات') : t('المبيعات');
                 const canSeeSales = hasPageAccess('/sales', 'sales');
                 const canSeePurchases = hasPageAccess('/purchases', 'purchases');
                 if (canSeeSales && canSeePurchases) return `${salesLabel} ${t('والمشتريات')}`;
                 if (canSeeSales) return salesLabel;
                 if (canSeePurchases) return t('المشتريات');
-                return isServices ? t('تقارير الخدمات') : t('تقارير المبيعات');
+                return isContracting ? t('الأعمال والمبيعات والمشتريات') : isServices ? t('تقارير الخدمات') : t('تقارير المبيعات');
             })(),
             icon: ShoppingCart,
             requiredFeatures: ['sales', 'purchases']
         },
         { 
             key: 'inventory', 
-            label: isServices ? t('تقارير الخدمات') : t('تقارير المخزون'), 
+            label: isContracting ? t('تقارير المواد والمواقع') : isServices ? t('تقارير الخدمات') : t('تقارير المخزون'), 
             icon: isServices ? Layers : Package,
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
@@ -179,8 +180,8 @@ function ReportsHubPageInner() {
             label: (() => {
                 const hasCustomers = hasPageAccess('/customers', 'partners') || hasPageAccess('/partners', 'partners');
                 const hasSuppliers = hasPageAccess('/suppliers', 'partners');
-                if (hasCustomers && hasSuppliers) return t('العملاء والموردين');
-                if (hasCustomers) return t('تقارير العملاء');
+                if (hasCustomers && hasSuppliers) return isContracting ? t('أصحاب المشاريع والموردين') : t('العملاء والموردين');
+                if (hasCustomers) return isContracting ? t('تقارير أصحاب المشاريع') : t('تقارير العملاء');
                 return t('تقارير الموردين');
             })(),
             icon: Users,
@@ -217,7 +218,7 @@ function ReportsHubPageInner() {
     ];
 
     const hasModuleAccess = (tab: ModuleTab) => {
-        if (businessType === 'RESTAURANTS' && tab.key === 'installments') return false;
+        if ((businessType === 'RESTAURANTS' || businessType === 'CONTRACTING') && tab.key === 'installments') return false;
         if (isSuperAdmin) return true;
 
         // Admin can see all report tabs

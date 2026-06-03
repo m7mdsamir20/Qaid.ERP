@@ -217,6 +217,15 @@ export default function EditCompanyPage() {
                 section.links = section.links.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id));
             }
 
+            if (isContracting && section.links) {
+                if (section.featureKey === 'treasury') {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
+                if (section.featureKey === 'reports') {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments');
+                }
+            }
+
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';

@@ -37,6 +37,7 @@ export default function WarehousesPage() {
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isRestaurant = businessType === 'RESTAURANTS';
+    const isContracting = businessType === 'CONTRACTING';
     
     const [form, setForm] = useState({ name: '', address: '', code: '' });
 
@@ -139,11 +140,11 @@ export default function WarehousesPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={isRestaurant ? t("المخازن والمستودعات") : t("المخازن")} 
-                    subtitle={isRestaurant ? t("إدارة مخازن المواد الخام والمستودعات") : t("إدارة مواقع التخزين، الفروع، وتوزيع الكميات الجردية")} 
+                    title={isRestaurant ? t("المخازن والمستودعات") : isContracting ? t("المخازن والمواقع") : t("المخازن")} 
+                    subtitle={isRestaurant ? t("إدارة مخازن المواد الخام والمستودعات") : isContracting ? t("إدارة مخازن المواد ومستودعات مواقع المشاريع الإنشائية") : t("إدارة مواقع التخزين، الفروع، وتوزيع الكميات الجردية")} 
                     icon={Warehouse} 
                     primaryButton={{
-                        label: t("إضافة مخزن جديد"),
+                        label: isContracting ? t("إضافة مخزن / موقع جديد") : t("إضافة مخزن جديد"),
                         onClick: () => handleOpenModal(),
                         icon: Plus
                     }}
@@ -154,7 +155,7 @@ export default function WarehousesPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={t("ابحث باسم المخزن، الكود، أو العنوان...")}
+                            placeholder={isContracting ? t("ابحث باسم المخزن/الموقع، الكود، أو العنوان...") : t("ابحث باسم المخزن، الكود، أو العنوان...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={SEARCH_STYLE.input}
@@ -175,7 +176,7 @@ export default function WarehousesPage() {
                             )
                         },
                         {
-                            header: t('اسم المخزن'),
+                            header: isContracting ? t('اسم المخزن / الموقع') : t('اسم المخزن'),
                             cell: (row: WarehouseItem) => (
                                 <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.name}</div>
                             )
@@ -191,10 +192,10 @@ export default function WarehousesPage() {
                             style: { textAlign: 'center' } as React.CSSProperties
                         },
                         {
-                            header: t('عدد الأصناف'),
+                            header: isContracting ? t('عدد المواد والبنود') : t('عدد الأصناف'),
                             cell: (row: WarehouseItem) => (
                                 <>
-                                    {row._count.stocks} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
+                                    {row._count.stocks} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{isContracting ? t('مادة/بند') : t('أصناف')}</span>
                                 </>
                             ),
                             style: { fontFamily: OUTFIT, fontWeight: 600, color: C.purple, textAlign: 'center' } as React.CSSProperties
@@ -255,14 +256,14 @@ export default function WarehousesPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={editingId ? t('تعديل بيانات المخزن') : t('إنشاء مخزن جديد')}
+                    title={editingId ? (isContracting ? t('تعديل بيانات المخزن / الموقع') : t('تعديل بيانات المخزن')) : (isContracting ? t('إنشاء مخزن / موقع جديد') : t('إنشاء مخزن جديد'))}
                     icon={Warehouse}
                     maxWidth="550px"
                 >
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '16px' }}>
                             <div>
-                                <label style={LS}>{t('كود المخزن النظامي')}</label>
+                                <label style={LS}>{isContracting ? t('كود المخزن / الموقع النظامي') : t('كود المخزن النظامي')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input 
                                         type="text" readOnly disabled value={form.code} 
@@ -272,10 +273,10 @@ export default function WarehousesPage() {
                                 </div>
                             </div>
                             <div>
-                                <label style={LS}>{t('اسم المخزن')} <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{isContracting ? t('اسم المخزن / الموقع') : t('اسم المخزن')} <span style={{ color: C.danger }}>*</span></label>
                                 <input 
                                     type="text" required autoFocus 
-                                    placeholder={isRestaurant ? t("مثال: مخزن المواد الخام، مبرد المطبخ...") : t("مثال: المخزن الرئيسي، فرع الجيزة...")} 
+                                    placeholder={isRestaurant ? t("مثال: مخزن المواد الخام، مبرد المطبخ...") : isContracting ? t("مثال: مخزن الموقع الرئيسي، موقع مشروع التجمع...") : t("مثال: المخزن الرئيسي، فرع الجيزة...")} 
                                     value={form.name} 
                                     onChange={e => setForm({ ...form, name: e.target.value })} 
                                     style={{ ...IS, height: '42px' }} 
@@ -285,11 +286,11 @@ export default function WarehousesPage() {
                         </div>
 
                         <div>
-                            <label style={LS}>{t('العنوان التفصيلي')}</label>
+                            <label style={LS}>{isContracting ? t('العنوان التفصيلي / موقع المشروع') : t('العنوان التفصيلي')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input 
                                     type="text" 
-                                    placeholder={t("أدخل عنوان المخزن بالتفصيل...")} 
+                                    placeholder={isContracting ? t("أدخل عنوان الموقع بالتفصيل...") : t("أدخل عنوان المخزن بالتفصيل...")} 
                                     value={form.address} 
                                     onChange={e => setForm({ ...form, address: e.target.value })} 
                                     style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} 
@@ -301,7 +302,7 @@ export default function WarehousesPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 120px', gap: '12px', marginTop: '10px', borderTop: `1px solid ${C.border}`, paddingTop: '20px' }}>
                             <button type="submit" disabled={isSubmitting} style={{ ...BTN_PRIMARY(false, isSubmitting), height: '48px' }}>
-                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : editingId ? t('تعديل المخزن') : t('تأكيد الإضافة')}
+                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : editingId ? (isContracting ? t('تعديل المخزن / الموقع') : t('تعديل المخزن')) : (isContracting ? t('تأكيد إضافة الموقع') : t('تأكيد الإضافة'))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}>{t('إلغاء')}</button>
                         </div>
@@ -313,7 +314,7 @@ export default function WarehousesPage() {
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
                     onConfirm={confirmDelete}
-                    title={t("تأكيد حذف المخزن")}
+                    title={isContracting ? t("تأكيد حذف المخزن / الموقع") : t("تأكيد حذف المخزن")}
                     itemName={deleteItem?.name || ''}
                     isDelete={true}
                     isSubmitting={isSubmitting}

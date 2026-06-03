@@ -168,7 +168,32 @@ export default function Sidebar({
             if (businessType === 'CONTRACTING') {
                 if (section.featureKey === 'installments') return null;
                 if (section.featureKey === 'sales') {
-                    section.links = section.links?.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id));
+                    section.title = 'الأعمال والمبيعات';
+                    section.links = section.links?.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id)).map((l: any) => {
+                        if (l.id === '/sales') return { ...l, label: 'فواتير الأعمال والخدمات' };
+                        if (l.id === '/customers') return { ...l, label: 'العملاء / أصحاب المشاريع' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'inventory') {
+                    section.title = 'المخازن والمواد';
+                    section.links = section.links?.map((l: any) => {
+                        if (l.id === '/items') return { ...l, label: 'المواد والبنود' };
+                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المواد والبنود' };
+                        if (l.id === '/warehouses') return { ...l, label: 'المخازن والمواقع' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'treasury' && section.links) {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
+                if (section.featureKey === 'reports' && section.links) {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments').map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الأعمال والمبيعات والمشتريات' };
+                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير المواد والمواقع' };
+                        if (l.label === 'العملاء والموردين') return { ...l, label: 'أصحاب المشاريع والموردين' };
+                        return l;
+                    });
                 }
             }
 

@@ -97,14 +97,15 @@ export default function SalesPage() {
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isContracting = businessType === 'CONTRACTING';
 
     const columns: TableColumn[] = [
         {
-            header: t("رقم الفاتورة"),
+            header: isContracting ? t("رقم الفاتورة / المستخلص") : t("رقم الفاتورة"),
             type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                    {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
+                    {isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
                 </span>
             ),
             style: { width: '120px' }
@@ -118,11 +119,11 @@ export default function SalesPage() {
             }
         },
         {
-            header: t("العميل"),
+            header: isContracting ? t("العميل / صاحب المشروع") : t("العميل"),
             type: 'text',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                    {inv.customer ? inv.customer.name : t("عميل نقدي")}
+                    {inv.customer ? inv.customer.name : isContracting ? t("صاحب مشروع نقدي") : t("عميل نقدي")}
                 </span>
             )
         },
@@ -177,11 +178,11 @@ export default function SalesPage() {
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={isServices ? t("فواتير الخدمات") : t("المبيعات")}
-                    subtitle={isServices ? t("سجل الخدمات المقدمة للعملاء وتحصيل الرسوم") : t("سجل فواتير المبيعات وحالات التحصيل الفعلية")}
+                    title={isServices ? t("فواتير الخدمات") : isContracting ? t("فواتير الأعمال والخدمات") : t("المبيعات")}
+                    subtitle={isServices ? t("سجل الخدمات المقدمة للعملاء وتحصيل الرسوم") : isContracting ? t("سجل مستخلصات وفواتير الأعمال الإنشائية وحالات التحصيل") : t("سجل فواتير المبيعات وحالات التحصيل الفعلية")}
                     icon={Receipt}
                     primaryButton={canCreate ? {
-                        label: isServices ? t("إصدار فاتورة خدمة") : t("إضافة فاتورة"),
+                        label: isServices ? t("إصدار فاتورة خدمة") : isContracting ? t("إصدار فاتورة أعمال") : t("إضافة فاتورة"),
                         onClick: () => router.push('/sales/new'),
                         icon: Plus
                     } : undefined}
@@ -191,7 +192,7 @@ export default function SalesPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={t("رقم الفاتورة أو اسم العميل...")}
+                            placeholder={isContracting ? t("رقم الفاتورة/المستخلص أو اسم صاحب المشروع...") : t("رقم الفاتورة أو اسم العميل...")}
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
@@ -234,7 +235,7 @@ export default function SalesPage() {
                         columns={columns}
                         data={paginated}
                         emptyIcon={Receipt}
-                        emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t('لا توجد فواتير خدمات') : t('لا توجد فواتير مبيعات'))}
+                        emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t('لا توجد فواتير خدمات') : isContracting ? t('لا توجد فواتير أعمال وخدمات') : t('لا توجد فواتير مبيعات'))}
                         isLoading={loading}
                         loadingSkeleton={
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>

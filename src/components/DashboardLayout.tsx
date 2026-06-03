@@ -114,6 +114,8 @@ export default function DashboardLayout({
             if (['tables', 'kitchen', 'delivery', 'barcode'].includes(featureKey) && businessType !== 'RESTAURANTS') return false;
             if (contractingFeatures.includes(featureKey) && businessType !== 'CONTRACTING') return false;
             if (pageId === 'reports-restaurant' && businessType !== 'RESTAURANTS') return false;
+            if (pageId === 'reports-installments' && businessType === 'CONTRACTING') return false;
+            if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
 
             const userPerms = user?.permissions || {};
             const hasGranularPerms = Object.keys(userPerms).length > 0;
