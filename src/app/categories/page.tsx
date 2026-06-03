@@ -7,6 +7,8 @@ import PageHeader from '@/components/PageHeader';
 import { Plus, Loader2, Search, Pencil, Info, Trash2, Layers, FolderTree } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Category {
     id: string;
@@ -138,74 +140,73 @@ export default function CategoriesPage() {
                     </div>
                 </div>
 
-                {/* Main Table Content */}
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
-                    </div>
-                ) : filtered.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <Layers size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد تصنيفات مسجلة حالياً')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        {[t('الكود'), t('اسم التصنيف'), isRestaurant ? t('عدد أصناف المنيو') : isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, [0, 2, 3].includes(i))}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((cat, idx) => (
-                                        <tr key={cat.id} 
-                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
-                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
-                                                    {cat.code || `#${idx + 1}`}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 600, fontSize: '13px' }}>
-                                                {cat.name}
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT,
-                                                    background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
-                                                }}>
-                                                    {cat._count?.items || 0} {isRestaurant ? t('صنف') : isServices ? t('خدمة') : t('صنف')}
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    {canEdit && (
-                                                        <button onClick={() => openEditModal(cat)}
-                                                            style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
-                                                             <Pencil size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    )}
-                                                    {canEdit && (
-                                                        <button onClick={() => setCategoryToDelete(cat)}
-                                                            style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
-                                                             <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الكود'),
+                            cell: (row: Category, idx: number) => (
+                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
+                                    {row.code || `#${idx + 1}`}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('اسم التصنيف'),
+                            cell: (row: Category) => row.name,
+                            style: { color: C.textPrimary, fontWeight: 600, fontSize: '13px' } as React.CSSProperties
+                        },
+                        {
+                            header: isRestaurant ? t('عدد أصناف المنيو') : isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'),
+                            cell: (row: Category) => (
+                                <div style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT,
+                                    background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
+                                }}>
+                                    {row._count?.items || 0} {isRestaurant ? t('صنف') : isServices ? t('خدمة') : t('صنف')}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('إجراء'),
+                            cell: (row: Category) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    {canEdit && (
+                                        <button onClick={() => openEditModal(row)}
+                                            style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
+                                             <Pencil size={TABLE_STYLE.actionIconSize} />
+                                        </button>
+                                    )}
+                                    {canEdit && (
+                                        <button onClick={() => setCategoryToDelete(row)}
+                                            style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
+                                             <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                        </button>
+                                    )}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Layers}
+                            emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد تصنيفات مسجلة حالياً')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
+                                    <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 <AppModal
                     show={isModalOpen}

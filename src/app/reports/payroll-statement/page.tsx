@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -69,6 +71,50 @@ export default function PayrollStatementPage() {
 
     useEffect(() => { fetchReport(); }, [month]);
 
+    const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase())) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('الموظف'),
+            cell: (row: PayrollRecord) => row.employeeName,
+            style: { fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }
+        },
+        {
+            header: t('الراتب الأساسي'),
+            type: 'number' as const,
+            cell: (row: PayrollRecord) => <Currency amount={row.basicSalary} />,
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('البدلات'),
+            type: 'number' as const,
+            cell: (row: PayrollRecord) => <>+<Currency amount={row.allowances} /></>,
+            style: { fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الاستقطاعات'),
+            type: 'number' as const,
+            cell: (row: PayrollRecord) => <>-<Currency amount={row.deductions} /></>,
+            style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الصافي'),
+            type: 'number' as const,
+            cell: (row: PayrollRecord) => <Currency amount={row.netSalary} />,
+            style: { fontWeight: 600, color: C.primary, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+            <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.summary.totalSalaries} /></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={data.summary.totalAllowances} /></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={data.summary.totalDiscounts} /></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={data.summary.netTotal} /></td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -126,51 +172,21 @@ export default function PayrollStatementPage() {
                             ))}
                         </div>
 
-                        <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
+                        <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                             <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('الموظف'), t('الراتب الأساسي'), t('البدلات'), t('الاستقطاعات'), t('الصافي')].map((h, i) => (
-                                            <th key={i} style={{ padding: '16px 20px', textAlign: 'center', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.records.filter(r => r.employeeName.includes(q)).map((r) => (
-                                        <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.basicSalary} /></td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={r.allowances} /></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.deductions} /></td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={r.netSalary} /></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                        <td style={{ padding: '16px 20px',   fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.summary.totalSalaries} /></td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center',  fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={data.summary.totalAllowances} /></td>
-                                        <td style={{ padding: '16px 20px',   fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={data.summary.totalDiscounts} /></td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center',  fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={data.summary.netTotal} /></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={DollarSign}
+                            emptyMessage={t('لا توجد سجلات رواتب حالياً')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            <style>{`
-                input::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
-                .animate-spin { animation: spin 1s linear infinite; }
-                @keyframes spin { to { transform: rotate(360deg); } }
-            `}</style>
         </DashboardLayout>
     );
 }
-

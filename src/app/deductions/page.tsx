@@ -10,6 +10,8 @@ import { AlertTriangle, CheckCircle2, Clock, UsersIcon, Plus, Search, Filter, Sh
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Employee {
     id: string;
@@ -214,94 +216,105 @@ export default function DeductionsPage() {
                 </div>
 
                 {/* Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                            {t('جاري التحميل...')}
-                        </div>
-                    ) : filteredDeductions.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
-                            <ShieldAlert size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
-                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{t('لا توجد خصومات مسجلة')}</h3>
-                            <p style={{ fontSize: '13px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الخصم')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('سبب الخصم')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'start' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredDeductions.map((ded, idx) => (
-                                        <tr key={ded.id} style={TABLE_STYLE.row(idx === filteredDeductions.length - 1)}>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
-                                                    {new Date(ded.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ }}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{ded.employee.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px', fontFamily: OUTFIT }}>{ded.employee.code}</div>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{formatNumber(ded.amount)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: C.textSecondary, fontSize: '13px' }}>{ded.reason || '—'}</td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                {ded.status === 'pending' ? (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                                                        <Clock size={12} /> {t('قيد المراجعة')}
-                                                    </span>
-                                                ) : (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                                                        {t('تم الاعتماد')} <CheckCircle2 size={12} />
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                    {ded.status === 'pending' && (
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(ded.id, 'deducted')}
-                                                            disabled={isActionLoading === ded.id}
-                                                            style={TABLE_STYLE.actionBtn('#10b981')}
-                                                            title={t('اعتماد')}
-                                                        >
-                                                            {isActionLoading === ded.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
-                                                        </button>
-                                                    )}
-                                                    {ded.status === 'pending' && (
-                                                        <button 
-                                                            onClick={() => handleDelete(ded)}
-                                                            disabled={isActionLoading === ded.id}
-                                                            style={TABLE_STYLE.actionBtn(C.danger)}
-                                                            title={t('حذف')}
-                                                        >
-                                                            {isActionLoading === ded.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                {/* Table Section */}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('تاريخ الخصم'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Deduction) => (
+                                <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
+                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الموظف'),
+                            cell: (row: Deduction) => (
+                                <div>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.employee.name}</div>
+                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px', fontFamily: OUTFIT }}>{row.employee.code}</div>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('المبلغ'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Deduction) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
+                                    <span>{formatNumber(row.amount)}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('سبب الخصم'),
+                            cell: (row: Deduction) => (
+                                <span style={{ color: C.textSecondary, fontSize: '13px' }}>{row.reason || '—'}</span>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'status',
+                            style: { textAlign: 'start' } as React.CSSProperties,
+                            cell: (row: Deduction) => row.status === 'pending' ? (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
+                                    <Clock size={12} /> {t('قيد المراجعة')}
+                                </span>
+                            ) : (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
+                                    {t('تم الاعتماد')} <CheckCircle2 size={12} />
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('إجراءات'),
+                            type: 'action',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Deduction) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    {row.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleUpdateStatus(row.id, 'deducted')}
+                                            disabled={isActionLoading === row.id}
+                                            style={TABLE_STYLE.actionBtn('#10b981')}
+                                            title={t('اعتماد')}
+                                        >
+                                            {isActionLoading === row.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
+                                        </button>
+                                    )}
+                                    {row.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleDelete(row)}
+                                            disabled={isActionLoading === row.id}
+                                            style={TABLE_STYLE.actionBtn(C.danger)}
+                                            title={t('حذف')}
+                                        >
+                                            {isActionLoading === row.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
+                                        </button>
+                                    )}
+                                </div>
+                            )
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filteredDeductions}
+                            emptyIcon={ShieldAlert}
+                            emptyMessage={searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد خصومات مسجلة')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
+                                    {t('جاري التحميل...')}
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 {/* MODAL: New Deduction */}
                 <AppModal

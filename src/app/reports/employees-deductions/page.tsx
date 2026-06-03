@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -76,6 +78,38 @@ export default function EmployeesDeductionsPage() {
 
     useEffect(() => { fetchReport(); }, []);
 
+    const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase()) || r.reason.toLowerCase().includes(q.toLowerCase())) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('الموظف'),
+            cell: (row: DeductionRecord) => row.employeeName,
+            style: { fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: DeductionRecord) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('نوع الخصم'),
+            cell: (row: DeductionRecord) => (
+                <span style={{ fontSize: '10px', fontWeight: 600, color: typeColors[row.type], fontFamily: CAIRO }}>{typeLabels[row.type]}</span>
+            )
+        },
+        {
+            header: t('السبب'),
+            cell: (row: DeductionRecord) => row.reason,
+            style: { fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }
+        },
+        {
+            header: t('القيمة'),
+            type: 'number' as const,
+            cell: (row: DeductionRecord) => <>-<Currency amount={row.amount} /></>,
+            style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -111,39 +145,14 @@ export default function EmployeesDeductionsPage() {
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                    {[t('الموظف'), t('التاريخ'), t('نوع الخصم'), t('السبب'), t('القيمة')].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px',  fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data?.records.filter(r => r.employeeName.includes(q) || r.reason.includes(q)).map((r) => (
-                                    <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
-                                        <td style={{ padding: '14px 20px' }}>
-                                            <span style={{ fontSize: '10px', fontWeight: 600, color: typeColors[r.type], fontFamily: CAIRO }}>{typeLabels[r.type]}</span>
-                                        </td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{r.reason}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.amount} /></td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={filtered}
+                        emptyIcon={AlertTriangle}
+                        emptyMessage={t('لا توجد سجلات خصومات حالياً')}
+                    />
                 )}
             </div>
-            <style>{`
-                input::-webkit-calendar-picker-indicator {
-                    filter: invert(1) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.7);
-                    cursor: pointer;
-                }
-            `}</style>
         </DashboardLayout>
     );
 }
-

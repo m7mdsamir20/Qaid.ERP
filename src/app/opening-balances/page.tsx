@@ -8,6 +8,8 @@ import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, SEARCH_ST
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { useTranslation } from '@/lib/i18n';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 
@@ -360,89 +362,120 @@ export default function OpeningBalancesPage() {
                         </div>
 
                         {/* Table - Standard Design */}
-                        <div style={TABLE_STYLE.container}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead style={TABLE_STYLE.thead}>
-                                    <tr>
-                                        {[t('الكود المحاسبي'), t('اسم الحساب'), t('النوع'), t('الطبيعة'), t('مدين'), t('دائن')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(false, true)}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
-                                    ) : filtered.map((account: Account, idx: number) => {
-                                        const balance = balances.get(account.id) || { debit: 0, credit: 0 };
+                        {(() => {
+                            const columns: TableColumn[] = [
+                                {
+                                    header: t('الكود المحاسبي'),
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Account) => {
+                                        const natureColor = row.nature === 'debit' ? C.success : C.danger;
+                                        return (
+                                            <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{row.code}</span>
+                                        );
+                                    }
+                                },
+                                {
+                                    header: t('اسم الحساب'),
+                                    cell: (row: Account) => (
+                                        <span style={{ fontWeight: 600 }}>{row.name}</span>
+                                    )
+                                },
+                                {
+                                    header: t('النوع'),
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Account) => {
+                                        const tColor = C.primary;
+                                        return (
+                                            <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
+                                                {typeLabels[row.type]}
+                                            </span>
+                                        );
+                                    }
+                                },
+                                {
+                                    header: t('الطبيعة'),
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Account) => {
+                                        const natureColor = row.nature === 'debit' ? C.success : C.danger;
+                                        return (
+                                            <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
+                                                {row.nature === 'debit' ? t('مدين') : t('دائن')}
+                                            </span>
+                                        );
+                                    }
+                                },
+                                {
+                                    header: t('مدين'),
+                                    style: { width: '160px', textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Account) => {
+                                        const balance = balances.get(row.id) || { debit: 0, credit: 0 };
                                         const hasDr   = balance.debit  > 0;
                                         const hasCr   = balance.credit > 0;
-                                        const tColor  = C.primary;
-                                        const natureColor = account.nature === 'debit' ? C.success : C.danger;
-                                        
                                         return (
-                                            <tr key={account.id}
-                                                style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                                                onMouseLeave={e => e.currentTarget.style.background  = 'rgba(0,0,0,0.15)'}>
-                                                <td style={TABLE_STYLE.td(true, true)}>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{account.code}</span>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(true, true),  fontWeight: 600 }}>{account.name}</td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
-                                                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
-                                                        {typeLabels[account.type]}
-                                                    </span>
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
-                                                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
-                                                        {account.nature === 'debit' ? t('مدين') : t('دائن')}
-                                                    </span>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
-                                                    <PriceInput 
-                                                        value={hasDr ? balance.debit : ''} 
-                                                        onChange={val => handleChange(account.id, 'debit', val)}
-                                                        disabled={hasCr || isReadlyOnly}
-                                                        style={{ 
-                                                            borderColor: hasDr ? `${C.success}50` : C.border, 
-                                                            color: C.textPrimary, 
-                                                            background: hasDr ? `${C.success}05` : 'transparent',
-                                                        }}
-                                                    />
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
-                                                    <PriceInput 
-                                                        value={hasCr ? balance.credit : ''} 
-                                                        onChange={val => handleChange(account.id, 'credit', val)}
-                                                        disabled={hasDr || isReadlyOnly}
-                                                        style={{ 
-                                                            borderColor: hasCr ? `${C.danger}50` : C.border, 
-                                                            color: C.textPrimary, 
-                                                            background: hasCr ? `${C.danger}05` : 'transparent',
-                                                        }}
-                                                    />
-                                                </td>
-                                            </tr>
+                                            <PriceInput 
+                                                value={hasDr ? balance.debit : ''} 
+                                                onChange={val => handleChange(row.id, 'debit', val)}
+                                                disabled={hasCr || isReadlyOnly}
+                                                style={{ 
+                                                    borderColor: hasDr ? `${C.success}50` : C.border, 
+                                                    color: C.textPrimary, 
+                                                    background: hasDr ? `${C.success}05` : 'transparent',
+                                                }}
+                                            />
                                         );
-                                    })}
-                                </tbody>
-                                <tfoot>
+                                    }
+                                },
+                                {
+                                    header: t('دائن'),
+                                    style: { width: '160px', textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Account) => {
+                                        const balance = balances.get(row.id) || { debit: 0, credit: 0 };
+                                        const hasDr   = balance.debit  > 0;
+                                        const hasCr   = balance.credit > 0;
+                                        return (
+                                            <PriceInput 
+                                                value={hasCr ? balance.credit : ''} 
+                                                onChange={val => handleChange(row.id, 'credit', val)}
+                                                disabled={hasDr || isReadlyOnly}
+                                                style={{ 
+                                                    borderColor: hasCr ? `${C.danger}50` : C.border, 
+                                                    color: C.textPrimary, 
+                                                    background: hasCr ? `${C.danger}05` : 'transparent',
+                                                }}
+                                            />
+                                        );
+                                    }
+                                }
+                            ];
+
+                            const footer = (
+                                <>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
-                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 600, color: C.warning,  fontFamily: CAIRO }}>
+                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 600, color: C.warning, fontFamily: CAIRO }}>
                                                 <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> {t('يرجى مراجعة المدخلات - القيد غير متوازن')}
                                             </td>
-                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '13px', fontWeight: 600, color: C.warning, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(Math.abs(difference))}</td>
+                                            <td colSpan={2} style={{ padding: '10px 20px', fontSize: '13px', fontWeight: 600, color: C.warning, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
                                     )}
-                                </tfoot>
-                            </table>
-                        </div>
+                                </>
+                            );
+
+                            return (
+                                <DataTable
+                                    columns={columns}
+                                    data={filtered}
+                                    emptyIcon={Wallet}
+                                    emptyMessage={t('لا توجد نتائج مطابقة لعملية البحث')}
+                                    footer={footer}
+                                />
+                            );
+                        })()}
                     </>
                 )}
             </div>

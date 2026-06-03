@@ -1,22 +1,23 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
+import { useSession } from 'next-auth/react';
+import DashboardLayout from '@/components/DashboardLayout';
+import { BarChart3, Printer, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package } from 'lucide-react';
+import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import { useCurrency } from '@/hooks/useCurrency';
+import CustomSelect from '@/components/CustomSelect';
+import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
 };
-import { useSession } from 'next-auth/react';
-import DashboardLayout from '@/components/DashboardLayout';
-import { BarChart3, Printer, Loader2, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package } from 'lucide-react';
-import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
-import PageHeader from '@/components/PageHeader';
-import { useCurrency } from '@/hooks/useCurrency';
-import CustomSelect from '@/components/CustomSelect';
-import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
 
 const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => formatNumber(n);
@@ -74,7 +75,7 @@ export default function InstallmentReportsPage() {
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [activeTab, setActiveTab] = useState<InstallmentTab>('collection');
     const [customers, setCustomers] = useState<CustomerOption[]>([]);
     const [data, setData] = useState<InstallmentReportData | null>(null);
@@ -122,7 +123,6 @@ export default function InstallmentReportsPage() {
         if (!tables.length) return;
 
         const tablesHTML = tables.map(t => {
-            // كود تنظيف بسيط للجداول قبل الطباعة لضمان المظهر الرسمي
             const clone = t.cloneNode(true) as HTMLTableElement;
             return clone.outerHTML;
         }).join('<div style="height:20px"></div>');
@@ -158,11 +158,166 @@ export default function InstallmentReportsPage() {
         { id: 'customer', label: t('كشف حساب عميل'), icon: FileText, sub: t('سجل الأقساط التاريخي') },
     ];
 
+    const collectionColumns: TableColumn[] = [
+        {
+            header: t('تاريخ العملية'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
+                    {row.paidAt ? fmt(row.paidAt, lang) : '—'}
+                </span>
+            )
+        },
+        {
+            header: t('العميل'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                    {row.plan?.customer?.name}
+                </span>
+            )
+        },
+        {
+            header: t('البيان'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.textSecondary }}>
+                    {t('قسط رقم')} {row.installmentNo}
+                </span>
+            )
+        },
+        {
+            header: t('رقم الخطة'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
+                    #{row.plan?.planNumber}
+                </span>
+            )
+        },
+        {
+            header: t('المبلغ المحصّل'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.paidAmount || 0)}
+                </span>
+            )
+        }
+    ];
+
+    const overdueColumns: TableColumn[] = [
+        {
+            header: t('العميل'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                    {row.plan?.customer?.name}
+                </span>
+            )
+        },
+        {
+            header: t('رقم الخطة'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
+                    #{row.plan?.planNumber}
+                </span>
+            )
+        },
+        {
+            header: t('القسط'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.textSecondary }}>
+                    {t('قسط')} {row.installmentNo}
+                </span>
+            )
+        },
+        {
+            header: t('موعد الاستحقاق'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fmt(row.dueDate, lang)}
+                </span>
+            )
+        },
+        {
+            header: t('أيام التأخير'),
+            cell: (row: InstallmentRow) => (
+                <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 600, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
+                    {row.daysOverdue} {t('يوم تأخير')}
+                </div>
+            )
+        },
+        {
+            header: t('المبلغ المتبقي'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.remaining || 0)}
+                </span>
+            )
+        }
+    ];
+
+    const getCustomerColumns = (): TableColumn[] => [
+        {
+            header: t('م'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
+                    {row.installmentNo}
+                </span>
+            )
+        },
+        {
+            header: t('تاريخ الاستحقاق'),
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fmt(row.dueDate, lang)}
+                </span>
+            )
+        },
+        {
+            header: t('مبلغ القسط'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.amount)}
+                </span>
+            )
+        },
+        {
+            header: t('القيمة المحصلة'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.paidAmount || 0)}
+                </span>
+            )
+        },
+        {
+            header: t('المتبقي'),
+            type: 'number' as const,
+            cell: (row: InstallmentRow) => (
+                <span style={{ color: (row.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.remaining || 0)}
+                </span>
+            )
+        },
+        {
+            header: t('الحالة'),
+            cell: (row: InstallmentRow) => (
+                <div style={{
+                    display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
+                    background: row.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)',
+                    color: row.status === 'paid' ? '#10b981' : C.primary,
+                    border: `1px solid ${row.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)'}`
+                }}>
+                    {row.status === 'paid' ? t('تم التحصيل') : t('قيد الانتظار')}
+                </div>
+            )
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
-                {/* Print Styles */}
                 <style dangerouslySetInnerHTML={{
                     __html: `
                     @media print {
@@ -175,7 +330,6 @@ export default function InstallmentReportsPage() {
                     input[type='date']::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
                 ` }} />
 
-                {/* Header Section */}
                 <div className="no-print">
                     <PageHeader
                         title={t("تقارير الأقساط")}
@@ -184,7 +338,6 @@ export default function InstallmentReportsPage() {
                     />
                 </div>
 
-                {/* Tabs Selector */}
                 <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
                     {tabs.map(tab => {
                         const active = activeTab === tab.id;
@@ -207,7 +360,6 @@ export default function InstallmentReportsPage() {
                     })}
                 </div>
 
-                {/* Filters Section */}
                 <div className="no-print" style={{ ...SC, marginBottom: '24px', position: 'relative' }}>
                     <div style={STitle}><TrendingUp size={16} /> {t('تصفية النتائج واستخراج التقرير')}</div>
 
@@ -261,7 +413,7 @@ export default function InstallmentReportsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={fetchReport} disabled={loading || (activeTab === 'customer' && !customerReport)}
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
-                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} style={{ color: C.primary, }} /> {t('عرض النتائج')}</>}
+                                {loading ? <span className="animate-spin">⌛</span> : <><Search size={18} style={{ color: C.primary }} /> {t('عرض النتائج')}</>}
                             </button>
                             {data && (
                                 <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
@@ -280,10 +432,9 @@ export default function InstallmentReportsPage() {
                     </div>
                 )}
 
-                {/* Results Container */}
                 <div style={{ minHeight: '400px', animation: 'slideUp 0.3s ease-out' }}>
                     {loading ? ( <TableSkeleton /> ) : !data ? (
-                        <div style={{  padding: '120px 0', color: C.textSecondary }}>
+                        <div style={{  padding: '120px 0', color: C.textSecondary, textAlign: 'center'}}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />
                             </div>
@@ -292,7 +443,6 @@ export default function InstallmentReportsPage() {
                     ) : (
                         <div className="report-content">
 
-                            {/* Detailed Sections based on Tab */}
                             {activeTab === 'collection' && (
                                 <>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', padding: '20px', background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(16,185,129,0.05))', borderRadius: '16px', border: '1px solid rgba(16,185,129,0.2)' }}>
@@ -315,32 +465,12 @@ export default function InstallmentReportsPage() {
 
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة العمليات المسجلة')}</div>
-                                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
-                                                <thead>
-                                                    <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => {
-                                                            const isCenter = i === 0 || i === 3 || i === 4;
-                                                            const alignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
-                                                            return (
-                                                                <th key={i} className={alignClass} style={{ padding: '16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                                            );
-                                                        })}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {data.installments?.map((inst, idx: number) => (
-                                                        <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
-                                                            <td className="table-cell-text" style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td className="table-cell-text" style={{ padding: '16px', color: C.textSecondary }}>{t('قسط رقم')} {inst.installmentNo}</td>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <DataTable
+                                            columns={collectionColumns}
+                                            data={data.installments || []}
+                                            emptyIcon={BarChart3}
+                                            emptyMessage={t('لا توجد أقساط محصلة')}
+                                        />
                                     </div>
                                 </>
                             )}
@@ -367,50 +497,24 @@ export default function InstallmentReportsPage() {
 
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة الأقساط المتجاوزة للموعد')}</div>
-                                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
-                                                <thead>
-                                                    <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => {
-                                                            const isCenter = i === 1 || i === 3 || i === 4 || i === 5;
-                                                            const alignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
-                                                            return (
-                                                                <th key={i} className={alignClass} style={{ padding: '16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                                            );
-                                                        })}
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {data.installments?.map((inst, idx: number) => (
-                                                        <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td className="table-cell-text" style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td className="table-cell-text" style={{ padding: '16px', color: C.textSecondary }}>{t('قسط')} {inst.installmentNo}</td>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
-                                                            <td className="table-cell-center" style={{ padding: '16px' }}>
-                                                                <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 600, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
-                                                                    {inst.daysOverdue} {t('يوم تأخير')}
-                                                                </div>
-                                                            </td>
-                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        <DataTable
+                                            columns={overdueColumns}
+                                            data={data.installments || []}
+                                            emptyIcon={AlertTriangle}
+                                            emptyMessage={t('لا توجد أقساط متجاوزة للموعد')}
+                                        />
                                     </div>
                                 </>
                             )}
 
                             {activeTab === 'customer' && (
                                 <>
-                                    {/* Financial Dashboard Overlay */}
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
                                         {[
                                             { label: t('عدد الخطط المعقدة'), value: data.summary?.totalPlans, icon: Package, color: C.primary },
-                                            { label: t('إجمالي قيمة التعاقدات'), value: fmtN(data.summary?.totalAmount || 0), icon: DollarSign, color: C.primary, suffix: cSymbol },
-                                            { label: t('إجمالي ما تم سداده'), value: fmtN(data.summary?.totalPaid || 0), icon: CheckCircle2, color: '#10b981', suffix: cSymbol },
-                                            { label: t('صافي الرصيد المستحق'), value: fmtN(data.summary?.totalRemaining || 0), icon: Wallet, color: C.warning, fontWeight: 600, suffix: cSymbol },
+                                            { label: t('إجمالي قيمة التعاقدات'), value: fmtN(data.summary?.totalAmount || 0), icon: DollarSign, color: C.primary, suffix: getCurrencyName(currency) },
+                                            { label: t('إجمالي ما تم سداده'), value: fmtN(data.summary?.totalPaid || 0), icon: CheckCircle2, color: '#10b981', suffix: getCurrencyName(currency) },
+                                            { label: t('صافي الرصيد المستحق'), value: fmtN(data.summary?.totalRemaining || 0), icon: Wallet, color: C.warning, fontWeight: 600, suffix: getCurrencyName(currency) },
                                         ].map((s, i) => (
                                             <div key={i} style={{ ...SC, padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', border: `1px solid ${s.color}20` }}>
                                                 <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -426,7 +530,6 @@ export default function InstallmentReportsPage() {
                                         ))}
                                     </div>
 
-                                    {/* Plans Timeline */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                                         {data.plans?.map((plan) => (
                                             <div key={plan.id} style={{ ...SC, padding: 0, overflow: 'hidden' }}>
@@ -442,38 +545,12 @@ export default function InstallmentReportsPage() {
                                                         {fMoneyJSX(plan.grandTotal)}
                                                     </div>
                                                 </div>
-                                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: CAIRO }}>
-                                                        <thead>
-                                                            <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
-                                                                {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} className="table-cell-center" style={{ padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                                                ))}
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {plan.installments?.map((inst, idx: number) => (
-                                                                <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{inst.installmentNo}</td>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.amount)}</td>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
-                                                                    <td className="table-cell-center" style={{ padding: '12px 24px' }}>
-                                                                        <div style={{
-                                                                            display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
-                                                                            background: inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)',
-                                                                            color: inst.status === 'paid' ? '#10b981' : C.primary,
-                                                                            border: `1px solid ${inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)'}`
-                                                                        }}>
-                                                                            {inst.status === 'paid' ? t('تم التحصيل') : t('قيد الانتظار')}
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                <DataTable
+                                                    columns={getCustomerColumns()}
+                                                    data={plan.installments || []}
+                                                    emptyIcon={Package}
+                                                    emptyMessage={t('لا توجد أقساط مسجلة لهذه الخطة')}
+                                                />
                                             </div>
                                         ))}
                                     </div>
@@ -490,8 +567,3 @@ export default function InstallmentReportsPage() {
         </DashboardLayout>
     );
 }
-
-
-
-
-

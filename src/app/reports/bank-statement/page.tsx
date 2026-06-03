@@ -1,9 +1,11 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -50,6 +52,18 @@ interface MovementWithBalance extends StatementMovement {
     balanceAfter: number;
 }
 
+interface BankStatementTableItem {
+    isOpeningBalance?: boolean;
+    id: string;
+    date: string;
+    party: string;
+    description: string;
+    amount: number;
+    type: string;
+    balanceBefore: number;
+    balanceAfter: number;
+}
+
 interface SummaryCard {
     label: string;
     value: number;
@@ -59,7 +73,6 @@ interface SummaryCard {
 }
 
 export default function BankStatementPage() {
-    const { fMoney, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
@@ -112,6 +125,7 @@ export default function BankStatementPage() {
             return { ...m, balanceBefore: before, balanceAfter: running };
         });
     })() : [];
+
     const totalReceipts = data?.movements.reduce((sum, m) => (m.type === 'receipt' ? sum + m.amount : sum), 0) || 0;
     const totalPayments = data?.movements.reduce((sum, m) => (m.type === 'payment' ? sum + m.amount : sum), 0) || 0;
     const sym = getCurrencyName(currency);
@@ -145,6 +159,92 @@ export default function BankStatementPage() {
         );
     };
 
+    const tableData: BankStatementTableItem[] = [];
+    if (data) {
+        tableData.push({
+            isOpeningBalance: true,
+            id: 'opening-balance',
+            date: '',
+            party: t('رصيد منقول (قبل الفترة المستعرضة)'),
+            description: '',
+            amount: 0,
+            type: '',
+            balanceBefore: 0,
+            balanceAfter: data.openingBalance
+        });
+        tableData.push(...movements);
+    }
+
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ'),
+            cell: (row: BankStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return new Date(row.date).toLocaleDateString('en-GB');
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('بيان العملية / التحويل'),
+            cell: (row: BankStatementTableItem) => {
+                if (row.isOpeningBalance) {
+                    return <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.party}</span>;
+                }
+                return (
+                    <>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.party}</div>
+                        <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>{row.description}</div>
+                    </>
+                );
+            },
+            style: { minWidth: '150px' }
+        },
+        {
+            header: t('الرصيد قبل'),
+            cell: (row: BankStatementTableItem) => {
+                if (row.isOpeningBalance) return '—';
+                return <Currency amount={row.balanceBefore} />;
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('إيداع (+)'),
+            type: 'number' as const,
+            cell: (row: BankStatementTableItem) => {
+                if (row.isOpeningBalance) return '—';
+                return row.type === 'receipt' ? <Currency amount={row.amount} /> : '—';
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: SC, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('سحب (-)'),
+            type: 'number' as const,
+            cell: (row: BankStatementTableItem) => {
+                if (row.isOpeningBalance) return '—';
+                return row.type === 'payment' ? <Currency amount={row.amount} /> : '—';
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: DC, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد بعد'),
+            type: 'number' as const,
+            cell: (row: BankStatementTableItem) => {
+                const color = row.balanceAfter >= 0 ? SC : DC;
+                return <Currency amount={row.balanceAfter} style={{ color }} />;
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.01)' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={3} style={{ padding: '20px 24px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('تحليل الحركة البنكية الكلية')}</td>
+            <td style={{ padding: '20px 20px', color: SC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>+<Currency amount={totalReceipts} /></td>
+            <td style={{ padding: '20px 20px', color: DC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>-<Currency amount={totalPayments} /></td>
+            <td style={{ padding: '20px 24px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}><Currency amount={data.currentBalance} /></td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -158,7 +258,6 @@ export default function BankStatementPage() {
                     printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
                     onExportExcel={exportToExcel}
                 />
-
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0 }}>
                     <div style={{ flex: 1, position: 'relative' }}>
@@ -197,7 +296,7 @@ export default function BankStatementPage() {
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                            {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={16} />} 
                             {t('تحديث التقرير')}
                         </button>
                     </div>
@@ -228,7 +327,7 @@ export default function BankStatementPage() {
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>
                                         </div>
                                         <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
                                     </div>
@@ -239,64 +338,28 @@ export default function BankStatementPage() {
                             ))}
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('التاريخ'), t('بيان العملية / التحويل'), t('الرصيد قبل'), t('إيداع (+)'), t('سحب (-)'), t('الرصيد بعد')].map((h, i) => (
-                                                <th key={i} style={{
-                                                    padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,
-                                                    
-                                                    fontWeight: 700, fontFamily: CAIRO
-                                                }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px',   fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد منقول (قبل الفترة المستعرضة)')}</td>
-                                            <td style={{ padding: '14px 20px',   color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center',  color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px',   color: C.textSecondary }}>—</td>
-                                            <td style={{ padding: '14px 20px',   fontWeight: 600, color: data.openingBalance >= 0 ? SC : DC, fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(data.openingBalance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        </tr>
-                                        {movements.map((m, i: number) => (
-                                            <tr key={m.id + i} 
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {new Date(m.date).toLocaleDateString('en-GB')}
-                                                </td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{m.party}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary,  fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(m.balanceBefore)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px',   color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{m.type === 'receipt' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{m.type === 'payment' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '13px', fontFamily: OUTFIT, background: 'rgba(255,255,255,0.01)' }}>{formatNumber(m.balanceAfter)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                    <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
-                                        <tr>
-                                            <td colSpan={3} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('تحليل الحركة البنكية الكلية')}</td>
-                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>+{fMoneyJSX(totalReceipts)}</td>
-                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>-{fMoneyJSX(totalPayments)}</td>
-                                            <td style={{ padding: '20px 24px',  color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>{formatNumber(data.currentBalance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={tableData}
+                            emptyIcon={Landmark}
+                            emptyMessage={t('لا توجد حركات بنكية مسجلة للفترة المحددة')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            
+            <style>{`
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    .stat-value { font-size: 11px !important; color: #000 !important; }
+                    .stat-label { font-size: 9px !important; color: #666 !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p, small { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                }
+            `}</style>
         </DashboardLayout>
     );
 }
-
-

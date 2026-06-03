@@ -1,10 +1,13 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, IS, OUTFIT } from '@/constants/theme';
+import { C, CAIRO, IS, OUTFIT, PAGE_BASE } from '@/constants/theme';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Search, FileText, Loader2 } from 'lucide-react';
@@ -47,8 +50,11 @@ export default function RevenuesReportPage() {
             const res = await fetch(`/api/reports/revenues-report?${params}`);
             if (!res.ok) { const err = await res.json(); alert(err.error || t('فشل في استخراج التقرير')); return; }
             setData(await res.json());
-        } catch { alert(t('فشل الاتصال بالخادم')); }
-        finally { setLoading(false); }
+        } catch { 
+            alert(t('فشل الاتصال بالخادم')); 
+        } finally { 
+            setLoading(false); 
+        }
     };
 
     const exportToExcel = () => {
@@ -67,9 +73,56 @@ export default function RevenuesReportPage() {
         XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم القيد'),
+            cell: (row: RevenueRow) => `#${row.entryNumber}`,
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: RevenueRow) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('البيان'),
+            cell: (row: RevenueRow) => row.description,
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary }
+        },
+        {
+            header: t('حساب الإيراد'),
+            cell: (row: RevenueRow) => row.revenueAccountName,
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary }
+        },
+        {
+            header: t('المصدر'),
+            cell: (row: RevenueRow) => (
+                <span style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399' }}>
+                    {row.sourceName}
+                </span>
+            ),
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('المبلغ'),
+            type: 'number' as const,
+            cell: (row: RevenueRow) => <Currency amount={row.amount} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: SC, textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={5} style={{ padding: '18px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+            <td style={{ padding: '18px 16px', fontWeight: 600, fontSize: '13px', color: SC, fontFamily: OUTFIT, textAlign: 'center' }}>
+                <Currency amount={data.totalAmount} />
+            </td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, paddingBottom: '60px' }}>
                 <ReportHeader
                     title={t("تقرير الإيرادات الأخرى")}
                     subtitle={t("عرض تفصيلي لجميع الإيرادات الأخرى المسجلة خلال فترة زمنية محددة.")}
@@ -86,18 +139,18 @@ export default function RevenuesReportPage() {
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT,  direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, direction: 'ltr' }} />
                         </div>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('إلى:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT,  direction: 'ltr' }} />
+                                style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, direction: 'ltr' }} />
                         </div>
                     </div>
                     <button className="update-btn" onClick={fetchReport}
                         style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37, 106, 244,0.25)', whiteSpace: 'nowrap' }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+                        {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={16} />}
                         {t('عرض التقرير')}
                     </button>
                 </div>
@@ -123,60 +176,16 @@ export default function RevenuesReportPage() {
                             </div>
                         </div>
 
-                        {/* Table */}
-                        <div className="print-table-container" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}`, boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل الإيرادات')}</h3>
-                            </div>
-                            {data.rows.length === 0 ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد إيرادات في هذه الفترة')}</div>
-                            ) : (
-                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead>
-                                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                {[t('رقم القيد'), t('التاريخ'), t('البيان'), t('حساب الإيراد'), t('المصدر'), t('المبلغ')].map((h, i) => (
-                                                    <th key={i} style={{ padding: '14px 16px', fontSize: '12px',  color: i === 5 ? SC : C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.rows.map((row, idx) => (
-                                                <tr key={row.id}
-                                                    style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                    onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>#{row.entryNumber}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, direction: 'ltr' }}>{new Date(row.date).toLocaleDateString('en-GB')}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.revenueAccountName}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                        <span style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399' }}>
-                                                            {row.sourceName}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ padding: '14px 16px',  fontSize: '13px', fontWeight: 600, color: SC, fontFamily: OUTFIT }}>
-                                                        {formatNumber(Number(row.amount))}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                        <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
-                                            <tr>
-                                                <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px',  fontWeight: 600, fontSize: '13px', color: SC, fontFamily: OUTFIT }}>
-                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={data.rows}
+                            emptyIcon={FileText}
+                            emptyMessage={t('لا توجد إيرادات في هذه الفترة')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            
         </DashboardLayout>
     );
 }

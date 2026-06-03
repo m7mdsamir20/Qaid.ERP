@@ -1,29 +1,20 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { BarChart3, Printer, Loader2, Search, User, FileText, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import { BarChart3, Search, User, FileText, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
+import { C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => formatNumber(n);
-
-
-const LS: React.CSSProperties = {
-    display: 'block', fontSize: '11px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px'
-};
 
 interface CustomerOption {
     id: string;
@@ -62,13 +53,11 @@ interface CustomerStatementData {
 }
 
 export default function CustomerStatementReportPage() {
-    const { lang, t } = useTranslation();
-    const isRtl = lang === 'ar';
     return (
         <React.Suspense fallback={
             <DashboardLayout>
                 <div style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Loader2 size={32} className="animate-spin" style={{ color: C.primary }} />
+                    <div className="animate-spin" style={{ fontSize: '24px' }}>⌛</div>
                 </div>
             </DashboardLayout>
         }>
@@ -109,6 +98,66 @@ function CustomerStatementReportContent() {
         } finally { setLoading(false); }
     };
 
+    const getCurrencyName = (code: string) => {
+        const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+        return map[code] || code;
+    };
+
+    const getColumns = (): TableColumn[] => [
+        {
+            header: t('م'),
+            type: 'number' as const,
+            cell: (row: StatementInstallment) => (
+                <span style={{ color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {row.installmentNo}
+                </span>
+            )
+        },
+        {
+            header: t('الاستحقاق'),
+            cell: (row: StatementInstallment) => (
+                <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {fmt(row.dueDate)}
+                </span>
+            )
+        },
+        {
+            header: t('المبلغ'),
+            type: 'number' as const,
+            cell: (row: StatementInstallment) => (
+                <span style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {fmtN(row.amount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                </span>
+            )
+        },
+        {
+            header: t('المدفوع'),
+            type: 'number' as const,
+            cell: (row: StatementInstallment) => (
+                <span style={{ color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {fmtN(row.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                </span>
+            )
+        },
+        {
+            header: t('المتبقي'),
+            type: 'number' as const,
+            cell: (row: StatementInstallment) => (
+                <span style={{ color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {fmtN(row.remaining || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                </span>
+            )
+        },
+        {
+            header: t('الحالة'),
+            cell: (row: StatementInstallment) => (
+                <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: row.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: row.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: row.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
+                    {row.status === 'paid' ? t('مدفوع') : t('غير مسدد')}
+                </span>
+            )
+        }
+    ];
+
     return (
         <DashboardLayout>
         <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -147,7 +196,7 @@ function CustomerStatementReportContent() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                     boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', opacity: !selectedCustomer ? 0.6 : 1
                 }}>
-                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+                    {loading ? <span className="animate-spin">⌛</span> : <Search size={16} />}
                     {t('عرض كشف الحساب')}
                 </button>
             </div>
@@ -211,39 +260,13 @@ function CustomerStatementReportContent() {
                                         </div>
                                     </div>
                                 </div>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr>
-                                            {[t('م'), t('الاستحقاق'), t('المبلغ'), t('المدفوع'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                <th key={i} className="table-cell-center" style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(plan.installments || []).map((inst) => (
-                                            <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: 'background 0.2s' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{inst.installmentNo}</td>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.amount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                </td>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                </td>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                </td>
-                                                <td className="table-cell-center" style={{ padding: '12px 16px' }}>
-                                                    <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
-                                                        {inst.status === 'paid' ? t('مدفوع') : t('غير مسدد')}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+
+                                <DataTable
+                                    columns={getColumns()}
+                                    data={plan.installments || []}
+                                    emptyIcon={FileText}
+                                    emptyMessage={t('لا توجد أقساط مسجلة لهذه الخطة')}
+                                />
                             </div>
                         ))}
                         </div>
@@ -254,4 +277,3 @@ function CustomerStatementReportContent() {
         </DashboardLayout>
     );
 }
-

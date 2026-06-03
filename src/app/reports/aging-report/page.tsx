@@ -1,5 +1,7 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
@@ -8,7 +10,7 @@ import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Search, Loader2, Phone, FileText, AlertTriangle, Printer, Clock, ArrowRightLeft, Calendar, TrendingUp, TrendingDown, History, UserCircle, Download } from 'lucide-react';
+import { Search, Phone, Clock, AlertTriangle, TrendingDown, History } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -102,6 +104,78 @@ export default function AgingReportPage() {
         XLSX.writeFile(wb, `تقرير_أعمار_الديون_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم الفاتورة'),
+            cell: (row: AgingInvoice) => (
+                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
+                    SAL-{String(row.invoiceNumber).padStart(4, '0')}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('تاريخ الإصدار'),
+            cell: (row: AgingInvoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('العميل المستحق'),
+            cell: (row: AgingInvoice) => (
+                <>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.customer}</div>
+                    {row.phone && <div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '4px', fontFamily: OUTFIT, marginTop: '2px' }}><Phone size={10} /> {row.phone}</div>}
+                </>
+            ),
+            style: { minWidth: '150px' }
+        },
+        {
+            header: t('عمر الدين'),
+            cell: (row: AgingInvoice) => (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{row.ageDays}</span>
+                    <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textSecondary }}>{t('يوم متأخر')}</span>
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('المبلغ المتبقي'),
+            type: 'number' as const,
+            cell: (row: AgingInvoice) => (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '4px' }}>
+                    <span style={{ fontWeight: 600, color: '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(row.remaining)}</span>
+                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span>
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('حالة التصنيف'),
+            cell: (row: AgingInvoice) => (
+                <span style={{
+                    padding: '5px 12px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
+                    background: row.ageDays > 90 ? 'rgba(239, 68, 68, 0.1)' : row.ageDays > 60 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                    color: row.ageDays > 90 ? '#ef4444' : row.ageDays > 60 ? '#f59e0b' : '#10b981',
+                    border: `1px solid ${row.ageDays > 90 ? '#ef444422' : row.ageDays > 60 ? '#f59e0b22' : '#10b98122'}`
+                }}>
+                    {row.ageDays > 90 ? t('متأخر جداً') : row.ageDays > 60 ? t('حذر') : t('اعتيادي')}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={4} style={{ padding: '20px 24px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
+            <td style={{ padding: '20px 20px', color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>
+                {formatNumber(filtered.reduce((s, i) => s + i.remaining, 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span>
+            </td>
+            <td style={{ padding: '20px 24px' }}></td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -109,10 +183,8 @@ export default function AgingReportPage() {
                     title={t("تقرير أعمار الديون")}
                     subtitle={t("تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل.")}
                     backTab="partners"
-                    
                     onExportExcel={exportToExcel}
                 />
-
 
                 {/* Summary Cards */}
                 {buckets && (
@@ -132,7 +204,7 @@ export default function AgingReportPage() {
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                        <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                        <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>
                                     </div>
                                     <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.count} {t('فاتورة')} | {s.sign}</div>
                                 </div>
@@ -171,85 +243,16 @@ export default function AgingReportPage() {
                     )}
                 </div>
 
-                {loading ? ( <TableSkeleton /> ) : filtered.length === 0 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                        <FileText size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير مطابقة')}</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('لم يتم العثور على مديونيات متأخرة حالياً في النظام.')}</p>
-                    </div>
-                ) : (
-                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('رقم الفاتورة'), t('تاريخ الإصدار'), t('العميل المستحق'), t('عمر الدين'), t('المبلغ المتبقي'), t('حالة التصنيف')].map((h, i) => (
-                                            <th key={i} style={{ 
-                                                padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
-                                                 
-                                                fontWeight: 600, fontFamily: CAIRO 
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((inv, idx) => (
-                                        <tr key={inv.id} 
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
-                                                    SAL-{String(inv.invoiceNumber).padStart(4, '0')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                {new Date(inv.date).toLocaleDateString('en-GB')}
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer}</div>
-                                                {inv.phone && <div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '4px', fontFamily: OUTFIT, marginTop: '2px' }}><Phone size={10} /> {inv.phone}</div>}
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  }}>
-                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{inv.ageDays}</span>
-                                                    <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textSecondary }}>{t('يوم متأخر')}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '4px' }}>
-                                                    <span style={{ fontWeight: 600, color: '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(inv.remaining)}</span>
-                                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                <span style={{
-                                                    padding: '5px 12px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
-                                                    background: inv.ageDays > 90 ? 'rgba(239, 68, 68, 0.1)' : inv.ageDays > 60 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                                                    color: inv.ageDays > 90 ? '#ef4444' : inv.ageDays > 60 ? '#f59e0b' : '#10b981',
-                                                    border: `1px solid ${inv.ageDays > 90 ? '#ef444422' : inv.ageDays > 60 ? '#f59e0b22' : '#10b98122'}`
-                                                }}>
-                                                    {inv.ageDays > 90 ? t('متأخر جداً') : inv.ageDays > 60 ? t('حذر') : t('اعتيادي')}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(filtered.reduce((s, i) => s + i.remaining, 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '20px 24px' }}></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                )}
+                <DataTable
+                    columns={columns}
+                    data={filtered}
+                    emptyIcon={Clock}
+                    emptyMessage={t('لم يتم العثور على مديونيات متأخرة حالياً في النظام')}
+                    isLoading={loading}
+                    footer={footerElement}
+                />
             </div>
             <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
                 .print-only { display: none; }
                 @media print {
                     .print-only { display: block !important; }
@@ -262,4 +265,3 @@ export default function AgingReportPage() {
         </DashboardLayout>
     );
 }
-

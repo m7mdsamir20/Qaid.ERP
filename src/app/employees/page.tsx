@@ -10,6 +10,8 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE, SC, IS, focusIn, focusOut } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 /* ── Types ── */
 interface Department { id: string; name: string; }
@@ -197,107 +199,116 @@ export default function EmployeesPage() {
                 </div>
 
                 {/* Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? ( <TableSkeleton /> ) : filteredEmployees.length === 0 ? (
-                        <div style={{ padding: '100px 20px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-                                <UsersIcon size={40} style={{ color: C.textSecondary }} />
-                            </div>
-                            <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 8px' }}>{t('لا توجد نتائج')}</h3>
-                            <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المنصب والقسم')}</th>
-                                        <th className="hide-mobile" style={TABLE_STYLE.th(false, true)}>{t('تاريخ التعيين')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('صافي الراتب')}</th>
-                                        <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredEmployees.map((emp, i) => {
-                                        const empNet = emp.basicSalary + (emp.housingAllowance || 0) + (emp.transportAllowance || 0) + (emp.foodAllowance || 0) - (emp.insuranceDeduction || 0) - (emp.taxDeduction || 0);
-                                        return (
-                                            <tr
-                                                key={emp.id}
-                                                style={TABLE_STYLE.row(i === filteredEmployees.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, color: C.primary, opacity: 0.65, fontFamily: OUTFIT, fontSize: '12px' }}>
-                                                    {emp.code}
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{emp.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'center' }}>{emp.email || '—'}</div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{emp.position || '—'}</div>
-                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
-                                                        <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
-                                                    </div>
-                                                </td>
-                                                <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
-                                                        {new Date(emp.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    <div style={{ fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
-                                                        {fMoneyJSX(empNet)}
-                                                    </div>
-                                                </td>
-                                                <td className="hide-mobile" style={TABLE_STYLE.td(false, true)}>
-                                                    <div style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
-                                                        background: emp.status === 'active' ? '#10b98115' : '#ef444415',
-                                                        color: emp.status === 'active' ? '#10b981' : '#ef4444',
-                                                        border: `1px solid ${emp.status === 'active' ? '#10b98130' : '#ef444430'}`
-                                                    }}>
-                                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                                        {emp.status === 'active' ? t('نشط') : t('متوقف')}
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                                        <button
-                                                            onClick={() => router.push(`/employees/${emp.id}`)}
-                                                            style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        >
-                                                            <Eye size={14} />
-                                                        </button>
-                                                        <button
-                                                            onClick={() => router.push(`/employees/${emp.id}/edit`)}
-                                                            style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        >
-                                                            <Pencil size={14} />
-                                                        </button>
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                setEmployeeToDelete(emp);
-                                                            }}
-                                                            style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${THEME.colors.danger}40`, background: `${THEME.colors.danger}10`, color: THEME.colors.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                {/* Table Section */}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الكود'),
+                            style: { fontWeight: 600, color: C.primary, opacity: 0.65, fontFamily: OUTFIT, fontSize: '12px' } as React.CSSProperties,
+                            cell: (row: Employee) => row.code
+                        },
+                        {
+                            header: t('الموظف'),
+                            cell: (row: Employee) => (
+                                <>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{row.name}</div>
+                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'center' }}>{row.email || '—'}</div>
+                                </>
+                            )
+                        },
+                        {
+                            header: t('المنصب والقسم'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Employee) => (
+                                <>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.position || '—'}</div>
+                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
+                                        <Building2 size={12} /> {row.department?.name || t('غير مصنف')}
+                                    </div>
+                                </>
+                            )
+                        },
+                        {
+                            header: t('تاريخ التعيين'),
+                            className: 'hide-mobile',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Employee) => (
+                                <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
+                                    {new Date(row.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('صافي الراتب'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Employee) => {
+                                const empNet = row.basicSalary + (row.housingAllowance || 0) + (row.transportAllowance || 0) + (row.foodAllowance || 0) - (row.insuranceDeduction || 0) - (row.taxDeduction || 0);
+                                return (
+                                    <div style={{ fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
+                                        {fMoneyJSX(empNet)}
+                                    </div>
+                                );
+                            }
+                        },
+                        {
+                            header: t('الحالة'),
+                            className: 'hide-mobile',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Employee) => (
+                                <div style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                    padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
+                                    background: row.status === 'active' ? '#10b98115' : '#ef444415',
+                                    color: row.status === 'active' ? '#10b981' : '#ef4444',
+                                    border: `1px solid ${row.status === 'active' ? '#10b98130' : '#ef444430'}`
+                                }}>
+                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
+                                    {row.status === 'active' ? t('نشط') : t('متوقف')}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الإجراءات'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Employee) => (
+                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                    <button
+                                        onClick={() => router.push(`/employees/${row.id}`)}
+                                        style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    >
+                                        <Eye size={14} />
+                                    </button>
+                                    <button
+                                        onClick={() => router.push(`/employees/${row.id}/edit`)}
+                                        style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    >
+                                        <Pencil size={14} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setEmployeeToDelete(row);
+                                        }}
+                                        style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${THEME.colors.danger}40`, background: `${THEME.colors.danger}10`, color: THEME.colors.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                            )
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filteredEmployees}
+                            emptyIcon={UsersIcon}
+                            emptyMessage={searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}
+                            isLoading={loading}
+                            loadingSkeleton={<TableSkeleton />}
+                        />
+                    );
+                })()}
 
                 <style dangerouslySetInnerHTML={{
                     __html: `

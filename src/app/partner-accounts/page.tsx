@@ -11,6 +11,8 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/hooks/useCurrency';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Transaction { id: string; type: string; amount: number; date: string; notes?: string; }
@@ -120,140 +122,146 @@ export default function PartnerAccountsPage() {
                     </div>
                 )}
 
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
-                        <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
-                    </div>
-                ) : partners.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
-                        <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('الشريك')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('نسبة الحصة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('رأس المال')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الرصيد الجاري')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الإيداعات / المسحوبات')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {partners.map((p, idx) => {
-                                    const isExpanded = expanded === p.id;
-                                    const txs = txMap[p.id] || [];
-                                    const deposits = txs.filter(t => ['deposit', 'profit_share', 'capital_increase'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-                                    const withdrawals = txs.filter(t => ['withdrawal', 'capital_decrease'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الشريك'),
+                            cell: (row: Partner) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${C.primary}10`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
+                                        {row.name.charAt(0)}
+                                    </div>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('نسبة الحصة'),
+                            cell: (row: Partner) => row.share + '%',
+                            style: { textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT } as React.CSSProperties
+                        },
+                        {
+                            header: t('رأس المال'),
+                            cell: (row: Partner) => <Currency amount={row.capital} />,
+                            style: { textAlign: 'center', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT } as React.CSSProperties
+                        },
+                        {
+                            header: t('الرصيد الجاري'),
+                            cell: (row: Partner) => <Currency amount={row.balance} />,
+                            style: { textAlign: 'center', fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT } as React.CSSProperties
+                        },
+                        {
+                            header: t('الإيداعات / المسحوبات'),
+                            cell: (row: Partner) => {
+                                const txs = txMap[row.id] || [];
+                                const deposits = txs.filter(t => ['deposit', 'profit_share', 'capital_increase'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+                                const withdrawals = txs.filter(t => ['withdrawal', 'capital_decrease'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+                                return (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>↑ <Currency amount={deposits} showSymbol={false} /></div>
+                                        <div style={{ width: 1, height: 12, background: C.border }} />
+                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>↓ <Currency amount={withdrawals} showSymbol={false} /></div>
+                                    </div>
+                                );
+                            },
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('الإجراءات'),
+                            cell: (row: Partner) => {
+                                const isExpanded = expanded === row.id;
+                                return (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                        <button onClick={() => setShowModal(row)}
+                                            style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}15` }} title={t("إضافة حركة")}>
+                                            <Plus size={14} />
+                                        </button>
+                                        <button onClick={() => toggleExpand(row.id)}
+                                            style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary) }} title={t("كشف حساب")}>
+                                            {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
+                                        </button>
+                                    </div>
+                                );
+                            },
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        }
+                    ];
 
-                                    return (
-                                        <React.Fragment key={p.id}>
-                                            <tr style={TABLE_STYLE.row(idx === partners.length - 1 && !isExpanded)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={TABLE_STYLE.td(true)}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                        <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${C.primary}10`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                            {p.name.charAt(0)}
-                                                        </div>
-                                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{p.share}%</div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={p.capital} /></div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        <Currency amount={p.balance} />
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>↑ <Currency amount={deposits} showSymbol={false} /></div>
-                                                        <div style={{ width: 1, height: 12, background: C.border }} />
-                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>↓ <Currency amount={withdrawals} showSymbol={false} /></div>
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                                        <button onClick={() => setShowModal(p)}
-                                                            style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}15` }} title={t("إضافة حركة")}>
-                                                            <Plus size={14} />
-                                                        </button>
-                                                        <button onClick={() => toggleExpand(p.id)}
-                                                            style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary) }} title={t("كشف حساب")}>
-                                                            {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            {isExpanded && (
-                                                <tr>
-                                                    <td colSpan={6} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
-                                                        <div style={{ padding: '16px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
-                                                            {loadingTx === p.id ? (
-                                                                <div style={{ padding: '20px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                                                    <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
-                                                                </div>
-                                                            ) : txs.length === 0 ? (
-                                                                <div style={{ padding: '12px', color: C.textSecondary, fontSize: '12px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
-                                                            ) : (
-                                                                <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
-                                                                    <thead>
-                                                                        <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
-                                                                            <th style={{ ...TABLE_STYLE.th(true), padding: '10px 16px' }}>{t('التاريخ')}</th>
-                                                                            <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('نوع العملية')}</th>
-                                                                            <th style={{ ...TABLE_STYLE.th(false, true), padding: '10px 16px' }}>{t('المبلغ')}</th>
-                                                                            <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('البيان والملاحظات')}</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        {txs.map((tx, tIdx) => {
-                                                                            const meta = TX_LABELS[tx.type] || { label: tx.type, color: '#94a3b8', bg: 'rgba(255,255,255,0.05)' };
-                                                                            return (
-                                                                                <tr key={tx.id} style={{ ...TABLE_STYLE.row(tIdx === txs.length - 1), background: 'transparent' }}>
-                                                                                    <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                                                        {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
-                                                                                    </td>
-                                                                                    <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px' }}>
-                                                                                        <span style={{ 
-                                                                                            display: 'inline-flex', alignItems: 'center',
-                                                                                            padding: '2px 10px', borderRadius: '12px', fontSize: '11px', 
-                                                                                            fontWeight: 600, background: meta.bg, color: meta.color,
-                                                                                            fontFamily: CAIRO
-                                                                                        }}>{t(meta.label)}</span>
-                                                                                    </td>
-                                                                                    <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                                                        <Currency amount={tx.amount} />
-                                                                                    </td>
-                                                                                    <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                                                        {tx.notes || '—'}
-                                                                                    </td>
-                                                                                </tr>
-                                                                            );
-                                                                        })}
-                                                                    </tbody>
-                                                                </table>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </React.Fragment>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                    const renderExpandableRow = (row: Partner) => {
+                        const isExpanded = expanded === row.id;
+                        if (!isExpanded) return null;
+                        const txs = txMap[row.id] || [];
+                        return (
+                            <tr key={`expanded-${row.id}`}>
+                                <td colSpan={columns.length} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
+                                    <div style={{ padding: '16px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
+                                        {loadingTx === row.id ? (
+                                            <div style={{ padding: '20px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
+                                            </div>
+                                        ) : txs.length === 0 ? (
+                                            <div style={{ padding: '12px', color: C.textSecondary, fontSize: '12px',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
+                                        ) : (
+                                            <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
+                                                <thead>
+                                                    <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
+                                                        <th style={{ ...TABLE_STYLE.th(true), padding: '10px 16px' }}>{t('التاريخ')}</th>
+                                                        <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('نوع العملية')}</th>
+                                                        <th style={{ ...TABLE_STYLE.th(false, true), padding: '10px 16px' }}>{t('المبلغ')}</th>
+                                                        <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('البيان والملاحظات')}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {txs.map((tx, tIdx) => {
+                                                        const meta = TX_LABELS[tx.type] || { label: tx.type, color: '#94a3b8', bg: 'rgba(255,255,255,0.05)' };
+                                                        return (
+                                                            <tr key={tx.id} style={{ ...TABLE_STYLE.row(tIdx === txs.length - 1), background: 'transparent' }}>
+                                                                <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
+                                                                    {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                </td>
+                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px' }}>
+                                                                    <span style={{ 
+                                                                        display: 'inline-flex', alignItems: 'center',
+                                                                        padding: '2px 10px', borderRadius: '12px', fontSize: '11px', 
+                                                                        fontWeight: 600, background: meta.bg, color: meta.color,
+                                                                        fontFamily: CAIRO
+                                                                    }}>{t(meta.label)}</span>
+                                                                </td>
+                                                                <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                                    <Currency amount={tx.amount} />
+                                                                </td>
+                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
+                                                                    {tx.notes || '—'}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
+                        );
+                    };
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={partners}
+                            emptyIcon={Users}
+                            emptyMessage={t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px' }}>
+                                    <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
+                                    <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
+                                </div>
+                            }
+                            expandableRow={renderExpandableRow}
+                        />
+                    );
+                })()}
 
                 {/* MODAL: Financial Transaction */}
                 <AppModal

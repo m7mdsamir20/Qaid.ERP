@@ -8,6 +8,8 @@ import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
 import { Plus, Lock, Loader2, Scale, Search, CheckCircle, XCircle, Pencil, Info, X, Wallet, Trash2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, SC, PAGE_BASE, BTN_PRIMARY, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Unit {
     id: string;
@@ -144,78 +146,80 @@ export default function UnitsPage() {
                 </div>
 
                 {/* Main Table Content (Directly, No SC) */}
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
-                    </div>
-                ) : filtered.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <Scale size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد وحدات قياس مسجلة حالياً')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        {[t('الكود'), t('اسم الوحدة'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, [0, 2, 3].includes(i))}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((unit, idx) => (
-                                        <tr key={unit.id} 
-                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
-                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
-                                                    {unit.code}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 600, fontSize: '13px' }}>{unit.name}</td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
-                                                    background: unit.status === 'active' ? 'rgba(74,222,128,0.12)' : 'rgba(251,113,133,0.12)',
-                                                    color: unit.status === 'active' ? C.success : C.danger, 
-                                                    border: `1px solid ${unit.status === 'active' ? 'rgba(74,222,128,0.22)' : 'rgba(251,113,133,0.22)'}`
-                                                }}>
-                                                    {unit.status === 'active' ? <CheckCircle size={12} /> : <XCircle size={12} />}
-                                                    {unit.status === 'active' ? t('نشط') : t('متوقف')}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                                                    {canEdit && (
-                                                        <>
-                                                            <button onClick={() => openEditModal(unit)}
-                                                                style={TABLE_STYLE.actionBtn()}
-                                                                title={t("تعديل")}
-                                                            >
-                                                                 <Pencil size={TABLE_STYLE.actionIconSize} />
-                                                            </button>
-                                                            <button onClick={() => setUnitToDelete(unit)}
-                                                                style={TABLE_STYLE.actionBtn(C.danger)}
-                                                                title={t("حذف")}
-                                                            >
-                                                                 <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                            </button>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الكود'),
+                            cell: (row: Unit) => (
+                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
+                                    {row.code}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('اسم الوحدة'),
+                            cell: (row: Unit) => row.name,
+                            style: { color: C.textPrimary, fontWeight: 600, fontSize: '13px' } as React.CSSProperties
+                        },
+                        {
+                            header: t('الحالة'),
+                            cell: (row: Unit) => (
+                                <div style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
+                                    padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
+                                    background: row.status === 'active' ? 'rgba(74,222,128,0.12)' : 'rgba(251,113,133,0.12)',
+                                    color: row.status === 'active' ? C.success : C.danger, 
+                                    border: `1px solid ${row.status === 'active' ? 'rgba(74,222,128,0.22)' : 'rgba(251,113,133,0.22)'}`
+                                }}>
+                                    {row.status === 'active' ? <CheckCircle size={12} /> : <XCircle size={12} />}
+                                    {row.status === 'active' ? t('نشط') : t('متوقف')}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('إجراء'),
+                            cell: (row: Unit) => (
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                                    {canEdit && (
+                                        <>
+                                            <button onClick={() => openEditModal(row)}
+                                                style={TABLE_STYLE.actionBtn()}
+                                                title={t("تعديل")}
+                                            >
+                                                 <Pencil size={TABLE_STYLE.actionIconSize} />
+                                            </button>
+                                            <button onClick={() => setUnitToDelete(row)}
+                                                style={TABLE_STYLE.actionBtn(C.danger)}
+                                                title={t("حذف")}
+                                            >
+                                                 <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Scale}
+                            emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد وحدات قياس مسجلة حالياً')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
+                                    <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 {/* Data Modal */}
                 <AppModal

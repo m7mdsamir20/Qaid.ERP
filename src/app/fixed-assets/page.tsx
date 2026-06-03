@@ -14,6 +14,8 @@ import { useRouter } from 'next/navigation';
 import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 /* ── Types ── */
 interface Account { id: string; code: string; name: string; type: string; isParent?: boolean; accountCategory?: string; }
@@ -228,72 +230,103 @@ export default function FixedAssetsPage() {
                 </div>
 
                 {/* Main Table */}
-                <div style={TABLE_STYLE.container}>
-                    <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('كود الأصل')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('اسم الأصل')}</th>
-                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('الفئة الضريبية')}</th>
-                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('تاريخ الاقتناء')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('تكلفة الشراء')}</th>
-                                    <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('مجمع الإهلاك')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الصافي الدفتري')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('خيارات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading ? (
-                                    <tr><td colSpan={9} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
-                                ) : filtered.length === 0 ? (
-                                    <tr><td colSpan={9} style={{ padding: '80px', color: C.textSecondary, textAlign: 'center' }}>
-                                        <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
-                                        <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
-                                    </td></tr>
-                                ) : filtered.map((a, i) => {
-                                    const st = STATUS_MAP[a.status];
-                                    return (
-                                        <tr key={a.id} style={TABLE_STYLE.row(i === filtered.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{a.code}</span>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{a.name}</div>
-                                                {a.notes && <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px', textAlign: 'center' }}>{a.notes}</div>}
-                                            </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.purchaseCost} /></div>
-                                            </td>
-                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={a.netBookValue} /></div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
-                                                    {st.label}
-                                                </span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
-                                                    {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('كود الأصل'),
+                            cell: (row: FixedAsset) => (
+                                <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{row.code}</span>
+                            )
+                        },
+                        {
+                            header: t('اسم الأصل'),
+                            cell: (row: FixedAsset) => (
+                                <>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{row.name}</div>
+                                    {row.notes && <div style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px', textAlign: 'center' }}>{row.notes}</div>}
+                                </>
+                            )
+                        },
+                        {
+                            header: t('الفئة الضريبية'),
+                            className: 'hide-mobile',
+                            cell: (row: FixedAsset) => (
+                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{row.category}</span>
+                            )
+                        },
+                        {
+                            header: t('تاريخ الاقتناء'),
+                            className: 'hide-mobile',
+                            cell: (row: FixedAsset) => (
+                                <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
+                            )
+                        },
+                        {
+                            header: t('تكلفة الشراء'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: FixedAsset) => (
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={row.purchaseCost} /></div>
+                            )
+                        },
+                        {
+                            header: t('مجمع الإهلاك'),
+                            className: 'hide-mobile',
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: FixedAsset) => (
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}><Currency amount={row.accumulatedDepreciation} /></div>
+                            )
+                        },
+                        {
+                            header: t('الصافي الدفتري'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: FixedAsset) => (
+                                <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={row.netBookValue} /></div>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'status',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: FixedAsset) => {
+                                const st = STATUS_MAP[row.status];
+                                return (
+                                    <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
+                                        {st.label}
+                                    </span>
+                                );
+                            }
+                        },
+                        {
+                            header: t('خيارات'),
+                            type: 'action',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: FixedAsset) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    {canEdit && <button onClick={() => openEdit(row)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
+                                    {canDelete && <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
+                                </div>
+                            )
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Briefcase}
+                            emptyMessage={t('لم يتم العثور على أصول مطابقة للبحث')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center' }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 {/* Edit Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={t("تعديل بيانات الأصل الثابت")} icon={Briefcase}>

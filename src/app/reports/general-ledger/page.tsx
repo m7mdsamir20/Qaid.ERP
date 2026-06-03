@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 
@@ -13,6 +15,19 @@ import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, IS, OUTFIT, KPI_STYLE, KPI_ICON, TAB
 /* ── Types ── */
 interface Account { id: string; code: string; name: string; type: string; accountCategory?: string; nature: string; }
 interface LedgerLine {
+    id: string;
+    date: string;
+    entryNumber: string;
+    description: string;
+    reference: string | null;
+    debit: number;
+    credit: number;
+    balance: number;
+    costCenter?: { name: string };
+}
+
+interface LedgerTableItem {
+    isOpeningBalance?: boolean;
     id: string;
     date: string;
     entryNumber: string;
@@ -111,6 +126,107 @@ export default function GeneralLedgerPage() {
         a.name.includes(accountSearch) || a.code.includes(accountSearch)
     ).slice(0, 30);
 
+    const tableData: LedgerTableItem[] = [];
+    if (selectedAccount && !loading) {
+        tableData.push({
+            isOpeningBalance: true,
+            id: 'opening-balance',
+            date: '',
+            entryNumber: '',
+            description: fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي'),
+            reference: null,
+            debit: 0,
+            credit: 0,
+            balance: openingBalance,
+        });
+        tableData.push(...filtered);
+    }
+
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ'),
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return new Date(row.date).toLocaleDateString('en-GB');
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textPrimary, fontWeight: 600 }
+        },
+        {
+            header: t('رقم القيد'),
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return formatEntryCode(row.entryNumber);
+            },
+            style: { fontFamily: OUTFIT, fontSize: '11px', fontWeight: 600, color: C.textPrimary, letterSpacing: '0.3px' }
+        },
+        {
+            header: t('البيان الوصفي'),
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) {
+                    return <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</span>;
+                }
+                return <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{row.description}</span>;
+            },
+            style: { minWidth: '160px' }
+        },
+        {
+            header: t('مركز التكلفة'),
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.costCenter?.name
+                    ? (
+                        <span style={{ background: 'rgba(139,92,246,0.06)', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '2px 10px', fontSize: '10px', color: '#a78bfa', fontFamily: CAIRO }}>
+                            {row.costCenter.name}
+                        </span>
+                    ) : <span style={{ color: C.textSecondary, fontSize: '13px' }}>—</span>;
+            }
+        },
+        {
+            header: t('مدين (+)'),
+            type: 'number' as const,
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.debit > 0 ? <Currency amount={row.debit} /> : '—';
+            },
+            style: { fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('دائن (-)'),
+            type: 'number' as const,
+            cell: (row: LedgerTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.credit > 0 ? <Currency amount={row.credit} /> : '—';
+            },
+            style: { fontWeight: 600, color: '#f87171', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد'),
+            type: 'number' as const,
+            cell: (row: LedgerTableItem) => {
+                const color = row.balance >= 0 ? tColor : '#f87171';
+                return <Currency amount={row.balance} style={{ color }} />;
+            },
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = lines.length > 0 && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>
+                {t('إجماليات الحركات والأرصدة')}
+            </td>
+            <td style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
+                <Currency amount={totalDebit} />
+            </td>
+            <td style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
+                <Currency amount={totalCredit} />
+            </td>
+            <td style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
+                <Currency amount={closingBalance} />
+            </td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE} ref={reportRef}>
@@ -170,14 +286,13 @@ export default function GeneralLedgerPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={toDate} onChange={e => { setLoading(true); setToDate(e.target.value); }} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
                 </div>
 
                 {!selectedAccount ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(37, 106, 244,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                            <ScrollText size={40} style={{  color: C.primary }} />
+                            <ScrollText size={40} style={{ color: C.primary }} />
                         </div>
                         <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('ابدأ بطلب كشف الحساب')}</h2>
                         <p style={{ margin: '10px 0 0', fontSize: '12px', maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.')}</p>
@@ -220,7 +335,7 @@ export default function GeneralLedgerPage() {
                             ))}
                         </div>
 
-                        <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
+                        <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch', marginBottom: '20px' }}>
                             <div style={SEARCH_STYLE.wrapper}>
                                 <input placeholder={t("البحث السريع في الوصف أو رقم القيد...")} value={search}
                                     onChange={e => setSearch(e.target.value)}
@@ -229,134 +344,16 @@ export default function GeneralLedgerPage() {
                             </div>
                         </div>
 
-                        <div className="print-table-container scroll-table" style={TABLE_STYLE.container}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead style={{ background: C.subtle }}>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        {[t('التاريخ'), t('رقم القيد'), t('البيان الوصفي'), t('مركز التكلفة'), t('مدين (+)'), t('دائن (-)'), t('الرصيد')].map((h, i) => (
-                                            <th key={i} style={{
-                                                ...TABLE_STYLE.th(false, false),
-                                                padding: '12px 14px',
-                                                fontSize: '12px',
-                                                whiteSpace: 'nowrap',
-                                                
-                                                borderBottom: `2px solid ${C.border}`,
-                                                color: C.textSecondary
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style={{ background: C.card, borderBottom: `1.5px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
-                                            {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
-                                        </td>
-                                        <td colSpan={2} style={{ borderBottom: `1.5px solid ${C.border}` }} />
-                                        <td style={{ padding: '12px 18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                <Currency amount={openingBalance} />
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    {filtered.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={7} style={{ padding: '60px 20px',  color: C.textSecondary }}>
-                                                <div className="no-print" style={{ opacity: 0.3, marginBottom: '8px' }}><Search size={32} /></div>
-                                                <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات مالية مسجلة لهذه الفترة')}</p>
-                                            </td>
-                                        </tr>
-                                    ) : filtered.map((line, idx) => (
-                                        <tr key={line.id}
-                                            style={{ ...TABLE_STYLE.row(idx === filtered.length - 1), background: C.card }}>
-
-                                            {/* التاريخ */}
-                                            <td style={{ ...TABLE_STYLE.td(true, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}>
-                                                {new Date(line.date).toLocaleDateString('en-GB')}
-                                            </td>
-
-                                            {/* رقم القيد */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', }}>
-                                                <span style={{ 
-                                                    fontFamily: OUTFIT, 
-                                                    fontSize: '11px', 
-                                                    fontWeight: 600, 
-                                                    color: C.textPrimary,
-                                                    letterSpacing: '0.3px'
-                                                }}>
-                                                    {formatEntryCode(line.entryNumber)}
-                                                </span>
-                                            </td>
-
-                                            {/* البيان الوصفي */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO,  minWidth: '160px' }}>
-                                                {line.description}
-                                            </td>
-
-                                            {/* مركز التكلفة */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', }}>
-                                                {line.costCenter?.name
-                                                    ? <span style={{ background: 'rgba(139,92,246,0.06)', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '2px 10px', fontSize: '10px', color: '#a78bfa', fontFamily: CAIRO }}>
-                                                        {line.costCenter.name}
-                                                    </span>
-                                                    : <span style={{ color: C.textSecondary, fontSize: '13px' }}>—</span>}
-                                            </td>
-
-                                            {/* مدين */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: line.debit > 0 ? '#10b981' : C.textMuted, fontFamily: OUTFIT, }}>
-                                                {line.debit > 0 ? (
-                                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                        <Currency amount={line.debit} />
-                                                    </div>
-                                                ) : '—'}
-                                            </td>
-
-                                            {/* دائن */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: line.credit > 0 ? '#f87171' : C.textMuted, fontFamily: OUTFIT, }}>
-                                                {line.credit > 0 ? (
-                                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                        <Currency amount={line.credit} />
-                                                    </div>
-                                                ) : '—'}
-                                            </td>
-
-                                            {/* الرصيد */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', fontWeight: 600, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: OUTFIT, }}>
-                                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                    <Currency amount={line.balance} />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot>
-                                    <tr style={{ background: C.card, borderTop: `2px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>
-                                            {t('إجماليات الحركات والأرصدة')}
-                                        </td>
-                                        <td style={{ padding: '12px 18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                <Currency amount={totalDebit} />
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '12px 18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                <Currency amount={totalCredit} />
-                                            </div>
-                                        </td>
-                                        <td style={{ padding: '12px 18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'flex-start' }}>
-                                                <Currency amount={closingBalance} />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={tableData}
+                            emptyIcon={ScrollText}
+                            emptyMessage={t('لا توجد حركات مالية مسجلة لهذه الفترة')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            
         </DashboardLayout>
     );
 }

@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 
@@ -54,6 +56,57 @@ export default function ExpensesReportPage() {
         finally { setLoading(false); }
     };
 
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم القيد'),
+            cell: (row: ExpenseRow) => `#${row.entryNumber}`,
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: ExpenseRow) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('البيان'),
+            cell: (row: ExpenseRow) => row.description,
+            style: { fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }
+        },
+        {
+            header: t('حساب المصروف'),
+            cell: (row: ExpenseRow) => row.expenseAccountName,
+            style: { fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }
+        },
+        {
+            header: t('المصدر'),
+            cell: (row: ExpenseRow) => (
+                <span style={{
+                    padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
+                    background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)',
+                    color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399',
+                }}>
+                    {row.sourceName}
+                </span>
+            ),
+            style: { fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }
+        },
+        {
+            header: t('المبلغ'),
+            type: 'number',
+            cell: (row: ExpenseRow) => formatNumber(Number(row.amount)),
+            style: { fontWeight: 600, fontSize: '13px', color: DC, fontFamily: OUTFIT, textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={5} style={{ padding: '18px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+            <td style={{ padding: '18px 16px', fontWeight: 600, fontSize: '13px', color: DC, fontFamily: OUTFIT, textAlign: 'center' }}>
+                {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
+            </td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
@@ -80,7 +133,7 @@ export default function ExpensesReportPage() {
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                     direction: 'ltr'
+                                    direction: 'ltr'
                                 }}
                             />
                         </div>
@@ -96,7 +149,7 @@ export default function ExpensesReportPage() {
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                     direction: 'ltr'
+                                    direction: 'ltr'
                                 }}
                             />
                         </div>
@@ -137,71 +190,17 @@ export default function ExpensesReportPage() {
                             </div>
                         </div>
 
-                        {/* Table */}
-                        <div className="print-table-container" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}`, boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل المصروفات')}</h3>
-                            </div>
-                            {data.rows.length === 0 ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center', color: C.textMuted, fontFamily: CAIRO }}>
-                                    {t('لا توجد مصروفات في هذه الفترة')}
-                                </div>
-                            ) : (
-                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead>
-                                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('رقم القيد')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('التاريخ')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('البيان')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('حساب المصروف')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('المصدر')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: DC, fontFamily: CAIRO, fontWeight: 600 }}>{t('المبلغ')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {data.rows.map((row, idx) => (
-                                                <tr key={row.id}
-                                                    style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                    onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>#{row.entryNumber}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                                        {new Date(row.date).toLocaleDateString('en-GB')}
-                                                    </td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.expenseAccountName}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                        <span style={{
-                                                            padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
-                                                            background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)',
-                                                            color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399',
-                                                        }}>
-                                                            {row.sourceName}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ padding: '14px 16px',  fontSize: '13px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
-                                                        {formatNumber(Number(row.amount))}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                        <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
-                                            <tr>
-                                                <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px',  fontWeight: 600, fontSize: '13px', color: DC, fontFamily: OUTFIT }}>
-                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            )}
-                        </div>
+                        {/* Table using DataTable */}
+                        <DataTable
+                            columns={columns}
+                            data={data.rows}
+                            emptyIcon={FileText}
+                            emptyMessage={t('لا توجد مصروفات في هذه الفترة')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            
         </DashboardLayout>
     );
 }

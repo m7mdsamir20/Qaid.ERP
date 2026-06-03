@@ -1,5 +1,8 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -8,7 +11,7 @@ import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Package, TrendingUp, Search, Activity, ShoppingCart, Loader2, ArrowRight } from 'lucide-react';
+import { Package, TrendingUp, Search, Activity } from 'lucide-react';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -53,7 +56,53 @@ export default function TopSellingReportPage() {
         (i.category || '').toLowerCase().includes(q.toLowerCase())
     );
     const totalSales = filtered.reduce((s, i) => s + i.totalSales, 0);
-    const sym = getCurrencyName(currency);
+
+    const columns: TableColumn[] = [
+        {
+            header: '#',
+            cell: (row: TopSellingItem, index: number) => index + 1,
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: isServices ? t("بيانات الخدمة") : t("بيانات الصنف"),
+            cell: (row: TopSellingItem) => (
+                <>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '3px', fontFamily: OUTFIT }}>{row.code} — {row.category}</div>
+                </>
+            ),
+            style: { minWidth: '150px' }
+        },
+        {
+            header: t('الكمية'),
+            cell: (row: TopSellingItem) => (
+                <>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(row.totalQuantity)}</span>
+                    <span style={{ fontSize: '11px', color: C.textSecondary, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? row.unit : t(row.unit)}</span>
+                </>
+            )
+        },
+        {
+            header: t('القيمة'),
+            type: 'number' as const,
+            cell: (row: TopSellingItem) => <Currency amount={row.totalSales} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.primary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الربح التقديري'),
+            type: 'number' as const,
+            cell: (row: TopSellingItem) => (
+                <span style={{
+                    color: '#10b981', background: 'rgba(16,185,129,0.08)',
+                    padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
+                    fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT
+                }}>
+                    <Currency amount={row.totalProfit} />
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -66,7 +115,7 @@ export default function TopSellingReportPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
                                 <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
@@ -92,57 +141,13 @@ export default function TopSellingReportPage() {
                             </div>
                         )}
 
-                        {loading ? ( <TableSkeleton /> ) : filtered.length === 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                                <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات منفذة") : t("لا توجد أصناف مباعة")}</h3>
-                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t("لم يتم تسجيل عمليات طلب لهذه الخدمات في الفترة الحالية.") : t("لم يتم تسجيل عمليات بيع لهذه الأصناف في الفترة الحالية.")}</p>
-                            </div>
-                        ) : (
-                            <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>#</th>
-                                            <th style={{ padding: '16px 20px', textAlign: 'center', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{isServices ? t("بيانات الخدمة") : t("بيانات الصنف")}</th>
-                                            <th style={{ padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('القيمة')}</th>
-                                            <th style={{ padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filtered.map((item, idx) => (
-                                            <tr key={item.id} 
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{idx + 1}</td>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '3px', fontFamily: OUTFIT }}>{item.code} — {item.category}</div>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(item.totalQuantity)}</span>
-                                                    <span style={{ fontSize: '11px', color: C.textSecondary, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',   fontWeight: 600, color: C.primary, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {formatNumber(item.totalSales)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                    <span style={{
-                                                        color: '#10b981', background: 'rgba(16,185,129,0.08)',
-                                                        padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                                                        fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT
-                                                    }}>
-                                                        {formatNumber(item.totalProfit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{sym}</span>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Package}
+                            emptyMessage={isServices ? t('لا توجد خدمات منفذة') : t('لا توجد أصناف مباعة')}
+                            isLoading={loading}
+                        />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -152,8 +157,7 @@ export default function TopSellingReportPage() {
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textSecondary, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>
                             <div style={{ fontSize: '20px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                {formatNumber(totalSales)}
-                                <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                <Currency amount={totalSales} />
                             </div>
                         </div>
 
@@ -178,20 +182,6 @@ export default function TopSellingReportPage() {
                     </div>
                 </div>
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .stat-value { font-size: 11px !important; color: #000 !important; }
-                    .stat-label { font-size: 9px !important; color: #666 !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }

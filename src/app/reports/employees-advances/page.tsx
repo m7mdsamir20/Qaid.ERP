@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -63,6 +65,66 @@ export default function EmployeesAdvancesPage() {
 
     useEffect(() => { fetchReport(); }, []);
 
+    const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase())) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('الموظف'),
+            cell: (row: AdvanceRecord) => row.employeeName,
+            style: { fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }
+        },
+        {
+            header: t('مبلغ السلفة'),
+            type: 'number' as const,
+            cell: (row: AdvanceRecord) => <Currency amount={row.totalAmount} />,
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('المسدد'),
+            type: 'number' as const,
+            cell: (row: AdvanceRecord) => <Currency amount={row.paidAmount} />,
+            style: { fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('المتبقي'),
+            type: 'number' as const,
+            cell: (row: AdvanceRecord) => <Currency amount={row.remainingAmount} />,
+            style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('نسبة السداد'),
+            cell: (row: AdvanceRecord) => {
+                const pct = row.totalAmount > 0 ? (row.paidAmount / row.totalAmount) * 100 : 0;
+                return (
+                    <>
+                        <div style={{ width: '100px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', margin: '0 auto' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', background: pct === 100 ? '#10b981' : C.primary }} />
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '10px', marginTop: '4px', fontWeight: 700, color: C.textSecondary }}>{Math.round(pct)}%</div>
+                    </>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الحالة'),
+            cell: (row: AdvanceRecord) => {
+                const label = row.status === 'paid' ? t('تم السداد') : row.status === 'partial' ? t('سداد جزئي') : t('نشطة');
+                const color = row.status === 'paid' ? '#10b981' : row.status === 'partial' ? '#f59e0b' : '#256af4';
+                const background = row.status === 'paid' ? 'rgba(16,185,129,0.1)' : row.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(37, 106, 244,0.1)';
+                return (
+                    <span style={{
+                        fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px', border: '1px solid currentColor',
+                        color, background
+                    }}>
+                        {label}
+                    </span>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -98,55 +160,14 @@ export default function EmployeesAdvancesPage() {
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                    {[t('الموظف'), t('مبلغ السلفة'), t('المسدد'), t('المتبقي'), t('نسبة السداد'), t('الحالة')].map((h, i) => (
-                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data?.records.filter(r => r.employeeName.includes(q)).map((r, idx) => {
-                                    const pct = (r.paidAmount / r.totalAmount) * 100;
-                                    return (
-                                        <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.totalAmount} /></td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={r.paidAmount} /></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={r.remainingAmount} /></td>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <div style={{ width: '100px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', margin: '0 auto' }}>
-                                                    <div style={{ width: `${pct}%`, height: '100%', background: pct === 100 ? '#10b981' : C.primary }} />
-                                                </div>
-                                                <div style={{ textAlign: 'center', fontSize: '10px', marginTop: '4px', fontWeight: 700, color: C.textSecondary }}>{Math.round(pct)}%</div>
-                                            </td>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <span style={{
-                                                    fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px', border: '1px solid currentColor',
-                                                    color: r.status === 'paid' ? '#10b981' : r.status === 'partial' ? '#f59e0b' : '#256af4',
-                                                    background: r.status === 'paid' ? 'rgba(16,185,129,0.1)' : r.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(37, 106, 244,0.1)'
-                                                }}>
-                                                    {r.status === 'paid' ? t('تم السداد') : r.status === 'partial' ? t('سداد جزئي') : t('نشطة')}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={filtered}
+                        emptyIcon={Wallet}
+                        emptyMessage={t('لا توجد سجلات سلف حالياً')}
+                    />
                 )}
             </div>
-            <style>{`
-                input::-webkit-calendar-picker-indicator {
-                    filter: invert(1) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.7);
-                    cursor: pointer;
-                }
-                @keyframes spin { to { transform: rotate(360deg); } }
-            `}</style>
         </DashboardLayout>
     );
 }
-

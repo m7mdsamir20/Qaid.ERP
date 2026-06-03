@@ -9,6 +9,8 @@ import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focus
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Distribution { id: string; date: string; totalAmount: number; period: string; notes?: string; paidFromTreasury?: boolean; lines: { partnerName: string; amount: number; share: number }[]; }
@@ -162,93 +164,110 @@ export default function ProfitDistributionPage() {
                         <h2 style={{ fontSize: '13px', fontWeight: 950, color: C.textPrimary, margin: 0, fontFamily: CAIRO }}>{t('سجل عمليات توزيع الأرباح السابقة')}</h2>
                     </div>
 
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
-                            <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                            <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل سجل التوزيعات...')}</p>
-                        </div>
-                    ) : distributions.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
-                            <PieChart size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                            <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا توجد عمليات توزيع مسجلة')}</h3>
-                            <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم')}</p>
-                        </div>
-                    ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('دورة التوزيع')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجمالي المبلغ')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('البيان / الملاحظات')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('التفاصيل')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {distributions.map((d, idx) => {
-                                    const isExpanded = expanded === d.id;
+                    {(() => {
+                        const columns: TableColumn[] = [
+                            {
+                                header: t('التاريخ'),
+                                cell: (row: Distribution) => (
+                                    <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
+                                        {new Date(row.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                    </span>
+                                )
+                            },
+                            {
+                                header: t('دورة التوزيع'),
+                                cell: (row: Distribution) => (
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{PERIOD_LABELS[row.period] || row.period}</div>
+                                )
+                            },
+                            {
+                                header: t('إجمالي المبلغ'),
+                                type: 'number',
+                                style: { textAlign: 'center' } as React.CSSProperties,
+                                cell: (row: Distribution) => (
+                                    <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                        <Currency amount={row.totalAmount} />
+                                    </div>
+                                )
+                            },
+                            {
+                                header: t('البيان / الملاحظات'),
+                                cell: (row: Distribution) => (
+                                    <span style={{ color: C.textSecondary, fontSize: '12px' }}>
+                                        {row.notes || '—'}
+                                    </span>
+                                )
+                            },
+                            {
+                                header: t('الحالة'),
+                                type: 'status',
+                                style: { textAlign: 'center' } as React.CSSProperties,
+                                cell: () => (
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '20px', background: `${C.success}10`, color: C.success, border: `1px solid ${C.success}20`, fontSize: '11px', fontWeight: 600 }}>
+                                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.success }} />
+                                        {t('مُعتمد')}
+                                    </div>
+                                )
+                            },
+                            {
+                                header: t('التفاصيل'),
+                                type: 'action',
+                                style: { textAlign: 'center' } as React.CSSProperties,
+                                cell: (row: Distribution) => {
+                                    const isExpanded = expanded === row.id;
                                     return (
-                                        <React.Fragment key={d.id}>
-                                            <tr style={TABLE_STYLE.row(idx === distributions.length - 1 && !isExpanded)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                                                    {new Date(d.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                </td>
-                                                <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{PERIOD_LABELS[d.period] || d.period}</div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        <Currency amount={d.totalAmount} />
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>
-                                                    {d.notes || '—'}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '20px', background: `${C.success}10`, color: C.success, border: `1px solid ${C.success}20`, fontSize: '11px', fontWeight: 600 }}>
-                                                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.success }} />
-                                                        {t('مُعتمد')}
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                    <button onClick={() => setExpanded(isExpanded ? null : d.id)}
-                                                        style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary), margin: '0 auto' }}>
-                                                        {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            {isExpanded && (
-                                                <tr>
-                                                    <td colSpan={6} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
-                                                        <div style={{ padding: '20px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
-                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
-                                                                {d.lines?.map((l, i) => (
-                                                                    <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                                        <div>
-                                                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{l.partnerName}</div>
-                                                                            <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{l.share}%</div>
-                                                                        </div>
-                                                                        <div style={{ textAlign: 'end' }}>
-                                                                            <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.amount} /></div>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </React.Fragment>
+                                        <button onClick={() => setExpanded(isExpanded ? null : row.id)}
+                                            style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary), margin: '0 auto' }}>
+                                            {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
+                                        </button>
                                     );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                    )}
+                                }
+                            }
+                        ];
+
+                        const renderExpandableRow = (row: Distribution) => {
+                            const isExpanded = expanded === row.id;
+                            if (!isExpanded) return null;
+                            return (
+                                <tr key={`expanded-${row.id}`}>
+                                    <td colSpan={columns.length} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
+                                        <div style={{ padding: '20px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+                                                {row.lines?.map((l, i) => (
+                                                    <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div>
+                                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{l.partnerName}</div>
+                                                            <div style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{l.share}%</div>
+                                                        </div>
+                                                        <div style={{ textAlign: 'end' }}>
+                                                            <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.amount} /></div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        };
+
+                        return (
+                            <DataTable
+                                columns={columns}
+                                data={distributions}
+                                emptyIcon={PieChart}
+                                emptyMessage={t('لا توجد عمليات توزيع مسجلة. سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم')}
+                                isLoading={loading}
+                                loadingSkeleton={
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
+                                        <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
+                                        <p style={{ color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل سجل التوزيعات...')}</p>
+                                    </div>
+                                }
+                                expandableRow={renderExpandableRow}
+                            />
+                        );
+                    })()}
 
                     {/* MODAL: New Distribution */}
                     <AppModal

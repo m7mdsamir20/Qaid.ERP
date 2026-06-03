@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -81,6 +83,75 @@ export default function PurchasesReportPage() {
 
     useEffect(() => { fetchReport(); }, []);
 
+    const filteredInvoices = data ? data.invoices.filter(inv => {
+        const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
+        return code.includes(q.toUpperCase()) ||
+            String(inv.invoiceNumber).includes(q) ||
+            (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
+    }) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم الفاتورة'),
+            cell: (row: Invoice) => (
+                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
+                    PUR-{String(row.invoiceNumber).padStart(5, '0')}
+                </span>
+            )
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: Invoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('اسم المورد'),
+            cell: (row: Invoice) => row.supplier?.name || row.customer?.name || t('مورد نقدي'),
+            style: { fontWeight: 600, fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary }
+        },
+        {
+            header: t('إجمالي القيمة'),
+            type: 'number',
+            cell: (row: Invoice) => <Currency amount={row.total} />,
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الخصم'),
+            type: 'number',
+            cell: (row: Invoice) => row.discount > 0 ? <Currency amount={row.discount} /> : '—',
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }
+        },
+        {
+            header: t('المسدد'),
+            type: 'number',
+            cell: (row: Invoice) => <Currency amount={row.paidAmount} />,
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', color: '#10b981' }
+        },
+        {
+            header: t('المتبقي'),
+            type: 'number',
+            cell: (row: Invoice) => (
+                <span style={{
+                    fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT,
+                    color: row.remaining > 0 ? '#fb7185' : '#10b981',
+                    background: row.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
+                    padding: '4px 12px', borderRadius: '10px', border: `1px solid ${row.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
+                }}><Currency amount={row.remaining} /></span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات المشتريات للفترة')}</td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPurchases} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -88,7 +159,6 @@ export default function PurchasesReportPage() {
                     title={t("تقرير المشتريات")}
                     subtitle={t("تحليل تفصيلي لجميع عمليات الشراء الواردة، الخصومات، والمبالغ المدفوعة والمتبقية.")}
                     backTab="sales-purchases"
-
                     printTitle={t("تقرير المشتريات")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
@@ -100,7 +170,7 @@ export default function PurchasesReportPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT
@@ -112,7 +182,7 @@ export default function PurchasesReportPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: OUTFIT
@@ -149,117 +219,61 @@ export default function PurchasesReportPage() {
                     </div>
                 </div>
 
-                {loading ? ( <TableSkeleton /> ) : !data || data.invoices.length === 0 ? (
-                    <div className="no-print" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                        <ShoppingCart size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير شراء حالياً')}</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل المشتريات.')}</p>
-                    </div>
-                ) : (
+                {loading ? ( <TableSkeleton /> ) : (
                     <>
-                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#256af4', icon: <ShoppingCart size={18} /> },
-                                { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
-                                { label: t('المبالغ المسددة'), value: fmt(data.totalPaid), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: t('الأرصدة المستحقة'), value: fmt(data.totalRemaining), color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', icon: <DollarSign size={18} /> },
-                            ].map((s, i) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    transition: 'all 0.2s'
-                                }}>
-                                    <div style={{ textAlign: 'center'}}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                        {data && data.invoices.length > 0 && (
+                            <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                                {[
+                                    { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#256af4', icon: <ShoppingCart size={18} /> },
+                                    { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
+                                    { label: t('المبالغ المسددة'), value: fmt(data.totalPaid), color: '#10b981', icon: <ArrowUpRight size={18} /> },
+                                    { label: t('الأرصدة المستحقة'), value: fmt(data.totalRemaining), color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', icon: <DollarSign size={18} /> },
+                                ].map((s, i) => (
+                                    <div key={i} style={{
+                                        background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
+                                        padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        transition: 'all 0.2s'
+                                    }}>
+                                        <div style={{ textAlign: 'center'}}>
+                                            <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                                <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                                <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            </div>
+                                        </div>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                            {s.icon}
                                         </div>
                                     </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {s.icon}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
 
-                        <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, }} />
-                            <input
-                                placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
-                                value={q} onChange={e => setQ(e.target.value)}
-                                style={{
-                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px',
-                                    background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
-                                    fontWeight: 500
-                                }}
-                            />
-                        </div>
+                        {data && data.invoices.length > 0 && (
+                            <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
+                                <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, }} />
+                                <input
+                                    placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
+                                    value={q} onChange={e => setQ(e.target.value)}
+                                    style={{
+                                        ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px',
+                                        background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        fontWeight: 500
+                                    }}
+                                />
+                            </div>
+                        )}
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('رقم الفاتورة'), t('التاريخ'), t('اسم المورد'), t('إجمالي القيمة'), t('الخصم'), t('المسدد'), t('المتبقي')].map((h, i) => (
-                                            <th key={i} style={{
-                                                padding: '16px 20px', 
-                                                fontSize: '12px',
-                                                fontWeight: 600,
-                                                color: C.textSecondary,
-                                                
-                                                fontFamily: CAIRO,
-                                                borderBottom: `1px solid ${C.border}`
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.invoices.filter(inv => {
-                                        const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
-                                        return code.includes(q.toUpperCase()) ||
-                                            String(inv.invoiceNumber).includes(q) ||
-                                            (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
-                                    }).map((inv, idx) => (
-                                        <tr key={inv.id}
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                                                    PUR-{String(inv.invoiceNumber).padStart(5, '0')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{inv.supplier?.name || inv.customer?.name || t('مورد نقدي')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={inv.total} /></td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.paidAmount} /></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                <span style={{
-                                                    fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT,
-                                                    color: inv.remaining > 0 ? '#fb7185' : '#10b981',
-                                                    background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
-                                                    padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
-                                                }}><Currency amount={inv.remaining} /></span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات المشتريات للفترة')}</td>
-                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPurchases} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={filteredInvoices}
+                            emptyIcon={ShoppingCart}
+                            emptyMessage={t('لا توجد فواتير شراء حالياً')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>
-            
         </DashboardLayout>
     );
 }

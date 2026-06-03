@@ -1,6 +1,6 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
-import { TABLE_STYLE } from '@/constants/theme';
+import { TABLE_STYLE, C } from '@/constants/theme';
 import { EmptyTableState, TableColumn } from './EmptyTableState';
 
 interface DataTableProps {
@@ -13,6 +13,9 @@ interface DataTableProps {
     onRowClick?: (row: any, index: number) => void;
     rowStyle?: (row: any, index: number) => React.CSSProperties;
     rowClassName?: (row: any, index: number) => string;
+    footer?: React.ReactNode;
+    expandableRow?: (row: any, index: number) => React.ReactNode;
+    customHeader?: React.ReactNode;
 }
 
 export const DataTable: React.FC<DataTableProps> = ({
@@ -25,6 +28,9 @@ export const DataTable: React.FC<DataTableProps> = ({
     onRowClick,
     rowStyle,
     rowClassName,
+    footer,
+    expandableRow,
+    customHeader,
 }) => {
     if (isLoading && loadingSkeleton) {
         return <>{loadingSkeleton}</>;
@@ -45,24 +51,28 @@ export const DataTable: React.FC<DataTableProps> = ({
             <div className="scroll-table">
                 <table style={TABLE_STYLE.table}>
                     <thead>
-                        <tr style={TABLE_STYLE.thead}>
-                            {columns.map((col, idx) => {
-                                const isCenter = col.type && col.type !== 'text';
-                                const cellAlignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
-                                return (
-                                    <th
-                                        key={idx}
-                                        style={{
-                                            ...TABLE_STYLE.th(idx === 0, isCenter),
-                                            ...col.style,
-                                        }}
-                                        className={`${cellAlignClass} ${col.className || ''}`}
-                                    >
-                                        {col.header}
-                                    </th>
-                                );
-                            })}
-                        </tr>
+                        {customHeader ? (
+                            customHeader
+                        ) : (
+                            <tr style={TABLE_STYLE.thead}>
+                                {columns.map((col, idx) => {
+                                    const isCenter = col.type && col.type !== 'text';
+                                    const cellAlignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
+                                    return (
+                                        <th
+                                            key={idx}
+                                            style={{
+                                                ...TABLE_STYLE.th(idx === 0, isCenter),
+                                                ...col.style,
+                                            }}
+                                            className={`${cellAlignClass} ${col.className || ''}`}
+                                        >
+                                            {col.header}
+                                        </th>
+                                    );
+                                })}
+                            </tr>
+                        )}
                     </thead>
                     <tbody>
                         {data.map((row, rowIdx) => {
@@ -70,11 +80,11 @@ export const DataTable: React.FC<DataTableProps> = ({
                             const customRowStyle = rowStyle ? rowStyle(row, rowIdx) : {};
                             const customRowClass = rowClassName ? rowClassName(row, rowIdx) : '';
                             
-                            return (
+                            const mainRow = (
                                 <tr
-                                    key={rowIdx}
+                                    key={`main-${rowIdx}`}
                                     style={{
-                                        ...TABLE_STYLE.row(isLast),
+                                        ...TABLE_STYLE.row(isLast && !expandableRow),
                                         ...customRowStyle,
                                         cursor: onRowClick ? 'pointer' : 'default',
                                     }}
@@ -103,8 +113,24 @@ export const DataTable: React.FC<DataTableProps> = ({
                                     })}
                                 </tr>
                             );
+
+                            if (expandableRow) {
+                                return (
+                                    <React.Fragment key={rowIdx}>
+                                        {mainRow}
+                                        {expandableRow(row, rowIdx)}
+                                    </React.Fragment>
+                                );
+                            }
+
+                            return mainRow;
                         })}
                     </tbody>
+                    {footer && (
+                        <tfoot style={{ borderTop: `2px solid ${C.border}` }}>
+                            {footer}
+                        </tfoot>
+                    )}
                 </table>
             </div>
         </div>

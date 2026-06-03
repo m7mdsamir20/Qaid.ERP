@@ -10,6 +10,8 @@ import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useSession } from 'next-auth/react';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface WarehouseItem {
     id: string;
@@ -162,82 +164,92 @@ export default function WarehousesPage() {
                 </div>
 
                 {/* Table Content */}
-                {loading ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>{t('جاري تحميل قائمة المخازن...')}</p>
-                    </div>
-                ) : filteredAll.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <Warehouse size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد مخازن مسجلة حالياً')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المخزن')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('العنوان')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('عدد الأصناف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((wh, idx) => (
-                                        <tr key={wh.id} 
-                                            style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                        >
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
-                                                    {wh.code || '—'}
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{wh.name}</div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: C.textSecondary, fontSize: '13px' }}>
-                                                    <MapPin size={14} style={{ opacity: 0.6 }} />
-                                                    {wh.address || t('غير محدد')}
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.purple, }}>
-                                                {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                                                    <button onClick={() => handleOpenModal(wh)}
-                                                        style={TABLE_STYLE.actionBtn()}
-                                                        title={t("تعديل")}
-                                                    >
-                                                        <Pencil size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                    <button onClick={() => setDeleteItem(wh)}
-                                                        style={TABLE_STYLE.actionBtn(C.danger)}
-                                                        title={t("حذف")}
-                                                    >
-                                                        <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                            <Pagination 
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الكود'),
+                            cell: (row: WarehouseItem) => (
+                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
+                                    {row.code || '—'}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('اسم المخزن'),
+                            cell: (row: WarehouseItem) => (
+                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.name}</div>
+                            )
+                        },
+                        {
+                            header: t('العنوان'),
+                            cell: (row: WarehouseItem) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: C.textSecondary, fontSize: '13px' }}>
+                                    <MapPin size={14} style={{ opacity: 0.6 }} />
+                                    {row.address || t('غير محدد')}
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('عدد الأصناف'),
+                            cell: (row: WarehouseItem) => (
+                                <>
+                                    {row._count.stocks} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
+                                </>
+                            ),
+                            style: { fontFamily: OUTFIT, fontWeight: 600, color: C.purple, textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('إجراء'),
+                            cell: (row: WarehouseItem) => (
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                                    <button onClick={() => handleOpenModal(row)}
+                                        style={TABLE_STYLE.actionBtn()}
+                                        title={t("تعديل")}
+                                    >
+                                        <Pencil size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                    <button onClick={() => setDeleteItem(row)}
+                                        style={TABLE_STYLE.actionBtn(C.danger)}
+                                        title={t("حذف")}
+                                    >
+                                        <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                    </button>
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        }
+                    ];
+
+                    return (
+                        <>
+                            <DataTable
+                                columns={columns}
+                                data={paginated}
+                                emptyIcon={Warehouse}
+                                emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد مخازن مسجلة حالياً')}
+                                isLoading={loading}
+                                loadingSkeleton={
+                                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
+                                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
+                                        <p style={{ fontWeight: 600 }}>{t('جاري تحميل قائمة المخازن...')}</p>
+                                    </div>
+                                }
                             />
-                        </div>
-                    </div>
-                )}
+
+                            {!loading && filteredAll.length > 0 && (
+                                <div style={{ marginTop: '16px' }}>
+                                    <Pagination 
+                                        total={filteredAll.length}
+                                        pageSize={pageSize}
+                                        currentPage={currentPage}
+                                        onPageChange={setCurrentPage}
+                                    />
+                                </div>
+                            )}
+                        </>
+                    );
+                })()}
 
                 {/* Form Modal */}
                 <AppModal

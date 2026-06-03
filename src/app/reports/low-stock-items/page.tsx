@@ -1,19 +1,17 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Package, AlertTriangle, Search, Activity, ShoppingCart, Loader2, Box } from 'lucide-react';
+import { AlertTriangle, Search, Box } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
 
 interface LowStockItem {
     id: string;
@@ -31,7 +29,6 @@ export default function LowStockReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<LowStockItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -53,6 +50,57 @@ export default function LowStockReportPage() {
     );
     const totalValue = filtered.reduce((s, i) => s + i.value, 0);
 
+    const columns: TableColumn[] = [
+        {
+            header: t('الصنف'),
+            cell: (row: LowStockItem) => (
+                <>
+                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 700 }}>{row.code}</div>
+                </>
+            )
+        },
+        {
+            header: t('التصنيف'),
+            cell: (row: LowStockItem) => row.category,
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('الرصيد الحالي'),
+            cell: (row: LowStockItem) => (
+                <span style={{
+                    background: row.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                    color: row.totalStock <= 0 ? '#ef4444' : '#f59e0b',
+                    padding: '4px 12px', borderRadius: '10px', fontWeight: 600, fontSize: '12px', fontFamily: OUTFIT
+                }}>
+                    {formatNumber(row.totalStock)}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الحد الأدنى'),
+            type: 'number' as const,
+            cell: (row: LowStockItem) => formatNumber(row.minLimit),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, fontWeight: 700, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('قيمة النقص'),
+            type: 'number' as const,
+            cell: (row: LowStockItem) => <Currency amount={row.value} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981', textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = (
+        <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={4} style={{ padding: '18px 24px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
+            <td style={{ padding: '18px 20px', fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}>
+                <Currency amount={totalValue} />
+            </td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -60,15 +108,13 @@ export default function LowStockReportPage() {
                     title={t("أصناف تحت الحد الأدنى")}
                     subtitle={t("قائمة المنتجات التي أوشكت على النفاذ أو وصلت لمستوى إعادة الطلب.")}
                     backTab="inventory"
-
                 />
-
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
-                                <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary,  zIndex: 10 }} />
+                                <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
                                     placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
                                     value={q} onChange={e => setQ(e.target.value)}
@@ -92,65 +138,14 @@ export default function LowStockReportPage() {
                             </div>
                         )}
 
-                        {loading ? ( <TableSkeleton /> ) : filtered.length === 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                                <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
-                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>
-                            </div>
-                        ) : (
-                            <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
-                                                <th key={i} style={{ textAlign: i === 2 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
-                                                    
-                                                    fontWeight: 600, fontFamily: CAIRO
-                                                }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filtered.map((item, idx) => (
-                                            <tr key={item.id}
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 700 }}>{item.code}</div>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{item.category}</td>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <span style={{
-                                                        background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                                                        color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
-                                                        padding: '4px 12px', borderRadius: '10px', fontWeight: 600, fontSize: '12px', fontFamily: OUTFIT
-                                                    }}>
-                                                        {formatNumber(item.totalStock)}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    {formatNumber(item.minLimit)}
-                                                </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {formatNumber(item.value)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                    <tfoot>
-                                        <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
-                                            <td colSpan={4} style={{ padding: '18px 24px',  fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
-                                            <td style={{ padding: '18px 20px',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
-                                                {formatNumber(totalValue)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        )}
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Box}
+                            emptyMessage={t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً')}
+                            isLoading={loading}
+                            footer={footerElement}
+                        />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -167,7 +162,7 @@ export default function LowStockReportPage() {
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px' }}>
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
-                                <Activity size={18} color={C.primary} /> {t('دليل الإحصائيات')}
+                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} /> {t('دليل الإحصائيات')}
                             </div>
                             <ul style={{ margin: 0, paddingInlineEnd: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {[
@@ -183,20 +178,6 @@ export default function LowStockReportPage() {
                     </div>
                 </div>
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }
-
-

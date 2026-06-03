@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Payroll {
     id: string;
@@ -222,85 +224,92 @@ export default function PayrollsPage() {
                 )}
 
                 {/* Main Content Table Area */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                            {t('جاري التحميل...')}
-                        </div>
-                    ) : filteredPayrolls.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
-                            <FileDown size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
-                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد مسيرات رواتب')}</h3>
-                            <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بتوليد أول مسير من زر "توليد مسير جديد"')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الشهر / السنة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الإصدار')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('عدد الموظفين')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي الصافي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('العمليات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredPayrolls.map((pr, idx) => (
-                                        <tr key={pr.id} 
-                                            style={TABLE_STYLE.row(idx === filteredPayrolls.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                        >
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
-                                                        {getMonthLabel(pr.month.toString(), t)} / {pr.year}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
-                                                {new Date(pr.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 600 }}>
-                                                    {pr._count?.lines || 0} {t('موظف')}
-                                                </span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
-                                                    <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{formatNumber(pr.netTotal)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                {pr.status === 'draft' ? (
-                                                    <span style={{ padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('مسودة')}</span>
-                                                ) : (
-                                                    <span style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('معتمد')}</span>
-                                                )}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                    <Link href={`/payrolls/${pr.id}`} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
-                                                        <Search size={TABLE_STYLE.actionIconSize} />
-                                                    </Link>
-                                                    {pr.status === 'draft' && (
-                                                        <button onClick={() => setDeleteModal({ open: true, id: pr.id })} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
-                                                            <Trash2 size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الشهر / السنة'),
+                            cell: (row: Payroll) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
+                                        {getMonthLabel(row.month.toString(), t)} / {row.year}
+                                    </span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('تاريخ الإصدار'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Payroll) => (
+                                <span style={{ fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
+                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('عدد الموظفين'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Payroll) => (
+                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 600 }}>
+                                    {row._count?.lines || 0} {t('موظف')}
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('إجمالي الصافي'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Payroll) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                    <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
+                                    <span>{formatNumber(row.netTotal)}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'status',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Payroll) => row.status === 'draft' ? (
+                                <span style={{ padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('مسودة')}</span>
+                            ) : (
+                                <span style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('معتمد')}</span>
+                            )
+                        },
+                        {
+                            header: t('العمليات'),
+                            type: 'action',
+                            style: { textAlign: 'start' } as React.CSSProperties,
+                            cell: (row: Payroll) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    <Link href={`/payrolls/${row.id}`} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
+                                        <Search size={TABLE_STYLE.actionIconSize} />
+                                    </Link>
+                                    {row.status === 'draft' && (
+                                        <button onClick={() => setDeleteModal({ open: true, id: row.id })} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
+                                            <Trash2 size={TABLE_STYLE.actionIconSize} />
+                                        </button>
+                                    )}
+                                </div>
+                            )
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filteredPayrolls}
+                            emptyIcon={FileDown}
+                            emptyMessage={searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد مسيرات رواتب')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
+                                    {t('جاري التحميل...')}
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 {/* MODAL: Generate Payroll */}
                 <AppModal

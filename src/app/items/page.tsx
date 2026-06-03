@@ -1,6 +1,8 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -297,6 +299,95 @@ export default function ItemsPage() {
 
     if (!isMounted) return null;
 
+    const showQuantitiesAndCosts = companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product');
+
+    const columns: TableColumn[] = [
+        {
+            header: t('الكود'),
+            cell: (row: Item) => (
+                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
+                    {row.code}
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        ...(companyBusinessType !== 'SERVICES' && usesBarcode ? [{
+            header: t('الباركود'),
+            cell: (row: Item) => (
+                <div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>
+                    {row.barcode || '—'}
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }] : []),
+        {
+            header: isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف'),
+            cell: (row: Item) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    {(isRestaurant || isRetail) && row.imageUrl && (
+                        <img src={row.imageUrl} alt={row.name} style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', border: `1px solid ${C.border}` }} />
+                    )}
+                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{row.name}</div>
+                </div>
+            )
+        },
+        ...(showQuantitiesAndCosts ? [
+            {
+                header: t('الكمية'),
+                cell: (row: Item) => {
+                    const totalQty = row.stocks?.reduce((s, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? s + st.quantity : s, 0) || 0;
+                    return (
+                        <>
+                            {fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{row.unit?.name || t('قطعة')}</span>
+                        </>
+                    );
+                },
+                style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+            },
+            {
+                header: t('سعر التكلفة'),
+                cell: (row: Item) => fMoneyJSX(row.costPrice),
+                style: { textAlign: 'center' } as React.CSSProperties
+            }
+        ] : []),
+        {
+            header: companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع'),
+            cell: (row: Item) => fMoneyJSX(row.sellPrice),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        ...(showQuantitiesAndCosts ? [
+            {
+                header: t('متوسط التكلفة'),
+                cell: (row: Item) => fMoneyJSX(row.averageCost || row.costPrice),
+                style: { textAlign: 'center' } as React.CSSProperties
+            },
+            {
+                header: t('إجمالي التكلفة'),
+                cell: (row: Item) => {
+                    const totalQty = row.stocks?.reduce((s, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? s + st.quantity : s, 0) || 0;
+                    const avgCost = row.averageCost || row.costPrice;
+                    return fMoneyJSX(totalQty * avgCost);
+                },
+                style: { textAlign: 'center' } as React.CSSProperties
+            }
+        ] : []),
+        {
+            header: t('إجراء'),
+            cell: (row: Item) => (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                    {companyBusinessType !== 'SERVICES' && usesBarcode && (
+                        <button onClick={() => { setPrintBarcodeItem(row); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>
+                            <Printer size={TABLE_STYLE.actionIconSize} />
+                        </button>
+                    )}
+                    <button onClick={() => handleOpenModal(row)} style={TABLE_STYLE.actionBtn()}><Pencil size={TABLE_STYLE.actionIconSize} /></button>
+                    <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -431,82 +522,16 @@ export default function ItemsPage() {
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
-                ) : filteredAll.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', color: C.textSecondary }}>
-                        <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
-                    </div>
                 ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
-                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
-                                        <th className="table-cell-text" style={{...TABLE_STYLE.th(false)}}>{isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
-                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
-                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((item, idx) => {
-                                        const totalQty = item.stocks?.reduce((s, st) => {
-                                            if (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) return s + st.quantity;
-                                            return s;
-                                        }, 0) || 0;
-                                        const avgCost = item.averageCost || item.costPrice;
-                                        const totalCost = totalQty * avgCost;
-                                        return (
-                                            <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td className="table-cell-center" style={{...TABLE_STYLE.td(true), textAlign: 'center'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
-                                                {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                    <td className="table-cell-center" style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
-                                                )}
-                                                <td className="table-cell-text" style={{...TABLE_STYLE.td(false)}}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                        {(isRestaurant || isRetail) && item.imageUrl && (
-                                                            <img src={item.imageUrl} alt={item.name} style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', border: `1px solid ${C.border}` }} />
-                                                        )}
-                                                        <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div>
-                                                    </div>
-                                                </td>
-                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
-                                                )}
-                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
-                                                )}
-                                                <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.sellPrice)}</td>
-                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(avgCost)}</td>
-                                                )}
-                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(totalCost)}</td>
-                                                )}
-                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
-                                                        {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                            <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>
-                                                                <Printer size={TABLE_STYLE.actionIconSize} />
-                                                            </button>
-                                                        )}
-                                                        <button onClick={() => handleOpenModal(item)} style={TABLE_STYLE.actionBtn()}><Pencil size={TABLE_STYLE.actionIconSize} /></button>
-                                                        <button onClick={() => setDeleteItem(item)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination total={filteredAll.length} pageSize={pageSize} currentPage={currentPage} onPageChange={setCurrentPage} />
-                        </div>
-                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={paginated}
+                        emptyIcon={Package}
+                        emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}
+                    />
+                )}
+                {!loading && filteredAll.length > 0 && (
+                    <Pagination total={filteredAll.length} pageSize={pageSize} currentPage={currentPage} onPageChange={setCurrentPage} />
                 )}
 
                 <AppModal

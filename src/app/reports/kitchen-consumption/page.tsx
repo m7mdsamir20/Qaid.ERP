@@ -3,11 +3,13 @@ import TableSkeleton from '@/components/TableSkeleton';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
-import { Search, Loader2, PackageSearch, PieChart, Activity } from 'lucide-react';
+import { Search, PackageSearch, PieChart, Activity } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface ConsumptionData {
     id: string;
@@ -54,6 +56,33 @@ export default function KitchenConsumptionReportPage() {
     };
 
     useEffect(() => { fetchReport(); }, []);
+
+    const filteredData = data ? data.consumption.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.code.includes(q)) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('المادة الخام'),
+            cell: (row: ConsumptionData) => (
+                <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{row.code}</div>
+                </div>
+            )
+        },
+        {
+            header: t('الوحدة'),
+            cell: (row: ConsumptionData) => (
+                <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{row.unit}</span>
+            )
+        },
+        {
+            header: t('الكمية المستهلكة (النظرية)'),
+            type: 'number' as const,
+            cell: (row: ConsumptionData) => (
+                <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{row.quantity.toFixed(2)}</span>
+            )
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -135,32 +164,12 @@ export default function KitchenConsumptionReportPage() {
                             />
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('المادة الخام'), t('الوحدة'), t('الكمية المستهلكة (النظرية)')].map((h, i) => (
-                                            <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'start' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.consumption.filter(c => c.name.toLowerCase().includes(q.toLowerCase()) || c.code.includes(q)).map((c, idx) => (
-                                        <tr key={c.id}
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{c.name}</div>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{c.code}</div>
-                                            </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{c.unit}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{c.quantity.toFixed(2)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={filteredData}
+                            emptyIcon={PackageSearch}
+                            emptyMessage={t('لم يتم العثور على مواد خام مطابقة للبحث')}
+                        />
                     </>
                 )}
             </div>
