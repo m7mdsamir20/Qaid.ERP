@@ -215,7 +215,7 @@ function CustomerStatementReportContent() {
                                     <thead>
                                         <tr>
                                             {[t('م'), t('الاستحقاق'), t('المبلغ'), t('المدفوع'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} className="table-cell-center" style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -224,18 +224,18 @@ function CustomerStatementReportContent() {
                                             <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{inst.installmentNo}</td>
-                                                <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
-                                                <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{inst.installmentNo}</td>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.amount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px' }}>
+                                                <td className="table-cell-center" style={{ padding: '12px 16px' }}>
                                                     <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
                                                         {inst.status === 'paid' ? t('مدفوع') : t('غير مسدد')}
                                                     </span>

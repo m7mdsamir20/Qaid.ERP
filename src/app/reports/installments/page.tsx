@@ -319,19 +319,23 @@ export default function InstallmentReportsPage() {
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                                        ))}
+                                                        {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => {
+                                                            const isCenter = i === 0 || i === 3 || i === 4;
+                                                            const alignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
+                                                            return (
+                                                                <th key={i} className={alignClass} style={{ padding: '16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                            );
+                                                        })}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
-                                                            <td style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td style={{ padding: '16px', color: C.textSecondary }}>{t('قسط رقم')} {inst.installmentNo}</td>
-                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
+                                                            <td className="table-cell-text" style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
+                                                            <td className="table-cell-text" style={{ padding: '16px', color: C.textSecondary }}>{t('قسط رقم')} {inst.installmentNo}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -367,24 +371,28 @@ export default function InstallmentReportsPage() {
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                                        ))}
+                                                        {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => {
+                                                            const isCenter = i === 1 || i === 3 || i === 4 || i === 5;
+                                                            const alignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
+                                                            return (
+                                                                <th key={i} className={alignClass} style={{ padding: '16px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                            );
+                                                        })}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: C.textSecondary }}>{t('قسط')} {inst.installmentNo}</td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
-                                                            <td style={{ padding: '16px' }}>
+                                                            <td className="table-cell-text" style={{ padding: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
+                                                            <td className="table-cell-text" style={{ padding: '16px', color: C.textSecondary }}>{t('قسط')} {inst.installmentNo}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px' }}>
                                                                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 600, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
                                                                     {inst.daysOverdue} {t('يوم تأخير')}
                                                                 </div>
                                                             </td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
+                                                            <td className="table-cell-center" style={{ padding: '16px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -439,19 +447,19 @@ export default function InstallmentReportsPage() {
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                                    <th key={i} className="table-cell-center" style={{ padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {plan.installments?.map((inst, idx: number) => (
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
-                                                                    <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{inst.installmentNo}</td>
-                                                                    <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
-                                                                    <td style={{ padding: '12px 24px', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.amount)}</td>
-                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
-                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
-                                                                    <td style={{ padding: '12px 24px' }}>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{inst.installmentNo}</td>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.amount)}</td>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
+                                                                    <td className="table-cell-center" style={{ padding: '12px 24px' }}>
                                                                         <div style={{
                                                                             display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
                                                                             background: inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)',
