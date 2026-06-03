@@ -197,7 +197,7 @@ export default function DashboardLayout({
                 transition: 'all 0.3s ease'
             }}>
                 <div className="print-hide">
-                    <Header />
+                    <Header onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
                 </div>
                 <main style={{ flex: 1, padding: '88px 24px 24px', position: 'relative' }}>
                     <TrialBanner />

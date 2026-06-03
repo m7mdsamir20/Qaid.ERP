@@ -523,6 +523,31 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
 
             <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
 
+            {onMenuToggle && (
+                <button 
+                    onClick={onMenuToggle} 
+                    style={{ 
+                        background: 'transparent', 
+                        color: C.textPrimary, 
+                        cursor: 'pointer', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        transition: 'all 0.2s',
+                        border: `1px solid ${C.border}`,
+                        marginInlineEnd: '12px',
+                        flexShrink: 0
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.borderColor = C.primary; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}
+                >
+                    <Menu size={18} />
+                </button>
+            )}
+
             {/* Header Logo taking the place of the toggle button */}
             <Link href="/" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '24px' }}>
                 <div style={{ position: 'relative', width: '160px', height: '46px' }}>

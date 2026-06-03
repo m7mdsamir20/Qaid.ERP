@@ -281,38 +281,6 @@ export default function Sidebar({
     return (
         <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
             
-            {/* Top Toggle Area */}
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: isCollapsed ? 'center' : 'flex-end', 
-                padding: isCollapsed ? '16px 0' : '16px 20px', 
-                borderBottom: `1px solid ${C.border}15`,
-                height: '64px',
-                boxSizing: 'border-box'
-            }}>
-                <button 
-                    onClick={onToggle} 
-                    style={{ 
-                        background: 'transparent', 
-                        color: C.textPrimary, 
-                        cursor: 'pointer', 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'center',
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '10px',
-                        transition: 'all 0.2s',
-                        border: `1px solid ${C.border}`
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.borderColor = C.primary; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}
-                >
-                    <Menu size={18} />
-                </button>
-            </div>
-
             <nav className="sidebar-nav" style={{ padding: '10px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
                 {isSidebarEmpty ? (
                     <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>
