@@ -3,6 +3,7 @@
 import { SessionProvider } from 'next-auth/react';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { LanguageProvider } from '@/lib/i18n';
+import GlobalAutoAligner from '@/components/GlobalAutoAligner';
 
 const ThemeContext = createContext({
     theme: 'dark',
@@ -53,6 +54,7 @@ export function Providers({ children }: {
         <SessionProvider refetchOnWindowFocus={false}>
             <LanguageProvider>
                 <ThemeContext.Provider value={{ theme, toggleTheme }}>
+                    <GlobalAutoAligner />
                     {children}
                 </ThemeContext.Provider>
             </LanguageProvider>

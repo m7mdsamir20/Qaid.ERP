@@ -1,6 +1,4 @@
 'use client';
-import { formatNumber } from '@/lib/currency';
-
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Receipt, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer } from 'lucide-react';
@@ -13,7 +11,8 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n';
 import { printInvoiceDirectly } from '@/lib/printDirectly';
-
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Invoice {
     id: string;
@@ -33,18 +32,17 @@ interface Invoice {
 export default function SalesPage() {
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
-    // Permission checks
     const userPerms = (session?.user as any)?.permissions || {};
     const userRole = (session?.user as any)?.role;
     const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
     const hasGranularPerms = Object.keys(userPerms).length > 0;
     const salesPerms = userPerms['/sales'] || {};
     const canCreate = isSuperAdmin || userRole === 'admin' || !hasGranularPerms || !!salesPerms.create;
-    const canEditDelete = isSuperAdmin || userRole === 'admin' || !hasGranularPerms || !!salesPerms.editDelete;
+
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -86,8 +84,6 @@ export default function SalesPage() {
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
-    const fmt = (num: number) => formatNumber(num);
-
     const getStatusStyle = (total: number, paid: number, paymentMethod?: string) => {
         if (paymentMethod === 'installment_plan') return { bg: 'rgba(167,139,250,0.1)', color: '#a78bfa', text: t('مُقسطة'), icon: Clock };
         if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
@@ -96,11 +92,86 @@ export default function SalesPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        printInvoiceDirectly(inv.id)
+        printInvoiceDirectly(inv.id);
     };
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+
+    const columns: TableColumn[] = [
+        {
+            header: t("رقم الفاتورة"),
+            type: 'text',
+            cell: (inv: Invoice) => (
+                <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
+                    {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
+                </span>
+            ),
+            style: { width: '120px' }
+        },
+        {
+            header: t("التاريخ"),
+            type: 'date',
+            cell: (inv: Invoice) => {
+                const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
+                return <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</span>;
+            }
+        },
+        {
+            header: t("العميل"),
+            type: 'text',
+            cell: (inv: Invoice) => (
+                <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                    {inv.customer ? inv.customer.name : t("عميل نقدي")}
+                </span>
+            )
+        },
+        {
+            header: t("الإجمالي"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.total)
+        },
+        {
+            header: t("المدفوع"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.paidAmount, '', { color: C.success })
+        },
+        {
+            header: t("المتبقي"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })
+        },
+        {
+            header: t("الحالة"),
+            type: 'status',
+            cell: (inv: Invoice) => {
+                const st = getStatusStyle(inv.total, inv.paidAmount, inv.paymentMethod);
+                return (
+                    <div style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                        background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
+                    }}>
+                        {st.text} <st.icon size={12} />
+                    </div>
+                );
+            }
+        },
+        {
+            header: t("إجراءات"),
+            type: 'action',
+            cell: (inv: Invoice) => (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={(e) => { e.stopPropagation(); handlePrint(inv); }} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
+                        <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); router.push(`/sales/${inv.id}`); }} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
+                        <Eye size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -116,7 +187,6 @@ export default function SalesPage() {
                     } : undefined}
                 />
 
-                {/* Filters Section */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
@@ -129,7 +199,6 @@ export default function SalesPage() {
                     </div>
 
                     {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -141,7 +210,6 @@ export default function SalesPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -161,90 +229,29 @@ export default function SalesPage() {
                     )}
                 </div>
 
-                {/* Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
-                        </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t('لا توجد فواتير خدمات') : t('لا توجد فواتير مبيعات'))}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true, true) }}>{t("رقم الفاتورة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("التاريخ")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المدفوع")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المتبقي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("الحالة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("إجراءات")}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((inv, idx) => {
-                                        const st = getStatusStyle(inv.total, inv.paidAmount, inv.paymentMethod);
-                                        const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
-                                        return (
-                                            <tr key={inv.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
-                                                    {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(inv.total)}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                        background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
-                                                    }}>
-                                                        {st.text} <st.icon size={12} />
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
-                                                            <Printer size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                        <button onClick={() => router.push(`/sales/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
-                                                            <Eye size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
+                <div style={{ marginTop: '20px' }}>
+                    <DataTable
+                        columns={columns}
+                        data={paginated}
+                        emptyIcon={Receipt}
+                        emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t('لا توجد فواتير خدمات') : t('لا توجد فواتير مبيعات'))}
+                        isLoading={loading}
+                        loadingSkeleton={
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
+                                <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
+                            </div>
+                        }
+                    />
+                    {!loading && filteredAll.length > 0 && (
+                        <Pagination
+                            total={filteredAll.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
                     )}
                 </div>
             </div>
-            
         </DashboardLayout>
     );
 }

@@ -260,11 +260,11 @@ export default function SuppliersPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('المورد')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('إجراءات')}</th>
+                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(true) }}>{t('المورد')}</th>
+                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
+                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
+                                        <th className="table-cell-center" style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
+                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +276,7 @@ export default function SuppliersPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
+                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(true) }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                                                         <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{c.name.charAt(0)}</div>
                                                         <Link
@@ -289,9 +289,9 @@ export default function SuppliersPage() {
                                                         </Link>
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false) }}>
                                                     <span style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                         background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
@@ -302,7 +302,7 @@ export default function SuppliersPage() {
                                                         <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                     </span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false) }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
                                                         <button onClick={() => setDeleteItem(c)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>

@@ -442,15 +442,15 @@ export default function ItemsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
-                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
-                                        <th style={{...TABLE_STYLE.th(false)}}>{isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
+                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
+                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
+                                        <th className="table-cell-text" style={{...TABLE_STYLE.th(false)}}>{isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
+                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
+                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -463,11 +463,11 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'center'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td className="table-cell-center" style={{...TABLE_STYLE.td(true), textAlign: 'center'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                    <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
+                                                    <td className="table-cell-center" style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td className="table-cell-text" style={{...TABLE_STYLE.td(false)}}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                         {(isRestaurant || isRetail) && item.imageUrl && (
                                                             <img src={item.imageUrl} alt={item.name} style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', border: `1px solid ${C.border}` }} />
@@ -476,19 +476,19 @@ export default function ItemsPage() {
                                                     </div>
                                                 </td>
                                                 {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
+                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
                                                 )}
-                                                <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.sellPrice)}</td>
+                                                <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.sellPrice)}</td>
                                                 {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(avgCost)}</td>
+                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(avgCost)}</td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
-                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(totalCost)}</td>
+                                                    <td className="table-cell-center" style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(totalCost)}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                         {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                             <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>

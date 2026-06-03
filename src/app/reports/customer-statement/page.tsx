@@ -236,29 +236,32 @@ export default function CustomerStatementPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('التاريخ'), t('طبيعة الحركة'), t('المـرجع'), t('البيان والتفاصيل'), t('عليه (+)'), t('لـه (-)'), t('الرصيد')].map((h, i) => (
-                                                <th key={i} style={{
-                                                    padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,
-                                                    
-                                                    fontWeight: 600, fontFamily: CAIRO
-                                                }}>{h}</th>
-                                            ))}
+                                            {[t('التاريخ'), t('طبيعة الحركة'), t('المـرجع'), t('البيان والتفاصيل'), t('عليه (+)'), t('لـه (-)'), t('الرصيد')].map((h, i) => {
+                                                const isCenter = i === 0 || i === 1 || i === 4 || i === 5 || i === 6;
+                                                const alignClass = isCenter ? 'table-cell-center' : 'table-cell-text';
+                                                return (
+                                                    <th key={i} className={alignClass} style={{
+                                                        padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
+                                                        fontWeight: 600, fontFamily: CAIRO
+                                                    }}>{h}</th>
+                                                );
+                                            })}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {data.initialBalance !== 0 && (
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {dateFrom || (data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-GB') : '—')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  }}>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px' }}>
                                                     <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد افتتاحي')}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  color: C.textSecondary }}>—</td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, }}>{t('رصيد ما قبل فترة التقرير')}</td>
-                                                <td style={{ padding: '14px 20px',   color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',   color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: C.textSecondary }}>—</td>
+                                                <td className="table-cell-text" style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد ما قبل فترة التقرير')}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', fontWeight: 600, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
@@ -266,10 +269,10 @@ export default function CustomerStatementPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px',   color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {new Date(row.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  }}>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px' }}>
                                                     <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
                                                         background: row.type.includes('مبيعات') ? 'rgba(16,185,129,0.1)' : row.type.includes('قبض') ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
@@ -278,26 +281,26 @@ export default function CustomerStatementPage() {
                                                         {t(row.type)}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  }}>
+                                                <td className="table-cell-text" style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{row.ref || '—'}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, }}>{row.description}</td>
-                                                <td style={{ padding: '14px 20px',   color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',   color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 600, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td className="table-cell-text" style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{row.description}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td className="table-cell-center" style={{ padding: '14px 20px', fontWeight: 600, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
-                                            <td style={{ padding: '20px 20px',  color: '#10b981', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
+                                            <td colSpan={4} className="table-cell-text" style={{ padding: '20px 24px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
+                                            <td className="table-cell-center" style={{ padding: '20px 20px', color: '#10b981', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
                                                 {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
-                                            <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
+                                            <td className="table-cell-center" style={{ padding: '20px 20px', color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
                                                 {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
-                                            <td style={{ padding: '20px 24px',  color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
+                                            <td className="table-cell-center" style={{ padding: '20px 24px', color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
                                                 {formatNumber(Math.abs(data.finalBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                         </tr>

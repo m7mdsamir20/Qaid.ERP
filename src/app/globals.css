@@ -1323,3 +1323,16 @@ select:-webkit-autofill:focus {
     padding: 18px !important;
   }
 }
+
+/* ─── Global Table Formatting Rules ─── */
+.table-cell-center,
+th.table-cell-center,
+td.table-cell-center {
+  text-align: center !important;
+}
+
+.table-cell-text,
+th.table-cell-text,
+td.table-cell-text {
+  text-align: start !important;
+}

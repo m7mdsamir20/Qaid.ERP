@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Plus, Printer, Info, Loader2, Search, ChevronDown, Package, TrendingUp, Wallet, Clock, CheckCircle2, History, Filter, Calendar, Trash2, Receipt, Eye, AlertCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { getCurrencySymbol, formatNumber } from '@/lib/currency';
+import { formatNumber } from '@/lib/currency';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useTranslation } from '@/lib/i18n';
 import { printInvoiceDirectly } from '@/lib/printDirectly';
-
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Invoice {
     id: string; invoiceNumber: number; date: string;
@@ -27,7 +28,7 @@ interface Invoice {
 export default function PurchasesListPage() {
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -38,12 +39,10 @@ export default function PurchasesListPage() {
     const [dateTo, setDateTo] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 15;
-    const [expanded, setExpanded] = useState<string | null>(null);
 
     const isAdmin = session?.user?.role === 'admin';
     const perms = (session?.user as any)?.permissions || {};
     const canCreate = isAdmin || perms['/purchases']?.create;
-    const canAct = activeYear && canCreate;
 
     const fetchAll = useCallback(async () => {
         try {
@@ -68,8 +67,6 @@ export default function PurchasesListPage() {
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
-    const fmt = (num: number) => formatNumber(num);
-
     const getStatusStyle = (total: number, paid: number) => {
         if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
         if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('دفع جزئي'), icon: Clock };
@@ -77,8 +74,83 @@ export default function PurchasesListPage() {
     };
 
     const handlePrint = (inv: Invoice) => {
-        printInvoiceDirectly(inv.id)
+        printInvoiceDirectly(inv.id);
     };
+
+    const columns: TableColumn[] = [
+        {
+            header: t("رقم الفاتورة"),
+            type: 'text',
+            cell: (inv: Invoice) => (
+                <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
+                    PUR-{String(inv.invoiceNumber).padStart(5, '0')}
+                </span>
+            ),
+            style: { width: '120px' }
+        },
+        {
+            header: t("التاريخ"),
+            type: 'date',
+            cell: (inv: Invoice) => {
+                const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
+                return <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</span>;
+            }
+        },
+        {
+            header: t("المورد"),
+            type: 'text',
+            cell: (inv: Invoice) => (
+                <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                    {inv.supplier?.name || inv.customer?.name || '—'}
+                </span>
+            )
+        },
+        {
+            header: t("الإجمالي"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.total)
+        },
+        {
+            header: t("المدفوع"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.paidAmount, '', { color: C.success })
+        },
+        {
+            header: t("المتبقي"),
+            type: 'number',
+            cell: (inv: Invoice) => fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })
+        },
+        {
+            header: t("الحالة"),
+            type: 'status',
+            cell: (inv: Invoice) => {
+                const st = getStatusStyle(inv.total, inv.paidAmount);
+                return (
+                    <div style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px',
+                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                        background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
+                    }}>
+                        {st.text} <st.icon size={12} />
+                    </div>
+                );
+            }
+        },
+        {
+            header: t("إجراءات"),
+            type: 'action',
+            cell: (inv: Invoice) => (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={(e) => { e.stopPropagation(); handlePrint(inv); }} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
+                        <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); router.push(`/purchases/${inv.id}`); }} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
+                        <Eye size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -105,7 +177,6 @@ export default function PurchasesListPage() {
                         />
                     </div>
                     {/* Responsive Date Filters */}
-                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -117,7 +188,6 @@ export default function PurchasesListPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -137,90 +207,29 @@ export default function PurchasesListPage() {
                     )}
                 </div>
 
-                {/* Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
-                        </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد فواتير مشتريات')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table">
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true, true) }}>{t("رقم الفاتورة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("التاريخ")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, false) }}>{t("المورد")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المدفوع")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المتبقي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("الحالة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t("إجراءات")}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((inv, idx) => {
-                                        const st = getStatusStyle(inv.total, inv.paidAmount);
-                                        const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
-                                        return (
-                                            <tr key={inv.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true, true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
-                                                    PUR-{String(inv.invoiceNumber).padStart(5, '0')}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(inv.total)}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
-                                                </td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
-                                                    {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                        background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
-                                                    }}>
-                                                        {st.text} <st.icon size={12} />
-                                                    </div>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
-                                                            <Printer size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                        <button onClick={() => router.push(`/purchases/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
-                                                            <Eye size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination 
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
+                <div style={{ marginTop: '20px' }}>
+                    <DataTable
+                        columns={columns}
+                        data={paginated}
+                        emptyIcon={Receipt}
+                        emptyMessage={searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد فواتير مشتريات')}
+                        isLoading={loading}
+                        loadingSkeleton={
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
+                                <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
+                            </div>
+                        }
+                    />
+                    {!loading && filteredAll.length > 0 && (
+                        <Pagination 
+                            total={filteredAll.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
                     )}
                 </div>
             </div>
-            
         </DashboardLayout>
     );
 }

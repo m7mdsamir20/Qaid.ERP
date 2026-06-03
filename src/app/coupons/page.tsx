@@ -13,6 +13,8 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Coupon {
     id: string;
@@ -172,6 +174,75 @@ export default function CouponsPage() {
         { label: t('إجمالي الاستخدام'), value: coupons.reduce((s, c) => s + c.usedCount, 0), icon: <Tag size={18} />, color: '#8b5cf6', suffix: t('مرة') },
     ];
 
+    const columns: TableColumn[] = [
+        {
+            header: t('كود الخصم'),
+            type: 'text',
+            cell: (c: Coupon) => (
+                <span style={{ fontWeight: 700, color: C.primary, fontFamily: OUTFIT, background: `${C.primary}10`, padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.primary}30` }}>
+                    {c.code}
+                </span>
+            ),
+        },
+        {
+            header: t('الخصم'),
+            type: 'number',
+            cell: (c: Coupon) => (
+                <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px', fontWeight: 600 }}>
+                    {c.type === 'percentage' ? `${c.value}%` : <Currency amount={c.value} />}
+                </span>
+            )
+        },
+        {
+            header: t('الاستخدام'),
+            type: 'number',
+            cell: (c: Coupon) => (
+                <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
+                    {c.usedCount} {c.usageLimit ? `/ ${c.usageLimit}` : ''}
+                </span>
+            )
+        },
+        {
+            header: t('تاريخ الانتهاء'),
+            type: 'date',
+            cell: (c: Coupon) => (
+                <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
+                    {c.endDate ? new Date(c.endDate).toLocaleDateString('en-GB') : '—'}
+                </span>
+            )
+        },
+        {
+            header: t('الحالة'),
+            type: 'status',
+            cell: (c: Coupon) => {
+                const now = new Date();
+                const isExpired = c.endDate ? new Date(c.endDate) < now : false;
+                const isExhausted = c.usageLimit ? c.usedCount >= c.usageLimit : false;
+                const isValid = c.isActive && !isExpired && !isExhausted;
+                return (
+                    <span style={{
+                        display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
+                        background: isValid ? 'rgba(74,222,128,0.12)' : 'rgba(239, 68, 68, 0.12)',
+                        color: isValid ? '#4ade80' : '#fb7185',
+                        border: `1px solid ${isValid ? 'rgba(74,222,128,0.22)' : 'rgba(239, 68, 68, 0.22)'}`,
+                    }}>
+                        {isValid ? t('فعال') : (isExpired ? t('منتهي') : (isExhausted ? t('نفد') : t('معطل')))}
+                    </span>
+                );
+            }
+        },
+        {
+            header: t('إجراءات'),
+            type: 'action',
+            cell: (c: Coupon) => (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
+                    <button onClick={() => setDeleteItem(c)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -240,83 +311,26 @@ export default function CouponsPage() {
                 </div>
 
                 {/* Table */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
-                            <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
-                        </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <Ticket size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج مطابقة') : t('لا توجد كوبونات خصم حالياً')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('كود الخصم')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الخصم')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الاستخدام')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('تاريخ الانتهاء')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((c, idx) => {
-                                        const now = new Date();
-                                        const isExpired = c.endDate ? new Date(c.endDate) < now : false;
-                                        const isExhausted = c.usageLimit ? c.usedCount >= c.usageLimit : false;
-                                        const isValid = c.isActive && !isExpired && !isExhausted;
-
-                                        return (
-                                            <tr key={c.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
-                                                    <span style={{ fontWeight: 700, color: C.primary, fontFamily: OUTFIT, background: `${C.primary}10`, padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.primary}30` }}>
-                                                        {c.code}
-                                                    </span>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px', fontWeight: 600 }}>
-                                                    {c.type === 'percentage' ? `${c.value}%` : <Currency amount={c.value} />}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
-                                                    {c.usedCount} {c.usageLimit ? `/ ${c.usageLimit}` : ''}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                                                    {c.endDate ? new Date(c.endDate).toLocaleDateString('en-GB') : '—'}
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', alignItems: 'center', padding: '3px 10px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
-                                                        background: isValid ? 'rgba(74,222,128,0.12)' : 'rgba(239, 68, 68, 0.12)',
-                                                        color: isValid ? '#4ade80' : '#fb7185',
-                                                        border: `1px solid ${isValid ? 'rgba(74,222,128,0.22)' : 'rgba(239, 68, 68, 0.22)'}`,
-                                                    }}>
-                                                        {isValid ? t('فعال') : (isExpired ? t('منتهي') : (isExhausted ? t('نفد') : t('معطل')))}
-                                                    </span>
-                                                </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
-                                                        <button onClick={() => setDeleteItem(c)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
+                <div style={{ marginTop: '20px' }}>
+                    <DataTable
+                        columns={columns}
+                        data={paginated}
+                        emptyIcon={Ticket}
+                        emptyMessage={search ? t('لا توجد نتائج مطابقة') : t('لا توجد كوبونات خصم حالياً')}
+                        isLoading={loading}
+                        loadingSkeleton={
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
+                                <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
+                            </div>
+                        }
+                    />
+                    {!loading && filteredAll.length > 0 && (
+                        <Pagination
+                            total={filteredAll.length}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                        />
                     )}
                 </div>
 
