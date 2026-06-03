@@ -1,16 +1,16 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useEffect, useState } from 'react';
-import { Search, Loader2, Trash2, AlertTriangle, TrendingDown } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import { Search, Trash2, AlertTriangle, TrendingDown } from 'lucide-react';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface WasteMovement {
     id: string;
@@ -61,6 +61,79 @@ export default function KitchenWasteReportPage() {
     };
 
     useEffect(() => { fetchReport(); }, []);
+
+    const filteredData = data ? data.wasteMovements.filter(w => w.item.name.toLowerCase().includes(q.toLowerCase()) || (w.notes && w.notes.includes(q))) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ'),
+            cell: (row: WasteMovement) => (
+                <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
+                    {new Date(row.date).toLocaleString('en-GB')}
+                </span>
+            )
+        },
+        {
+            header: t('الصنف / المادة الخام'),
+            cell: (row: WasteMovement) => (
+                <div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.item.name}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{row.item.code}</div>
+                </div>
+            )
+        },
+        {
+            header: t('المخزن'),
+            cell: (row: WasteMovement) => (
+                <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{row.warehouse.name}</span>
+            )
+        },
+        {
+            header: t('الكمية'),
+            type: 'number' as const,
+            cell: (row: WasteMovement) => (
+                <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
+                    {row.quantity} <span style={{ fontSize: '11px', color: C.textMuted }}>{row.item.unit?.name || ''}</span>
+                </span>
+            )
+        },
+        {
+            header: t('التكلفة الوحدة'),
+            type: 'number' as const,
+            cell: (row: WasteMovement) => (
+                <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.unitPrice || 0)}
+                </span>
+            )
+        },
+        {
+            header: t('إجمالي الخسارة'),
+            type: 'number' as const,
+            cell: (row: WasteMovement) => {
+                const loss = row.quantity * (row.unitPrice || 0);
+                return (
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#ef4444', fontFamily: OUTFIT }}>
+                        {fMoneyJSX(loss)}
+                    </span>
+                );
+            }
+        },
+        {
+            header: t('الملاحظات'),
+            cell: (row: WasteMovement) => (
+                <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, maxWidth: '200px', display: 'inline-block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {row.notes || row.reference || '—'}
+                </span>
+            )
+        }
+    ];
+
+    const footer = data && (
+        <tr>
+            <td colSpan={5} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+            <td colSpan={2} style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: '#ef4444', fontFamily: OUTFIT }}>{fMoneyJSX(data.totalLoss)}</td>
+        </tr>
+    );
 
     return (
         <DashboardLayout>
@@ -142,47 +215,13 @@ export default function KitchenWasteReportPage() {
                             />
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('التاريخ'), t('الصنف / المادة الخام'), t('المخزن'), t('الكمية'), t('التكلفة الوحدة'), t('إجمالي الخسارة'), t('الملاحظات')].map((h, i) => (
-                                            <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'start' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.wasteMovements.filter(w => w.item.name.toLowerCase().includes(q.toLowerCase()) || (w.notes && w.notes.includes(q))).map((w, idx) => {
-                                        const loss = w.quantity * (w.unitPrice || 0);
-                                        return (
-                                            <tr key={w.id}
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(w.date).toLocaleString('en-GB')}</td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{w.item.name}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{w.item.code}</div>
-                                                </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{w.warehouse.name}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                                                    {w.quantity} <span style={{ fontSize: '11px', color: C.textMuted }}>{w.item.unit?.name || ''}</span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{fMoneyJSX(w.unitPrice || 0)}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: '#ef4444', fontFamily: OUTFIT }}>{fMoneyJSX(loss)}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, maxWidth: '200px' }}>{w.notes || w.reference || '—'}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={5} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                        <td colSpan={2} style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: '#ef4444', fontFamily: OUTFIT }}>{fMoneyJSX(data.totalLoss)}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={filteredData}
+                            emptyIcon={Trash2}
+                            emptyMessage={t('لم يتم العثور على حركات هالك مطابقة للبحث')}
+                            footer={footer}
+                        />
                     </>
                 )}
             </div>

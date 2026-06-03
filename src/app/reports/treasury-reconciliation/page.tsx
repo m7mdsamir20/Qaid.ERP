@@ -1,5 +1,7 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect } from 'react';
@@ -8,7 +10,7 @@ import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Activity, RefreshCw, Landmark, Wallet, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Search, Loader2, FileText, ShieldCheck, History as HistoryIcon, Save, ClipboardList } from 'lucide-react';
+import { Activity, RefreshCw, Landmark, Wallet, CheckCircle2, TrendingUp, TrendingDown, Search, Loader2, FileText, ShieldCheck, Save, ClipboardList, History as HistoryIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { useCurrency } from '@/hooks/useCurrency';
 
@@ -32,7 +34,7 @@ export default function TreasuryReconciliationPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
-    const { fMoney, fMoneyJSX } = useCurrency();
+    const { fMoneyJSX } = useCurrency();
 
     const [tab, setTab] = useState<'new' | 'history'>('new');
     const [treasuries, setTreasuries] = useState<TreasuryItem[]>([]);
@@ -147,6 +149,143 @@ export default function TreasuryReconciliationPage() {
         (s.notes || '').toLowerCase().includes(historyQ.toLowerCase())
     );
 
+    const newColumns: TableColumn[] = [
+        {
+            header: t('المرجع المالي'),
+            cell: (row: TreasuryItem) => (
+                <>
+                    <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{row.name}</div>
+                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>ID: {row.id.substring(0, 8)}</div>
+                </>
+            )
+        },
+        {
+            header: t('النوع'),
+            cell: (row: TreasuryItem) => (
+                row.type === 'bank'
+                    ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Landmark size={14} /> {t('بنكي')}</span>
+                    : <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: SC, padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد الدفتري'),
+            type: 'number' as const,
+            cell: (row: TreasuryItem) => fMoneyJSX(row.balance),
+            style: { fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد الفعلي (عَدّ يدوي)'),
+            cell: (row: TreasuryItem) => {
+                const act = parseFloat(physicalBalances[row.id]) || 0;
+                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
+                return (
+                    <>
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'center' }}>
+                            <input type="number" placeholder={t("أدخل المبلغ...")}
+                                value={physicalBalances[row.id] || ''}
+                                onChange={e => setPhysicalBalances(prev => ({ ...prev, [row.id]: e.target.value }))}
+                                style={{ width: '140px', height: '36px', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, outline: 'none', textAlign: 'center' }} />
+                        </div>
+                        <div className="print-only" style={{ display: 'none', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>
+                            {hasActual ? fMoneyJSX(act) : '—'}
+                        </div>
+                    </>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الفارق (عجز/زيادة)'),
+            type: 'number' as const,
+            cell: (row: TreasuryItem) => {
+                const sys = row.balance;
+                const act = parseFloat(physicalBalances[row.id]) || 0;
+                const diff = act - sys;
+                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
+                if (!hasActual) return '—';
+                return (
+                    <span style={{ fontWeight: 600, color: diff > 0 ? SC : diff < 0 ? DC : C.primary, fontSize: '15px', fontFamily: OUTFIT }}>
+                        {diff > 0 ? `+${formatNumber(diff)}` : formatNumber(diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span>
+                    </span>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('حالة الجرد'),
+            cell: (row: TreasuryItem) => {
+                const sys = row.balance;
+                const act = parseFloat(physicalBalances[row.id]) || 0;
+                const diff = act - sys;
+                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
+                if (!hasActual) return <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>;
+                if (diff === 0) return <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> {t('مطابق')}</span>;
+                if (diff < 0) return <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> {t('عجز')}</span>;
+                return <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> {t('زيادة')}</span>;
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const historyDetailColumns: TableColumn[] = [
+        {
+            header: t('الخزينة/البنك'),
+            cell: (row: any) => row.treasuryName,
+            style: { fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13px' }
+        },
+        {
+            header: t('النوع'),
+            cell: (row: any) => (
+                row.type === 'bank'
+                    ? <span style={{ color: '#6366f1', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('بنكي')}</span>
+                    : <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('نقدي')}</span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد الدفتري'),
+            type: 'number' as const,
+            cell: (row: any) => (
+                <>{formatNumber(row.systemBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></>
+            ),
+            style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد الفعلي'),
+            type: 'number' as const,
+            cell: (row: any) => (
+                row.physicalBalance != null ? <>{formatNumber(row.physicalBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'
+            ),
+            style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الفارق'),
+            type: 'number' as const,
+            cell: (row: any) => {
+                const color = row.diff == null ? C.textMuted : row.diff > 0 ? SC : row.diff < 0 ? DC : C.primary;
+                return (
+                    <span style={{ color }}>
+                        {row.diff != null ? <>{row.diff > 0 ? '+' : ''}{formatNumber(row.diff || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
+                    </span>
+                );
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الحالة'),
+            cell: (row: any) => (
+                <>
+                    {row.status === 'matched' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('مطابق')}</span>}
+                    {row.status === 'shortage' && <span style={{ color: DC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('عجز')}</span>}
+                    {row.status === 'surplus' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('زيادة')}</span>}
+                    {row.status === 'not_counted' && <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
+                </>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -216,71 +355,13 @@ export default function TreasuryReconciliationPage() {
                             </button>
                         </div>
 
-                        {/* Table */}
-                        {loading ? ( <TableSkeleton /> ) : (
-                            <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead>
-                                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                {[t('المرجع المالي'), t('النوع'), t('الرصيد الدفتري'), t('الرصيد الفعلي (عَدّ يدوي)'), t('الفارق (عجز/زيادة)'), t('حالة الجرد')].map((h, i) => (
-                                                    <th key={i} style={{ padding: '16px 20px',  fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filtered.map((tData, idx) => {
-                                                const sys = tData.balance;
-                                                const act = parseFloat(physicalBalances[tData.id]) || 0;
-                                                const diff = act - sys;
-                                                const hasActual = physicalBalances[tData.id] !== undefined && physicalBalances[tData.id] !== '';
-                                                return (
-                                                    <tr key={tData.id} style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                        onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                        <td style={{ padding: '14px 20px' }}>
-                                                            <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{tData.name}</div>
-                                                            <div style={{ fontSize: '11px', color: C.textSecondary,  fontFamily: OUTFIT }}>ID: {tData.id.substring(0, 8)}</div>
-                                                        </td>
-                                                        <td style={{ padding: '14px 20px',  }}>
-                                                            {tData.type === 'bank'
-                                                                ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Landmark size={14} /> {t('بنكي')}</span>
-                                                                : <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: SC, padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>}
-                                                        </td>
-                                                        <td style={{ padding: '14px 20px',   fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary }}>
-                                                            {fMoneyJSX(sys)}
-                                                        </td>
-                                                        <td style={{ padding: '14px 20px', textAlign: 'center', }}>
-                                                            <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                                                <input type="number" placeholder={t("أدخل المبلغ...")}
-                                                                    value={physicalBalances[tData.id] || ''}
-                                                                    onChange={e => setPhysicalBalances(prev => ({ ...prev, [tData.id]: e.target.value }))}
-                                                                    style={{ width: '140px', height: '36px',  borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, outline: 'none' }} />
-                                                            </div>
-                                                            <div className="print-only" style={{ display: 'none', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center'}}>
-                                                                {hasActual ? fMoneyJSX(act) : '—'}
-                                                            </div>
-                                                        </td>
-                                                        <td style={{ padding: '14px 20px',   fontWeight: 600, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>
-                                                            {hasActual ? <>{diff > 0 ? `+${formatNumber(diff)}` : formatNumber(diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
-                                                        </td>
-                                                        <td style={{ padding: '14px 20px',  }}>
-                                                            {hasActual
-                                                                ? diff === 0
-                                                                    ? <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> {t('مطابق')}</span>
-                                                                    : diff < 0
-                                                                        ? <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> {t('عجز')}</span>
-                                                                        : <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> {t('زيادة')}</span>
-                                                                : <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        )}
+                        <DataTable
+                            columns={newColumns}
+                            data={filtered}
+                            emptyIcon={Activity}
+                            emptyMessage={t('لا توجد خزن أو حسابات بنكية مسجلة')}
+                            isLoading={loading}
+                        />
                     </>
                 ) : (
                     /* History Tab */
@@ -351,7 +432,7 @@ export default function TreasuryReconciliationPage() {
                                                 { label: t('إجمالي العجز'), value: selectedSnapshot.totalShortage, color: DC, sign: t('نقص (-)') },
                                                 { label: t('إجمالي الزيادة'), value: selectedSnapshot.totalSurplus, color: SC, sign: t('زيادة (+)') },
                                             ].map((s, i) => (
-                                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px' }}>
+                                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px 20px' }}>
                                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                                     <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)} <span style={{ fontSize: '10px', fontFamily: CAIRO, color: C.textSecondary }}>{sym}</span></div>
                                                     <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
@@ -360,46 +441,18 @@ export default function TreasuryReconciliationPage() {
                                         </div>
 
                                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                                            <div style={{ padding: '16px 20px',  borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <span style={{ fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                                     {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
                                                 </span>
                                                 {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
                                             </div>
-                                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                    <thead>
-                                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                            {[t('الخزينة/البنك'), t('النوع'), t('الرصيد الدفتري'), t('الرصيد الفعلي'), t('الفارق'), t('الحالة')].map((h, i) => (
-                                                                <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '14px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{h}</th>
-                                                            ))}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {(selectedSnapshot.items as any[]).map((item, idx) => (
-                                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }}>{item.treasuryName}</td>
-                                                                <td style={{ padding: '12px 20px', }}>
-                                                                    {item.type === 'bank'
-                                                                        ? <span style={{ color: '#6366f1', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('بنكي')}</span>
-                                                                        : <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('نقدي')}</span>}
-                                                                </td>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 600, fontFamily: OUTFIT, color: C.textPrimary }}>{formatNumber(item.systemBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></td>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 600, fontFamily: OUTFIT, color: C.textPrimary }}>{item.physicalBalance != null ? <>{formatNumber(item.physicalBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}</td>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 600, fontFamily: OUTFIT, color: item.diff == null ? C.textMuted : item.diff > 0 ? SC : item.diff < 0 ? DC : C.primary, fontSize: '13px' }}>
-                                                                    {item.diff != null ? <>{item.diff > 0 ? '+' : ''}{formatNumber(item.diff || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
-                                                                </td>
-                                                                <td style={{ padding: '12px 20px', }}>
-                                                                    {item.status === 'matched' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('مطابق')}</span>}
-                                                                    {item.status === 'shortage' && <span style={{ color: DC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('عجز')}</span>}
-                                                                    {item.status === 'surplus' && <span style={{ color: SC, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('زيادة')}</span>}
-                                                                    {item.status === 'not_counted' && <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>}
-                                                                </td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                            <DataTable
+                                                columns={historyDetailColumns}
+                                                data={selectedSnapshot.items}
+                                                emptyIcon={ClipboardList}
+                                                emptyMessage={t('لا توجد بنود جرد مسجلة')}
+                                            />
                                         </div>
                                     </>
                                 )}

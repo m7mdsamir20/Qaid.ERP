@@ -1,6 +1,8 @@
 'use client';
 import { Currency } from '@/components/Currency';
 
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -185,6 +187,64 @@ export default function SuppliersPage() {
         { id: 'debit', label: t('إجمالي المديونية (عليه لنا)'), value: suppliers.filter(s => s.balance < 0).reduce((a, b) => a + Math.abs(b.balance), 0), icon: <TrendingDown size={18} />, iconColor: '#10b981', suffix: cSymbol },
     ];
 
+    const columns: TableColumn[] = [
+        {
+            header: t('المورد'),
+            cell: (row: Supplier) => (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{row.name.charAt(0)}</div>
+                    <Link
+                        href={`/reports/supplier-statement?supplierId=${row.id}`}
+                        style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: '0.2s' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = C.primary; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = C.textPrimary; }}
+                    >
+                        {row.name}
+                    </Link>
+                </div>
+            )
+        },
+        {
+            header: t('رقم الهاتف'),
+            cell: (row: Supplier) => row.phone || '—',
+            style: { fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }
+        },
+        {
+            header: t('العنوان'),
+            cell: (row: Supplier) => formatAddress(row) || '—',
+            style: { color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }
+        },
+        {
+            header: t('الرصيد الحالي'),
+            type: 'number' as const,
+            cell: (row: Supplier) => {
+                const isCredit = row.balance > 0;
+                const isDebit = row.balance < 0;
+                return (
+                    <span style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
+                        background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
+                        color: isCredit ? '#fb7185' : (isDebit ? '#4ade80' : C.textMuted),
+                        border: `1px solid ${isCredit ? 'rgba(239, 68, 68, 0.22)' : (isDebit ? 'rgba(74,222,128,0.22)' : C.border)}`,
+                    }}>
+                        <span style={{ fontFamily: CAIRO }}>{isCredit ? t('له عندنا') : (isDebit ? t('عليه لنا') : t('متزن'))}</span>
+                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(row.balance)} /></span>
+                    </span>
+                );
+            }
+        },
+        {
+            header: t('إجراءات'),
+            type: 'action' as const,
+            cell: (row: Supplier) => (
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                    <button onClick={() => openEdit(row)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
+                    <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
+                </div>
+            )
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, background: C.bg, minHeight: '100%', paddingBottom: '60px' }}>
@@ -245,83 +305,27 @@ export default function SuppliersPage() {
                     </div>
                 </div>
 
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
+                {/* ── Table (DataTable Component) ── */}
+                <DataTable
+                    columns={columns}
+                    data={paginated}
+                    emptyIcon={Truck}
+                    emptyMessage={searchTerm ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد موردين')}
+                    isLoading={loading}
+                    loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
-                    ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
-                            <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد موردين')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(true) }}>{t('المورد')}</th>
-                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
-                                        <th className="table-cell-text" style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
-                                        <th className="table-cell-center" style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
-                                        <th className="table-cell-center" style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {paginated.map((c, idx) => {
-                                        const isCredit = c.balance > 0;
-                                        const isDebit = c.balance < 0;
-                                        return (
-                                            <tr key={c.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
-                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                            >
-                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(true) }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{c.name.charAt(0)}</div>
-                                                        <Link
-                                                            href={`/reports/supplier-statement?supplierId=${c.id}`}
-                                                            style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: '0.2s' }}
-                                                            onMouseEnter={e => { e.currentTarget.style.color = C.primary; }}
-                                                            onMouseLeave={e => { e.currentTarget.style.color = C.textPrimary; }}
-                                                        >
-                                                            {c.name}
-                                                        </Link>
-                                                    </div>
-                                                </td>
-                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                                <td className="table-cell-text" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <span style={{
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
-                                                        background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
-                                                        color: isCredit ? '#fb7185' : (isDebit ? '#4ade80' : C.textMuted),
-                                                        border: `1px solid ${isCredit ? 'rgba(239, 68, 68, 0.22)' : (isDebit ? 'rgba(74,222,128,0.22)' : C.border)}`,
-                                                    }}>
-                                                        <span style={{ fontFamily: CAIRO }}>{isCredit ? t('له عندنا') : (isDebit ? t('عليه لنا') : t('متزن'))}</span>
-                                                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(c.balance)} /></span>
-                                                    </span>
-                                                </td>
-                                                <td className="table-cell-center" style={{ ...TABLE_STYLE.td(false) }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
-                                                        <button onClick={() => setDeleteItem(c)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <Pagination
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
-                </div>
+                    }
+                />
+                {!loading && filteredAll.length > 0 && (
+                    <Pagination
+                        total={filteredAll.length}
+                        pageSize={pageSize}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                    />
+                )}
 
                 <AppModal show={showModal} onClose={() => setShowModal(false)} icon={Truck} title={editingId ? t('تعديل بيانات المورد') : t('إضافة مورد جديد')} maxWidth="520px">
                     <form onSubmit={handleSubmit}>

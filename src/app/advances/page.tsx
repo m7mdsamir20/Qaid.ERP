@@ -10,6 +10,8 @@ import { Banknote, CheckCircle2, Clock, UsersIcon, Plus, Search, Loader2, X, Tre
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 const formatWithCommas = (val: any) => {
     if (val === undefined || val === null || val === '') return '';
@@ -232,105 +234,123 @@ export default function AdvancesPage() {
                 </div>
 
                 {/* Main Table Section */}
-                <div style={TABLE_STYLE.container}>
-                    {loading ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                            {t('جاري التحميل...')}
-                        </div>
-                    ) : filteredAdvances.length === 0 ? (
-                        <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 20px', color: '#475569' }}>
-                            <Banknote size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
-                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد سلف مسجلة')}</h3>
-                            <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"')}</p>
-                        </div>
-                    ) : (
-                        <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الصرف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('إجمالي السلفة')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('الأقساط')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('القسط الشهري')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'start' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('إجراءات')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredAdvances.map((adv, idx) => (
-                                        <tr key={adv.id} style={TABLE_STYLE.row(idx === filteredAdvances.length - 1)}>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
-                                                    {new Date(adv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ }}>
-                                                    <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '13px' }}>{adv.employee.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{adv.employee.code}</div>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{formatNumber(adv.amount)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{adv.installmentCount}</span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{formatNumber(adv.monthlyAmount || 0)}</span>
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                {adv.status === 'pending' ? (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                                                        <Clock size={12} /> {t('قيد الانتظار')}
-                                                    </span>
-                                                ) : (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                                                        {t('تم الاعتماد')} <CheckCircle2 size={12} />
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                    {adv.status === 'pending' && (
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(adv.id, 'deducted')}
-                                                            disabled={isActionLoading === adv.id}
-                                                            style={TABLE_STYLE.actionBtn('#10b981')}
-                                                            title={t('اعتماد')}
-                                                        >
-                                                            {isActionLoading === adv.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
-                                                        </button>
-                                                    )}
-                                                    {adv.status === 'pending' && (
-                                                        <button 
-                                                            onClick={() => handleDelete(adv)}
-                                                            disabled={isActionLoading === adv.id}
-                                                            style={TABLE_STYLE.actionBtn(C.danger)}
-                                                            title={t('حذف')}
-                                                        >
-                                                            {isActionLoading === adv.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('تاريخ الصرف'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Advance) => (
+                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
+                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الموظف'),
+                            cell: (row: Advance) => (
+                                <div>
+                                    <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '13px' }}>{row.employee.name}</div>
+                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{row.employee.code}</div>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('إجمالي السلفة'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Advance) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
+                                    <span>{formatNumber(row.amount)}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('الأقساط'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Advance) => (
+                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{row.installmentCount}</span>
+                            )
+                        },
+                        {
+                            header: t('القسط الشهري'),
+                            type: 'number',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Advance) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
+                                    <span>{formatNumber(row.monthlyAmount || 0)}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('البيان'),
+                            cell: (row: Advance) => (
+                                <span style={{ color: '#94a3b8', fontSize: '13px' }}>{row.notes || '—'}</span>
+                            )
+                        },
+                        {
+                            header: t('الحالة'),
+                            type: 'status',
+                            style: { textAlign: 'start' } as React.CSSProperties,
+                            cell: (row: Advance) => row.status === 'pending' ? (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
+                                    <Clock size={12} /> {t('قيد الانتظار')}
+                                </span>
+                            ) : (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
+                                    {t('تم الاعتماد')} <CheckCircle2 size={12} />
+                                </span>
+                            )
+                        },
+                        {
+                            header: t('إجراءات'),
+                            type: 'action',
+                            style: { textAlign: 'center' } as React.CSSProperties,
+                            cell: (row: Advance) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                    {row.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleUpdateStatus(row.id, 'deducted')}
+                                            disabled={isActionLoading === row.id}
+                                            style={TABLE_STYLE.actionBtn('#10b981')}
+                                            title={t('اعتماد')}
+                                        >
+                                            {isActionLoading === row.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
+                                        </button>
+                                    )}
+                                    {row.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleDelete(row)}
+                                            disabled={isActionLoading === row.id}
+                                            style={TABLE_STYLE.actionBtn(C.danger)}
+                                            title={t('حذف')}
+                                        >
+                                            {isActionLoading === row.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
+                                        </button>
+                                    )}
+                                </div>
+                            )
+                        }
+                    ];
+
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={filteredAdvances}
+                            emptyIcon={Banknote}
+                            emptyMessage={searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد سلف مسجلة')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', color: '#64748b' }}>
+                                    <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
+                                    {t('جاري التحميل...')}
+                                </div>
+                            }
+                        />
+                    );
+                })()}
 
                 {/* MODAL: New Advance Standardized */}
                 <AppModal

@@ -1,15 +1,16 @@
-'use client';
+"use client";
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
-
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
-import { FileBarChart2, TrendingDown, DollarSign, Building2, Loader2, Search, CheckCircle2 } from 'lucide-react';
+import { FileBarChart2, TrendingDown, DollarSign, Building2, Loader2, Search, CheckCircle2, Briefcase } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE, IS, focusIn, focusOut } from '@/constants/theme';
 
 /* ── Types ── */
@@ -89,6 +90,82 @@ export default function FixedAssetsReportPage() {
     const exportToPDF = () => window.print();
     const sym = getCurrencyName(currency);
 
+    const columns: TableColumn[] = [
+        {
+            header: t('الكود'),
+            cell: (row: FixedAsset) => (
+                <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 600 }}>{row.code}</span>
+            )
+        },
+        {
+            header: t('اسم الأصل'),
+            cell: (row: FixedAsset) => row.name,
+            style: { fontWeight: 600, fontFamily: CAIRO }
+        },
+        {
+            header: t('الفئة'),
+            cell: (row: FixedAsset) => t(row.category),
+            style: { fontFamily: CAIRO }
+        },
+        {
+            header: t('تاريخ الشراء'),
+            type: 'date',
+            cell: (row: FixedAsset) => row.purchaseDate?.split('T')[0]
+        },
+        {
+            header: t('التكلفة'),
+            type: 'number',
+            cell: (row: FixedAsset) => <Currency amount={row.purchaseCost} />
+        },
+        {
+            header: t('مجمع الإهلاك'),
+            type: 'number',
+            cell: (row: FixedAsset) => {
+                const depPctRow = row.purchaseCost > 0
+                    ? (row.accumulatedDepreciation / row.purchaseCost * 100).toFixed(0)
+                    : '0';
+                return (
+                    <>
+                        <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={row.accumulatedDepreciation} /></div>
+                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
+                    </>
+                );
+            }
+        },
+        {
+            header: t('الصافي الدفتري'),
+            type: 'number',
+            cell: (row: FixedAsset) => <Currency amount={row.netBookValue} />
+        },
+        {
+            header: t('المعدل'),
+            type: 'number',
+            cell: (row: FixedAsset) => `${row.depreciationRate}%`
+        },
+        {
+            header: t('الحالة'),
+            type: 'status',
+            cell: (row: FixedAsset) => {
+                const st = STATUS_MAP[row.status];
+                return (
+                    <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
+                        {t(st.label)}
+                    </span>
+                );
+            }
+        }
+    ];
+
+    const footerElement = (
+        <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
+            <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totalCost} /></td>
+            <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#fb7185', fontFamily: OUTFIT }}><Currency amount={totalAccum} /></td>
+            <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={totalNet} /></td>
+            <td colSpan={2} />
+        </tr>
+    );
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -130,154 +207,98 @@ export default function FixedAssetsReportPage() {
                             ))}
                         </div>
 
-                        {/* ── Filters (Standardized & Expanded) ── */}
-                {/* ── Filters (Unified Premium Design) ── */}
-                <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
-                    {/* Search Field */}
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 1 }} />
-                        <input 
-                            value={search} 
-                            onChange={e => setSearch(e.target.value)}
-                            onFocus={(e) => {
-                                focusIn(e);
-                                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)';
-                            }}
-                            onBlur={(e) => {
-                                focusOut(e);
-                                e.currentTarget.style.background = C.card;
-                            }}
-                            placeholder={t("بحث شامل بالأصول (الاسم أو الكود)...")}
-                            style={{ 
-                                ...IS, 
-                                width: '100%', 
-                                height: '42px', 
-                                paddingInlineStart: '44px',
-                                borderRadius: '12px',
-                                background: C.card,
+                        {/* ── Filters (Unified Premium Design) ── */}
+                        <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
+                            {/* Search Field */}
+                            <div style={{ flex: 1, position: 'relative' }}>
+                                <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 1 }} />
+                                <input 
+                                    value={search} 
+                                    onChange={e => setSearch(e.target.value)}
+                                    onFocus={(e) => {
+                                        focusIn(e);
+                                        e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)';
+                                    }}
+                                    onBlur={(e) => {
+                                        focusOut(e);
+                                        e.currentTarget.style.background = C.card;
+                                    }}
+                                    placeholder={t("بحث شامل بالأصول (الاسم أو الكود)...")}
+                                    style={{ 
+                                        ...IS, 
+                                        width: '100%', 
+                                        height: '42px', 
+                                        paddingInlineStart: '44px',
+                                        borderRadius: '12px',
+                                        background: C.card,
+                                        border: `1px solid ${C.border}`,
+                                        transition: 'all 0.2s ease-in-out',
+                                        fontSize: '13.5px',
+                                        fontFamily: CAIRO
+                                    }} 
+                                />
+                            </div>
+
+                            {/* Category Filter */}
+                            <div style={{ width: '180px' }}>
+                                <CustomSelect 
+                                    value={catFilter} 
+                                    onChange={setCatFilter}
+                                    icon={Building2} 
+                                    placeholder={t("الفئة")}
+                                    options={CATEGORIES.map(c => ({ value: c, label: c === 'الكل' ? t('الكل') : t(c) }))}
+                                    style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
+                                />
+                            </div>
+
+                            {/* Status Filters (Unified Background) */}
+                            <div style={{ 
+                                display: 'flex', 
+                                gap: '6px', 
+                                background: C.card, 
+                                padding: '4px', 
+                                borderRadius: '12px', 
                                 border: `1px solid ${C.border}`,
-                                transition: 'all 0.2s ease-in-out',
-                                fontSize: '13.5px',
-                                fontFamily: CAIRO
-                            }} 
-                        />
-                    </div>
-
-                    {/* Category Filter */}
-                    <div style={{ width: '180px' }}>
-                        <CustomSelect 
-                            value={catFilter} 
-                            onChange={setCatFilter}
-                            icon={Building2} 
-                            placeholder={t("الفئة")}
-                            options={CATEGORIES.map(c => ({ value: c, label: c === 'الكل' ? t('الكل') : t(c) }))}
-                            style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
-                        />
-                    </div>
-
-                    {/* Status Filters (Unified Background) */}
-                    <div style={{ 
-                        display: 'flex', 
-                        gap: '6px', 
-                        background: C.card, 
-                        padding: '4px', 
-                        borderRadius: '12px', 
-                        border: `1px solid ${C.border}`,
-                        height: '42px',
-                        alignItems: 'center'
-                    }}>
-                        {[
-                            { key: 'all',      label: t('الكل'),          color: '#256af4' },
-                            { key: 'active',   label: t('نشط'),           color: '#10b981' },
-                            { key: 'fully_dep',label: t('مستهلك كلياً'),  color: '#94a3b8' },
-                            { key: 'disposed', label: t('مُستبعد'),        color: '#fb7185' },
-                        ].map(btn => (
-                            <button key={btn.key} onClick={() => setStatusFilter(btn.key)} style={{
-                                height: '34px', 
-                                padding: '0 16px', 
-                                borderRadius: '8px', 
-                                border: 'none',
-                                fontSize: '11.5px', 
-                                fontWeight: 600, 
-                                cursor: 'pointer', 
-                                transition: 'all 0.2s', 
-                                fontFamily: CAIRO,
-                                background:  statusFilter === btn.key ? `${btn.color}20`  : 'transparent',
-                                color:       statusFilter === btn.key ? btn.color          : C.textMuted,
-                            }}>{btn.label}</button>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
-                    <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                        {t('عدد الأصول المفلترة:')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }}>{filtered.length}</span>
-                    </div>
-                </div>
-
-                        {/* ── Table (Unified Premium Design) ── */}
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('الكود'), t('اسم الأصل'), t('الفئة'), t('تاريخ الشراء'), t('التكلفة'), t('مجمع الإهلاك'), t('الصافي الدفتري'), t('المعدل'), t('الحالة')].map((h, i) => (
-                                            <th key={i} style={{ textAlign: i === 8 ? 'center' : 'start', padding: '16px 20px',
-                                                fontSize: '12px',
-                                                fontWeight: 600,
-                                                color: C.textSecondary,
-                                                
-                                                fontFamily: CAIRO,
-                                                borderBottom: `1px solid ${C.border}`
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
-                                    ) : filtered.map((a, i) => {
-                                        const st = STATUS_MAP[a.status];
-                                        const depPctRow = a.purchaseCost > 0
-                                            ? (a.accumulatedDepreciation / a.purchaseCost * 100).toFixed(0)
-                                            : '0';
-                                        return (
-                                            <tr key={a.id} 
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
-                                                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 600 }}>{a.code}</span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
-                                                        {t(st.label)}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: OUTFIT }}><Currency amount={totalCost} /></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#fb7185',  fontFamily: OUTFIT }}><Currency amount={totalAccum} /></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#10b981',  fontFamily: OUTFIT }}><Currency amount={totalNet} /></td>
-                                        <td colSpan={2} />
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                height: '42px',
+                                alignItems: 'center'
+                            }}>
+                                {[
+                                    { key: 'all',      label: t('الكل'),          color: '#256af4' },
+                                    { key: 'active',   label: t('نشط'),           color: '#10b981' },
+                                    { key: 'fully_dep',label: t('مستهلك كلياً'),  color: '#94a3b8' },
+                                    { key: 'disposed', label: t('مُستبعد'),        color: '#fb7185' },
+                                ].map(btn => (
+                                    <button key={btn.key} onClick={() => setStatusFilter(btn.key)} style={{
+                                        height: '34px', 
+                                        padding: '0 16px', 
+                                        borderRadius: '8px', 
+                                        border: 'none',
+                                        fontSize: '11.5px', 
+                                        fontWeight: 600, 
+                                        cursor: 'pointer', 
+                                        transition: 'all 0.2s', 
+                                        fontFamily: CAIRO,
+                                        background:  statusFilter === btn.key ? `${btn.color}20`  : 'transparent',
+                                        color:       statusFilter === btn.key ? btn.color          : C.textMuted,
+                                    }}>{btn.label}</button>
+                                ))}
+                            </div>
                         </div>
+
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
+                                {t('عدد الأصول المفلترة:')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }}>{filtered.length}</span>
+                            </div>
+                        </div>
+
+                        {/* ── Table (DataTable Component) ── */}
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Briefcase}
+                            emptyMessage={t('لا توجد بيانات تطابق البحث حالياً')}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>

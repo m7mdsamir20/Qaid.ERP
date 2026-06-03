@@ -11,6 +11,8 @@ import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focus
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
+import { DataTable } from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Partner {
     id: string; name: string; share: number; capital: number;
@@ -159,76 +161,81 @@ export default function PartnersPage() {
                     </div>
                 )}
 
-                {loading ? ( <TableSkeleton /> ) : partners.length === 0 ? (
-                    <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
-                        <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
-                    </div>
-                ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('الشريك')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('نسبة الحصة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('رأس المال')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الرصيد الجاري')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {partners.map((p, idx) => (
-                                    <tr key={p.id} style={TABLE_STYLE.row(idx === partners.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={TABLE_STYLE.td(true)}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}15`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    {p.name.charAt(0)}
-                                                </div>
-                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                                            {p.phone || '—'}
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ display: 'inline-flex', padding: '2px 10px', borderRadius: '8px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}10`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], border: `1px solid ${PARTNER_COLORS[idx % PARTNER_COLORS.length]}20`, fontSize: '11px', fontWeight: 600, fontFamily: OUTFIT }}>
-                                                {p.share}%
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                <Currency amount={p.capital} />
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                <Currency amount={p.balance} />
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                                <button onClick={() => router.push('/partner-accounts')}
-                                                    style={TABLE_STYLE.actionBtn(C.primary)} title={t("كشف الحساب")}>
-                                                    <ExternalLink size={14} />
-                                                </button>
-                                                <button onClick={() => openEdit(p)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
-                                                    <Pencil size={14} />
-                                                </button>
-                                                <button onClick={() => setDeleteTarget(p)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
-                                                    <Trash2 size={14} />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                {(() => {
+                    const columns: TableColumn[] = [
+                        {
+                            header: t('الشريك'),
+                            cell: (row: Partner, idx: number) => (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}15`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
+                                        {row.name.charAt(0)}
+                                    </div>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
+                                </div>
+                            )
+                        },
+                        {
+                            header: t('رقم الهاتف'),
+                            cell: (row: Partner) => row.phone || '—',
+                            style: { color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT } as React.CSSProperties
+                        },
+                        {
+                            header: t('نسبة الحصة'),
+                            cell: (row: Partner, idx: number) => (
+                                <div style={{ display: 'inline-flex', padding: '2px 10px', borderRadius: '8px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}10`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], border: `1px solid ${PARTNER_COLORS[idx % PARTNER_COLORS.length]}20`, fontSize: '11px', fontWeight: 600, fontFamily: OUTFIT }}>
+                                    {row.share}%
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('رأس المال'),
+                            cell: (row: Partner) => (
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                    <Currency amount={row.capital} />
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('الرصيد الجاري'),
+                            cell: (row: Partner) => (
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                    <Currency amount={row.balance} />
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        },
+                        {
+                            header: t('الإجراءات'),
+                            cell: (row: Partner) => (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                    <button onClick={() => router.push('/partner-accounts')}
+                                        style={TABLE_STYLE.actionBtn(C.primary)} title={t("كشف الحساب")}>
+                                        <ExternalLink size={14} />
+                                    </button>
+                                    <button onClick={() => openEdit(row)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
+                                        <Pencil size={14} />
+                                    </button>
+                                    <button onClick={() => setDeleteTarget(row)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
+                                        <Trash2 size={14} />
+                                    </button>
+                                </div>
+                            ),
+                            style: { textAlign: 'center' } as React.CSSProperties
+                        }
+                    ];
+                    return (
+                        <DataTable
+                            columns={columns}
+                            data={partners}
+                            emptyIcon={Users}
+                            emptyMessage={t('لا يوجد شركاء مسجلون')}
+                            isLoading={loading}
+                            loadingSkeleton={<TableSkeleton />}
+                        />
+                    );
+                })()}
 
                 <AppModal
                     show={modal !== null}

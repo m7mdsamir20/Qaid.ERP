@@ -1,34 +1,20 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useRouter } from 'next/navigation';
-import { BarChart3, Printer, Loader2, Search, Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
-import { THEME, C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
+import { BarChart3, Search, Calendar, CheckCircle2 } from 'lucide-react';
+import { C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { useCurrency } from '@/hooks/useCurrency';
 
-const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => formatNumber(n);
-
-const IS: React.CSSProperties = {
-    height: '38px', padding: '0 12px',  direction: 'inherit',
-    borderRadius: '8px', border: `1px solid ${C.border}`,
-    background: 'rgba(255,255,255,0.04)', color: '#e2e8f0',
-    fontSize: '12px', outline: 'none', boxSizing: 'border-box',
-};
-
-const LS: React.CSSProperties = {
-    display: 'block', fontSize: '11px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px'
-};
 
 interface CollectionInstallment {
     id: string;
@@ -51,14 +37,14 @@ export default function CollectionReportPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
 
-    const router = useRouter();
-    const [data,      setData]      = useState<CollectionReportData | null>(null);
-    const [loading,   setLoading]   = useState(false);
+    const [data, setData] = useState<CollectionReportData | null>(null);
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-        to:   new Date().toISOString().split('T')[0],
+        to: new Date().toISOString().split('T')[0],
     });
 
     const fetchReport = async () => {
@@ -70,6 +56,57 @@ export default function CollectionReportPage() {
             if (res.ok) setData(await res.json());
         } finally { setLoading(false); }
     };
+
+    const getCurrencyName = (code: string) => {
+        const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+        return map[code] || code;
+    };
+
+    const columns: TableColumn[] = [
+        {
+            header: t('تاريخ التحصيل'),
+            cell: (row: CollectionInstallment) => (
+                <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }}>
+                    {row.paidAt ? fmt(row.paidAt) : '—'}
+                </span>
+            )
+        },
+        {
+            header: t('العميل'),
+            cell: (row: CollectionInstallment) => (
+                <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                    {row.plan?.customer?.name}
+                </span>
+            )
+        },
+        {
+            header: t('رقم الخطة'),
+            cell: (row: CollectionInstallment) => (
+                <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
+                    PLAN-{String(row.plan?.planNumber || 0).padStart(4, '0')}
+                </span>
+            )
+        },
+        {
+            header: t('القسط'),
+            cell: (row: CollectionInstallment) => (
+                <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
+                    {t('قسط رقم')} {row.installmentNo}
+                </span>
+            )
+        },
+        {
+            header: t('المبلغ المحصّل'),
+            type: 'number' as const,
+            cell: (row: CollectionInstallment) => (
+                <span style={{ fontSize: '13px', fontWeight: 600, color: '#34d399', fontFamily: OUTFIT }}>
+                    {fMoneyJSX(row.paidAmount || 0)}
+                </span>
+            )
+        }
+    ];
+
+    const filteredData = data?.installments || [];
 
     return (
         <DashboardLayout>
@@ -129,7 +166,7 @@ export default function CollectionReportPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                         boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                     }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+                        {loading ? <span className="animate-spin">⌛</span> : <Search size={16} />}
                         عرض التقرير
                     </button>
                 </div>
@@ -187,43 +224,12 @@ export default function CollectionReportPage() {
                                 ))}
                             </div>
 
-                            {/* Table */}
-                            <div className="print-table-container" style={{
-                                background: 'rgba(255, 255, 255, 0.01)', borderRadius: '24px',
-                                border: `1px solid ${C.border}`, overflow: 'hidden',
-                                boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)'
-                            }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['تاريخ التحصيل', 'العميل', 'رقم الخطة', 'القسط', 'المبلغ المحصّل'].map((h, i) => (
-                                                <th key={i} style={{ padding: '20px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(data.installments || []).map((inst, idx: number) => (
-                                            <tr key={inst.id} style={{ borderBottom: idx === ((data.installments?.length || 0) - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ padding: '16px 20px',  color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
-                                                <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
-                                                </td>
-                                                <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
-                                                </td>
-                                                <td style={{ padding: '16px 20px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
-                                                <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#34d399', fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <DataTable
+                                columns={columns}
+                                data={filteredData}
+                                emptyIcon={BarChart3}
+                                emptyMessage={t('لا توجد أقساط محصلة مطابقة للبحث')}
+                            />
                         </div>
                     )}
                 </div>
@@ -231,6 +237,3 @@ export default function CollectionReportPage() {
         </DashboardLayout>
     );
 }
-
-
-

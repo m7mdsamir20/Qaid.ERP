@@ -1,20 +1,17 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
-import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Calendar, Search, Printer, Download, Landmark, Wallet, ArrowUpRight, ArrowDownRight, Activity, FileText, ChevronDown, Loader2 } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { Search, Loader2, FileText } from 'lucide-react';
 
 const PC = '#4f46e5';
 const SC = '#10b981';
@@ -46,27 +43,36 @@ interface TreasuryReportData {
     movements: Movement[];
 }
 
+interface TreasuryStatementTableItem {
+    isOpeningBalance?: boolean;
+    id: string;
+    date: string;
+    type: string;
+    description: string;
+    party: string;
+    amount: number;
+    runningBalance: number;
+}
+
 export default function TreasuryBankReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [selectedTreasuryId, setSelectedTreasuryId] = useState('');
     const [treasuries, setTreasuries] = useState<TreasuryOption[]>([]);
     const [data, setData] = useState<TreasuryReportData | null>(null);
     const [loading, setLoading] = useState(false);
-    const [fetchingTreasuries, setFetchingTreasuries] = useState(true);
 
     useEffect(() => {
         const fetchTreasuries = async () => {
             try {
                 const res = await fetch('/api/treasuries');
                 if (res.ok) setTreasuries(await res.json());
-            } catch { } finally { setFetchingTreasuries(false); }
+            } catch { }
         };
         fetchTreasuries();
     }, []);
@@ -84,11 +90,12 @@ export default function TreasuryBankReportPage() {
 
             const res = await fetch(`/api/reports/treasury-bank-report?${params}`);
             if (res.ok) setData(await res.json());
-        } catch { alert(t('فشل الاتصال بالخادم')); }
-        finally { setLoading(false); }
+        } catch { 
+            alert(t('فشل الاتصال بالخادم')); 
+        } finally { 
+            setLoading(false); 
+        }
     };
-
-    const handlePrint = () => window.print();
 
     // Calculate Running Balance
     const getRunningMovements = (): MovementWithBalance[] => {
@@ -105,9 +112,102 @@ export default function TreasuryBankReportPage() {
     const totalReceipts = data?.movements.filter((m) => m.type === 'receipt').reduce((sum, m) => sum + m.amount, 0) || 0;
     const totalPayments = data?.movements.filter((m) => m.type === 'payment').reduce((sum, m) => sum + m.amount, 0) || 0;
 
+    const tableData: TreasuryStatementTableItem[] = [];
+    if (data) {
+        tableData.push({
+            isOpeningBalance: true,
+            id: 'opening-balance',
+            date: '',
+            type: '',
+            description: '',
+            party: t('رصيد افتتاحي (ما قبـل الفترة)'),
+            amount: 0,
+            runningBalance: data.openingBalance
+        });
+        tableData.push(...movements);
+    }
+
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ'),
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return new Date(row.date).toLocaleDateString('en-GB');
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('النوع'),
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return (
+                    <span style={{
+                        padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
+                        background: row.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        color: row.type === 'receipt' ? SC : DC
+                    }}>
+                        {row.type === 'receipt' ? t('سند قبض') : t('سند صرف')}
+                    </span>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('البيان'),
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) {
+                    return <span style={{ fontWeight: 700, color: '#64748b', fontFamily: CAIRO }}>{row.party}</span>;
+                }
+                return row.description;
+            },
+            style: { fontFamily: CAIRO, fontSize: '13px', color: '#e2e8f0' }
+        },
+        {
+            header: t('الجهة'),
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.party;
+            },
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('مدين (+)'),
+            type: 'number' as const,
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.type === 'receipt' ? <Currency amount={row.amount} /> : '';
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: SC, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('دائن (-)'),
+            type: 'number' as const,
+            cell: (row: TreasuryStatementTableItem) => {
+                if (row.isOpeningBalance) return '';
+                return row.type === 'payment' ? <Currency amount={row.amount} /> : '';
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: DC, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الرصيد'),
+            type: 'number' as const,
+            cell: (row: TreasuryStatementTableItem) => <Currency amount={row.runningBalance} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.01)' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={4} style={{ padding: '20px 24px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجماليات الحركات المحددة')}</td>
+            <td style={{ padding: '20px 20px', color: SC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={totalReceipts} /></td>
+            <td style={{ padding: '20px 20px', color: DC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={totalPayments} /></td>
+            <td style={{ padding: '20px 24px', color: PC, fontSize: '13px', fontWeight: 950, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}><Currency amount={data.currentBalance} /></td>
+        </tr>
+    );
+
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, paddingBottom: '60px' }}>
                 <ReportHeader
                     title={t("كشف حساب الخزن والبنوك")}
                     subtitle={t("تحليل تفصيلي للحركات المالية والمقبوضات والمدفوعات لكل خزينة أو حساب بنكي.")}
@@ -149,7 +249,7 @@ export default function TreasuryBankReportPage() {
                             </div>
                         </div>
                         <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 600, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
-                            <Search size={18} /> {t('عرض التقرير')}
+                            {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={18} />} {t('عرض التقرير')}
                         </button>
                     </div>
                 </div>
@@ -163,21 +263,21 @@ export default function TreasuryBankReportPage() {
                     <div>
                         {/* Summary Header */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b`, background: C.card, border: `1px solid ${C.border}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('رصيد أول المدة')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{fMoneyJSX(data.openingBalance)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}><Currency amount={data.openingBalance} /></div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}`, background: C.card, border: `1px solid ${C.border}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المقبوضات (وارد)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 600, color: SC , fontFamily: CAIRO}}>+ {formatNumber(totalReceipts)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: SC , fontFamily: CAIRO}}>+ <Currency amount={totalReceipts} /></div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}`, background: C.card, border: `1px solid ${C.border}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المدفوعات (صادر)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 600, color: DC , fontFamily: CAIRO}}>- {formatNumber(totalPayments)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: DC , fontFamily: CAIRO}}>- <Currency amount={totalPayments} /></div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)', border: `1px solid ${C.border}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('الرصيد الحالي')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{fMoneyJSX(data.currentBalance)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}><Currency amount={data.currentBalance} /></div>
                             </div>
                         </div>
 
@@ -187,66 +287,19 @@ export default function TreasuryBankReportPage() {
                                 <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: '#f1f5f9' , fontFamily: CAIRO}}>{t('حركات')} {data.treasuryName}</h3>
                                 <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 , fontFamily: CAIRO}}>{t('إجمالي')} {data.movements.length} {t('حركة مسجلة')}</div>
                             </div>
-                            <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#94a3b8' , fontFamily: CAIRO}}>{t('التاريخ')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#94a3b8' , fontFamily: CAIRO}}>{t('النوع')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#94a3b8' , fontFamily: CAIRO}}>{t('البيان')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#94a3b8' , fontFamily: CAIRO}}>{t('الجهة')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#22c55e' , fontFamily: CAIRO}}>{t('مدين (+)')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#ef4444' , fontFamily: CAIRO}}>{t('دائن (-)')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px',  color: '#fff' , fontFamily: CAIRO}}>{t('الرصيد')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td colSpan={4} style={{ padding: '12px 24px', fontWeight: 700, color: '#64748b' , fontFamily: CAIRO}}>{t('رصيد افتتاحي (ما قبـل الفترة)')}</td>
-                                        <td colSpan={2} style={{ padding: '12px 24px',  fontWeight: 600, color: '#94a3b8' , fontFamily: CAIRO}}></td>
-                                        <td style={{ padding: '12px 24px',  fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)}</td>
-                                    </tr>
-                                    {movements.map((m) => (
-                                        <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
-                                            <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{new Date(m.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 16px' }}>
-                                                <span style={{
-                                                    padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
-                                                    background: m.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                                    color: m.type === 'receipt' ? SC : DC
-                                                }}>
-                                                    {m.type === 'receipt' ? t('سند قبض') : t('سند صرف')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 16px', fontSize: '12px', color: '#e2e8f0' , fontFamily: CAIRO}}>{m.description}</td>
-                                            <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{m.party}</td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 600, color: SC , fontFamily: CAIRO}}>
-                                                {m.type === 'receipt' ? formatNumber(m.amount) : ''}
-                                            </td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 600, color: DC , fontFamily: CAIRO}}>
-                                                {m.type === 'payment' ? formatNumber(m.amount) : ''}
-                                            </td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '15px', fontWeight: 600, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
-                                                {formatNumber(m.runningBalance)}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
-                                    <tr style={{ fontWeight: 950 , fontFamily: CAIRO}}>
-                                        <td colSpan={4} style={{ padding: '20px', }}>{t('إجماليات الحركات المحددة')}</td>
-                                        <td style={{ padding: '20px',  color: SC }}>{fMoneyJSX(totalReceipts)}</td>
-                                        <td style={{ padding: '20px',  color: DC }}>{fMoneyJSX(totalPayments)}</td>
-                                        <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{fMoneyJSX(data.currentBalance)}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <DataTable
+                                columns={columns}
+                                data={tableData}
+                                emptyIcon={FileText}
+                                emptyMessage={t('لا توجد حركات مسجلة للفترة المحددة')}
+                                footer={footerElement}
+                            />
                         </div>
                     </div>
                 )}
             </div>
 
             <style>{`
-                .animate-spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 @media print {
                     .no-print { display: none !important; }
@@ -260,4 +313,3 @@ export default function TreasuryBankReportPage() {
         </DashboardLayout>
     );
 }
-

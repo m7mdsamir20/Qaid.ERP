@@ -12,6 +12,8 @@ import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE } from '@/constants/theme';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 
 interface Invoice {
     id: string;
@@ -201,68 +203,95 @@ export default function SalesReportPage() {
                             />
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-                                <colgroup>
-                                    <col style={{ width: '14%' }} />
-                                    <col style={{ width: '14%' }} />
-                                    <col style={{ width: '20%' }} />
-                                    <col style={{ width: '13%' }} />
-                                    <col style={{ width: '13%' }} />
-                                    <col style={{ width: '13%' }} />
-                                    <col style={{ width: '13%' }} />
-                                </colgroup>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('رقم الفاتورة'), t('التاريخ'), t('اسم العميل'), t('صافي القيمة'), t('الخصم'), t('المحصل'), t('المتبقي')].map((h, i) => (
-                                            <th key={i} style={{
-                                                padding: '14px 16px',
-                                                fontSize: '12px',
-                                                fontWeight: 600,
-                                                color: C.textSecondary,
-                                                textAlign: 'start',
-                                                fontFamily: CAIRO,
-                                                borderBottom: `1px solid ${C.border}`
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.invoices.filter(inv => {
-                                        const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
-                                        return code.includes(q.toUpperCase()) ||
-                                            String(inv.invoiceNumber).includes(q) ||
-                                            (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
-                                    }).map((inv, idx) => (
-                                        <tr key={inv.id}
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '12px 16px' }}>
-                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                                                    SAL-{String(inv.invoiceNumber).padStart(5, '0')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{inv.customer?.name || t('عميل نقدي')}</td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={inv.total} /></td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.paidAmount} /></td>
-                                            <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.remaining} /></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={3} style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات الفترة المختارة')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        {(() => {
+                            const columns: TableColumn[] = [
+                                {
+                                    header: t('رقم الفاتورة'),
+                                    cell: (row: Invoice) => (
+                                        <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
+                                            SAL-{String(row.invoiceNumber).padStart(5, '0')}
+                                        </span>
+                                    )
+                                },
+                                {
+                                    header: t('التاريخ'),
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>
+                                            {new Date(row.date).toLocaleDateString('en-GB')}
+                                        </span>
+                                    )
+                                },
+                                {
+                                    header: t('اسم العميل'),
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {row.customer?.name || t('عميل نقدي')}
+                                        </span>
+                                    )
+                                },
+                                {
+                                    header: t('صافي القيمة'),
+                                    type: 'number',
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={row.total} /></span>
+                                    )
+                                },
+                                {
+                                    header: t('الخصم'),
+                                    type: 'number',
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: row.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>
+                                            {row.discount > 0 ? <Currency amount={row.discount} /> : '—'}
+                                        </span>
+                                    )
+                                },
+                                {
+                                    header: t('المحصل'),
+                                    type: 'number',
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={row.paidAmount} /></span>
+                                    )
+                                },
+                                {
+                                    header: t('المتبقي'),
+                                    type: 'number',
+                                    style: { textAlign: 'center' } as React.CSSProperties,
+                                    cell: (row: Invoice) => (
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: row.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={row.remaining} /></span>
+                                    )
+                                }
+                            ];
+
+                            const footer = (
+                                <tr>
+                                    <td colSpan={3} style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات الفترة المختارة')}</td>
+                                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></td>
+                                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
+                                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
+                                    <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
+                                </tr>
+                            );
+
+                            const filteredInvoices = data.invoices.filter(inv => {
+                                const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
+                                return code.includes(q.toUpperCase()) ||
+                                    String(inv.invoiceNumber).includes(q) ||
+                                    (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
+                            });
+
+                            return (
+                                <DataTable
+                                    columns={columns}
+                                    data={filteredInvoices}
+                                    emptyIcon={BarChart3}
+                                    emptyMessage={t('لم يتم العثور على فواتير مطابقة للبحث')}
+                                    footer={footer}
+                                />
+                            );
+                        })()}
                     </>
                 )}
             </div>

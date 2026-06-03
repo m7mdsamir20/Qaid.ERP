@@ -1,12 +1,14 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
+import { formatNumber } from '@/lib/currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useEffect, useState } from 'react';
-import { BarChart3, Search, Clock, Wallet, Loader2, User } from 'lucide-react';
+import { BarChart3, Search, Clock, Wallet } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
@@ -46,7 +48,7 @@ export default function ShiftSalesReportPage() {
     const [to, setTo] = useState('');
     const [branchId, setBranchId] = useState('all');
     const [branches, setBranches] = useState<BranchOption[]>([]);
-    const { fMoneyJSX } = useCurrency();
+    const { data: session } = useSession();
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -67,6 +69,86 @@ export default function ShiftSalesReportPage() {
     };
 
     useEffect(() => { fetchReport(); }, []);
+
+    const columns: TableColumn[] = [
+        {
+            header: t('الوردية'),
+            cell: (row: ShiftData) => (
+                <>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>#{row.shiftNumber}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted }}>{new Date(row.openedAt).toLocaleString('en-GB')}</div>
+                </>
+            )
+        },
+        {
+            header: t('الكاشير'),
+            cell: (row: ShiftData) => row.user?.name || '—',
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary, fontWeight: 600 }
+        },
+        {
+            header: t('الحالة'),
+            cell: (row: ShiftData) => (
+                <span style={{ padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: row.status === 'open' ? 'rgba(16,185,129,0.1)' : 'rgba(100,116,139,0.1)', color: row.status === 'open' ? '#10b981' : '#64748b' }}>
+                    {row.status === 'open' ? t('مفتوحة') : t('مغلقة')}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الطلبات'),
+            cell: (row: ShiftData) => row.totalOrders,
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textPrimary, fontWeight: 600, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('المبيعات'),
+            type: 'number' as const,
+            cell: (row: ShiftData) => <Currency amount={row.totalSales} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('عهدة الفتح'),
+            type: 'number' as const,
+            cell: (row: ShiftData) => <Currency amount={row.openingBalance} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textMuted, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('المتوقع'),
+            type: 'number' as const,
+            cell: (row: ShiftData) => row.status === 'closed' ? <Currency amount={row.expectedBalance || 0} /> : '—',
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981', textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الفعلي'),
+            type: 'number' as const,
+            cell: (row: ShiftData) => row.status === 'closed' ? <Currency amount={row.closingBalance || 0} /> : '—',
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.primary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الفرق'),
+            type: 'number' as const,
+            cell: (row: ShiftData) => {
+                if (row.status !== 'closed') return '—';
+                const diff = row.difference || 0;
+                return (
+                    <span style={{ color: diff < 0 ? '#ef4444' : (diff > 0 ? '#10b981' : C.textMuted) }}>
+                        <Currency amount={diff} />
+                    </span>
+                );
+            },
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 700, textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجماليات')}</td>
+            <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.totalSales} /></td>
+            <td colSpan={1}></td>
+            <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: '#10b981', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.totalExpected} /></td>
+            <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.totalActual} /></td>
+            <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: data.totalDiff < 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.totalDiff} /></td>
+        </tr>
+    );
 
     return (
         <DashboardLayout>
@@ -148,54 +230,14 @@ export default function ShiftSalesReportPage() {
                             </div>
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('الوردية'), t('الكاشير'), t('الحالة'), t('الطلبات'), t('المبيعات'), t('عهدة الفتح'), t('المتوقع'), t('الفعلي'), t('الفرق')].map((h, i) => (
-                                            <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'start' }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {data.shifts.map((s, idx) => (
-                                        <tr key={s.id}
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>#{s.shiftNumber}</div>
-                                                <div style={{ fontSize: '10px', color: C.textMuted }}>{new Date(s.openedAt).toLocaleString('en-GB')}</div>
-                                            </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.user?.name || '—'}</td>
-                                            <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: s.status === 'open' ? 'rgba(16,185,129,0.1)' : 'rgba(100,116,139,0.1)', color: s.status === 'open' ? '#10b981' : '#64748b' }}>
-                                                    {s.status === 'open' ? t('مفتوحة') : t('مغلقة')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{s.totalOrders}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(s.totalSales)}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(s.openingBalance)}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>{s.status === 'closed' ? fMoneyJSX(s.expectedBalance || 0) : '—'}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{s.status === 'closed' ? fMoneyJSX(s.closingBalance || 0) : '—'}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: (s.difference || 0) < 0 ? '#ef4444' : ((s.difference || 0) > 0 ? '#10b981' : C.textMuted), fontFamily: OUTFIT }}>
-                                                {s.status === 'closed' ? fMoneyJSX(s.difference || 0) : '—'}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
-                                    <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجماليات')}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(data.totalSales)}</td>
-                                        <td colSpan={1}></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(data.totalExpected)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(data.totalActual)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 700, color: data.totalDiff < 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(data.totalDiff)}</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={data.shifts}
+                            emptyIcon={Clock}
+                            emptyMessage={t('لا توجد ورديات متاحة')}
+                            isLoading={loading}
+                            footer={footerElement}
+                        />
                     </>
                 )}
             </div>

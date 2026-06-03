@@ -1,9 +1,11 @@
-'use client';
+"use client";
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { ArrowRightLeft, Plus, Loader2, Building2, Package, History } from 'lucide-react';
-import { C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE, STitle } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 
@@ -38,6 +40,60 @@ export default function WarehouseTransfersPage() {
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم التحويل'),
+            cell: (row: Transfer) => (
+                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
+                    {row.code || `TRF-${row.transferNumber}`}
+                </div>
+            ),
+            style: { width: '120px' }
+        },
+        {
+            header: t('التاريخ'),
+            type: 'date',
+            cell: (row: Transfer) => new Date(row.date).toLocaleDateString('en-GB')
+        },
+        {
+            header: t('من مخزن'),
+            cell: (row: Transfer) => (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 600 }}>
+                    <Building2 size={12} /> {row.fromWarehouse?.name || '—'}
+                </div>
+            )
+        },
+        {
+            header: t('إلى مخزن'),
+            cell: (row: Transfer) => (
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 600 }}>
+                    <Building2 size={12} /> {row.toWarehouse?.name || '—'}
+                </div>
+            )
+        },
+        {
+            header: t('الأصناف المحولة'),
+            cell: (row: Transfer) => (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                    {row.lines.map((l, i) => (
+                        <div key={i} style={{ 
+                            fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', 
+                            border: `1px solid ${C.border}`, color: C.textPrimary,
+                            fontWeight: 600, width: 'fit-content'
+                        }}>
+                            {l.item?.name} <span style={{ color: C.primary, marginInlineStart: '4px' }}>({l.quantity})</span>
+                        </div>
+                    ))}
+                </div>
+            )
+        },
+        {
+            header: t('الملاحظات'),
+            cell: (row: Transfer) => row.notes || '—',
+            style: { maxWidth: '150px' }
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div style={PAGE_BASE}>
@@ -58,74 +114,12 @@ export default function WarehouseTransfersPage() {
                         <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تحميل سجل التحويلات...')}</p>
                     </div>
                 ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={{ ...TABLE_STYLE.th(true), width: '120px' }}>{t('رقم التحويل')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                    <th style={TABLE_STYLE.th(false, true)}>{t('من مخزن')}</th>
-                                    <th style={TABLE_STYLE.th(false, true)}>{t('إلى مخزن')}</th>
-                                    <th style={{...TABLE_STYLE.th(false, true)}}>{t('الأصناف المحولة')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الملاحظات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {transfers.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={6} style={{ padding: '80px 0',  color: C.textSecondary }}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-                                                <History size={48} style={{ opacity: 0.2 }} />
-                                                <div style={{ fontFamily: CAIRO, fontSize: '13px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ) : transfers.map((tf, idx) => (
-                                    <tr 
-                                        key={tf.id} 
-                                        style={TABLE_STYLE.row(idx === transfers.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                    >
-                                        <td style={TABLE_STYLE.td(true)}>
-                                            <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
-                                                {tf.code || `TRF-${tf.transferNumber}`}
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
-                                            {new Date(tf.date).toLocaleDateString('en-GB')}
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 600 }}>
-                                                <Building2 size={12} /> {tf.fromWarehouse?.name || '—'}
-                                            </div>
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 600 }}>
-                                                <Building2 size={12} /> {tf.toWarehouse?.name || '—'}
-                                            </div>
-                                        </td>
-                                        <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
-                                                {tf.lines.map((l, i) => (
-                                                    <div key={i} style={{ 
-                                                        fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', 
-                                                        border: `1px solid ${C.border}`, color: C.textPrimary,
-                                                        fontWeight: 600, width: 'fit-content'
-                                                    }}>
-                                                        {l.item?.name} <span style={{ color: C.primary, marginInlineStart: '4px' }}>({l.quantity})</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '11px', maxWidth: '150px' }}>
-                                            {tf.notes || '—'}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                    <DataTable
+                        columns={columns}
+                        data={transfers}
+                        emptyIcon={History}
+                        emptyMessage={t('لا توجد عمليات تحويل مسجلة حالياً')}
+                    />
                 )}
             </div>
             <style jsx global>{`

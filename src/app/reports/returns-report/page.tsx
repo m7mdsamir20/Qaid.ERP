@@ -1,7 +1,9 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
+import { formatNumber } from '@/lib/currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -10,7 +12,7 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
-import { Package, ArrowRightLeft, Search, Activity, ShoppingCart, Loader2, ArrowRight, TrendingUp, TrendingDown, DollarSign, FileText } from 'lucide-react';
+import { ArrowRightLeft, Search, Activity, Loader2, TrendingUp, TrendingDown, FileText } from 'lucide-react';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -76,6 +78,52 @@ export default function ReturnsReportPage() {
     }, [branchId, returnType, from, to]);
 
     const filtered = data.filter(r => (r.party || '').toLowerCase().includes(q.toLowerCase()) || String(r.invoiceNumber).includes(q));
+    const sym = getCurrencyName(currency);
+
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم الفاتورة'),
+            cell: (row: ReturnInvoice) => (
+                row.type === 'sale_return' ? 'RET-' : 'RTN-'
+            ) + String(row.invoiceNumber).padStart(5, '0'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: ReturnInvoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('نوع المرتجع'),
+            cell: (row: ReturnInvoice) => (
+                <span style={{
+                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
+                    background: row.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
+                    color: row.type === 'sale_return' ? '#ef4444' : '#256af4',
+                    border: `1px solid ${row.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(37, 106, 244, 0.2)'}`
+                }}>
+                    {row.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الطرف الآخر'),
+            cell: (row: ReturnInvoice) => row.party,
+            style: { fontFamily: CAIRO, fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الأصناف'),
+            cell: (row: ReturnInvoice) => `${row.itemCount} ${t('صنف')}`,
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('القيمة الإجمالية'),
+            type: 'number' as const,
+            cell: (row: ReturnInvoice) => <Currency amount={row.total} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -87,7 +135,6 @@ export default function ReturnsReportPage() {
                     printTitle={t("تقرير مرتجعات البيع والشراء")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
-
 
                 <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
@@ -104,7 +151,7 @@ export default function ReturnsReportPage() {
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                    {i !== 2 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                    {i !== 2 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>}
                                 </div>
                             </div>
                             <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -115,7 +162,7 @@ export default function ReturnsReportPage() {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
                         <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
@@ -188,62 +235,16 @@ export default function ReturnsReportPage() {
                         </div>
                     )}
 
-                    {loading ? ( <TableSkeleton /> ) : filtered.length === 0 ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
-                            <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
-                            <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
-                        </div>
-                    ) : (
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
-                                            <th key={i} style={{ 
-                                                padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: 'center',
-                                                fontWeight: 600, fontFamily: CAIRO 
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((r, idx) => (
-                                        <tr key={r.id} 
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                            onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>
-                                                {r.type === 'sale_return' ? 'RET-' : 'RTN-'}{String(r.invoiceNumber).padStart(5, '0')}
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                <span style={{
-                                                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
-                                                    background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
-                                                    color: r.type === 'sale_return' ? '#ef4444' : '#256af4',
-                                                    border: `1px solid ${r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(37, 106, 244, 0.2)'}`
-                                                }}>
-                                                    {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px',   fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px',   fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}>
-                                                <Currency amount={r.total} />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
+                    <DataTable
+                        columns={columns}
+                        data={filtered}
+                        emptyIcon={ArrowRightLeft}
+                        emptyMessage={t('لا توجد مرتجعات مسجلة')}
+                        isLoading={loading}
+                    />
                 </div>
             </div>
             <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
                 .print-only { display: none; }
                 @media print {
                     .print-only { display: block !important; }
@@ -258,4 +259,3 @@ export default function ReturnsReportPage() {
         </DashboardLayout>
     );
 }
-

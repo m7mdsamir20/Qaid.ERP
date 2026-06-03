@@ -1,4 +1,6 @@
 'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 
@@ -117,6 +119,55 @@ export default function ItemMovementReportPage() {
         };
     };
 
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ والوقت'),
+            cell: (row: Movement) => {
+                const movementDate = row.date || row.createdAt;
+                return movementDate ? `${new Date(movementDate).toLocaleDateString('en-GB')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—';
+            },
+            style: { fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('نوع الحركة'),
+            cell: (row: Movement) => {
+                const meta = getMovementMeta(row);
+                return (
+                    <span style={{
+                        padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
+                        background: meta.background,
+                        color: meta.color
+                    }}>
+                        {meta.label}
+                    </span>
+                );
+            }
+        },
+        {
+            header: t('المخزن'),
+            cell: (row: Movement) => row.warehouse.name,
+            style: { fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }
+        },
+        {
+            header: t('الكمية'),
+            type: 'number',
+            cell: (row: Movement) => {
+                const meta = getMovementMeta(row);
+                return (
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: meta.color, fontFamily: OUTFIT }}>
+                        {meta.sign}{formatNumber(meta.quantity)}
+                    </span>
+                );
+            },
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('البيان'),
+            cell: (row: Movement) => row.description || row.notes || '—',
+            style: { fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }
+        }
+    ];
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -208,110 +259,55 @@ export default function ItemMovementReportPage() {
                             ))}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div className="no-print" style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
-                                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: OUTFIT }}>{movements.length}</span></div>
+                            <div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', paddingInlineStart: '4px' }}>
+                                    <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
+                                </div>
+                                <DataTable
+                                    columns={columns}
+                                    data={movements}
+                                    emptyIcon={Activity}
+                                    emptyMessage={t('لا توجد حركات في السجل حالياً')}
+                                />
                             </div>
-                            <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('التاريخ والوقت'), t('نوع الحركة'), t('المخزن'), t('الكمية'), t('البيان')].map((h, i) => (
-                                                <th key={i} style={{ 
-                                                    padding: '16px 20px',  fontSize: '12px', color: C.textSecondary, 
-                                                     fontWeight: 600, fontFamily: CAIRO 
-                                                }}>{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {movements.map((m, idx) => {
-                                            const meta = getMovementMeta(m);
-                                            const movementDate = m.date || m.createdAt;
-                                            return (
-                                            <tr key={m.id}
-                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
-                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                    {movementDate ? `${new Date(movementDate).toLocaleDateString('en-GB')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—'}
-                                                </td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{
-                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
-                                                        background: meta.background,
-                                                        color: meta.color
-                                                    }}>
-                                                        {meta.label}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse.name}</td>
-                                                <td style={{ padding: '14px 20px',  }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: meta.color, fontFamily: OUTFIT }}>
-                                                        {meta.sign}{formatNumber(meta.quantity)}
-                                                    </span>
-                                                </td>
-                                                <td style={{ padding: '14px 20px',  fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{m.description || m.notes || '—'}</td>
-                                            </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.4)' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-                                    <div style={{ width: 48, height: 48, borderRadius: '14px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
-                                        <Package size={24} />
-                                    </div>
-                                    <div>
-                                        <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{itemDetails.name}</div>
-                                        <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600 }}>{itemDetails.code}</div>
-                                    </div>
-                                </div>
-
-                                <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                                    <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
-                                    <div style={{ fontSize: '32px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
-                                        {formatNumber(itemDetails.totalStock)}
-                                        <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>{t(itemDetails.unit)}</span>
-                                    </div>
-                                </div>
-
-                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                    <Warehouse size={16} color={C.primary} /> {t('أرصدة المخازن:')}
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    {itemDetails.stockByWarehouse.map(sw => (
-                                        <div key={sw.warehouse} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', fontSize: '13px' }}>
-                                            <span style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{sw.warehouse}</span>
-                                            <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(sw.quantity)}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.4)' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
+                                        <div style={{ width: 48, height: 48, borderRadius: '14px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                            <Package size={24} />
                                         </div>
-                                    ))}
+                                        <div>
+                                            <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{itemDetails.name}</div>
+                                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600 }}>{itemDetails.code}</div>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
+                                        <div style={{ fontSize: '32px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
+                                            {formatNumber(itemDetails.totalStock)}
+                                            <span style={{ fontSize: '13px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>{t(itemDetails.unit)}</span>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                        <Warehouse size={16} color={C.primary} /> {t('أرصدة المخازن:')}
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {itemDetails.stockByWarehouse.map(sw => (
+                                            <div key={sw.warehouse} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', fontSize: '13px' }}>
+                                                <span style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{sw.warehouse}</span>
+                                                <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(sw.quantity)}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }
-
-

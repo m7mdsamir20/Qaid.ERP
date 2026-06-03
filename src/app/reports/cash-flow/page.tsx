@@ -1,7 +1,9 @@
 'use client';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -9,7 +11,7 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
-import { TrendingUp, TrendingDown, Activity, Search, Loader2, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, Search, DollarSign } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE, IS } from '@/constants/theme';
 
 interface MoneyLog {
@@ -79,8 +81,49 @@ export default function CashFlowReportPage() {
         (v.description || '').includes(q)
     );
 
-    const exportToPDF = () => window.print();
     const sym = getCurrencyName(currency);
+
+    const columns: TableColumn[] = [
+        {
+            header: t('التاريخ'),
+            cell: (row: MoneyLog) => new Date(row.date).toLocaleDateString('en-GB'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('النوع'),
+            cell: (row: MoneyLog) => (
+                <span style={{
+                    padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
+                    background: row.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
+                    color: row.type === 'receipt' ? '#10b981' : '#fb7185'
+                }}>
+                    {row.type === 'receipt' ? t('قبض +') : t('صرف -')}
+                </span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الخزينة'),
+            cell: (row: MoneyLog) => row.treasury,
+            style: { fontFamily: CAIRO, fontSize: '13px', fontWeight: 600, color: C.textSecondary }
+        },
+        {
+            header: t('الطرف الآخر'),
+            cell: (row: MoneyLog) => row.party,
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary, fontWeight: 600 }
+        },
+        {
+            header: t('البيان'),
+            cell: (row: MoneyLog) => row.description || '—',
+            style: { fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('المبلغ'),
+            type: 'number' as const,
+            cell: (row: MoneyLog) => <Currency amount={row.amount} style={{ color: row.type === 'receipt' ? '#10b981' : '#fb7185' }} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 950, textAlign: 'center' } as React.CSSProperties
+        }
+    ];
 
     return (
         <DashboardLayout>
@@ -89,7 +132,6 @@ export default function CashFlowReportPage() {
                     title={t("قائمة التدفق النقدي")}
                     subtitle={t("تحليل السيولة النقدية الواردة والمنصرفة عبر كافة الخزن والتحويلات البنكية.")}
                     backTab="financial"
-                    
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
@@ -119,7 +161,6 @@ export default function CashFlowReportPage() {
 
                 {loading ? ( <TableSkeleton /> ) : (
                     <>
-
                         {/* KPI Cards */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
@@ -136,7 +177,7 @@ export default function CashFlowReportPage() {
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -146,7 +187,7 @@ export default function CashFlowReportPage() {
                             ))}
                         </div>
 
-                        {/* ── Search Bar (Fard - Expanded) ── */}
+                        {/* Search Bar */}
                         <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
                             <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 1 }} />
                             <input
@@ -169,58 +210,17 @@ export default function CashFlowReportPage() {
                             />
                         </div>
 
-                        {/* Table */}
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('التاريخ'), t('النوع'), t('الخزينة'), t('الطرف الآخر'), t('البيان'), t('المبلغ')].map((h, i) => (
-                                            <th key={i} style={{
-                                                padding: '16px 20px', 
-                                                fontSize: '12px',
-                                                fontWeight: 600,
-                                                color: C.textSecondary,
-                                                textAlign: i === 1 ? 'center' : 'start',
-                                                fontFamily: CAIRO,
-                                                borderBottom: `1px solid ${C.border}`
-                                            }}>{h}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
-                                    ) : filtered.map((v, i) => (
-                                        <tr key={v.id} 
-                                            style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
-                                            onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px',  }}>
-                                                <span style={{
-                                                    padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
-                                                    background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
-                                                    color: v.type === 'receipt' ? '#10b981' : '#fb7185'
-                                                }}>
-                                                    {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, }}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
-                                                <Currency amount={v.amount} /></td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Activity}
+                            emptyMessage={t('لم يتم العثور على حركات نقدية تطابق البحث')}
+                        />
                     </>
                 )}
             </div>
 
             <style>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
                 .print-only { display: none; }
                 @media print {
                     .print-only { display: block !important; }
@@ -235,4 +235,3 @@ export default function CashFlowReportPage() {
         </DashboardLayout>
     );
 }
-
