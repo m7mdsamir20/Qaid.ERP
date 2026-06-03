@@ -46,6 +46,7 @@ export default function CustomersPage() {
     const { symbol: cSymbol } = useCurrency();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isContracting = businessType === 'CONTRACTING';
     const ph = getCountryPlaceholders((session?.user as any)?.countryCode);
     const countryCode = (session?.user as any)?.countryCode || 'EG';
     const addrCfg = getAddressConfig(countryCode);
@@ -197,14 +198,14 @@ export default function CustomersPage() {
     const stats = businessType === 'RESTAURANTS' ? [
         { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: t('عميل') }
     ] : [
-        { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: t('عميل') },
-        { label: t('مديونيات العملاء'), value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
-        { label: t('أرصدة مقدمة'), value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
+        { label: isContracting ? t('إجمالي أصحاب المشاريع') : t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: isContracting ? t('عميل/صاحب مشروع') : t('عميل') },
+        { label: isContracting ? t('مستحقات على أصحاب المشاريع') : t('مديونيات العملاء'), value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
+        { label: isContracting ? t('دفعات مقدمة من أصحاب المشاريع') : t('أرصدة مقدمة'), value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
     ];
 
     const columns: TableColumn[] = [
         {
-            header: t('العميل'),
+            header: isContracting ? t('العميل / صاحب المشروع') : t('العميل'),
             cell: (row: Customer) => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                     <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{row.name.charAt(0)}</div>
@@ -261,11 +262,11 @@ export default function CustomersPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
                 <PageHeader
-                    title={t("العملاء")}
-                    subtitle={businessType === 'RESTAURANTS' ? t("إدارة بيانات العملاء وحسابات التوصيل") : t("إدارة بيانات العملاء والشركات والمستحقات")}
+                    title={isContracting ? t("العملاء / أصحاب المشاريع") : t("العملاء")}
+                    subtitle={businessType === 'RESTAURANTS' ? t("إدارة بيانات العملاء وحسابات التوصيل") : isContracting ? t("إدارة بيانات أصحاب المشاريع، جهات الاتصال والمستخلصات والمستحقات") : t("إدارة بيانات العملاء والشركات والمستحقات")}
                     icon={Users}
                     primaryButton={{
-                        label: t("إضافة عميل"),
+                        label: isContracting ? t("إضافة صاحب مشروع / عميل") : t("إضافة عميل"),
                         onClick: () => {
                             setEditingId(null);
                             setForm({
@@ -311,7 +312,7 @@ export default function CustomersPage() {
                         <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
-                            placeholder={t("ابحث باسم العميل أو رقم الهاتف...")}
+                            placeholder={isContracting ? t("ابحث باسم صاحب المشروع أو الهاتف...") : t("ابحث باسم العميل أو رقم الهاتف...")}
                             style={{
                                 ...IS, paddingInlineStart: '40px', height: '40px', fontSize: '13px',
                                 background: C.card,
@@ -372,7 +373,7 @@ export default function CustomersPage() {
                 )}
 
                 {/* ── Modal (REVERTED TO FAVORITE PREMIUM DESIGN) ── */}
-                <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? t('تعديل بيانات العميل') : t('إضافة عميل جديد')} icon={UserPlus} maxWidth="520px">
+                <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? (isContracting ? t('تعديل بيانات صاحب المشروع') : t('تعديل بيانات العميل')) : (isContracting ? t('إضافة صاحب مشروع جديد') : t('إضافة عميل جديد'))} icon={UserPlus} maxWidth="520px">
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                             {businessType === 'RESTAURANTS' ? (
@@ -394,7 +395,7 @@ export default function CustomersPage() {
                                     {/* النوع + الاسم (للأنشطة الأخرى) */}
                                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
                                         <div>
-                                            <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                            <label style={LS}>{isContracting ? t('نوع الطرف') : t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
                                             <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                                 <button
                                                     type="button"
@@ -417,8 +418,8 @@ export default function CustomersPage() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label style={LS}>{form.type === 'company' ? t('اسم الشركة') : t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
-                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? t('مثال: شركة النور للتجارة') : t('مثال: أحمد محمد')} autoFocus />
+                                            <label style={LS}>{form.type === 'company' ? (isContracting ? t('اسم الشركة / المؤسسة') : t('اسم الشركة')) : (isContracting ? t('اسم العميل / المالك') : t('اسم العميل'))} <span style={{ color: C.danger }}>*</span></label>
+                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? (isContracting ? t('مثال: شركة المقاولات الحديثة') : t('مثال: شركة النور للتجارة')) : t('مثال: أحمد محمد')} autoFocus />
                                         </div>
                                     </div>
                                 </>
@@ -544,7 +545,7 @@ export default function CustomersPage() {
                     show={!!deleteItem}
                     onClose={() => { setDeleteItem(null); setDeleteError(''); }}
                     isDelete={true}
-                    title={t("تأكيد حذف العميل")}
+                    title={isContracting ? t("تأكيد حذف صاحب المشروع") : t("تأكيد حذف العميل")}
                     itemName={deleteItem?.name}
                     onConfirm={handleDelete}
                     isSubmitting={submitting}

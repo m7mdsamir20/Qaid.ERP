@@ -303,7 +303,7 @@ export default function ItemsPage() {
 
     const columns: TableColumn[] = [
         {
-            header: t('الكود'),
+            header: companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('الكود'),
             cell: (row: Item) => (
                 <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
                     {row.code}
@@ -321,7 +321,7 @@ export default function ItemsPage() {
             style: { textAlign: 'center' } as React.CSSProperties
         }] : []),
         {
-            header: isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف'),
+            header: isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('الصنف'),
             cell: (row: Item) => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {(isRestaurant || isRetail) && row.imageUrl && (
@@ -333,7 +333,7 @@ export default function ItemsPage() {
         },
         ...(showQuantitiesAndCosts ? [
             {
-                header: t('الكمية'),
+                header: companyBusinessType === 'CONTRACTING' ? t('الكمية المتوفرة') : t('الكمية'),
                 cell: (row: Item) => {
                     const totalQty = row.stocks?.reduce((s, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? s + st.quantity : s, 0) || 0;
                     return (
@@ -345,13 +345,13 @@ export default function ItemsPage() {
                 style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
             },
             {
-                header: t('سعر التكلفة'),
+                header: companyBusinessType === 'CONTRACTING' ? t('تكلفة الشراء / التنفيذ') : t('سعر التكلفة'),
                 cell: (row: Item) => fMoneyJSX(row.costPrice),
                 style: { textAlign: 'center' } as React.CSSProperties
             }
         ] : []),
         {
-            header: companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع'),
+            header: companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية') : t('سعر البيع'),
             cell: (row: Item) => fMoneyJSX(row.sellPrice),
             style: { textAlign: 'center' } as React.CSSProperties
         },
@@ -392,11 +392,11 @@ export default function ItemsPage() {
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={isRestaurant ? t("أصناف المنيو") : companyBusinessType === 'SERVICES' ? t("الخدمات") : t("الأصناف")}
-                    subtitle={isRestaurant ? t("إدارة قائمة الأصناف والوجبات المعروضة في المنيو") : companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
+                    title={isRestaurant ? t("أصناف المنيو") : companyBusinessType === 'SERVICES' ? t("الخدمات") : companyBusinessType === 'CONTRACTING' ? t("المواد والبنود") : t("الأصناف")}
+                    subtitle={isRestaurant ? t("إدارة قائمة الأصناف والوجبات المعروضة في المنيو") : companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : companyBusinessType === 'CONTRACTING' ? t("إدارة المواد الخام، البنود الإنشائية، والتحكم في كميات وتكاليف المواقع") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
                     icon={isRestaurant ? Package : companyBusinessType === 'SERVICES' ? Package : Boxes}
                     primaryButton={{
-                        label: isRestaurant ? (itemTypeTab === 'raw' ? t("إضافة مادة خام") : t("إضافة صنف للمنيو")) : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
+                        label: isRestaurant ? (itemTypeTab === 'raw' ? t("إضافة مادة خام") : t("إضافة صنف للمنيو")) : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : companyBusinessType === 'CONTRACTING' ? t("إضافة بند / مادة جديدة") : t("إضافة صنف جديد"),
                         onClick: () => {
                             handleOpenModal();
                             if (isRestaurant) {
@@ -472,7 +472,7 @@ export default function ItemsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={kpiFilter === 'low' ? t("البحث في الأصناف منخفضة المخزون...") : (kpiFilter === 'out' ? t("البحث في الأصناف التي نفدت...") : t("ابحث باسم الصنف أو كود المنتج..."))}
+                            placeholder={kpiFilter === 'low' ? (companyBusinessType === 'CONTRACTING' ? t("البحث في المواد منخفضة المخزون...") : t("البحث في الأصناف منخفضة المخزون...")) : (kpiFilter === 'out' ? (companyBusinessType === 'CONTRACTING' ? t("البحث في المواد التي نفدت...") : t("البحث في الأصناف التي نفدت...")) : (companyBusinessType === 'CONTRACTING' ? t("ابحث باسم المادة/البند أو كود البند...") : t("ابحث باسم الصنف أو كود المنتج...")))}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{
@@ -502,7 +502,7 @@ export default function ItemsPage() {
                                 onChange={v => setWarehouseFilter(v)}
                                 style={{ height: '42px', borderRadius: '10px' }}
                                 options={[
-                                    { value: 'all', label: t('جميع المخازن'), icon: MapPin },
+                                    { value: 'all', label: companyBusinessType === 'CONTRACTING' ? t('جميع المخازن والمواقع') : t('جميع المخازن'), icon: MapPin },
                                     ...warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))
                                 ]}
                             />
@@ -510,7 +510,7 @@ export default function ItemsPage() {
                     )}
                 </div>
 
-                {isRestaurant && (
+                {isRtl && isRestaurant && (
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
                         <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>الوجبات (المنيو)</button>
                         <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>المواد الخام (المخزون)</button>
@@ -527,7 +527,7 @@ export default function ItemsPage() {
                         columns={columns}
                         data={paginated}
                         emptyIcon={Package}
-                        emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}
+                        emptyMessage={search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : companyBusinessType === 'CONTRACTING' ? t('لا توجد مواد أو بنود مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}
                     />
                 )}
                 {!loading && filteredAll.length > 0 && (
@@ -545,7 +545,7 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : t('كود الصنف')}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('كود الصنف')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="text" readOnly disabled value={form.code} style={{ ...IS, color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
@@ -560,8 +560,8 @@ export default function ItemsPage() {
                             )}
 
                             <div>
-                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : companyBusinessType === 'CONTRACTING' ? t("مثال: حديد تسليح، بند حفر...") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
@@ -630,10 +630,10 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('تصنيف الخدمة') : t('التصنيف')}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('تصنيف الخدمة') : companyBusinessType === 'CONTRACTING' ? t('تصنيف المواد والبنود') : t('التصنيف')}</label>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <div style={{ flex: 1 }}>
-                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
+                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={companyBusinessType === 'CONTRACTING' ? t("اختر تصنيف البند...") : t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
                                     </div>
                                     <button type="button" onClick={() => setShowAddCat(true)}
                                         style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -692,7 +692,7 @@ export default function ItemsPage() {
                                 {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                         <div>
-                                            <label style={LS}>{t('سعر التكلفة')}</label>
+                                            <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('تكلفة الشراء / التنفيذ') : t('سعر التكلفة')}</label>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                                 <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
@@ -717,7 +717,7 @@ export default function ItemsPage() {
                                 {form.type === 'product' && (
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
                                         <div>
-                                            <label style={LS}>{t('سعر البيع')}</label>
+                                            <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية (سعر البيع للعميل)') : t('سعر البيع')}</label>
                                             <div style={{ position: 'relative', opacity: form.isPriceVariable ? 0.5 : 1, transition: '0.2s' }}>
                                                 <input type="text" inputMode="decimal" placeholder="0.00" disabled={form.isPriceVariable} value={form.isPriceVariable ? '' : formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                                 <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
@@ -734,7 +734,7 @@ export default function ItemsPage() {
                                                         {form.isPriceVariable && <Check size={14} color="#fff" strokeWidth={3} />}
                                                     </div>
                                                 </div>
-                                                {t('سعر متغير (سعر مفتوح في الكاشير)')}
+                                                {companyBusinessType === 'CONTRACTING' ? t('سعر متغير في الفواتير') : t('سعر متغير (سعر مفتوح في الكاشير)')}
                                             </label>
                                         </div>
                                     </div>
@@ -918,8 +918,8 @@ export default function ItemsPage() {
                                         <p style={{ fontSize: '10px', color: C.textSecondary, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                             <div>
-                                                <label style={LS}>{t('المخزن')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('مطلوب')}</span>}</label>
-                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder={t("اختر المخزن...")} options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
+                                                <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('المخزن / الموقع') : t('المخزن')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('مطلوب')}</span>}</label>
+                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder={companyBusinessType === 'CONTRACTING' ? t("اختر المخزن / الموقع...") : t("اختر المخزن...")} options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
                                             </div>
                                             <div>
                                                 <label style={LS}>{t('الكمية الافتتاحية')}</label>
@@ -946,14 +946,14 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
                             <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
+                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : companyBusinessType === 'CONTRACTING' ? (form.id ? t('حفظ التعديلات') : t('إضافة البند/المادة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
                         </div>
                     </form>
                 </AppModal>
 
-                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title={t("تأكيد حذف الصنف")} itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
+                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title={companyBusinessType === 'CONTRACTING' ? t("تأكيد حذف البند/المادة") : t("تأكيد حذف الصنف")} itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
 
                 <AppModal show={!!printBarcodeItem} onClose={() => setPrintBarcodeItem(null)} title={t("طباعة باركود الصنف")} icon={Printer} maxWidth="360px">
                     {printBarcodeItem && (
@@ -1008,11 +1008,11 @@ export default function ItemsPage() {
                     )}
                 </AppModal>
 
-                <AppModal show={showAddCat} onClose={() => setShowAddCat(false)} title={t("إضافة تصنيف جديد")} icon={Boxes} maxWidth="400px">
+                <AppModal show={showAddCat} onClose={() => setShowAddCat(false)} title={companyBusinessType === 'CONTRACTING' ? t("إضافة تصنيف مواد وبنود جديد") : t("إضافة تصنيف جديد")} icon={Boxes} maxWidth="400px">
                     <form onSubmit={handleCreateCategory} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div>
-                            <label style={LS}>{t('اسم التصنيف الجديد')}</label>
-                            <input type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder={t("مثال: زيوت، فلاتر...")} style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
+                            <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('اسم تصنيف المواد والبنود الجديد') : t('اسم التصنيف الجديد')}</label>
+                            <input type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder={companyBusinessType === 'CONTRACTING' ? t("مثال: مواد بناء، أعمال صحية...") : t("مثال: زيوت، فلاتر...")} style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button type="submit" disabled={isSavingSub} style={{ ...BTN_PRIMARY(!newCatName.trim(), isSavingSub), flex: 1, height: '44px' }}>

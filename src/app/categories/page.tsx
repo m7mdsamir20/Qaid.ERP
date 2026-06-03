@@ -39,6 +39,7 @@ export default function CategoriesPage() {
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const isRestaurant = businessType === 'RESTAURANTS';
+    const isContracting = businessType === 'CONTRACTING';
 
     const [form, setForm] = useState({ id: '', name: '', code: '' });
 
@@ -66,7 +67,7 @@ export default function CategoriesPage() {
                 setCategoryToDelete(null);
             } else { 
                 const d = await res.json();
-                alert(d.error || t('فشل حذف التصنيف، قد يكون مرتبطاً ب') + (isServices ? t('خدمات') : t('أصناف مخزنية'))); 
+                alert(d.error || t('فشل حذف التصنيف، قد يكون مرتبطاً ب') + (isServices ? t('خدمات') : isContracting ? t('مواد وبنود') : t('أصناف مخزنية'))); 
             }
         } catch (err) {
             alert(t('خطأ في عملية الحذف'));
@@ -116,11 +117,11 @@ export default function CategoriesPage() {
                 
                 {/* Page Header */}
                 <PageHeader 
-                    title={isRestaurant ? t("تصنيفات المنيو") : isServices ? t("تصنيفات الخدمات") : t("تصنيفات الأصناف")} 
-                    subtitle={isRestaurant ? t("تصنيف أصناف المنيو لتسهيل عرضها في الكاشير والموقع") : isServices ? t("إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير") : t("إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع")} 
+                    title={isRestaurant ? t("تصنيفات المنيو") : isServices ? t("تصنيفات الخدمات") : isContracting ? t("تصنيفات المواد والبنود") : t("تصنيفات الأصناف")} 
+                    subtitle={isRestaurant ? t("تصنيف أصناف المنيو لتسهيل عرضها في الكاشير والموقع") : isServices ? t("إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير") : isContracting ? t("إدارة وتبويب المواد والبنود إلى مجموعات لتسهيل عملية التكلفة والمشروعات") : t("إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع")} 
                     icon={FolderTree} 
                     primaryButton={canCreate ? {
-                        label: t("إضافة تصنيف جديد"),
+                        label: isContracting ? t("إضافة تصنيف مواد وبنود جديد") : t("إضافة تصنيف جديد"),
                         onClick: openCreateModal,
                         icon: Plus
                     } : undefined}
@@ -131,7 +132,7 @@ export default function CategoriesPage() {
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
-                            placeholder={t("ابحث باسم التصنيف...")}
+                            placeholder={isContracting ? t("ابحث باسم تصنيف البند/المادة...") : t("ابحث باسم التصنيف...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '42px', borderRadius: '10px', background: C.card, fontSize: '13px' }}
@@ -152,19 +153,19 @@ export default function CategoriesPage() {
                             style: { textAlign: 'center' } as React.CSSProperties
                         },
                         {
-                            header: t('اسم التصنيف'),
+                            header: isContracting ? t('اسم تصنيف المواد والبنود') : t('اسم التصنيف'),
                             cell: (row: Category) => row.name,
                             style: { color: C.textPrimary, fontWeight: 600, fontSize: '13px' } as React.CSSProperties
                         },
                         {
-                            header: isRestaurant ? t('عدد أصناف المنيو') : isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'),
+                            header: isRestaurant ? t('عدد أصناف المنيو') : isServices ? t('عدد الخدمات المرتبطة') : isContracting ? t('عدد المواد والبنود المرتبطة') : t('عدد الأصناف المرتبطة'),
                             cell: (row: Category) => (
                                 <div style={{
                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                     padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT,
                                     background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
                                 }}>
-                                    {row._count?.items || 0} {isRestaurant ? t('صنف') : isServices ? t('خدمة') : t('صنف')}
+                                    {row._count?.items || 0} {isRestaurant ? t('صنف') : isServices ? t('خدمة') : isContracting ? t('بند/مادة') : t('صنف')}
                                 </div>
                             ),
                             style: { textAlign: 'center' } as React.CSSProperties
@@ -212,7 +213,7 @@ export default function CategoriesPage() {
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     icon={form.id ? Pencil : Plus}
-                    title={form.id ? t('تعديل بيانات التصنيف') : t('إضافة تصنيف جديد')}
+                    title={form.id ? (isContracting ? t('تعديل تصنيف المواد والبنود') : t('تعديل بيانات التصنيف')) : (isContracting ? t('إضافة تصنيف مواد وبنود جديد') : t('إضافة تصنيف جديد'))}
                     maxWidth="440px"
                 >
                     <form onSubmit={handleSubmit}>
@@ -227,10 +228,10 @@ export default function CategoriesPage() {
                                 />
                             </div>
                             <div>
-                                <label style={LS}>{t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{isContracting ? t('اسم تصنيف المواد والبنود') : t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
                                 <input
                                     type="text" required autoFocus
-                                    placeholder={isRestaurant ? t("مثال: مشروبات، برجر، بيتزا، حلويات...") : isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
+                                    placeholder={isRestaurant ? t("مثال: مشروبات، برجر، بيتزا، حلويات...") : isServices ? t("مثال: صيانة، استشارات، تركيبات...") : isContracting ? t("مثال: مواد بناء، عزل وحفر، تمديدات كهربائية...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
                                     value={form.name}
                                     onChange={e => setForm({ ...form, name: e.target.value })}
                                     style={{ ...IS, height: '42px' }}
@@ -263,7 +264,7 @@ export default function CategoriesPage() {
                     show={!!categoryToDelete}
                     onClose={() => setCategoryToDelete(null)}
                     onConfirm={handleDelete}
-                    title={t("تأكيد حذف التصنيف")}
+                    title={isContracting ? t("تأكيد حذف تصنيف المواد والبنود") : t("تأكيد حذف التصنيف")}
                     itemName={categoryToDelete?.name || ''}
                     isDelete={true}
                     isSubmitting={isDeleting}
