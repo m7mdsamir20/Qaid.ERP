@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
@@ -6,6 +7,7 @@ import { AlertTriangle, X, Crown } from 'lucide-react';
 import Link from 'next/link';
 
 export default function TrialBanner() {
+    const { t } = useTranslation();
     const { data: session } = useSession();
     const [dismissed, setDismissed] = useState(false);
     const [daysLeft, setDaysLeft]   = useState<number | null>(null);
@@ -61,14 +63,14 @@ export default function TrialBanner() {
                 <div style={{ flex: 1 }}>
                     <span style={{ fontSize: '14px', fontWeight: 900, color: textColor, display: 'block', marginBottom: '4px' }}>
                         {isExpired 
-                            ? (subPlan === 'trial' ? 'انتهت الفترة التجريبية للنظام!' : 'انتهى اشتراك النظام الحالي!')
-                            : (daysLeft === 0 ? 'فترتك التجريبية تنتهي اليوم!' : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
+                            ? (subPlan === 'trial' ? t("انتهت الفترة التجريبية للنظام!") : t("انتهى اشتراك النظام الحالي!"))
+                            : (daysLeft === 0 ? t("فترتك التجريبية تنتهي اليوم!") : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
                         }
                     </span>
                     <span style={{ fontSize: '12px', color: isExpired ? '#ef4444' : '#64748b', opacity: isExpired ? 0.9 : 1, display: 'block' }}>
                         {isExpired 
-                            ? 'يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.' 
-                            : 'قم بترقية اشتراكك للاستمرار في استخدام النظام'
+                            ? t("يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.") 
+                            : t("قم بترقية اشتراكك للاستمرار في استخدام النظام")
                         }
                     </span>
                 </div>
@@ -95,7 +97,7 @@ export default function TrialBanner() {
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <Link href="/settings?tab=subscription"
                         style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: textColor, color: '#fff', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                        <Crown size={12} /> {isExpired ? 'تجديد الاشتراك الآن' : 'ترقية الآن'}
+                        <Crown size={12} /> {isExpired ? t("تجديد الاشتراك الآن") : t("ترقية الآن")}
                     </Link>
 
                     {!isExpired && (

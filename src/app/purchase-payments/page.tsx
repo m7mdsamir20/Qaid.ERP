@@ -70,8 +70,8 @@ export default function PurchasePaymentsPage() {
         const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const amount = formatNumber(voucher.amount || 0);
         const COMPANY = {
-            name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
-            address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
+            name: t("شركة النور للتجارة"), nameEn: 'Al-Nour Trading Company',
+            address: t("القاهرة، مصر - شارع التحرير، عمارة 12"),
             phone: '01000000000  |  01100000000',
             email: 'info@alnour.com', tax: '123-456-789', logo: '',
         };
@@ -151,7 +151,7 @@ export default function PurchasePaymentsPage() {
       <div class="title">تفاصيل السند</div>
       <div class="ml"><span class="mk">رقم السند</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
       <div class="ml"><span class="mk">التاريخ</span><span class="mv">${date}</span></div>
-      <div class="ml"><span class="mk">طريقة الدفع</span><span class="mv">${form.paymentType === 'cash' ? 'نقدي' : 'تحويل بنكي'}</span></div>
+      <div class="ml"><span class="mk">طريقة الدفع</span><span class="mv">${form.paymentType === 'cash' ? t("نقدي") : t("تحويل بنكي")}</span></div>
       <div class="ml"><span class="mk">الخزينة</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
     </div>
   </div>
@@ -172,11 +172,11 @@ export default function PurchasePaymentsPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
                 <PageHeader
-                    title="سندات الصرف"
-                    subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"
+                    title={t("سندات الصرف")}
+                    subtitle={t("إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك")}
                     icon={CreditCard}
                     primaryButton={canCreate ? {
-                        label: "سند صرف جديد",
+                        label: t("سند صرف جديد"),
                         onClick: () => router.push('/purchase-payments/new'),
                         icon: Plus
                     } : undefined}
@@ -186,7 +186,7 @@ export default function PurchasePaymentsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="ابحث برقم السند أو اسم المورد..." 
+                            placeholder={t("ابحث برقم السند أو اسم المورد...")} 
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
@@ -221,17 +221,17 @@ export default function PurchasePaymentsPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
+                            <Trash2 size={14} /> {t("مسح")}
                         </button>
                     )}
                 </div>
 
                 <DataTable
                     columns={[
-                        { header: 'رقم السند', type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO }}>PMT-{String(row.voucherNumber).padStart(5, '0')}</span> },
-                        { header: 'التاريخ', type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
-                        { header: 'المورد', type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.supplier?.name || '—'}</span> },
-                        { header: 'طريقة الدفع', type: 'status', cell: (row) => (
+                        { header: t("رقم السند"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO }}>PMT-{String(row.voucherNumber).padStart(5, '0')}</span> },
+                        { header: t("التاريخ"), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t("المورد"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{row.supplier?.name || '—'}</span> },
+                        { header: t("طريقة الدفع"), type: 'status', cell: (row) => (
                             <div style={{ 
                                 display: 'inline-flex', alignItems: 'center', gap: '5px', 
                                 padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
@@ -239,24 +239,24 @@ export default function PurchasePaymentsPage() {
                                 color: row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
                                 border: `1px solid ${row.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
                             }}>
-                                {row.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                                {row.treasury?.type === 'bank' ? t("بنكي") : t("نقدي")}
                             </div>
                         )},
-                        { header: 'الخزينة / البنك', type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.treasury?.name || '—'}</span> },
-                        { header: 'البيان', type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.description || '—'}</span>, style: { maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
-                        { header: 'المبلغ', type: 'number', cell: (row) => <span style={{ color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}><Currency amount={row.amount} /></span> },
-                        { header: 'إجراءات', type: 'action', cell: (row) => (
+                        { header: t("الخزينة / البنك"), type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.treasury?.name || '—'}</span> },
+                        { header: t("البيان"), type: 'text', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary }}>{row.description || '—'}</span>, style: { maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } },
+                        { header: t("المبلغ"), type: 'number', cell: (row) => <span style={{ color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}><Currency amount={row.amount} /></span> },
+                        { header: t("إجراءات"), type: 'action', cell: (row) => (
                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); printPayVoucher(row, suppliers.find(s => s.id === row.supplier?.id), row.voucherNumber, { paymentType: row.paymentType, date: row.date, description: row.description }); }}
-                                    style={TABLE_STYLE.actionBtn()} title="طباعة"><Printer size={TABLE_STYLE.actionIconSize} />
+                                    style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} />
                                 </button>
                             </div>
                         )},
                     ]}
                     data={filtered}
                     emptyIcon={Receipt}
-                    emptyMessage={'لا توجد سندات صرف'}
+                    emptyMessage={t("لا توجد سندات صرف")}
                     isLoading={loading}
                     loadingSkeleton={
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', textAlign: 'center' }}>

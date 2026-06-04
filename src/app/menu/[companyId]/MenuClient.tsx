@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Minus, Check, ChevronRight, X, Loader2 } from 'lucide-react';
 
@@ -18,6 +19,7 @@ interface CartItem {
 }
 
 export default function MenuClient({ company, categories, currency, tableId }: { company: any, categories: Category[], currency: string, tableId?: string | null }) {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState<string>(categories[0]?.id || '');
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -119,11 +121,11 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                 setCart([]);
                 setTimeout(() => { setOrderSuccess(false); setIsCartOpen(false); }, 3000);
             } else {
-                alert('حدث خطأ أثناء إرسال الطلب');
+                alert(t("حدث خطأ أثناء إرسال الطلب"));
             }
         } catch (error) {
             console.error(error);
-            alert('تعذر الاتصال بالسيرفر');
+            alert(t("تعذر الاتصال بالسيرفر"));
         } finally {
             setIsSubmitting(false);
         }
@@ -135,7 +137,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
             <div className="menu-header">
                 <div className="header-content">
                     <h1>{company.name}</h1>
-                    <p>المنيو الرقمي — تصفح واطلب مباشرة</p>
+                    <p>{t("المنيو الرقمي — تصفح واطلب مباشرة")}</p>
                 </div>
             </div>
 
@@ -172,7 +174,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                                         <div className="item-footer">
                                             <div className="item-price">
                                                 {item.variants && item.variants.length > 0 ? (
-                                                    <><span style={{ color: '#64748b', fontWeight: 600, fontSize: '13px' }}>من </span>{Math.min(...item.variants.map(v => v.sellPrice))} - {Math.max(...item.variants.map(v => v.sellPrice))}</>
+                                                    <><span style={{ color: '#64748b', fontWeight: 600, fontSize: '13px' }}>{t("من")} </span>{Math.min(...item.variants.map(v => v.sellPrice))} - {Math.max(...item.variants.map(v => v.sellPrice))}</>
                                                 ) : (
                                                     <>{item.sellPrice.toLocaleString('en-US', { minimumFractionDigits: 0 })}</>
                                                 )}
@@ -196,7 +198,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                     <div className="cart-badge">{totalItems}</div>
                     <div className="cart-info">
                         <ShoppingCart size={20} />
-                        <span style={{ fontWeight: 700, marginInlineStart: '8px' }}>عرض السلة</span>
+                        <span style={{ fontWeight: 700, marginInlineStart: '8px' }}>{t("عرض السلة")}</span>
                     </div>
                     <div className="cart-total">
                         {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: 'Cairo', fontSize: '14px' }}>{currency}</span>
@@ -209,15 +211,15 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                 <div className="cart-overlay" onClick={() => setIsCartOpen(false)}>
                     <div className="cart-modal" onClick={e => e.stopPropagation()}>
                         <div className="cart-header">
-                            <h3>سلة الطلبات</h3>
+                            <h3>{t("سلة الطلبات")}</h3>
                             <button className="close-btn" onClick={() => setIsCartOpen(false)}><X size={24} /></button>
                         </div>
                         
                         {orderSuccess ? (
                             <div className="order-success">
                                 <div className="success-icon"><Check size={40} /></div>
-                                <h2>تم إرسال طلبك بنجاح!</h2>
-                                <p>جاري تحضير طلبك في المطبخ الآن.</p>
+                                <h2>{t("تم إرسال طلبك بنجاح!")}</h2>
+                                <p>{t("جاري تحضير طلبك في المطبخ الآن.")}</p>
                             </div>
                         ) : (
                             <>
@@ -236,17 +238,17 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                                             </div>
                                         </div>
                                     ))}
-                                    {cart.length === 0 && <p className="empty-cart">السلة فارغة</p>}
+                                    {cart.length === 0 && <p className="empty-cart">{t("السلة فارغة")}</p>}
                                 </div>
                                 
                                 {cart.length > 0 && (
                                     <div className="cart-footer">
                                         <div className="cart-summary">
-                                            <span>الإجمالي:</span>
+                                            <span>{t("الإجمالي:")}</span>
                                             <span className="summary-total">{totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: 'Cairo' }}>{currency}</span></span>
                                         </div>
                                         <button className="checkout-btn" onClick={submitOrder} disabled={isSubmitting}>
-                                            {isSubmitting ? <Loader2 size={20} className="spin" /> : 'تأكيد وإرسال الطلب للمطبخ'}
+                                            {isSubmitting ? <Loader2 size={20} className="spin" /> : t("تأكيد وإرسال الطلب للمطبخ")}
                                         </button>
                                     </div>
                                 )}
@@ -282,8 +284,8 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                             {activeItem.variants && activeItem.variants.length > 0 && (
                                 <div style={{ marginBottom: '0' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                                        <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a', margin: 0 }}>الحجم</h3>
-                                        <span style={{ fontSize: '12px', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '4px 8px', borderRadius: '6px', fontWeight: 700 }}>مطلوب</span>
+                                        <h3 style={{ fontSize: '17px', fontWeight: 800, color: '#0f172a', margin: 0 }}>{t("الحجم")}</h3>
+                                        <span style={{ fontSize: '12px', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '4px 8px', borderRadius: '6px', fontWeight: 700 }}>{t("مطلوب")}</span>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         {activeItem.variants.map(v => (
@@ -316,11 +318,11 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                             )}
 
                             <div style={{ marginTop: activeItem.variants && activeItem.variants.length > 0 ? '24px' : '0' }}>
-                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>ملاحظات خاصة (اختياري)</div>
+                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>{t("ملاحظات خاصة (اختياري)")}</div>
                                 <textarea 
                                     value={itemNotes}
                                     onChange={e => setItemNotes(e.target.value)}
-                                    placeholder="بدون ملح، صوص جانبي، مقرمش، إلخ..."
+                                    placeholder={t("بدون ملح، صوص جانبي، مقرمش، إلخ...")}
                                     style={{ 
                                         width: '100%', padding: '14px', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.08)', 
                                         background: '#f8fafc', fontSize: '14px', fontFamily: 'Cairo', resize: 'none', 
@@ -335,7 +337,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                         <div className="cart-footer" style={{ padding: '24px', background: '#fff', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                                 <div>
-                                    <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, marginBottom: '4px' }}>الإجمالي</div>
+                                    <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, marginBottom: '4px' }}>{t("الإجمالي")}</div>
                                     <div style={{ fontSize: '22px', fontWeight: 800, color: '#0f172a', fontFamily: "'ERP-Numbers', 'Cairo', sans-serif" }}>
                                         {((selectedVariant ? selectedVariant.sellPrice : activeItem.sellPrice) * itemQty).toLocaleString('en-US', { minimumFractionDigits: 0 })}
                                         <span style={{ fontSize: '14px', color: '#64748b', fontFamily: 'Cairo', marginInlineStart: '4px' }}>{currency}</span>
@@ -353,7 +355,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                                 style={{ width: '100%', padding: '18px', borderRadius: '16px', background: '#256af4', color: '#fff', fontSize: '17px', fontWeight: 800, border: 'none', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}
                             >
                                 <ShoppingCart size={20} />
-                                أضف للسلة
+                                {t("أضف للسلة")}
                             </button>
                         </div>
                     </div>

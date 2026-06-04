@@ -74,7 +74,7 @@ export default function PartnerAccountsPage() {
             setTxMap({});
             setForm({ type: 'deposit', amount: '', date: new Date().toISOString().split('T')[0], notes: '', treasuryId: '' });
             fetchData();
-        } else { const d = await res.json(); alert(d.error || 'فشل الحفظ'); }
+        } else { const d = await res.json(); alert(d.error || t("فشل الحفظ")); }
         setSaving(false);
     };
 

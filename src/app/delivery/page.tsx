@@ -89,9 +89,9 @@ export default function DeliveryPage() {
                 {/* Stats */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'في الانتظار', count: pending, color: '#f59e0b', icon: <Clock size={18} /> },
-                        { label: 'في الطريق', count: onTheWay, color: '#3b82f6', icon: <Truck size={18} /> },
-                        { label: 'تم التسليم اليوم', count: delivered, color: '#10b981', icon: <CheckCircle2 size={18} /> },
+                        { label: t("في الانتظار"), count: pending, color: '#f59e0b', icon: <Clock size={18} /> },
+                        { label: t("في الطريق"), count: onTheWay, color: '#3b82f6', icon: <Truck size={18} /> },
+                        { label: t("تم التسليم اليوم"), count: delivered, color: '#10b981', icon: <CheckCircle2 size={18} /> },
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -105,7 +105,7 @@ export default function DeliveryPage() {
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.count}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>طلب</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{t("طلب")}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -121,13 +121,13 @@ export default function DeliveryPage() {
                     }}>
                         <div style={{ textAlign: 'start' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: 0, whiteSpace: 'nowrap' }}>المناديب</p>
-                                <a href="/restaurant/drivers" style={{ color: C.primary, fontSize: '10px', fontWeight: 700, fontFamily: CAIRO, textDecoration: 'none' }}>إدارة ←</a>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: 0, whiteSpace: 'nowrap' }}>{t("المناديب")}</p>
+                                <a href="/restaurant/drivers" style={{ color: C.primary, fontSize: '10px', fontWeight: 700, fontFamily: CAIRO, textDecoration: 'none' }}>{t("إدارة ←")}</a>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                 <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{drivers.length}</span>
                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>
-                                    متاح: {drivers.filter(d => d.status === 'available').length}
+                                    {t("متاح:")} {drivers.filter(d => d.status === 'available').length}
                                 </span>
                             </div>
                         </div>
@@ -145,7 +145,7 @@ export default function DeliveryPage() {
                         onChange={(e) => setFilterDate(e.target.value)}
                         style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}
                     />
-                    {[{ value: '', label: 'كل الحالات' }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: s.label }))].map(s => (
+                    {[{ value: '', label: t("كل الحالات") }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: s.label }))].map(s => (
                         <button key={s.value} onClick={() => setFilterStatus(s.value)}
                             style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
                             {s.label}
@@ -159,7 +159,7 @@ export default function DeliveryPage() {
                 ) : orders.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '60px', color: C.textMuted }}>
                         <Truck size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 12px' }} />
-                        <p style={{fontSize: '13px'}}>لا توجد طلبات توصيل</p>
+                        <p style={{fontSize: '13px'}}>{t("لا توجد طلبات توصيل")}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -192,7 +192,7 @@ export default function DeliveryPage() {
                                         
                                         {order.driver && (
                                             <span style={{ fontSize: '12px', color: '#6366f1', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
-                                                 المندوب: {order.driver.name}
+                                                 {t("المندوب:")} {order.driver.name}
                                             </span>
                                         )}
                                         
@@ -213,7 +213,7 @@ export default function DeliveryPage() {
                                                     onChange={(e) => { if (e.target.value) updateStatus(order.id, 'assigned', e.target.value); }}
                                                     style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.border}`, background: C.card, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary, outline: 'none', cursor: 'pointer' }}
                                                 >
-                                                    <option value="" disabled>تعيين مندوب...</option>
+                                                    <option value="" disabled>{t("تعيين مندوب...")}</option>
                                                     {drivers.filter(d => d.status === 'available').map(d => (
                                                         <option key={d.id} value={d.id}>{d.name}</option>
                                                     ))}
@@ -226,7 +226,7 @@ export default function DeliveryPage() {
                                                     onMouseEnter={e => e.currentTarget.style.background = '#3b82f620'}
                                                     onMouseLeave={e => e.currentTarget.style.background = '#3b82f612'}
                                                 >
-                                                    خرج للتوصيل
+                                                    {t("خرج للتوصيل")}
                                                 </button>
                                             )}
 
@@ -237,14 +237,14 @@ export default function DeliveryPage() {
                                                         onMouseEnter={e => e.currentTarget.style.background = '#14b8a620'}
                                                         onMouseLeave={e => e.currentTarget.style.background = '#14b8a612'}
                                                     >
-                                                        تأكيد التسليم
+                                                        {t("تأكيد التسليم")}
                                                     </button>
                                                     <button onClick={() => updateStatus(order.id, 'returned')}
                                                         style={{ padding: '4px 10px', borderRadius: '6px', border: `1px solid #f9741640`, background: '#f9741612', color: '#f97416', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}
                                                         onMouseEnter={e => e.currentTarget.style.background = '#f9741620'}
                                                         onMouseLeave={e => e.currentTarget.style.background = '#f9741612'}
                                                     >
-                                                        رفض الاستلام
+                                                        {t("رفض الاستلام")}
                                                     </button>
                                                 </>
                                              )}
@@ -259,7 +259,7 @@ export default function DeliveryPage() {
                                             {/* الأصناف */}
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                                    <Package size={14} color={C.primary} /> تفاصيل الطلب
+                                                    <Package size={14} color={C.primary} /> {t("تفاصيل الطلب")}
                                                 </h4>
                                                 <div style={{ padding: '0 8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                     {order.lines?.map((line: any, idx: number) => (
@@ -277,27 +277,27 @@ export default function DeliveryPage() {
                                             {/* العمليات المنطقية - Workflow */}
                                              {order.status !== 'delivered' && order.status !== 'cancelled' && order.status !== 'returned' && (
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: `1px dashed ${C.border}`, paddingTop: '16px' }}>
-                                                    <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>تحديث الإجراء</h4>
+                                                    <h4 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{t("تحديث الإجراء")}</h4>
                                                     
                                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 8px' }}>
                                                         
                                                         {order.status === 'pending' && (
                                                             <button onClick={() => updateStatus(order.id, 'preparing')}
                                                                 style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid ${C.primary}`, background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                بدء التجهيز
+                                                                {t("بدء التجهيز")}
                                                             </button>
                                                         )}
                                                         
                                                         {order.status === 'preparing' && (
                                                             <button onClick={() => updateStatus(order.id, 'ready')}
                                                                 style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid #10b981`, background: '#10b981', color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                جاهز للاستلام
+                                                                {t("جاهز للاستلام")}
                                                             </button>
                                                         )}
                                                         
                                                         {(!order.driverId && (order.status === 'ready' || order.status === 'preparing' || order.status === 'pending')) && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: order.status === 'ready' ? 0 : '8px', paddingTop: order.status === 'ready' ? 0 : '8px', borderTop: order.status === 'ready' ? 'none' : `1px dashed ${C.border}` }}>
-                                                                <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>إسناد إلى مندوب:</span>
+                                                                <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>{t("إسناد إلى مندوب:")}</span>
                                                                 <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                                     {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
                                                                         <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.id)}
@@ -307,32 +307,32 @@ export default function DeliveryPage() {
                                                                         >
                                                                             {d.name}
                                                                         </button>
-                                                                    )) : <a href="/restaurant/drivers" style={{ fontSize: '12px', color: C.primary, textDecoration: 'none', fontWeight: 600, fontFamily: CAIRO }}>لا يوجد مناديب متاحين ←</a>}
+                                                                    )) : <a href="/restaurant/drivers" style={{ fontSize: '12px', color: C.primary, textDecoration: 'none', fontWeight: 600, fontFamily: CAIRO }}>{t("لا يوجد مناديب متاحين ←")}</a>}
                                                                 </div>
                                                             </div>
                                                         )}
                                                         
                                                         {(order.driverId && order.status !== 'picked' && order.status !== 'delivered') && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                                <span style={{fontSize: '12px', color: '#6366f1', fontWeight: 600}}>المندوب المعين: {order.driver?.name}</span>
+                                                                <span style={{fontSize: '12px', color: '#6366f1', fontWeight: 600}}>{t("المندوب المعين:")} {order.driver?.name}</span>
                                                                 <button onClick={() => updateStatus(order.id, 'picked', order.driverId)}
                                                                     style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid #3b82f6`, background: '#3b82f6', color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                    خرج للتوصيل
+                                                                    {t("خرج للتوصيل")}
                                                                 </button>
                                                             </div>
                                                         )}
                                                         
                                                         {order.status === 'picked' && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                                <span style={{fontSize: '12px', color: '#3b82f6', fontWeight: 600}}>مع المندوب: {order.driver?.name}</span>
+                                                                <span style={{fontSize: '12px', color: '#3b82f6', fontWeight: 600}}>{t("مع المندوب:")} {order.driver?.name}</span>
                                                                 <div style={{ display: 'flex', gap: '8px' }}>
                                                                     <button onClick={() => updateStatus(order.id, 'delivered')}
                                                                         style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid #14b8a6`, background: '#14b8a6', color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                        تأكيد التسليم
+                                                                        {t("تأكيد التسليم")}
                                                                     </button>
                                                                     <button onClick={() => updateStatus(order.id, 'returned')}
                                                                         style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid #f97416`, background: 'transparent', color: '#f97416', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                        رفض الاستلام
+                                                                        {t("رفض الاستلام")}
                                                                     </button>
                                                                 </div>
                                                             </div>
@@ -341,9 +341,9 @@ export default function DeliveryPage() {
                                                         {order.status === 'returned' && (
                                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                                                 <div style={{ padding: '8px 12px', background: 'transparent', border: '1px dashed #f9741680', borderRadius: '8px', fontSize: '12px', color: '#c2410c', fontWeight: 700 }}>
-                                                                    تم رفض الاستلام من العميل — يمكنك إعادة المحاولة أو إلغاء الطلب
+                                                                    {t("تم رفض الاستلام من العميل — يمكنك إعادة المحاولة أو إلغاء الطلب")}
                                                                 </div>
-                                                                <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>إعادة الإرسال مع مندوب:</span>
+                                                                <span style={{fontSize: '12px', color: C.textSecondary, fontWeight: 600}}>{t("إعادة الإرسال مع مندوب:")}</span>
                                                                 <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                                                     {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
                                                                         <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.id)}
@@ -353,11 +353,11 @@ export default function DeliveryPage() {
                                                                         >
                                                                             {d.name}
                                                                         </button>
-                                                                    )) : <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>لا يوجد مناديب متاحين الآن</span>}
+                                                                    )) : <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{t("لا يوجد مناديب متاحين الآن")}</span>}
                                                                 </div>
                                                                 <button onClick={() => updateStatus(order.id, 'cancelled')}
                                                                     style={{ width: 'fit-content', padding: '6px 16px', borderRadius: '8px', border: `1px solid #ef4444`, background: 'transparent', color: '#ef4444', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                                    إلغاء الطلب نهائياً
+                                                                    {t("إلغاء الطلب نهائياً")}
                                                                 </button>
                                                             </div>
                                                         )}

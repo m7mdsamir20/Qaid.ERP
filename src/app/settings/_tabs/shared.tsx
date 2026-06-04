@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, BTN_PRIMARY } from '@/constants/theme';
 import { Pencil, Save, Loader2, X } from 'lucide-react';
 
@@ -11,7 +12,9 @@ export function Toggle({ checked, onChange, disabled }: { checked: boolean; onCh
     );
 }
 
-export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSaving, hideEditBtn, form, children, t }: any) {
+export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSaving, hideEditBtn, form, children, t: passedT }: any) {
+    const { t: localT } = useTranslation();
+    const t = passedT || localT;
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

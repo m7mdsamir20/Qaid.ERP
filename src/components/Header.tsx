@@ -244,7 +244,7 @@ function Actions() {
                 onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
                 onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
             >
-                {lang === 'ar' ? 'EN' : 'ع'}
+                {lang === 'ar' ? 'EN' : t("ع")}
             </button>
 
             {/* Theme Toggle */}
@@ -368,8 +368,8 @@ function Actions() {
                         </div>
 
                         {[
-                            { icon: User, label: 'ملفي الشخصي', path: '/profile' },
-                            { icon: KeyRound, label: 'تغيير كلمة المرور', path: '/profile/password' },
+                            { icon: User, label: t("ملفي الشخصي"), path: '/profile' },
+                            { icon: KeyRound, label: t("تغيير كلمة المرور"), path: '/profile/password' },
                         ].map((it, i) => (
                             <button key={i} onClick={() => { router.push(it.path); setOpenUser(false); }}
                                 style={{

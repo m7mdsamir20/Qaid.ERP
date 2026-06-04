@@ -301,7 +301,7 @@ export default function UsersTab({
                             {permissionHierarchy.map((section: any, idx: number) => {
                                 const isExp = expandedModules[section.title] === true;
                                 const sp = newUserForm.customPermissions;
-                                const isAccessOnlySection = section.title === 'التقارير الإحصائية' || section.title === 'إعدادات النظام' || section.title === 'Statistical Reports' || section.title === 'System Settings';
+                                const isAccessOnlySection = section.title === t("التقارير الإحصائية") || section.title === t("إعدادات النظام") || section.title === 'Statistical Reports' || section.title === 'System Settings';
 
                                 const allSel = section.links.length > 0 && section.links.every((l: any) => sp[l.id]?.view && (isAccessOnlySection || (sp[l.id]?.create && sp[l.id]?.editDelete)));
                                 const someSel = !allSel && section.links.some((l: any) => sp[l.id]?.view || sp[l.id]?.create || sp[l.id]?.editDelete);

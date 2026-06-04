@@ -45,11 +45,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const logo = co.logo || co.companyLogo || '';
     const reportTitle = printTitle || title;
     const now = new Date();
-    const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+    const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
     const printDateStr = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const printTimeStr = toWesternDigits(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
 
-    const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
+    const isDateRange = printDate && (printDate.includes(t("من")) || printDate.includes(t("إلى")) || printDate.includes('/') || printDate.includes('-'));
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
     const dateRange = isDateRange ? printDate : '';
 
@@ -106,15 +106,15 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
-    const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
-    const labelAccount = printLabel || (isRtl ? 'تاريخ التقرير:' : 'Report Date:');
-    const labelBranch = isRtl ? 'الفرع:' : 'Branch:';
+    const labelPeriod = isRtl ? t("الفترة:") : 'Period:';
+    const labelAccount = printLabel || (isRtl ? t("تاريخ التقرير:") : 'Report Date:');
+    const labelBranch = isRtl ? t("الفرع:") : 'Branch:';
 
     const metaItems = [
       accountName ? `<span>${labelAccount} <b>${accountName}</b></span>` : '',
       dateRange   ? `<span>${labelPeriod} <b>${dateRange}</b></span>` : '',
       branchName  ? `<span>${labelBranch} <b>${branchName}</b></span>` : '',
-      `<span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${printDateStr} — ${printTimeStr}</b></span>`,
+      `<span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDateStr} — ${printTimeStr}</b></span>`,
     ].filter(Boolean).join('');
 
     const html = `<!DOCTYPE html>
@@ -229,7 +229,7 @@ ${includeHTML}
               onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; e.currentTarget.style.transform = 'none'; }}
             >
-              <FileSpreadsheet size={15} /> تحميل Excel
+              <FileSpreadsheet size={15} /> {t("تحميل Excel")}
             </button>
           )}
 
@@ -246,7 +246,7 @@ ${includeHTML}
             onMouseEnter={e => { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'none'; }}
           >
-            <Printer size={15} /> طباعة
+            <Printer size={15} /> {t("طباعة")}
           </button>
         </div>
       </div>

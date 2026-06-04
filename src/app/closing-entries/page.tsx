@@ -156,7 +156,7 @@ export default function ClosingEntriesPage() {
                 await loadData();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل إلغاء الإقفال');
+                alert(data.error || t("فشل إلغاء الإقفال"));
             }
         } finally {
             setExecuting(false);

@@ -96,11 +96,11 @@ export default function AgingReportPage() {
             'العميل': inv.customer,
             'عمر الدين (يوم)': inv.ageDays,
             'المبلغ المتبقي': inv.remaining,
-            'التصنيف': inv.ageDays > 90 ? 'متأخر جداً' : inv.ageDays > 60 ? 'حذر' : 'اعتيادي'
+            'التصنيف': inv.ageDays > 90 ? t("متأخر جداً") : inv.ageDays > 60 ? t("حذر") : t("اعتيادي")
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'أعمار الديون');
+        XLSX.utils.book_append_sheet(wb, ws, t("أعمار الديون"));
         XLSX.writeFile(wb, `تقرير_أعمار_الديون_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 

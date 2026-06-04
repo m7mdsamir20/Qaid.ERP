@@ -264,8 +264,8 @@ export default function NewReturnPage() {
             }
         }
         if (form.refundType === 'bank') {
-            if (!form.bankId) { setFieldErrors({ bankId: 'يرجى اختيار الحساب' }); return; }
-            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: 'أدخل المبلغ' }); return; }
+            if (!form.bankId) { setFieldErrors({ bankId: t("يرجى اختيار الحساب") }); return; }
+            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: t("أدخل المبلغ") }); return; }
             if (form.paidAmount > netReturnTotal) {
                 alert(`المبلغ المحول (${form.paidAmount}) أكبر من صافي المرتجع (${netReturnTotal.toFixed(2)})`);
                 return;

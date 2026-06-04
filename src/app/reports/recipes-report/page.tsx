@@ -62,7 +62,7 @@ export default function RecipesPage() {
                 {loading ? ( <TableSkeleton /> ) : recipes.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted }}>
                         <BookOpen size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, fontSize: '15px' }}>لا توجد وصفات — ابدأ بإضافة وصفة لوجبة</p>
+                        <p style={{ margin: 0, fontSize: '15px' }}>{t("لا توجد وصفات — ابدأ بإضافة وصفة لوجبة")}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -71,7 +71,7 @@ export default function RecipesPage() {
                                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px' }}>
                                     <div>
                                         <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: C.textPrimary }}>🍽️ {recipe.item?.name}</h3>
-                                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{recipe.items?.length} مكون</p>
+                                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{recipe.items?.length} {t("مكون")}</p>
                                         {recipe.notes && <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary }}>📝 {recipe.notes}</p>}
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -83,9 +83,9 @@ export default function RecipesPage() {
                                             const profitPct = sell > 0 ? Math.round((profit / sell) * 100) : 0;
                                             return cost > 0 ? (
                                                 <div style={{ background: `${profit >= 0 ? '#10b981' : '#ef4444'}08`, border: `1px solid ${profit >= 0 ? '#10b981' : '#ef4444'}30`, borderRadius: '10px', padding: '6px 12px', textAlign: 'center' }}>
-                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textMuted }}>التكلفة</p>
+                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textMuted }}>{t("التكلفة")}</p>
                                                     <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(cost)}</p>
-                                                    {sell > 0 && <p style={{ margin: 0, fontSize: '10px', fontWeight: 700, color: profit >= 0 ? '#10b981' : '#ef4444' }}>هامش {profitPct}%</p>}
+                                                    {sell > 0 && <p style={{ margin: 0, fontSize: '10px', fontWeight: 700, color: profit >= 0 ? '#10b981' : '#ef4444' }}>{t("هامش")} {profitPct}%</p>}
                                                 </div>
                                             ) : null;
                                         })()}

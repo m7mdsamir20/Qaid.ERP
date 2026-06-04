@@ -85,9 +85,9 @@ export default function NewPaymentPage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.supplierId) errors.supplierId = 'يرجى اختيار المورد';
-        if (!form.treasuryId) errors.treasuryId = 'يرجى اختيار الخزينة';
-        if (!form.amount || parseFloat(form.amount) <= 0) errors.amount = 'يرجى إدخال المبلغ';
+        if (!form.supplierId) errors.supplierId = t("يرجى اختيار المورد");
+        if (!form.treasuryId) errors.treasuryId = t("يرجى اختيار الخزينة");
+        if (!form.amount || parseFloat(form.amount) <= 0) errors.amount = t("يرجى إدخال المبلغ");
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -104,8 +104,8 @@ export default function NewPaymentPage() {
                 const saved = await res.json();
                 if (andPrint) handlePrint(saved);
                 router.push('/payments');
-            } else { const d = await res.json(); alert(d.error || 'فشل في الحفظ'); }
-        } catch { alert('فشل الاتصال بالخادم'); }
+            } else { const d = await res.json(); alert(d.error || t("فشل في الحفظ")); }
+        } catch { alert(t("فشل الاتصال بالخادم")); }
         finally { setSubmitting(false); }
     };
 
@@ -131,7 +131,7 @@ export default function NewPaymentPage() {
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary, flexDirection: 'column', gap: '14px' }}>
                 <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                <span style={{ fontSize: '13px', fontWeight: 600 }}>جاري تحميل البيانات...</span>
+                <span style={{ fontSize: '13px', fontWeight: 600 }}>{t("جاري تحميل البيانات...")}</span>
             </div>
             <style jsx global>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </DashboardLayout>
@@ -141,10 +141,10 @@ export default function NewPaymentPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="سند صرف جديد"
-                    subtitle="صرف نقدية للمورد من الخزينة أو البنك"
+                    title={t("سند صرف جديد")}
+                    subtitle={t("صرف نقدية للمورد من الخزينة أو البنك")}
                     icon={TrendingUp}
-                    backButton={{ label: 'رجوع للسجل', onClick: () => router.push('/payments') }}
+                    backButton={{ label: t("رجوع للسجل"), onClick: () => router.push('/payments') }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.2)', padding: '4px 12px', borderRadius: '8px', color: '#f43f5e', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px' }}>
                         <Receipt size={14} /> PMT-{String(nextNum).padStart(5, '0')}
@@ -157,10 +157,10 @@ export default function NewPaymentPage() {
 
                         {/* 1. Basic Info */}
                         <div style={SC}>
-                            <div style={STitle}>البيانات الأساسية للصرف</div>
+                            <div style={STitle}>{t("البيانات الأساسية للصرف")}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '16px' }}>
                                 <div>
-                                    <label style={LS}>رقم السند</label>
+                                    <label style={LS}>{t("رقم السند")}</label>
                                     <div style={{
                                         height: '42px', borderRadius: '10px',
                                         background: 'rgba(244, 63, 94, 0.08)',
@@ -175,7 +175,7 @@ export default function NewPaymentPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={LS}>تاريخ السند <span style={{ color: C.danger }}>*</span></label>
+                                    <label style={LS}>{t("تاريخ السند")} <span style={{ color: C.danger }}>*</span></label>
                                     <input type="date" value={form.date}
                                         onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
                                         style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.card, height: '42px', borderRadius: '10px', fontSize: '13px', fontFamily: CAIRO }}
@@ -183,17 +183,17 @@ export default function NewPaymentPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label style={LS}>المورد (المُستلِم) <span style={{ color: C.danger }}>*</span></label>
+                                    <label style={LS}>{t("المورد (المُستلِم)")} <span style={{ color: C.danger }}>*</span></label>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
                                             value={form.supplierId}
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
                                             icon={Search}
-                                            placeholder="ابحث واختر المورد..."
+                                            placeholder={t("ابحث واختر المورد...")}
                                             options={suppliers.map(s => ({
                                                 value: s.id,
                                                 label: s.name,
-                                                sub: s.balance < 0 ? `له: ${formatNumber(Math.abs(s.balance))} ${cSymbol}` : s.balance > 0 ? `عليه: ${formatNumber(s.balance)} ${cSymbol}` : 'رصيد: صفر'
+                                                sub: s.balance < 0 ? `له: ${formatNumber(Math.abs(s.balance))} ${cSymbol}` : s.balance > 0 ? `عليه: ${formatNumber(s.balance)} ${cSymbol}` : t("رصيد: صفر")
                                             }))}
                                         />
                                         <InlineError field="supplierId" />
@@ -201,7 +201,7 @@ export default function NewPaymentPage() {
                                     {selectedSupplier && (
                                         <div style={{ marginTop: '8px' }}>
                                             <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '20px', fontWeight: 700, background: selectedSupplier.balance < 0 ? `${C.success}15` : `${C.danger}15`, color: selectedSupplier.balance < 0 ? C.success : C.danger, border: `1px solid ${selectedSupplier.balance < 0 ? C.success : C.danger}30` }}>
-                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${formatNumber(Math.abs(selectedSupplier.balance))} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${formatNumber(selectedSupplier.balance)} ${cSymbol}` : 'رصيد المورد صفر'}
+                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${formatNumber(Math.abs(selectedSupplier.balance))} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${formatNumber(selectedSupplier.balance)} ${cSymbol}` : t("رصيد المورد صفر")}
                                             </span>
                                         </div>
                                     )}
@@ -209,11 +209,11 @@ export default function NewPaymentPage() {
                             </div>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={LS}>طريقة الصرف <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t("طريقة الصرف")} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                     {[
-                                        { val: 'cash', label: 'نقدي', sub: 'صرف كاش', icon: <Banknote size={16} />, color: C.primary },
-                                        { val: 'bank', label: 'تحويل', sub: 'خصم بنكي', icon: <Building2 size={16} />, color: '#bb86fc' },
+                                        { val: 'cash', label: t("نقدي"), sub: t("صرف كاش"), icon: <Banknote size={16} />, color: C.primary },
+                                        { val: 'bank', label: t("تحويل"), sub: t("خصم بنكي"), icon: <Building2 size={16} />, color: '#bb86fc' },
                                     ].map(opt => (
                                         <button key={opt.val} type="button"
                                             onClick={() => {
@@ -242,13 +242,13 @@ export default function NewPaymentPage() {
                             </div>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={LS}>{form.paymentType === 'cash' ? 'الخزينة المنصرف منها' : 'الحساب البنكي'} <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{form.paymentType === 'cash' ? t("الخزينة المنصرف منها") : t("الحساب البنكي")} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <CustomSelect
                                         value={form.treasuryId}
                                         onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                         icon={Building2}
-                                        placeholder={form.paymentType === 'cash' ? 'اختر الخزينة...' : 'اختر الحساب...'}
+                                        placeholder={form.paymentType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
                                         options={availTreasuries.map(t => ({
                                             value: t.id,
                                             label: t.name,
@@ -260,8 +260,8 @@ export default function NewPaymentPage() {
                             </div>
 
                             <div>
-                                <label style={LS}>ملاحظات / البيان المالي</label>
-                                <textarea placeholder="مثال: سداد دفعة من الحساب، سداد فاتورة مشتريات..." value={form.description}
+                                <label style={LS}>{t("ملاحظات / البيان المالي")}</label>
+                                <textarea placeholder={t("مثال: سداد دفعة من الحساب، سداد فاتورة مشتريات...")} value={form.description}
                                     onChange={e => setForm((f: any) => ({ ...f, description: e.target.value }))}
                                     style={{ ...IS, height: '80px', padding: '12px', background: 'rgba(255,255,255,0.02)', fontSize: '13px', resize: 'none' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
@@ -272,11 +272,11 @@ export default function NewPaymentPage() {
                     <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={SC}>
                             <div style={STitle}>
-                                <CheckCircle2 size={16} /> تأكيد الصرف
+                                <CheckCircle2 size={16} /> {t("تأكيد الصرف")}
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11px' }}>المبلغ المُنصرِف <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t("المبلغ المُنصرِف")} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <PriceInput 
                                         value={form.amount}
@@ -293,7 +293,7 @@ export default function NewPaymentPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '15px', borderTop: `1px dashed ${C.border}` }}>
-                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>الرصيد بعد السند</span>
+                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t("الرصيد بعد السند")}</span>
                                     {selectedSupplier ? (
                                         <span style={{
                                             fontSize: '15px', fontWeight: 600, fontFamily: CAIRO,
@@ -310,7 +310,7 @@ export default function NewPaymentPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <button type="button" onClick={() => handleSubmit(false)} disabled={submitting || !canSubmit}
                                     style={{ ...BTN_PRIMARY(!canSubmit, submitting), background: (submitting || !canSubmit) ? 'rgba(251, 113, 133, 0.2)' : C.danger, boxShadow: (submitting || !canSubmit) ? 'none' : '0 8px 16px -4px rgba(251, 113, 133, 0.3)', opacity: (submitting || !canSubmit) ? 0.6 : 1 }}>
-                                    {submitting ? <Loader2 size={20} className="spin" /> : <>ترحيل مستند الصرف <CheckCircle2 size={18} /></>}
+                                    {submitting ? <Loader2 size={20} className="spin" /> : <>{t("ترحيل مستند الصرف")} <CheckCircle2 size={18} /></>}
                                 </button>
                                 <button type="button" onClick={() => handleSubmit(true)} disabled={submitting || !canSubmit}
                                     style={{
@@ -322,7 +322,7 @@ export default function NewPaymentPage() {
                                     }}
                                     onMouseEnter={e => { if (!submitting && canSubmit) e.currentTarget.style.background = `${C.danger}10`; }}
                                     onMouseLeave={e => { if (!submitting && canSubmit) e.currentTarget.style.background = 'transparent'; }}>
-                                    <Printer size={18} /> ترحيل وطباعة السند
+                                    <Printer size={18} /> {t("ترحيل وطباعة السند")}
                                 </button>
                             </div>
                         </div>

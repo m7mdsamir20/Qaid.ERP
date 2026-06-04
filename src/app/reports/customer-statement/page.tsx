@@ -169,8 +169,8 @@ export default function CustomerStatementPage() {
                 return (
                     <span style={{
                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
-                        background: row.type.includes('مبيعات') ? 'rgba(16,185,129,0.1)' : row.type.includes('قبض') ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
-                        color: row.type.includes('مبيعات') ? '#10b981' : row.type.includes('قبض') ? '#ef4444' : C.textMuted
+                        background: row.type.includes(t("مبيعات")) ? 'rgba(16,185,129,0.1)' : row.type.includes(t("قبض")) ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
+                        color: row.type.includes(t("مبيعات")) ? '#10b981' : row.type.includes(t("قبض")) ? '#ef4444' : C.textMuted
                     }}>
                         {t(row.type)}
                     </span>

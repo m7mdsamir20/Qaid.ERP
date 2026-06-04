@@ -67,7 +67,7 @@ export default function SuperAdminPage() {
             header: t('النشاط'),
             type: 'text',
             cell: (row) => {
-                const bType = B_TYPES[(row.businessType || 'TRADING').toUpperCase()] || { label: row.businessType || 'غير محدد', color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
+                const bType = B_TYPES[(row.businessType || 'TRADING').toUpperCase()] || { label: row.businessType || t("غير محدد"), color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' };
                 return (
                     <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 600, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
                         {bType.label}
@@ -99,7 +99,7 @@ export default function SuperAdminPage() {
             cell: (row) => {
                 const sub = row.subscription;
                 if (!sub) {
-                    return <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجد اشتراك</span>;
+                    return <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>{t("❌ لا يوجد اشتراك")}</span>;
                 }
                 const days = sub?.endDate ? daysLeft(sub.endDate) : 0;
                 const isExpired = days < 0;
@@ -107,7 +107,7 @@ export default function SuperAdminPage() {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
-                            {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? 'ينتهي اليوم ⚠️' : `${days} يوم`}
+                            {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? t("ينتهي اليوم ⚠️") : `${days} يوم`}
                         </div>
                         <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
                             {fmt(sub.endDate)}
@@ -122,7 +122,7 @@ export default function SuperAdminPage() {
             cell: (row) => (
                 <button onClick={() => handleToggle(row.id, row.isActive)}
                     style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${row.isActive ? C.success : C.danger}40`, background: row.isActive ? `${C.success}15` : `${C.danger}15`, color: row.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                    {row.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
+                    {row.isActive ? <><CheckCircle2 size={16} /> {t("مُفعل")}</> : <><X size={16} /> {t("معطل")}</>}
                 </button>
             )
         },
@@ -208,13 +208,13 @@ export default function SuperAdminPage() {
                 try {
                     const text = await res.text();
                     const d = text ? JSON.parse(text) : {};
-                    alert(d.error || 'فشل الحذف');
+                    alert(d.error || t("فشل الحذف"));
                 } catch {
-                    alert('فشل الحذف');
+                    alert(t("فشل الحذف"));
                 }
             }
         } catch (err) {
-            alert('حدث خطأ أثناء الحذف');
+            alert(t("حدث خطأ أثناء الحذف"));
         } finally { setDeleting(false); }
     };
 
@@ -226,7 +226,7 @@ export default function SuperAdminPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, color: C.textSecondary }}>
             <div style={{ }}>
                 <Loader2 size={36} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px', color: C.primary, margin: '0 auto' }} />
-                <div style={{ fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>جاري التحقق من الصلاحيات...</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{t("جاري التحقق من الصلاحيات...")}</div>
             </div>
         </div>
     );
@@ -235,11 +235,11 @@ export default function SuperAdminPage() {
         <div className="super-admin-container" dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, padding: '24px', color: C.textPrimary, fontFamily: CAIRO }}>
 
             <PageHeader
-                title="نظام الإدارة الشامل (Super Admin)"
-                subtitle="إدارة الحسابات، الأنشطة المتعددة والاشتراكات"
+                title={t("نظام الإدارة الشامل (Super Admin)")}
+                subtitle={t("إدارة الحسابات، الأنشطة المتعددة والاشتراكات")}
                 icon={Shield}
                 primaryButton={{
-                    label: "إضافة شركة / نشاط جديد",
+                    label: t("إضافة شركة / نشاط جديد"),
                     onClick: () => router.push('/super-admin/new'),
                     icon: Plus
                 }}
@@ -248,10 +248,10 @@ export default function SuperAdminPage() {
             {/* Stats Overview */}
             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
                 {[
-                    { label: 'إجمالي الشركات', value: stats.totalCompanies || companies.length || 0, color: '#256af4', icon: <Building2 size={18} />, suffix: 'شركة' },
-                    { label: 'حسابات نشطة', value: stats.activeCompanies || companies.filter(c=>c.isActive).length || 0, color: '#10b981', icon: <CheckCircle2 size={18} />, suffix: 'حساب' },
-                    { label: 'أنشطة متعددة', value: new Set(companies.map(c=>c.businessType)).size || 0, color: '#8b5cf6', icon: <Globe size={18} />, suffix: 'أنواع' },
-                    { label: 'تنتهي قريباً', value: companies.filter(c => c.subscription && daysLeft(c.subscription.endDate) <= 30 && daysLeft(c.subscription.endDate) >= 0).length || 0, color: '#f59e0b', icon: <AlertTriangle size={18} />, suffix: 'اشتراك' },
+                    { label: t("إجمالي الشركات"), value: stats.totalCompanies || companies.length || 0, color: '#256af4', icon: <Building2 size={18} />, suffix: t("شركة") },
+                    { label: t("حسابات نشطة"), value: stats.activeCompanies || companies.filter(c=>c.isActive).length || 0, color: '#10b981', icon: <CheckCircle2 size={18} />, suffix: t("حساب") },
+                    { label: t("أنشطة متعددة"), value: new Set(companies.map(c=>c.businessType)).size || 0, color: '#8b5cf6', icon: <Globe size={18} />, suffix: t("أنواع") },
+                    { label: t("تنتهي قريباً"), value: companies.filter(c => c.subscription && daysLeft(c.subscription.endDate) <= 30 && daysLeft(c.subscription.endDate) >= 0).length || 0, color: '#f59e0b', icon: <AlertTriangle size={18} />, suffix: t("اشتراك") },
                 ].map((s, i) => (
                     <div key={i} style={{
                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -281,7 +281,7 @@ export default function SuperAdminPage() {
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary,  pointerEvents: 'none' }} />
                     <input
                         type="text"
-                        placeholder="ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط..."
+                        placeholder={t("ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط...")}
                         style={{
                             ...IS, paddingInlineStart: '48px', height: '48px', fontSize: '13px',
                             background: 'rgba(255,255,255,0.02)',
@@ -309,7 +309,7 @@ export default function SuperAdminPage() {
                 loadingSkeleton={
                     <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px 0', color: C.textSecondary }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
-                        <div style={{ fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>جاري استخراج بيانات الشركات والأنشطة...</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>{t("جاري استخراج بيانات الشركات والأنشطة...")}</div>
                     </div>
                 }
             />
@@ -325,27 +325,27 @@ export default function SuperAdminPage() {
                             <Trash2 size={32} />
                         </div>
 
-                        <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 600, color: C.textPrimary }}>حذف نشاط الشركة نهائياً</h3>
-                        <p style={{ margin: '0 0 16px', fontSize: '15px', color: C.textSecondary }}>هل أنت متأكد من رغبتك في حذف:</p>
+                        <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 600, color: C.textPrimary }}>{t("حذف نشاط الشركة نهائياً")}</h3>
+                        <p style={{ margin: '0 0 16px', fontSize: '15px', color: C.textSecondary }}>{t("هل أنت متأكد من رغبتك في حذف:")}</p>
                         
                         <div style={{ margin: '0 auto 24px', fontSize: '16px', fontWeight: 600, color: C.danger, background: `${C.danger}08`, padding: '12px 20px', borderRadius: '12px', display: 'inline-block' }}>
                             {deleteTarget.name}
                         </div>
                         
                         <div style={{ margin: '0 0 32px', fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
-                            سيتم مسح كافة البيانات المرتبطة بكل الأنشطة (فواتير، مستخدمين، قيود) من النظام بشكل دائم.
+                            {t("سيتم مسح كافة البيانات المرتبطة بكل الأنشطة (فواتير، مستخدمين، قيود) من النظام بشكل دائم.")}
                             <br />
-                            <strong style={{ color: C.danger, display: 'block', marginTop: '8px' }}>هذا الإجراء غير قابل للتراجع!</strong>
+                            <strong style={{ color: C.danger, display: 'block', marginTop: '8px' }}>{t("هذا الإجراء غير قابل للتراجع!")}</strong>
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={handleDelete} disabled={deleting}
                                 style={{ flex: 1.5, height: '52px', borderRadius: '14px', border: 'none', background: deleting ? 'rgba(239,68,68,0.4)' : C.danger, color: '#fff', fontSize: '15px', fontWeight: 600, cursor: deleting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                                {deleting ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحذف...</> : <><Trash2 size={18} /> تأكيد الحذف</>}
+                                {deleting ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t("جاري الحذف...")}</> : <><Trash2 size={18} /> {t("تأكيد الحذف")}</>}
                             </button>
                             <button onClick={() => setDeleteTarget(null)} disabled={deleting}
                                 style={{ flex: 1, height: '52px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
-                                إلغاء
+                                {t("إلغاء")}
                             </button>
                         </div>
                     </div>

@@ -45,7 +45,7 @@ export default function OpeningBalancesPage() {
     const [saved, setSaved]               = useState(false);
     const [search, setSearch]             = useState('');
     const [filterType, setFilterType]     = useState('all');
-    const [currencySymbol, setCurrencySymbol] = useState('ج.م');
+    const [currencySymbol, setCurrencySymbol] = useState(t("ج.م"));
     const [showCarryModal, setShowCarryModal] = useState(false);
 
     const curYear = years.find(y => y.id === selectedYear);

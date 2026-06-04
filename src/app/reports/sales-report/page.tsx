@@ -280,7 +280,7 @@ export default function SalesReportPage() {
                                 const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
                                 return code.includes(q.toUpperCase()) ||
                                     String(inv.invoiceNumber).includes(q) ||
-                                    (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
+                                    (inv.customer?.name || t("عميل نقدي")).toLowerCase().includes(q.toLowerCase());
                             });
 
                             return (

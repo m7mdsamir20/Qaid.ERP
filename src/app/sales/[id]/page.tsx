@@ -121,7 +121,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             const branches = (session?.user as any)?.branches || [];
                             const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
 
-                            if (invoice.notes?.includes('POS الكاشير السريع')) {
+                            if (invoice.notes?.includes(t("POS الكاشير السريع"))) {
                                 const printWindow = window.open('', '_blank', 'width=350,height=600');
                                 if (printWindow) {
                                     const receiptDate = new Date(invoice.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
@@ -147,7 +147,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             <div class="receipt-container">
                                                 <div class="header">
                                                     ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
-                                                    <h2>${company.name || 'الشركة للأنظمة'}</h2>
+                                                    <h2>${company.name || t("الشركة للأنظمة")}</h2>
                                                     <p>فاتورة كاشير POS</p>
                                                     <p>رقم الفاتورة: #${invoice.invoiceNumber}</p>
                                                     <p>تاريخ: ${receiptDate}</p>
@@ -161,7 +161,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 ${invoice.lines.map(line => `
                                                     <div class="item-row">
                                                         <span class="item-name">
-                                                            ${line.item?.name || 'صنف'}
+                                                            ${line.item?.name || t("صنف")}
                                                             ${line.description ? `<br/><small style="font-size: 10px; opacity: 0.8; font-weight: normal">${line.description}</small>` : ''}
                                                         </span>
                                                         <span class="item-qty">${line.quantity}</span>

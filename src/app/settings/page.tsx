@@ -272,10 +272,10 @@ function SettingsContent() {
                 };
 
                 const name = findT([
-                    'اسم', 'الاسم', 'اسماء', 'الاسماء', 'الأسماء', 'بيان', 'البيان',
-                    'عميل', 'العميل', 'عملاء', 'العملاء',
-                    'مورد', 'المورد', 'موردين', 'الموردين',
-                    'شركة', 'الشركة', 'جهة', 'الجهة',
+                    t("اسم"), t("الاسم"), t("اسماء"), t("الاسماء"), t("الأسماء"), t("بيان"), t("البيان"),
+                    t("عميل"), t("العميل"), t("عملاء"), t("العملاء"),
+                    t("مورد"), t("المورد"), t("موردين"), t("الموردين"),
+                    t("شركة"), t("الشركة"), t("جهة"), t("الجهة"),
                     'name', 'client', 'supplier', 'customer', 'party'
                 ]) || String(Object.values(row)[0] || '');
                 if (!String(name).trim()) { failCount++; continue; }
@@ -284,12 +284,12 @@ function SettingsContent() {
                 let balanceType: 'debit' | 'credit' = importType === 'suppliers' ? 'credit' : 'debit';
 
                 // Case 1: Two explicit columns (debit / credit)
-                const debitVal = findV(['مدين', 'عليه', 'علية', 'debit', ' dr']);
-                const creditVal = findV(['دائن', 'له', 'لة', 'credit', ' cr']);
+                const debitVal = findV([t("مدين"), t("عليه"), t("علية"), 'debit', ' dr']);
+                const creditVal = findV([t("دائن"), t("له"), t("لة"), 'credit', ' cr']);
 
                 // Case 2: One balance column + optional type column
-                const genericBal = findV(['رصيد', 'balance', 'bal', 'افتتاحي', 'opening']);
-                const typeStr = findT(['نوع', 'type', 'حالة', 'status']);
+                const genericBal = findV([t("رصيد"), 'balance', 'bal', t("افتتاحي"), 'opening']);
+                const typeStr = findT([t("نوع"), 'type', t("حالة"), 'status']);
 
                 if (debitVal > 0 || creditVal > 0) {
                     // Two-column format
@@ -304,7 +304,7 @@ function SettingsContent() {
                     // One-column format
                     openingBalance = Math.abs(genericBal);
                     if (typeStr) {
-                        const isCredit = ['دائن', 'له', 'لة', 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
+                        const isCredit = [t("دائن"), t("له"), t("لة"), 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
                         balanceType = isCredit ? 'credit' : 'debit';
                     } else {
                         // Infer from sign or entity type
@@ -317,11 +317,11 @@ function SettingsContent() {
 
                 payload = {
                     name: String(name).trim(),
-                    phone: findT(['هاتف', 'جوال', 'موبايل', 'phone', 'mobile', 'tel']),
-                    address: findT(['عنوان', 'address', 'مقره', 'location']),
+                    phone: findT([t("هاتف"), t("جوال"), t("موبايل"), 'phone', 'mobile', 'tel']),
+                    address: findT([t("عنوان"), 'address', t("مقره"), 'location']),
                     openingBalance,
                     balanceType,
-                    ...(importType === 'customers' ? { creditLimit: findV(['حد', 'limit', 'ائتمان']) } : {})
+                    ...(importType === 'customers' ? { creditLimit: findV([t("حد"), 'limit', t("ائتمان")]) } : {})
                 };
             } else if (importType === 'items') {
                 const findT = (keywords: string[]) => {
@@ -333,28 +333,28 @@ function SettingsContent() {
                     return k ? (parseFloat(String(row[k]).replace(/,/g, '')) || 0) : 0;
                 };
                 const name = findT([
-                    'اسم الصنف', 'اسماء الصنف', 'الصنف', 'الصنف / الخدمة',
-                    'البضاعة', 'البضائع', 'السلعة', 'السلع',
-                    'المادة', 'الخامة', 'المنتج', 'الخدمة',
-                    'الوصف', 'البيان', 'البند', 'المقال',
-                    'اسم', 'الاسم', 'اسماء', 'الاسماء',
+                    t("اسم الصنف"), t("اسماء الصنف"), t("الصنف"), t("الصنف / الخدمة"),
+                    t("البضاعة"), t("البضائع"), t("السلعة"), t("السلع"),
+                    t("المادة"), t("الخامة"), t("المنتج"), t("الخدمة"),
+                    t("الوصف"), t("البيان"), t("البند"), t("المقال"),
+                    t("اسم"), t("الاسم"), t("اسماء"), t("الاسماء"),
                     'item', 'item name', 'product', 'product name',
                     'article', 'goods', 'material', 'service', 'description', 'name'
                 ]) || String(Object.values(row)[0] || '');
                 if (!String(name).trim()) { failCount++; continue; }
 
-                const qty = findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity', 'opening qty']);
-                const cost = findV(['تكلفة', 'cost', 'شراء']);
+                const qty = findV([t("كمية افتتاحية"), t("كمية حالية"), t("الكمية"), t("كمية"), 'stock', 'qty', 'quantity', 'opening qty']);
+                const cost = findV([t("تكلفة"), 'cost', t("شراء")]);
 
                 payload = {
                     name: String(name).trim(),
-                    category: findT(['تصنيف', 'قسم', 'category', 'group']),
-                    unit: findT(['وحدة القياس', 'الوحدة', 'وحده', 'القياس', 'unit', 'measure', 'uom']),
+                    category: findT([t("تصنيف"), t("قسم"), 'category', 'group']),
+                    unit: findT([t("وحدة القياس"), t("الوحدة"), t("وحده"), t("القياس"), 'unit', 'measure', 'uom']),
                     costPrice: cost,
-                    sellPrice: findV(['بيع', 'price', 'sale']),
+                    sellPrice: findV([t("بيع"), 'price', 'sale']),
                     initialQuantity: qty,          // الاسم اللي يتوقعه الـ API
                     warehouseId: defaultWarehouseId, // لازم عشان يسجل حركة المخزون
-                    minLimit: findV(['حد أدنى', 'min', 'الطلب']),
+                    minLimit: findV([t("حد أدنى"), 'min', t("الطلب")]),
                 };
             }
 
@@ -457,8 +457,8 @@ function SettingsContent() {
                 if (section.featureKey === 'sales') {
                     section.title = t('فواتير الخدمات');
                     section.links = section.links?.map((l: any) => {
-                        if (l.label === 'فواتير المبيعات') return { ...l, label: t('فواتير الخدمات') };
-                        if (l.label === 'مرتجع مبيعات') return { ...l, label: t('إلغاء خدمات / مرتجع') };
+                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t('فواتير الخدمات') };
+                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t('إلغاء خدمات / مرتجع') };
                         return l;
                     });
                 }
@@ -490,8 +490,8 @@ function SettingsContent() {
                 if (section.featureKey === 'purchases') section.title = t('المشتريات والموردين');
                 if (section.featureKey === 'reports') {
                     section.links = section.links?.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: t('تقارير الكاشير والمبيعات') };
-                        if (l.label === 'تقارير المخزون')      return { ...l, label: t('تقارير المخزون والمنيو') };
+                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t('تقارير الكاشير والمبيعات') };
+                        if (l.label === t("تقارير المخزون"))      return { ...l, label: t('تقارير المخزون والمنيو') };
                         return l;
                     });
                 }

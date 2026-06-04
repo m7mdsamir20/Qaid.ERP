@@ -74,7 +74,7 @@ export default function FixedAssetsReportPage() {
     const filtered = assets.filter(a => {
         const matchSearch = (a.name || '').toLowerCase().includes(search.toLowerCase()) || 
                           (a.code || '').toLowerCase().includes(search.toLowerCase());
-        const matchCat    = catFilter === 'الكل' || a.category === catFilter;
+        const matchCat    = catFilter === t("الكل") || a.category === catFilter;
         const matchStatus = statusFilter === 'all' || a.status === statusFilter;
         return matchSearch && matchCat && matchStatus;
     });
@@ -246,7 +246,7 @@ export default function FixedAssetsReportPage() {
                                     onChange={setCatFilter}
                                     icon={Building2} 
                                     placeholder={t("الفئة")}
-                                    options={CATEGORIES.map(c => ({ value: c, label: c === 'الكل' ? t('الكل') : t(c) }))}
+                                    options={CATEGORIES.map(c => ({ value: c, label: c === t("الكل") ? t('الكل') : t(c) }))}
                                     style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
                                 />
                             </div>

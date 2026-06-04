@@ -171,8 +171,8 @@ export default function SupplierStatementPage() {
                 return (
                     <span style={{
                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
-                        background: row.type.includes('مشتريات') ? 'rgba(239,68,68,0.1)' : row.type.includes('صرف') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
-                        color: row.type.includes('مشتريات') ? '#ef4444' : row.type.includes('صرف') ? '#10b981' : C.textMuted
+                        background: row.type.includes(t("مشتريات")) ? 'rgba(239,68,68,0.1)' : row.type.includes(t("صرف")) ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
+                        color: row.type.includes(t("مشتريات")) ? '#ef4444' : row.type.includes(t("صرف")) ? '#10b981' : C.textMuted
                     }}>
                         {t(row.type)}
                     </span>

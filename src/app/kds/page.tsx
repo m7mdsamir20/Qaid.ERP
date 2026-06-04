@@ -124,18 +124,18 @@ export default function KDSPage() {
             {/* Header */}
             <div style={{ padding: '20px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                    <a href="/" title="الخروج للنظام" style={{ width: '38px', height: '38px', borderRadius: '12px', border: '1px solid #ef444440', background: '#ef444415', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s', textDecoration: 'none' }}>
+                    <a href="/" title={t("الخروج للنظام")} style={{ width: '38px', height: '38px', borderRadius: '12px', border: '1px solid #ef444440', background: '#ef444415', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s', textDecoration: 'none' }}>
                         <LogOut size={18} />
                     </a>
                     <div style={{ padding: '8px', borderRadius: '10px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <ChefHat size={18} />
                     </div>
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: C.textPrimary }}>شاشة المطبخ (KDS)</h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>إدارة الطلبات الحية ومتابعة التحضير</p>
+                        <h1 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: C.textPrimary }}>{t("شاشة المطبخ (KDS)")}</h1>
+                        <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t("إدارة الطلبات الحية ومتابعة التحضير")}</p>
                     </div>
                 </div>
-                <button title="الطلبات المكتملة" onClick={() => setShowCompletedPanel(!showCompletedPanel)} style={{ width: '38px', height: '38px', borderRadius: '12px', border: `1px solid ${C.primary}40`, background: showCompletedPanel ? C.primary : `${C.primary}15`, color: showCompletedPanel ? '#fff' : C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s', zIndex: 101 }}>
+                <button title={t("الطلبات المكتملة")} onClick={() => setShowCompletedPanel(!showCompletedPanel)} style={{ width: '38px', height: '38px', borderRadius: '12px', border: `1px solid ${C.primary}40`, background: showCompletedPanel ? C.primary : `${C.primary}15`, color: showCompletedPanel ? '#fff' : C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s', zIndex: 101 }}>
                     <CheckCircle2 size={18} />
                 </button>
             </div>
@@ -151,8 +151,8 @@ export default function KDSPage() {
                 ) : orders.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: C.textMuted, gap: '12px' }}>
                         <CheckCircle2 size={48} style={{ opacity: 0.2 }} />
-                        <h2 style={{ margin: 0, fontSize: '20px' }}>لا توجد طلبات حالياً</h2>
-                        <p style={{ margin: 0, fontSize: '14px' }}>المطبخ هادئ... استرخِ قليلاً ☕</p>
+                        <h2 style={{ margin: 0, fontSize: '20px' }}>{t("لا توجد طلبات حالياً")}</h2>
+                        <p style={{ margin: 0, fontSize: '14px' }}>{t("المطبخ هادئ... استرخِ قليلاً ☕")}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
@@ -161,7 +161,7 @@ export default function KDSPage() {
                             const isLate = elapsedMins > 20;
                             const isPreparing = order.status === 'preparing';
                             const isExternal = order.source && order.source !== 'pos';
-                            const sourceLabel = order.source === 'website' ? 'طلب موقع' : order.source === 'qr' ? 'طلب QR' : order.source === 'api' ? 'طلب خارجي' : '';
+                            const sourceLabel = order.source === 'website' ? t("طلب موقع") : order.source === 'qr' ? t("طلب QR") : order.source === 'api' ? t("طلب خارجي") : '';
                             const isPendingExternal = isExternal && order.status === 'pending';
 
                             return (
@@ -185,7 +185,7 @@ export default function KDSPage() {
                                         <div style={{ margin: '-16px -16px 0 -16px', padding: '8px 16px', background: isPendingExternal ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.08)', borderBottom: `1px solid ${isPendingExternal ? '#f59e0b30' : '#3b82f630'}`, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: isPendingExternal ? '#f59e0b' : '#3b82f6' }}>
                                             <Globe size={14} />
                                             🌐 {sourceLabel}
-                                            {isPendingExternal && <span style={{ marginInlineStart: 'auto', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: '#f59e0b20', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>بانتظار الموافقة</span>}
+                                            {isPendingExternal && <span style={{ marginInlineStart: 'auto', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: '#f59e0b20', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>{t("بانتظار الموافقة")}</span>}
                                         </div>
                                     )}
 
@@ -228,7 +228,7 @@ export default function KDSPage() {
                                     {order.notes && (
                                         <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px', border: `1px dashed rgba(245, 158, 11, 0.3)`, fontSize: '12px', color: '#f59e0b', fontWeight: 600 }}>
                                             <AlertCircle size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
-                                            ملاحظة: {order.notes}
+                                            {t("ملاحظة:")} {order.notes}
                                         </div>
                                     )}
 
@@ -245,19 +245,19 @@ export default function KDSPage() {
                                     <div style={{ marginTop: 'auto', paddingTop: '12px', borderTop: `1px dashed ${isLate ? '#ef444430' : isPreparing ? `${C.primary}30` : C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '3px 8px', borderRadius: '6px' }}>
-                                                {order.type === 'dine-in' ? 'صالة' : order.type === 'takeaway' ? 'تيك أواي' : order.type === 'delivery' ? 'توصيل' : 'أونلاين'}
+                                                {order.type === 'dine-in' ? t("صالة") : order.type === 'takeaway' ? t("تيك أواي") : order.type === 'delivery' ? t("توصيل") : t("أونلاين")}
                                             </span>
-                                            {order.table && <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الطاولة: <strong style={{ color: C.primary }}>{order.table.name}</strong></span>}
+                                            {order.table && <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t("الطاولة:")} <strong style={{ color: C.primary }}>{order.table.name}</strong></span>}
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             {isPreparing ? (
                                                 <button onClick={() => markAsReady(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: '#10b981', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: '0 4px 10px rgba(16,185,129,0.2)' }}>
-                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> جاهز</>}
+                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> {t("جاهز")}</>}
                                                 </button>
                                             ) : (
                                                 <button onClick={() => markAsPreparing(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '36px', borderRadius: '10px', background: C.primary, border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', boxShadow: `0 4px 10px ${C.primary}20` }}>
-                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'بدء التحضير'}
+                                                    {updatingId === order.id ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : t("بدء التحضير")}
                                                 </button>
                                             )}
                                         </div>
@@ -283,12 +283,12 @@ export default function KDSPage() {
             }}>
                 <div style={{ padding: '20px 16px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'transparent', minWidth: '280px' }}>
                     <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <CheckCircle2 size={18} color="#10b981" /> الطلبات المكتملة
+                        <CheckCircle2 size={18} color="#10b981" /> {t("الطلبات المكتملة")}
                     </h3>
                 </div>
                 <div className="custom-scroll" style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', minWidth: '280px' }}>
                     {completedOrders.length === 0 ? (
-                        <p style={{ textAlign: 'center', color: C.textMuted, fontSize: '13px', marginTop: '40px', fontWeight: 600 }}>لا توجد طلبات مكتملة حديثاً</p>
+                        <p style={{ textAlign: 'center', color: C.textMuted, fontSize: '13px', marginTop: '40px', fontWeight: 600 }}>{t("لا توجد طلبات مكتملة حديثاً")}</p>
                     ) : (
                         completedOrders.map(o => (
                             <div key={o.id} style={{ 
@@ -312,7 +312,7 @@ export default function KDSPage() {
                                             {`#${o.orderNumber.toString().padStart(4, '0')}`}
                                         </h3>
                                         <span style={{ fontSize: '10px', color: '#10b981', fontWeight: 700, padding: '2px 8px', background: '#10b98115', borderRadius: '12px', border: '1px solid #10b98130' }}>
-                                            مكتمل
+                                            {t("مكتمل")}
                                         </span>
                                     </div>
                                     <span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted, fontWeight: 600 }}>
@@ -340,9 +340,9 @@ export default function KDSPage() {
                                 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', paddingTop: '10px', borderTop: '1px dashed rgba(16, 185, 129, 0.2)' }}>
                                     <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700, background: 'rgba(0,0,0,0.2)', padding: '2px 8px', borderRadius: '4px' }}>
-                                        {o.type === 'dine-in' ? 'صالة' : o.type === 'takeaway' ? 'تيك أواي' : o.type === 'delivery' ? 'توصيل' : 'أونلاين'}
+                                        {o.type === 'dine-in' ? t("صالة") : o.type === 'takeaway' ? t("تيك أواي") : o.type === 'delivery' ? t("توصيل") : t("أونلاين")}
                                     </span>
-                                    {o.table && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>الطاولة: <strong style={{ color: C.primary }}>{o.table.name}</strong></span>}
+                                    {o.table && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t("الطاولة:")} <strong style={{ color: C.primary }}>{o.table.name}</strong></span>}
                                 </div>
                             </div>
                         ))

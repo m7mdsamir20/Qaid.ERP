@@ -1,9 +1,11 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 import React, { useEffect, useState } from 'react';
 import { C, CAIRO } from '@/constants/theme';
 import { ShoppingCart, CheckCircle2 } from 'lucide-react';
 
 export default function CustomerDisplayPage() {
+    const { t } = useTranslation();
     const [state, setState] = useState<any>({
         cart: [],
         subtotal: 0,
@@ -39,11 +41,11 @@ export default function CustomerDisplayPage() {
         return (
             <div dir="rtl" style={{ height: '100vh', width: '100vw', background: C.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO }}>
                 <CheckCircle2 size={120} color={C.success} style={{ marginBottom: '24px' }} />
-                <h1 style={{ color: C.textPrimary, fontSize: '48px', marginBottom: '16px' }}>شكراً لزيارتكم!</h1>
-                <p style={{ color: C.textSecondary, fontSize: '24px' }}>تم تأكيد طلبكم بنجاح.</p>
+                <h1 style={{ color: C.textPrimary, fontSize: '48px', marginBottom: '16px' }}>{t("شكراً لزيارتكم!")}</h1>
+                <p style={{ color: C.textSecondary, fontSize: '24px' }}>{t("تم تأكيد طلبكم بنجاح.")}</p>
                 {successState.orderNumber && (
                     <div style={{ marginTop: '30px', background: C.card, padding: '20px 40px', borderRadius: '16px', border: `2px dashed ${C.border}` }}>
-                        <span style={{ color: C.textMuted, fontSize: '20px' }}>رقم الطلب: </span>
+                        <span style={{ color: C.textMuted, fontSize: '20px' }}>{t("رقم الطلب:")} </span>
                         <span style={{ color: C.primary, fontSize: '32px', fontWeight: 'bold' }}>#{successState.orderNumber}</span>
                     </div>
                 )}
@@ -65,13 +67,13 @@ export default function CustomerDisplayPage() {
                     </div>
                     <div>
                         <h1 style={{ margin: 0, fontSize: '42px', color: C.textPrimary, fontWeight: 900, letterSpacing: '2px' }}>QAID ERP</h1>
-                        <p style={{ margin: 0, color: C.primary, fontSize: '18px', fontWeight: 600 }}>نظام المطاعم المتكامل</p>
+                        <p style={{ margin: 0, color: C.primary, fontSize: '18px', fontWeight: 600 }}>{t("نظام المطاعم المتكامل")}</p>
                     </div>
                 </div>
 
                 <div style={{ zIndex: 1, textAlign: 'center', padding: '0 40px' }}>
-                    <h2 style={{ fontSize: '32px', color: C.textPrimary, marginBottom: '16px' }}>أهلاً بكم في مطعمنا</h2>
-                    <p style={{ fontSize: '20px', color: C.textSecondary, lineHeight: '1.6' }}>يرجى مراجعة طلبكم على الشاشة.<br/>نتمنى لكم تجربة مميزة!</p>
+                    <h2 style={{ fontSize: '32px', color: C.textPrimary, marginBottom: '16px' }}>{t("أهلاً بكم في مطعمنا")}</h2>
+                    <p style={{ fontSize: '20px', color: C.textSecondary, lineHeight: '1.6' }}>{t("يرجى مراجعة طلبكم على الشاشة.")}<br/>{t("نتمنى لكم تجربة مميزة!")}</p>
                 </div>
             </div>
 
@@ -80,14 +82,14 @@ export default function CustomerDisplayPage() {
                 {/* Header */}
                 <div style={{ padding: '30px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '16px', background: 'rgba(0,0,0,0.2)' }}>
                     <ShoppingCart size={32} color={C.primary} />
-                    <h2 style={{ margin: 0, fontSize: '28px', color: C.textPrimary }}>تفاصيل الطلب</h2>
+                    <h2 style={{ margin: 0, fontSize: '28px', color: C.textPrimary }}>{t("تفاصيل الطلب")}</h2>
                 </div>
 
                 {/* Items List */}
                 <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
                     {state.cart.length === 0 ? (
                         <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, fontSize: '20px' }}>
-                            بانتظار طلبكم...
+                            {t("بانتظار طلبكم...")}
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -106,7 +108,7 @@ export default function CustomerDisplayPage() {
                                             </div>
                                             {item.modifiers && Object.entries(item.modifiers).map(([modName, opts]: any) => (
                                                 <div key={modName} style={{ fontSize: '14px', color: C.textSecondary, paddingRight: '12px', borderRight: `2px solid ${C.primary}`, marginBottom: '4px' }}>
-                                                    {opts.map((o: any) => o.name).join('، ')}
+                                                    {opts.map((o: any) => o.name).join(t("، "))}
                                                 </div>
                                             ))}
                                         </div>
@@ -123,18 +125,18 @@ export default function CustomerDisplayPage() {
                 {/* Totals Area */}
                 <div style={{ padding: '30px', background: C.bg, borderTop: `1px solid ${C.border}` }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: C.textSecondary, fontSize: '20px' }}>
-                        <span>المجموع الفرعي:</span>
+                        <span>{t("المجموع الفرعي:")}</span>
                         <span>{fMoney(state.subtotal)}</span>
                     </div>
                     {state.hasTax && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: C.textSecondary, fontSize: '20px' }}>
-                            <span>الضريبة ({state.taxRate}%){state.isTaxInclusive && ' (شامل)'}:</span>
+                            <span>{t("الضريبة (")}{state.taxRate}%){state.isTaxInclusive && t(" (شامل)")}:</span>
                             <span>{!state.isTaxInclusive && '+ '}{fMoney(state.taxAmount)}</span>
                         </div>
                     )}
                     {(state.discount > 0 || state.couponDiscount > 0) && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', color: C.danger, fontSize: '20px' }}>
-                            <span>الخصم:</span>
+                            <span>{t("الخصم:")}</span>
                             <span>-{fMoney(state.discount + state.couponDiscount)}</span>
                         </div>
                     )}
@@ -142,7 +144,7 @@ export default function CustomerDisplayPage() {
                     <div style={{ height: '1px', background: C.border, margin: '20px 0' }}></div>
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '28px', fontWeight: 'bold', color: C.textPrimary }}>الإجمالي:</span>
+                        <span style={{ fontSize: '28px', fontWeight: 'bold', color: C.textPrimary }}>{t("الإجمالي:")}</span>
                         <span style={{ fontSize: '40px', fontWeight: '900', color: C.primary }}>{fMoney(state.total)}</span>
                     </div>
                 </div>

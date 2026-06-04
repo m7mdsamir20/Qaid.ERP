@@ -512,8 +512,8 @@ export default function ItemsPage() {
 
                 {isRtl && isRestaurant && (
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
-                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>الوجبات (المنيو)</button>
-                        <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>المواد الخام (المخزون)</button>
+                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الوجبات (المنيو)")}</button>
+                        <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("المواد الخام (المخزون)")}</button>
                     </div>
                 )}
 
@@ -760,7 +760,7 @@ export default function ItemsPage() {
                                                                     const newV = [...form.variants];
                                                                     newV[i].name = e.target.value;
                                                                     setForm({...form, variants: newV});
-                                                                }} placeholder="مثال: وسط، كبير..." style={{ ...IS, height: '32px', fontSize: '12px' }} required />
+                                                                }} placeholder={t("مثال: وسط، كبير...")} style={{ ...IS, height: '32px', fontSize: '12px' }} required />
                                                             </div>
                                                             <div>
                                                                 <label style={{ ...LS, fontSize: '10px' }}>{t('سعر البيع')} <span style={{ color: C.danger }}>*</span></label>
@@ -823,14 +823,14 @@ export default function ItemsPage() {
                                                                                             const newV = [...form.variants];
                                                                                             newV[i].recipeItems[riIdx].quantity = Number(e.target.value);
                                                                                             setForm({...form, variants: newV});
-                                                                                        }} placeholder="الكمية" style={{ ...IS, height: '36px', fontSize: '11px', fontFamily: OUTFIT }} required />
+                                                                                        }} placeholder={t("الكمية")} style={{ ...IS, height: '36px', fontSize: '11px', fontFamily: OUTFIT }} required />
                                                                                     </div>
                                                                                     <div style={{ width: '50px' }}>
                                                                                         <input value={ri.unit} onChange={e => {
                                                                                             const newV = [...form.variants];
                                                                                             newV[i].recipeItems[riIdx].unit = e.target.value;
                                                                                             setForm({...form, variants: newV});
-                                                                                        }} placeholder="الوحدة" style={{ ...IS, height: '36px', fontSize: '11px' }} />
+                                                                                        }} placeholder={t("الوحدة")} style={{ ...IS, height: '36px', fontSize: '11px' }} />
                                                                                     </div>
                                                                                     <button type="button" onClick={() => {
                                                                                         const newV = [...form.variants];
@@ -897,7 +897,7 @@ export default function ItemsPage() {
                                                                 const newRI = [...form.recipeItems];
                                                                 newRI[i].unit = e.target.value;
                                                                 setForm({...form, recipeItems: newRI});
-                                                            }} placeholder="جم" style={{ ...IS, height: '38px', fontSize: '12px' }} />
+                                                            }} placeholder={t("جم")} style={{ ...IS, height: '38px', fontSize: '12px' }} />
                                                         </div>
                                                         <button type="button" onClick={() => {
                                                             const newRI = form.recipeItems.filter((_, idx) => idx !== i);

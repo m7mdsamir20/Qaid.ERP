@@ -87,7 +87,7 @@ export default function PurchasesReportPage() {
         const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
         return code.includes(q.toUpperCase()) ||
             String(inv.invoiceNumber).includes(q) ||
-            (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
+            (inv.supplier?.name || t("مورد نقدي")).toLowerCase().includes(q.toLowerCase());
     }) : [];
 
     const columns: TableColumn[] = [
