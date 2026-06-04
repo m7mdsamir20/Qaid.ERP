@@ -55,9 +55,9 @@ export default function ClientsSuppliersBalancesPage() {
             })
             .then(d => {
                 if (d && Array.isArray(d.data)) setResult(d);
-                else setError('استجابة غير متوقعة من الخادم');
+                else setError(t("استجابة غير متوقعة من الخادم"));
             })
-            .catch(() => setError('فشل تحميل بيانات الأرصدة، يرجى المحاولة لاحقاً'))
+            .catch(() => setError(t("فشل تحميل بيانات الأرصدة، يرجى المحاولة لاحقاً")))
             .finally(() => setLoading(false));
     }, []);
 
@@ -105,7 +105,7 @@ export default function ClientsSuppliersBalancesPage() {
                 else maden = Math.abs(p.balance);
             }
             return {
-                [t('النوع')]: p.type === 'عميل' ? t('عميل') : t('مورد'),
+                [t('النوع')]: p.type === t("عميل") ? t('عميل') : t('مورد'),
                 [t('الاسم')]: p.name,
                 [t('الهاتف')]: p.phone || '—',
                 [t('مدين (عليه)')]: maden,

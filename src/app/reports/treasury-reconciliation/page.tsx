@@ -409,8 +409,8 @@ export default function TreasuryReconciliationPage() {
                                                     </div>
                                                 </div>
                                                 <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                                                    {snap.totalShortage > 0 && <span style={{ fontSize: '12px', color: DC, fontWeight: 600, fontFamily: CAIRO }}>عجز: {formatNumber(snap.totalShortage)} {sym}</span>}
-                                                    {snap.totalSurplus > 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO }}>زيادة: {formatNumber(snap.totalSurplus)} {sym}</span>}
+                                                    {snap.totalShortage > 0 && <span style={{ fontSize: '12px', color: DC, fontWeight: 600, fontFamily: CAIRO }}>{t("عجز:")} {formatNumber(snap.totalShortage)} {sym}</span>}
+                                                    {snap.totalSurplus > 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO }}>{t("زيادة:")} {formatNumber(snap.totalSurplus)} {sym}</span>}
                                                     {snap.totalShortage === 0 && snap.totalSurplus === 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle2 size={14} /> {t('مطابق تماماً')}</span>}
                                                     <span style={{ fontSize: '11px', color: C.primary, fontWeight: 700, fontFamily: CAIRO }}>{t('عرض التفاصيل')} ◄</span>
                                                 </div>

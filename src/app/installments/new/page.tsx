@@ -602,7 +602,7 @@ const handleAddToCart = () => {
                                 <div style={{ gridColumn: 'span 2', animation: 'fadeIn 0.3s', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}` }}>
                                     <label style={{ ...LS, fontSize: '11px', color: C.primary, marginBottom: '10px', display: 'block', fontWeight: 600 }}>{t('حدد الشهور النشطة للتحصيل:')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
-                                        {['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'].map((m, i) => {
+                                        {[t("يناير"), t("فبراير"), t("مارس"), t("أبريل"), t("مايو"), t("يونيو"), t("يوليو"), t("أغسطس"), t("سبتمبر"), t("أكتوبر"), t("نوفمبر"), t("ديسمبر")].map((m, i) => {
                                             const monthNum = i + 1;
                                             const isActive = form.activeMonths.includes(monthNum);
                                             return (

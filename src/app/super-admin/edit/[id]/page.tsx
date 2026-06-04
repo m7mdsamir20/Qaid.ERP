@@ -228,25 +228,25 @@ export default function EditCompanyPage() {
 
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
-                    section.title = 'فواتير الخدمات';
+                    section.title = t("فواتير الخدمات");
                     section.links = section.links.filter((l: any) => l.id !== '/coupons').map((l: any) => {
-                        if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
-                        if (l.label === 'مرتجع مبيعات') return { ...l, label: 'مرتجع خدمات' };
+                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t("فواتير الخدمات") };
+                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t("مرتجع خدمات") };
                         return l;
                     });
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'الخدمات';
+                    section.title = t("الخدمات");
                     section.links = section.links.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
-                        if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
+                        if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
+                        if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
                         return l;
                     });
                 }
                 if (section.featureKey === 'reports') {
                     section.links = section.links.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الخدمات والمشتريات' };
-                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير الخدمات' };
+                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الخدمات والمشتريات") };
+                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير الخدمات") };
                         return l;
                     });
                 }
@@ -261,21 +261,21 @@ export default function EditCompanyPage() {
 
             if (form.businessType === 'RESTAURANTS') {
                 if (section.featureKey === 'sales') {
-                    section.title = 'العملاء والتسويق';
+                    section.title = t("العملاء والتسويق");
                     section.links = section.links.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'المنيو والمخزون';
+                    section.title = t("المنيو والمخزون");
                     section.links = section.links.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: 'أصناف المنيو' };
-                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المنيو' };
+                        if (l.id === '/items') return { ...l, label: t("أصناف المنيو") };
+                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المنيو") };
                         return l;
                     });
                 }
-                if (section.featureKey === 'purchases') section.title = 'المشتريات والموردين';
+                if (section.featureKey === 'purchases') section.title = t("المشتريات والموردين");
                 if (section.featureKey === 'reports') {
                     section.links = section.links.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير الكاشير والمبيعات' };
+                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
                         return l;
                     });
                 }
@@ -375,7 +375,7 @@ export default function EditCompanyPage() {
 
     const handleSubmit = async () => {
         if (form.newPassword && form.newPassword !== form.newPasswordConfirm) {
-            alert('كلمات المرور غير متطابقة'); return;
+            alert(t("كلمات المرور غير متطابقة")); return;
         }
         setSubmitting(true);
         try {
@@ -410,16 +410,16 @@ export default function EditCompanyPage() {
                 router.push('/super-admin');
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل التحديث');
+                alert(d.error || t("فشل التحديث"));
             }
         } finally { setSubmitting(false); }
     };
 
     const steps = [
-        { num: 1, label: 'بيانات الشركة', icon: <Building2 size={16} /> },
-        { num: 2, label: 'مدير النظام', icon: <User size={16} /> },
-        { num: 3, label: 'الاشتراك', icon: <CreditCard size={16} /> },
-        { num: 4, label: 'الصلاحيات', icon: <Shield size={16} /> },
+        { num: 1, label: t("بيانات الشركة"), icon: <Building2 size={16} /> },
+        { num: 2, label: t("مدير النظام"), icon: <User size={16} /> },
+        { num: 3, label: t("الاشتراك"), icon: <CreditCard size={16} /> },
+        { num: 4, label: t("الصلاحيات"), icon: <Shield size={16} /> },
     ];
 
     if (loading) return (
@@ -438,16 +438,16 @@ export default function EditCompanyPage() {
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', fontSize: '13.5px', fontWeight: 700, transition: 'all 0.2s' }}
                         onMouseEnter={e => e.currentTarget.style.color = C.textPrimary}
                         onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}>
-                        {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />} العودة للوحة التحكم
+                        {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />} {t("العودة للوحة التحكم")}
                     </button>
                     <span style={{ color: C.border, height: '20px', width: '1px', background: C.border }} />
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>تعديل حساب: {form.name}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{t("تعديل حساب:")} {form.name}</span>
                 </div>
 
                 <button onClick={() => setForm(f => ({ ...f, isActive: !f.isActive }))}
                     style={{ display: 'flex', alignItems: 'center', gap: '10px', height: '38px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${form.isActive ? C.success + '40' : C.danger + '40'}`, background: form.isActive ? C.success + '08' : C.danger + '08', color: form.isActive ? C.success : C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'currentColor', boxShadow: `0 0 10px ${form.isActive ? C.success : C.danger}` }} />
-                    {form.isActive ? 'الحساب نشط' : 'الحساب معطّل'}
+                    {form.isActive ? t("الحساب نشط") : t("الحساب معطّل")}
                 </button>
             </div>
 
@@ -487,48 +487,48 @@ export default function EditCompanyPage() {
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={24} />
                             </div>
-                            البيانات الأساسية للشركة
+                            {t("البيانات الأساسية للشركة")}
                         </h2>
                         <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                             <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
-                                <label style={LS}>اسم الشركة (بالعربية) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t("اسم الشركة (بالعربية)")} <span style={{ color: C.danger }}>*</span></label>
                                 <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>الاسم بالإنجليزية</label>
+                                <label style={LS}>{t("الاسم بالإنجليزية")}</label>
                                 <input type="text" value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>رقم هاتف الشركة</label>
+                                <label style={LS}>{t("رقم هاتف الشركة")}</label>
                                 <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>البريد الإلكتروني للشركة</label>
+                                <label style={LS}>{t("البريد الإلكتروني للشركة")}</label>
                                 <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>العنوان</label>
+                                <label style={LS}>{t("العنوان")}</label>
                                 <input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t("الدولة")} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect 
                                     value={form.countryCode}
                                     onChange={val => setForm(f => ({ ...f, countryCode: val }))}
                                     options={COUNTRIES}
-                                    placeholder="اختر الدولة..."
+                                    placeholder={t("اختر الدولة...")}
                                     icon={Globe}
                                     maxHeight="160px"
                                     openUp={true}
                                 />
                             </div>
                             <div>
-                                <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t("نوع النشاط")} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect 
                                     value={form.businessType}
                                     onChange={val => setForm(f => ({ ...f, businessType: val }))}
                                     options={BUSINESS_TYPES.map(b => ({ value: b.value, label: b.label }))}
-                                    placeholder="اختر النشاط..."
+                                    placeholder={t("اختر النشاط...")}
                                     icon={Activity}
                                     maxHeight="160px"
                                     openUp={true}
@@ -536,9 +536,9 @@ export default function EditCompanyPage() {
                             </div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '36px' }}>
-                            <button onClick={() => { if (!form.name.trim()) { alert('اسم الشركة مطلوب'); return; } setStep(2); }}
+                            <button onClick={() => { if (!form.name.trim()) { alert(t("اسم الشركة مطلوب")); return; } setStep(2); }}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '50px', borderRadius: '14px' }}>
-                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
+                                {t("التالي")} {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>
@@ -551,34 +551,34 @@ export default function EditCompanyPage() {
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.blue}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <UserCircle size={24} />
                             </div>
-                            بيانات مدير النظام
+                            {t("بيانات مدير النظام")}
                         </h2>
                         <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textSecondary, fontWeight: 500 }}>
-                            يمكنك تحديث بيانات التواصل أو تغيير كلمة مرور المدير من هنا
+                            {t("يمكنك تحديث بيانات التواصل أو تغيير كلمة مرور المدير من هنا")}
                         </p>
 
                         <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                             <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
-                                <label style={LS}>اسم المدير</label>
+                                <label style={LS}>{t("اسم المدير")}</label>
                                 <input type="text" value={form.adminName} onChange={e => setForm(f => ({ ...f, adminName: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>البريد الإلكتروني للمدير</label>
+                                <label style={LS}>{t("البريد الإلكتروني للمدير")}</label>
                                 <input type="email" value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>رقم هاتف المدير</label>
+                                <label style={LS}>{t("رقم هاتف المدير")}</label>
                                 <input type="tel" value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="tel" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
 
                             <div style={{ gridColumn: 'span 2', height: '1px', background: C.border, margin: '10px 0' }} className="full-width-mobile" />
 
                             <div>
-                                <label style={LS}>كلمة مرور جديدة (اختياري)</label>
+                                <label style={LS}>{t("كلمة مرور جديدة (اختياري)")}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type={showPassword ? 'text' : 'password'}
-                                        placeholder="اتركها فارغة للإبقاء"
+                                        placeholder={t("اتركها فارغة للإبقاء")}
                                         value={form.newPassword}
                                         onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
                                         onFocus={focusIn} onBlur={focusOut}
@@ -591,27 +591,27 @@ export default function EditCompanyPage() {
                                 </div>
                             </div>
                             <div>
-                                <label style={LS}>تأكيد كلمة المرور</label>
+                                <label style={LS}>{t("تأكيد كلمة المرور")}</label>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
-                                    placeholder="أعد كتابة كلمة المرور"
+                                    placeholder={t("أعد كتابة كلمة المرور")}
                                     value={form.newPasswordConfirm}
                                     onChange={e => setForm(f => ({ ...f, newPasswordConfirm: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT, borderColor: form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm ? C.danger : undefined }}
                                 />
                                 {form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm && (
-                                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700 }}>كلمات المرور غير متطابقة</p>
+                                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700 }}>{t("كلمات المرور غير متطابقة")}</p>
                                 )}
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '36px' }}>
                             <button onClick={() => setStep(1)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}>
-                                السابق
+                                {t("السابق")}
                             </button>
                             <button onClick={() => setStep(3)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
+                                {t("التالي")} {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>
@@ -624,11 +624,11 @@ export default function EditCompanyPage() {
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.warning}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.warning }}>
                                 <CreditCard size={24} />
                             </div>
-                            بيانات الاشتراك والحدود
+                            {t("بيانات الاشتراك والحدود")}
                         </h2>
 
                         <div style={{ marginBottom: '28px' }}>
-                            <label style={LS}>نوع الباقة</label>
+                            <label style={LS}>{t("نوع الباقة")}</label>
                             <div className="responsive-grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px' }}>
                                 {Object.entries(PLANS).map(([key, p]) => (
                                     <button key={key} type="button" onClick={() => {
@@ -639,7 +639,7 @@ export default function EditCompanyPage() {
                                     }}
                                         style={{ height: '60px', borderRadius: '14px', border: `1px solid ${form.plan === key ? p.color + '60' : C.border}`, background: form.plan === key ? p.color + '12' : 'transparent', color: form.plan === key ? p.color : C.textSecondary, fontSize: '13.5px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
                                         {p.label}
-                                        {p.days > 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{p.days} يوم</span>}
+                                        {p.days > 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{p.days} {t("يوم")}</span>}
                                     </button>
                                 ))}
                             </div>
@@ -647,34 +647,34 @@ export default function EditCompanyPage() {
 
                         <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px', marginBottom: '24px' }}>
                             <div>
-                                <label style={LS}>تاريخ البداية</label>
+                                <label style={LS}>{t("تاريخ البداية")}</label>
                                 <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>تاريخ الانتهاء</label>
+                                <label style={LS}>{t("تاريخ الانتهاء")}</label>
                                 <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>أقصى عدد مستخدمين</label>
+                                <label style={LS}>{t("أقصى عدد مستخدمين")}</label>
                                 <input type="number" min="1" value={form.maxUsers} onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: OUTFIT }} />
                             </div>
                             <div>
-                                <label style={LS}>عدد الفروع المسموح</label>
+                                <label style={LS}>{t("عدد الفروع المسموح")}</label>
                                 <input type="number" min="1" value={form.maxBranches} onChange={e => setForm(f => ({ ...f, maxBranches: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: OUTFIT }} />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '28px' }}>
-                            <label style={LS}>ملاحظات السوبر أدمن</label>
-                            <input type="text" placeholder="أدخل أي ملاحظات حول هذا الحساب..." value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={IS} />
+                            <label style={LS}>{t("ملاحظات السوبر أدمن")}</label>
+                            <input type="text" placeholder={t("أدخل أي ملاحظات حول هذا الحساب...")} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={IS} />
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
                             <button onClick={() => setStep(2)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
-                                السابق
+                                {t("السابق")}
                             </button>
                             <button onClick={() => setStep(4)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي — الصلاحيات {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
+                                {t("التالي — الصلاحيات")} {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>
@@ -689,16 +689,16 @@ export default function EditCompanyPage() {
                                     <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                         <Shield size={24} />
                                     </div>
-                                    تعديل الصلاحيات والمزايا
+                                    {t("تعديل الصلاحيات والمزايا")}
                                 </h2>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button onClick={() => setForm(f => ({ ...f, features: buildAllFeatures() }))}
                                         style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.success}30`, background: `${C.success}10`, color: C.success, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                                        تحديد الكل
+                                        {t("تحديد الكل")}
                                     </button>
                                     <button onClick={() => setForm(f => ({ ...f, features: {} }))}
                                         style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.danger}30`, background: `${C.danger}10`, color: C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
-                                        إلغاء الكل
+                                        {t("إلغاء الكل")}
                                     </button>
                                 </div>
                             </div>
@@ -725,7 +725,7 @@ export default function EditCompanyPage() {
                                                         {section.title}
                                                     </span>
                                                     {isCore ? (
-                                                        <span style={{ fontSize: '10px', color: C.success, background: `${C.success}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: CAIRO }}>أساسي</span>
+                                                        <span style={{ fontSize: '10px', color: C.success, background: `${C.success}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t("أساسي")}</span>
                                                     ) : (
                                                         <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
                                                             {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
@@ -761,7 +761,7 @@ export default function EditCompanyPage() {
                         {/* ملخص سفلي للاختيارات */}
                         <div style={{ background: `${C.primary}05`, border: `1px solid ${C.primary}15`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px' }}>
                             <div style={{ fontSize: '13px', color: C.primary, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Activity size={16} /> الموديولات المفعلة حالياً
+                                <Activity size={16} /> {t("الموديولات المفعلة حالياً")}
                             </div>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                 {Object.entries(form.features).map(([key, pages]) => {
@@ -774,20 +774,20 @@ export default function EditCompanyPage() {
                                     );
                                 })}
                                 {Object.values(form.features).flat().length === 0 && (
-                                    <span style={{ fontSize: '12px', color: C.textSecondary }}>لم يتم اختيار أي صلاحيات بعد</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary }}>{t("لم يتم اختيار أي صلاحيات بعد")}</span>
                                 )}
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
                             <button onClick={() => setStep(3)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
-                                السابق
+                                {t("السابق")}
                             </button>
                             <button onClick={handleSubmit} disabled={submitting}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 48px', height: '52px', borderRadius: '16px', boxShadow: submitting ? 'none' : `0 10px 25px -5px ${C.primary}50` }}>
                                 {submitting
-                                    ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحفظ...</>
-                                    : <><Check size={18} /> حفظ جميع التعديلات</>
+                                    ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t("جاري الحفظ...")}</>
+                                    : <><Check size={18} /> {t("حفظ جميع التعديلات")}</>
                                 }
                             </button>
                         </div>

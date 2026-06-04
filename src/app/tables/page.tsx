@@ -42,7 +42,7 @@ export default function TablesPage() {
     };
 
     const handleSave = async () => {
-        if (!form.name.trim()) { setError('اسم الطاولة مطلوب'); return; }
+        if (!form.name.trim()) { setError(t("اسم الطاولة مطلوب")); return; }
         setSaving(true);
         const res = await fetch('/api/restaurant/tables', {
             method: editItem ? 'PUT' : 'POST',
@@ -82,10 +82,10 @@ export default function TablesPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي الطاولات', count: counts.all, color: C.primary, icon: <Table2 size={18} /> },
-                        { label: 'الطاولات المتاحة', count: counts.available, color: '#10b981', icon: <CheckCircle2 size={18} /> },
-                        { label: 'الطاولات المشغولة', count: counts.occupied, color: '#f59e0b', icon: <Users size={18} /> },
-                        { label: 'تنتظر حساب', count: counts.waiting_bill, color: '#ef4444', icon: <Receipt size={18} /> }
+                        { label: t("إجمالي الطاولات"), count: counts.all, color: C.primary, icon: <Table2 size={18} /> },
+                        { label: t("الطاولات المتاحة"), count: counts.available, color: '#10b981', icon: <CheckCircle2 size={18} /> },
+                        { label: t("الطاولات المشغولة"), count: counts.occupied, color: '#f59e0b', icon: <Users size={18} /> },
+                        { label: t("تنتظر حساب"), count: counts.waiting_bill, color: '#ef4444', icon: <Receipt size={18} /> }
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -99,7 +99,7 @@ export default function TablesPage() {
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.count}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>طاولة</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{t("طاولة")}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -110,7 +110,7 @@ export default function TablesPage() {
                 </div>
 
                 <div className="filter-bar" style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
-                    {[{ value: '', label: 'الكل' }, ...TABLE_STATUSES].map(s => (
+                    {[{ value: '', label: t("الكل") }, ...TABLE_STATUSES].map(s => (
                         <button key={s.value} onClick={() => setFilterStatus(s.value)}
                             style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : 'transparent', color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
                             {s.label}
@@ -134,7 +134,7 @@ export default function TablesPage() {
                                     <div>
                                         <p style={{ margin: '0 0 2px', fontSize: '15px', fontWeight: 700, color: C.textPrimary }}>{table.name}</p>
                                         {table.section && <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted }}>{table.section}</p>}
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '12px' }}><Users size={12} /> {table.capacity} أشخاص</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '12px' }}><Users size={12} /> {table.capacity} {t("أشخاص")}</div>
                                     </div>
                                     <div style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '8px', padding: '4px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color, textAlign: 'center' }}>{st.label}</div>
                                     <CustomSelect

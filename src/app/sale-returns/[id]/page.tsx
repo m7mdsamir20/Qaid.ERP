@@ -50,7 +50,7 @@ export default function SaleReturnDetailsPage() {
 
             if (!retRes.ok) {
                 const err = await retRes.json();
-                throw new Error(err.error || 'فشل في تحميل المرتجع');
+                throw new Error(err.error || t("فشل في تحميل المرتجع"));
             }
 
             const data = await retRes.json();
@@ -100,7 +100,7 @@ export default function SaleReturnDetailsPage() {
                                 border: '1px solid var(--border-color)',
                                 cursor: 'pointer'
                             }}
-                            title="العودة"
+                            title={t("العودة")}
                         >
                             {isRtl ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
                         </button>

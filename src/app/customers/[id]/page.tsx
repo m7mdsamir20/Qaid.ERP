@@ -36,14 +36,14 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
             const res = await fetch(url);
             if (!res.ok) {
                 const e = await res.json();
-                setError(e.error || 'فشل جلب كشف الحساب');
+                setError(e.error || t("فشل جلب كشف الحساب"));
             } else {
                 const d = await res.json();
                 setData(d);
                 setError('');
             }
         } catch {
-            setError('خطأ في الاتصال بالخادم');
+            setError(t("خطأ في الاتصال بالخادم"));
         } finally {
             setLoading(false);
         }

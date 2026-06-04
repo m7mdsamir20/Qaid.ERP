@@ -131,10 +131,10 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
     };
 
     const orderTypeMap: Record<string, string> = {
-        'dine-in': '🪑 صالة',
-        'takeaway': '📦 تيك أواي',
-        'delivery': '🚚 توصيل',
-        'online': '🌐 أونلاين'
+        'dine-in': t("🪑 صالة"),
+        'takeaway': t("📦 تيك أواي"),
+        'delivery': t("🚚 توصيل"),
+        'online': t("🌐 أونلاين")
     };
 
     return (
@@ -309,8 +309,8 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                             f.type === 'select-policy' ? (
                                                 <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
                                                     {[
-                                                        { v: 'pre-pay', l: 'الدفع مقدماً (فاست فود)' },
-                                                        { v: 'post-pay', l: 'الدفع بعد الأكل (مطعم كلاسيكي)' },
+                                                        { v: 'pre-pay', l: t("الدفع مقدماً (فاست فود)") },
+                                                        { v: 'post-pay', l: t("الدفع بعد الأكل (مطعم كلاسيكي)") },
                                                     ].map(opt => (
                                                         <button
                                                             key={opt.v}
@@ -336,10 +336,10 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                             ) : (
                                                 <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
                                                     {[
-                                                        { v: 'dine-in', l: '🪑 صالة' },
-                                                        { v: 'takeaway', l: '📦 تيك أواي' },
-                                                        { v: 'delivery', l: '🚚 توصيل' },
-                                                        { v: 'online', l: '🌐 أونلاين' },
+                                                        { v: 'dine-in', l: t("🪑 صالة") },
+                                                        { v: 'takeaway', l: t("📦 تيك أواي") },
+                                                        { v: 'delivery', l: t("🚚 توصيل") },
+                                                        { v: 'online', l: t("🌐 أونلاين") },
                                                     ].map(opt => (
                                                         <button
                                                             key={opt.v}
@@ -366,7 +366,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                         ) : (
                                             <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '14px 0', fontFamily: CAIRO }}>
                                                 {f.type === 'select-policy' 
-                                                    ? ((form as any)[f.key] === 'pre-pay' ? 'الدفع مقدماً' : 'الدفع بعد الأكل')
+                                                    ? ((form as any)[f.key] === 'pre-pay' ? t("الدفع مقدماً") : t("الدفع بعد الأكل"))
                                                     : orderTypeMap[(form as any)[f.key]] || ''}
                                             </div>
                                         )

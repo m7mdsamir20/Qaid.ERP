@@ -58,7 +58,7 @@ export default function CollectionReportPage() {
     };
 
     const getCurrencyName = (code: string) => {
-        const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+        const map: Record<string, string> = { 'EGP': t("ج.م"), 'SAR': t("ر.س"), 'AED': t("د.إ"), 'USD': '$', 'KWD': t("د.ك"), 'QAR': t("ر.ق"), 'BHD': t("د.ب"), 'OMR': t("ر.ع"), 'JOD': t("د.أ") };
         return map[code] || code;
     };
 
@@ -129,18 +129,18 @@ export default function CollectionReportPage() {
                 `}</style>
                 
                 <ReportHeader
-                    title="تقرير تحصيل الأقساط"
-                    subtitle="متابعة المبالغ التي تم تحصيلها من العملاء خلال فترة زمنية"
+                    title={t("تقرير تحصيل الأقساط")}
+                    subtitle={t("متابعة المبالغ التي تم تحصيلها من العملاء خلال فترة زمنية")}
                     backTab="installments"
-                    printTitle={data && (data.installments?.length || 0) > 0 ? "تقرير تحصيل الأقساط" : undefined}
+                    printTitle={data && (data.installments?.length || 0) > 0 ? t("تقرير تحصيل الأقساط") : undefined}
                     printDate={`${form.from} — ${form.to}`}
-                    printLabel="الفترة:"
+                    printLabel={t("الفترة:")}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t("من:")}</span>
                     <div className="date-input-wrapper" style={{ width: '170px' }}>
-                        <span className="date-label-mobile" style={{ display: 'none' }}>من:</span>
+                        <span className="date-label-mobile" style={{ display: 'none' }}>{t("من:")}</span>
                         <input type="date" value={form.from}
                             onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
                             style={{
@@ -150,9 +150,9 @@ export default function CollectionReportPage() {
                             }}
                         />
                     </div>
-                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                    <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t("إلى:")}</span>
                     <div className="date-input-wrapper" style={{ width: '170px' }}>
-                        <span className="date-label-mobile" style={{ display: 'none' }}>إلى:</span>
+                        <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى:")}</span>
                         <input type="date" value={form.to}
                             onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
                             style={{
@@ -170,7 +170,7 @@ export default function CollectionReportPage() {
                         boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                     }}>
                         {loading ? <span className="animate-spin">⌛</span> : <Search size={16} />}
-                        عرض التقرير
+                        {t("عرض التقرير")}
                     </button>
                 </div>
 
@@ -180,7 +180,7 @@ export default function CollectionReportPage() {
                     {!loading && !data && (
                         <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                             <BarChart3 size={60} style={{ color: C.textSecondary }} />
-                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>قم باختيار الفترة ثم اضغط على عرض التقرير</p>
+                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t("قم باختيار الفترة ثم اضغط على عرض التقرير")}</p>
                         </div>
                     )}
 
@@ -190,11 +190,11 @@ export default function CollectionReportPage() {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
                                     <div style={{ textAlign: 'center'}}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
-                                        {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
+                                        {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t("الرقم الضريبي:")} {session?.user?.taxNumber}</div>}
                                     </div>
                                     <div style={{ textAlign: 'center'}}>
-                                        <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>تقرير تحصيل الأقساط</h3>
-                                        <div style={{ fontSize: '11px', color: '#000', fontFamily: CAIRO }}>من: {form.from} إلى: {form.to}</div>
+                                        <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{t("تقرير تحصيل الأقساط")}</h3>
+                                        <div style={{ fontSize: '11px', color: '#000', fontFamily: CAIRO }}>{t("من:")} {form.from} {t("إلى:")} {form.to}</div>
                                     </div>
                                     <div style={{ maxWidth: '150px', textAlign: 'center'}}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
@@ -205,9 +205,9 @@ export default function CollectionReportPage() {
                             {/* ── KPI Cards (Fixed Assets Style) ── */}
                             <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
                                 {[
-                                    { label: 'إجمالي المحصل', value: fmtN(data.total || 0), color: '#10b981', icon: <CheckCircle2 size={18} /> },
-                                    { label: 'عدد الأقساط', value: data.installments?.length || 0, color: '#256af4', icon: <Calendar size={18} /> },
-                                    { label: 'متوسط التحصيل', value: fmtN((data.total || 0) / (data.installments?.length || 1)), color: '#f59e0b', icon: <BarChart3 size={18} /> },
+                                    { label: t("إجمالي المحصل"), value: fmtN(data.total || 0), color: '#10b981', icon: <CheckCircle2 size={18} /> },
+                                    { label: t("عدد الأقساط"), value: data.installments?.length || 0, color: '#256af4', icon: <Calendar size={18} /> },
+                                    { label: t("متوسط التحصيل"), value: fmtN((data.total || 0) / (data.installments?.length || 1)), color: '#f59e0b', icon: <BarChart3 size={18} /> },
                                 ].map((s, i) => (
                                     <div key={i} style={{
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',

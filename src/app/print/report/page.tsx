@@ -1,10 +1,12 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
 import { getStoredLang } from '@/lib/i18n';
 import { CAIRO } from '@/constants/theme';
 
 export default function PrintReportPage() {
+    const { t } = useTranslation();
     const [html, setHtml] = useState('');
     const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
@@ -15,14 +17,14 @@ export default function PrintReportPage() {
     const isRtl = lang === 'ar';
 
     const ui = {
-        loading: isRtl ? 'جاري تحميل التقرير...' : 'Loading report...',
-        empty: isRtl ? 'لا يوجد تقرير للعرض' : 'No report to display',
-        print: isRtl ? 'طباعة' : 'Print',
-        download: isRtl ? 'تنزيل PDF' : 'Download PDF',
-        downloading: isRtl ? 'جاري التحميل...' : 'Downloading...',
-        close: isRtl ? 'إغلاق' : 'Close',
-        pdfError: isRtl ? 'فشل تحميل PDF' : 'PDF download failed',
-        defaultTitle: isRtl ? 'تقرير' : 'Report',
+        loading: isRtl ? t("جاري تحميل التقرير...") : 'Loading report...',
+        empty: isRtl ? t("لا يوجد تقرير للعرض") : 'No report to display',
+        print: isRtl ? t("طباعة") : 'Print',
+        download: isRtl ? t("تنزيل PDF") : 'Download PDF',
+        downloading: isRtl ? t("جاري التحميل...") : 'Downloading...',
+        close: isRtl ? t("إغلاق") : 'Close',
+        pdfError: isRtl ? t("فشل تحميل PDF") : 'PDF download failed',
+        defaultTitle: isRtl ? t("تقرير") : 'Report',
     };
 
     useEffect(() => {

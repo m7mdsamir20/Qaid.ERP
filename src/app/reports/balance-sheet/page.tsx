@@ -80,7 +80,7 @@ export default function BalanceSheetPage() {
         const fAlign = isRtl ? 'right' : 'left';
         const bAlign = isRtl ? 'left' : 'right';
         const now = new Date();
-        const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+        const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
         const printDate = now.toLocaleDateString('en-GB');
         const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
         const logo = company.logo || company.companyLogo || '';
@@ -105,9 +105,9 @@ export default function BalanceSheetPage() {
                 <div style="background:#e8e8e8;padding:8px 12px;font-size:13px;font-weight:900;border:1px solid #bbb;border-bottom:none;text-align:${fAlign}">${title}</div>
                 <table style="width:100%;border-collapse:collapse">
                     <thead><tr style="background:#f0f0f0">
-                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الحساب' : 'Account'}</th>
-                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الكود' : 'Code'}</th>
-                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الرصيد' : 'Balance'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? t("الحساب") : 'Account'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? t("الكود") : 'Code'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? t("الرصيد") : 'Balance'}</th>
                     </tr></thead>
                     <tbody>${rowsHTML(items, emptyMsg)}${totalRow(totalLabel, total)}</tbody>
                 </table>
@@ -140,7 +140,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
   <div class="rpt-logo">${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}</div>
   <div class="rpt-title-block">
     <div class="rpt-title">${t('المركز المالي (Balance Sheet)')}</div>
-    <div class="rpt-meta"><span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${printDate} — ${printTime}</b></span></div>
+    <div class="rpt-meta"><span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDate} — ${printTime}</b></span></div>
   </div>
   <div></div>
 </div>

@@ -226,9 +226,9 @@ export default function NewPurchaseReturnPage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.supplierId && !form.customerId) errors.supplierId = 'يرجى اختيار المورد / العميل';
-        if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن';
-        if (!form.originalInvoiceId) errors.originalInvoiceId = 'يرجى اختيار الفاتورة';
+        if (!form.supplierId && !form.customerId) errors.supplierId = t("يرجى اختيار المورد / العميل");
+        if (!form.warehouseId) errors.warehouseId = t("يرجى اختيار المخزن");
+        if (!form.originalInvoiceId) errors.originalInvoiceId = t("يرجى اختيار الفاتورة");
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -236,15 +236,15 @@ export default function NewPurchaseReturnPage() {
         }
 
         if (selectedLines.length === 0) {
-            alert('يرجى تحديد صنف واحد على الأقل للإرجاع'); return;
+            alert(t("يرجى تحديد صنف واحد على الأقل للإرجاع")); return;
         }
         if (form.refundType === 'cash') {
-            if (!form.treasuryId) { setFieldErrors({ treasuryId: 'يرجى اختيار الخزينة' }); return; }
-            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: 'أدخل المبلغ' }); return; }
+            if (!form.treasuryId) { setFieldErrors({ treasuryId: t("يرجى اختيار الخزينة") }); return; }
+            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: t("أدخل المبلغ") }); return; }
         }
         if (form.refundType === 'bank') {
-            if (!form.bankId) { setFieldErrors({ bankId: 'يرجى اختيار الحساب' }); return; }
-            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: 'أدخل المبلغ' }); return; }
+            if (!form.bankId) { setFieldErrors({ bankId: t("يرجى اختيار الحساب") }); return; }
+            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: t("أدخل المبلغ") }); return; }
         }
 
         setSubmitting(true);
@@ -279,8 +279,8 @@ export default function NewPurchaseReturnPage() {
                     printInvoiceDirectly(saved.id)
                 }
                 router.push('/purchase-returns');
-            } else { const err = await res.json(); alert(err.error || 'فشل في الحفظ'); }
-        } catch (err: any) { alert(err.message || 'فشل الاتصال'); }
+            } else { const err = await res.json(); alert(err.error || t("فشل في الحفظ")); }
+        } catch (err: any) { alert(err.message || t("فشل الاتصال")); }
         finally { setSubmitting(false); }
     };
 

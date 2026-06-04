@@ -123,7 +123,7 @@ export default function BarcodePage() {
                     icon={QrCode}
                     actions={[
                         <button key="refresh" onClick={load} style={{ height: '42px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, fontWeight: 600, transition: 'all 0.2s' }}>
-                            <RefreshCw size={16} /> تحديث
+                            <RefreshCw size={16} /> {t("تحديث")}
                         </button>,
                         selected.size > 0 ? (
                             <button key="print" onClick={handlePrint} style={{ ...BTN_PRIMARY(false, false), height: '42px', padding: '0 20px', borderRadius: '10px', gap: '8px', fontSize: '14px', width: 'auto' }}>
@@ -136,9 +136,9 @@ export default function BarcodePage() {
                 {/* Select controls */}
                 {tables.length > 0 && (
                     <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center' }}>
-                        <span style={{ fontSize: '13px', color: C.textSecondary }}>{selected.size} محدد من {tables.length}</span>
-                        <button onClick={selectAll} style={{ fontSize: '12px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO }}>تحديد الكل</button>
-                        {selected.size > 0 && <button onClick={clearAll} style={{ fontSize: '12px', color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>إلغاء التحديد</button>}
+                        <span style={{ fontSize: '13px', color: C.textSecondary }}>{selected.size} {t("محدد من")} {tables.length}</span>
+                        <button onClick={selectAll} style={{ fontSize: '12px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO }}>{t("تحديد الكل")}</button>
+                        {selected.size > 0 && <button onClick={clearAll} style={{ fontSize: '12px', color: C.textMuted, background: 'none', border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>{t("إلغاء التحديد")}</button>}
                     </div>
                 )}
 
@@ -147,7 +147,7 @@ export default function BarcodePage() {
                 ) : tables.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted }}>
                         <QrCode size={48} style={{ opacity: 0.2, display: 'block', margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, fontSize: '15px' }}>لا توجد طاولات — أضف طاولات أولاً من صفحة خريطة الطاولات</p>
+                        <p style={{ margin: 0, fontSize: '15px' }}>{t("لا توجد طاولات — أضف طاولات أولاً من صفحة خريطة الطاولات")}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
@@ -191,11 +191,11 @@ export default function BarcodePage() {
                                     <div style={{ display: 'flex', gap: '6px', marginTop: '12px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
                                         <button onClick={() => handleDownload(table)}
                                             style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '11.5px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontFamily: CAIRO }}>
-                                            <Download size={12} /> تنزيل
+                                            <Download size={12} /> {t("تنزيل")}
                                         </button>
                                         <button onClick={() => { setSelected(new Set([table.id])); setTimeout(handlePrint, 50); }}
                                             style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.primary}40`, background: `${C.primary}10`, color: C.primary, fontSize: '11.5px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontFamily: CAIRO }}>
-                                            <Printer size={12} /> طباعة
+                                            <Printer size={12} /> {t("طباعة")}
                                         </button>
                                     </div>
                                 </div>
@@ -208,10 +208,10 @@ export default function BarcodePage() {
                 <div style={{ marginTop: '32px', background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '16px', padding: '16px 20px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                     <QrCode size={18} color={C.primary} style={{ flexShrink: 0, marginTop: '2px' }} />
                     <div>
-                        <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, marginBottom: '4px' }}>كيف يعمل QR الطاولة؟</p>
+                        <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, marginBottom: '4px' }}>{t("كيف يعمل QR الطاولة؟")}</p>
                         <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, lineHeight: 1.7 }}>
-                            عند مسح الكود، يفتح العميل صفحة الطلب الذاتي على <strong>{baseUrl}/menu/[رقم_المطعم]?table=...</strong><br />
-                            يمكنه تصفح المنيو واختيار الأصناف وإرسال الطلب مباشرة للمطبخ بدون تدخل النادل.
+                            {t("عند مسح الكود، يفتح العميل صفحة الطلب الذاتي على")} <strong>{baseUrl}{t("/menu/[رقم_المطعم]?table=...")}</strong><br />
+                            {t("يمكنه تصفح المنيو واختيار الأصناف وإرسال الطلب مباشرة للمطبخ بدون تدخل النادل.")}
                         </p>
                     </div>
                 </div>

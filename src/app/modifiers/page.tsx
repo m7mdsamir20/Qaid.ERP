@@ -66,9 +66,9 @@ export default function ModifiersPage() {
     const updateOption = (i: number, field: keyof Option, value: any) => setForm(f => ({ ...f, options: f.options.map((o, idx) => idx === i ? { ...o, [field]: value } : o) }));
 
     const handleSave = async () => {
-        if (!form.name.trim()) { setError('اسم الإضافة مطلوب'); return; }
-        if (form.options.length === 0) { setError('أضف خياراً واحداً على الأقل'); return; }
-        if (form.options.some(o => !o.name.trim())) { setError('اسم كل خيار مطلوب'); return; }
+        if (!form.name.trim()) { setError(t("اسم الإضافة مطلوب")); return; }
+        if (form.options.length === 0) { setError(t("أضف خياراً واحداً على الأقل")); return; }
+        if (form.options.some(o => !o.name.trim())) { setError(t("اسم كل خيار مطلوب")); return; }
         setSaving(true);
         const res = await fetch('/api/restaurant/modifiers', { method: editItem ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, id: editItem?.id }) });
         if (!res.ok) { const d = await res.json(); setError(d.error); } else { setShowModal(false); load(); }
@@ -96,7 +96,7 @@ export default function ModifiersPage() {
                 ) : modifiers.length === 0 ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '80px', color: C.textMuted, fontFamily: CAIRO }}>
                         <Settings2 size={40} style={{ opacity: 0.2, display: 'block', margin: '0 auto 12px' }} />
-                        <p style={{ margin: 0 }}>لا توجد إضافات — ابدأ بإضافة مجموعة</p>
+                        <p style={{ margin: 0 }}>{t("لا توجد إضافات — ابدأ بإضافة مجموعة")}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
@@ -124,20 +124,20 @@ export default function ModifiersPage() {
                                             <h3 style={{ margin: '0 0 6px 0', fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{mod.name}</h3>
                                             <div style={{ display: 'flex', gap: '6px' }}>
                                                 {mod.required ? 
-                                                    <span style={{ background: '#ef444415', color: '#ef4444', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>إجباري</span> :
-                                                    <span style={{ background: '#10b98115', color: '#10b981', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>اختياري</span>
+                                                    <span style={{ background: '#ef444415', color: '#ef4444', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t("إجباري")}</span> :
+                                                    <span style={{ background: '#10b98115', color: '#10b981', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t("اختياري")}</span>
                                                 }
                                                 {mod.multiSelect ? 
-                                                    <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>متعدد الاختيار</span> :
-                                                    <span style={{ background: '#f59e0b15', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>خيار واحد</span>
+                                                    <span style={{ background: `${C.primary}15`, color: C.primary, padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t("متعدد الاختيار")}</span> :
+                                                    <span style={{ background: '#f59e0b15', color: '#f59e0b', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t("خيار واحد")}</span>
                                                 }
                                             </div>
                                         </div>
                                     </div>
                                     {/* Actions */}
                                     <div style={{ display: 'flex', gap: '4px' }}>
-                                        <button onClick={() => openModal(mod)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background=C.border} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title="تعديل"><Edit3 size={15} /></button>
-                                        <button onClick={() => handleDelete(mod.id)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.danger, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#ef444415'} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title="حذف"><Trash2 size={15} /></button>
+                                        <button onClick={() => openModal(mod)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background=C.border} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title={t("تعديل")}><Edit3 size={15} /></button>
+                                        <button onClick={() => handleDelete(mod.id)} style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: C.danger, cursor: 'pointer', borderRadius: '8px', transition: 'all 0.2s' }} onMouseEnter={e=>e.currentTarget.style.background='#ef444415'} onMouseLeave={e=>e.currentTarget.style.background='transparent'} title={t("حذف")}><Trash2 size={15} /></button>
                                     </div>
                                 </div>
 
@@ -146,7 +146,7 @@ export default function ModifiersPage() {
 
                                 {/* Options */}
                                 <div>
-                                    <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>الخيارات المتاحة ({mod.options?.length})</p>
+                                    <p style={{ margin: '0 0 12px 0', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t("الخيارات المتاحة (")}{mod.options?.length})</p>
                                     <div className="filter-bar" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                         {mod.options?.map((opt: any) => (
                                             <div key={opt.id} style={{ 
@@ -163,7 +163,7 @@ export default function ModifiersPage() {
                                                 {opt.extraPrice > 0 ? (
                                                     <span style={{ fontSize: '11px', fontFamily: OUTFIT, fontWeight: 800, color: '#10b981', background: '#10b98115', padding: '2px 6px', borderRadius: '4px' }}>+{opt.extraPrice}</span>
                                                 ) : (
-                                                    <span style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, background: C.border, padding: '2px 6px', borderRadius: '4px', fontFamily: CAIRO }}>مجاني</span>
+                                                    <span style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, background: C.border, padding: '2px 6px', borderRadius: '4px', fontFamily: CAIRO }}>{t("مجاني")}</span>
                                                 )}
                                                 {opt.item && (
                                                     <span style={{ fontSize: '11px', color: C.primary, display: 'flex', alignItems: 'center', gap: '4px', borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '8px', fontFamily: CAIRO }}>
@@ -181,14 +181,14 @@ export default function ModifiersPage() {
                 )}
             </div>
 
-            <AppModal show={showModal} onClose={() => setShowModal(false)} title={editItem ? 'تعديل الإضافة' : 'إضافة جديدة'} maxWidth="640px">
+            <AppModal show={showModal} onClose={() => setShowModal(false)} title={editItem ? t("تعديل الإضافة") : t("إضافة جديدة")} maxWidth="640px">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                     {/* اسم المجموعة */}
-                    <div><label style={LS}>اسم المجموعة <span style={{ color: C.danger }}>*</span></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="مثال: درجة النضج" style={IS} /></div>
+                    <div><label style={LS}>{t("اسم المجموعة")} <span style={{ color: C.danger }}>*</span></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t("مثال: درجة النضج")} style={IS} /></div>
 
                     {/* إجباري / متعدد - Toggle Cards */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                        {[{ key: 'required', label: 'إجباري', desc: 'لازم يختار الكاشير', color: '#ef4444' }, { key: 'multiSelect', label: 'اختيار متعدد', desc: 'يقدر يختار أكتر من واحد', color: C.primary }].map(opt => {
+                        {[{ key: 'required', label: t("إجباري"), desc: t("لازم يختار الكاشير"), color: '#ef4444' }, { key: 'multiSelect', label: t("اختيار متعدد"), desc: t("يقدر يختار أكتر من واحد"), color: C.primary }].map(opt => {
                             const isActive = (form as any)[opt.key];
                             return (
                                 <button key={opt.key} type="button" onClick={() => setForm(f => ({ ...f, [opt.key]: !isActive }))}
@@ -219,25 +219,25 @@ export default function ModifiersPage() {
                     {/* الخيارات */}
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                            <label style={LS}>الخيارات <span style={{ color: C.danger }}>*</span></label>
-                            <button onClick={addOption} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: C.primary, background: `${C.primary}10`, border: `1px solid ${C.primary}30`, borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, transition: 'all 0.2s' }}><PlusCircle size={13} /> إضافة خيار</button>
+                            <label style={LS}>{t("الخيارات")} <span style={{ color: C.danger }}>*</span></label>
+                            <button onClick={addOption} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: C.primary, background: `${C.primary}10`, border: `1px solid ${C.primary}30`, borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, transition: 'all 0.2s' }}><PlusCircle size={13} /> {t("إضافة خيار")}</button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                            {form.options.length === 0 && <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, textAlign: 'center', padding: '20px', background: C.bg, borderRadius: '12px', border: `2px dashed ${C.border}`, fontFamily: CAIRO }}>اضغط "إضافة خيار" لإضافة الخيارات</p>}
+                            {form.options.length === 0 && <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, textAlign: 'center', padding: '20px', background: C.bg, borderRadius: '12px', border: `2px dashed ${C.border}`, fontFamily: CAIRO }}>{t("اضغط \"إضافة خيار\" لإضافة الخيارات")}</p>}
                             {form.options.map((opt, i) => (
                                 <div key={i} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '8px 12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <input value={opt.name} onChange={e => updateOption(i, 'name', e.target.value)} placeholder="اسم الخيار" style={{ ...IS, flex: 1.2, height: '38px', fontSize: '12.5px' }} />
+                                    <input value={opt.name} onChange={e => updateOption(i, 'name', e.target.value)} placeholder={t("اسم الخيار")} style={{ ...IS, flex: 1.2, height: '38px', fontSize: '12.5px' }} />
                                     <div style={{ flex: 1.5 }}>
                                         <CustomSelect
                                             value={opt.itemId || ''}
                                             onChange={v => updateOption(i, 'itemId', v || null)}
                                             options={items.map(it => ({ value: it.id, label: it.name }))}
-                                            placeholder="ربط مخزني (اختياري)"
+                                            placeholder={t("ربط مخزني (اختياري)")}
                                             openUp
                                             style={{ height: '38px', minWidth: '0' }}
                                         />
                                     </div>
-                                    <input type="number" min="0" value={opt.extraPrice || ''} onChange={e => updateOption(i, 'extraPrice', Number(e.target.value))} placeholder="+سعر" style={{ ...IS, width: '70px', height: '38px', fontSize: '12.5px', fontFamily: OUTFIT }} />
+                                    <input type="number" min="0" value={opt.extraPrice || ''} onChange={e => updateOption(i, 'extraPrice', Number(e.target.value))} placeholder={t("+سعر")} style={{ ...IS, width: '70px', height: '38px', fontSize: '12.5px', fontFamily: OUTFIT }} />
                                     <button onClick={() => removeOption(i)} style={{ width: 34, height: 34, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={13} /></button>
                                 </div>
                             ))}

@@ -87,7 +87,7 @@ export default function DailyReportPage() {
         const logo = (company as any)?.logo || (company as any)?.companyLogo || '';
         const companyName = (company as any)?.companyName || (company as any)?.name || '';
         const now = new Date();
-        const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+        const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, d => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
         const nowStr = toWesternDigits(now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' }));
         const nowTime = toWesternDigits(now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' }));
 
@@ -112,7 +112,7 @@ export default function DailyReportPage() {
 
         const treasuryRows = (data.treasuries || []).map(tr => `
             <tr>
-                <td style="padding:7px 8px;font-size:11px;font-weight:600;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${tr.name} <span style="font-size:9.5px;color:#555;">(${tr.type === 'bank' ? (isRtl ? 'بنك' : 'Bank') : (isRtl ? 'خزينة' : 'Cash')})</span></td>
+                <td style="padding:7px 8px;font-size:11px;font-weight:600;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${tr.name} <span style="font-size:9.5px;color:#555;">(${tr.type === 'bank' ? (isRtl ? t("بنك") : 'Bank') : (isRtl ? t("خزينة") : 'Cash')})</span></td>
                 <td style="padding:7px 8px;font-size:11px;font-weight:800;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${fmt(tr.balance)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`).join('');
 
@@ -160,9 +160,9 @@ table{width:100%;border-collapse:collapse}
   <div class="rpt-title-block">
     <div class="rpt-title">${t('التقرير اليومي للمبيعات والتحصيلات')}</div>
     <div class="rpt-meta">
-      <span>${isRtl ? 'تاريخ التقرير:' : 'Report Date:'} <b>${printDate}</b></span>
-      ${branchName ? `<span>${isRtl ? 'الفرع:' : 'Branch:'} <b>${branchName}</b></span>` : ''}
-      <span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${nowStr} — ${nowTime}</b></span>
+      <span>${isRtl ? t("تاريخ التقرير:") : 'Report Date:'} <b>${printDate}</b></span>
+      ${branchName ? `<span>${isRtl ? t("الفرع:") : 'Branch:'} <b>${branchName}</b></span>` : ''}
+      <span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${nowStr} — ${nowTime}</b></span>
     </div>
   </div>
   <div></div>
@@ -209,7 +209,7 @@ table{width:100%;border-collapse:collapse}
     <tbody>
       ${treasuryRows}
       <tr style="background:#f5f5f5;border-top:2px solid #999;">
-        <td style="padding:10px 6px;font-size:12px;font-weight:900;text-align:${fAlign};">${isRtl ? 'إجمالي السيولة' : 'Total Liquidity'}</td>
+        <td style="padding:10px 6px;font-size:12px;font-weight:900;text-align:${fAlign};">${isRtl ? t("إجمالي السيولة") : 'Total Liquidity'}</td>
         <td style="padding:10px 6px;font-size:14px;font-weight:900;color:#000;text-align:${bAlign};">${fmt(data.totalCashBalance + data.totalBankBalance)} <span style="font-size:11px;color:#000;">${sym}</span></td>
       </tr>
     </tbody>

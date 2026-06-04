@@ -137,18 +137,18 @@ export default function Sidebar({
             let section = { ...sectionOrigin };
             if (businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
-                    section.title = 'فواتير الخدمات';
+                    section.title = t("فواتير الخدمات");
                     section.links = section.links?.filter((l: any) => l.id !== '/coupons').map((l: any) => {
-                        if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
-                        if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
+                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t("فواتير الخدمات") };
+                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t("إلغاء خدمات / مرتجع") };
                         return l;
                     });
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'الخدمات';
+                    section.title = t("الخدمات");
                     section.links = section.links?.filter((l: any) => !['/warehouses', '/stocktakings', '/warehouse-transfers'].includes(l.id)).map((l: any) => {
-                        if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
-                        if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
+                        if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
+                        if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
                         return l;
                     });
                 }
@@ -168,19 +168,19 @@ export default function Sidebar({
             if (businessType === 'CONTRACTING') {
                 if (section.featureKey === 'installments') return null;
                 if (section.featureKey === 'sales') {
-                    section.title = 'الأعمال والمبيعات';
+                    section.title = t("الأعمال والمبيعات");
                     section.links = section.links?.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id)).map((l: any) => {
-                        if (l.id === '/sales') return { ...l, label: 'فواتير الأعمال والخدمات' };
-                        if (l.id === '/customers') return { ...l, label: 'العملاء / أصحاب المشاريع' };
+                        if (l.id === '/sales') return { ...l, label: t("فواتير الأعمال والخدمات") };
+                        if (l.id === '/customers') return { ...l, label: t("العملاء / أصحاب المشاريع") };
                         return l;
                     });
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'المخازن والمواد';
+                    section.title = t("المخازن والمواد");
                     section.links = section.links?.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: 'المواد والبنود' };
-                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المواد والبنود' };
-                        if (l.id === '/warehouses') return { ...l, label: 'المخازن والمواقع' };
+                        if (l.id === '/items') return { ...l, label: t("المواد والبنود") };
+                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المواد والبنود") };
+                        if (l.id === '/warehouses') return { ...l, label: t("المخازن والمواقع") };
                         return l;
                     });
                 }
@@ -189,9 +189,9 @@ export default function Sidebar({
                 }
                 if (section.featureKey === 'reports' && section.links) {
                     section.links = section.links.filter((l: any) => l.id !== 'reports-installments').map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الأعمال والمبيعات والمشتريات' };
-                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير المواد والمواقع' };
-                        if (l.label === 'العملاء والموردين') return { ...l, label: 'أصحاب المشاريع والموردين' };
+                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الأعمال والمبيعات والمشتريات") };
+                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير المواد والمواقع") };
+                        if (l.label === t("العملاء والموردين")) return { ...l, label: t("أصحاب المشاريع والموردين") };
                         return l;
                     });
                 }
@@ -201,25 +201,25 @@ export default function Sidebar({
                 if (section.featureKey === 'installments') return null;
                 
                 if (section.featureKey === 'sales') {
-                    section.title = 'العملاء والتسويق';
+                    section.title = t("العملاء والتسويق");
                     section.links = section.links?.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'المنيو والمخزون';
+                    section.title = t("المنيو والمخزون");
                     section.links = section.links?.map((l: any) => {
-                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المنيو' };
-                        if (l.id === '/items') return { ...l, label: 'أصناف المنيو' };
-                        if (l.id === '/warehouses') return { ...l, label: 'المخازن والمستودعات' };
+                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المنيو") };
+                        if (l.id === '/items') return { ...l, label: t("أصناف المنيو") };
+                        if (l.id === '/warehouses') return { ...l, label: t("المخازن والمستودعات") };
                         return l;
                     });
                 }
                 if (section.featureKey === 'purchases') {
-                    section.title = 'المشتريات والموردين';
+                    section.title = t("المشتريات والموردين");
                 }
                 if (section.featureKey === 'reports') {
                     section.links = section.links?.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير الكاشير والمبيعات' };
-                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير المخزون والمنيو' };
+                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
+                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير المخزون والمنيو") };
                         return l;
                     });
                 }

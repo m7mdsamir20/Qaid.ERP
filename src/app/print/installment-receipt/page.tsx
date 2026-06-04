@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { generateThermalVoucherHTML } from '@/lib/printInvoices';
@@ -6,6 +7,7 @@ import { Printer, Download, X, Loader2, Receipt } from 'lucide-react';
 import { CAIRO } from '@/constants/theme';
 
 function InstallmentReceiptContent() {
+    const { t } = useTranslation();
     const params        = useSearchParams();
     const [html, setHtml]           = useState('');
     const [loading, setLoading]     = useState(true);
@@ -80,14 +82,14 @@ function InstallmentReceiptContent() {
                 while (remaining > 0) { pos -= ph; pdf.addPage(); pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH); remaining -= ph; }
             }
             pdf.save(`receipt-${planCode}-inst${instNo}.pdf`);
-        } catch (e) { console.error(e); alert('فشل تحميل PDF'); }
+        } catch (e) { console.error(e); alert(t("فشل تحميل PDF")); }
         finally { setDownloading(false); }
     };
 
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', gap: '12px', color: '#fff', fontFamily: CAIRO }}>
             <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
-            <span>جاري إعداد سند القبض...</span>
+            <span>{t("جاري إعداد سند القبض...")}</span>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
     );
@@ -101,22 +103,22 @@ function InstallmentReceiptContent() {
                         <Receipt size={16} />
                     </div>
                     <span style={{ fontFamily: CAIRO, color: '#fff', fontWeight: 700, fontSize: '13px' }}>
-                        سند قبض — <span style={{ color: '#10b981' }}>{planCode}</span> — قسط #{instNo}
+                        {t("سند قبض —")} <span style={{ color: '#10b981' }}>{planCode}</span> {t("— قسط #")}{instNo}
                     </span>
                 </div>
                 <div style={{ marginInlineStart: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <button onClick={handlePrint}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: CAIRO, fontSize: '13px', fontWeight: 700 }}>
-                        <Printer size={15} /> طباعة
+                        <Printer size={15} /> {t("طباعة")}
                     </button>
                     <button onClick={handleDownloadPdf} disabled={downloading}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: downloading ? 'wait' : 'pointer', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: CAIRO, fontSize: '13px', fontWeight: 700, opacity: downloading ? 0.7 : 1 }}>
                         {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
-                        {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
+                        {downloading ? t("جاري التحميل...") : t("تنزيل PDF")}
                     </button>
                     <button onClick={() => window.close()}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: CAIRO, fontSize: '13px', fontWeight: 700 }}>
-                        <X size={15} /> إغلاق
+                        <X size={15} /> {t("إغلاق")}
                     </button>
                 </div>
             </div>
