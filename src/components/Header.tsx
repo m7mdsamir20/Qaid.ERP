@@ -232,7 +232,6 @@ function Actions() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Language Switcher */}
             <button
-                className="mobile-hide"
                 onClick={() => toggleLang()}
                 style={{
                     height: '36px', padding: '0 12px', borderRadius: '10px',

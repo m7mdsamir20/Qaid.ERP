@@ -349,7 +349,7 @@ export default function NewQuotationPage() {
 
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#256af4' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
-                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
+                            <div className="quotation-form-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
                                     <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
@@ -377,7 +377,7 @@ export default function NewQuotationPage() {
 
                             {/* Sales Representative Selection - dynamically shown if reps exist */}
                             {salesReps.length > 0 && (
-                                <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+                                <div className="quotation-rep-grid" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                             <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مندوب المبيعات')}</label>

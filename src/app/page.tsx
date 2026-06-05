@@ -436,12 +436,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <div style={{ display: 'flex', background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '4px' }}>
+          <div className="dashboard-period-filter" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <div style={{ display: 'flex', background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '4px', width: '100%' }}>
               {(['today', 'week', 'month'] as const).map(p => (
                 <button key={p} onClick={() => setPeriod(p)}
                   style={{
-                    padding: '8px 18px', borderRadius: '11px', border: 'none', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s',
+                    flex: 1, padding: '8px 18px', borderRadius: '11px', border: 'none', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s',
                     background: period === p ? C.primary : 'transparent',
                     color: period === p ? '#fff' : C.textSecondary,
                   }}>
@@ -850,6 +850,7 @@ export default function DashboardPage() {
           @media (max-width: 1023px) {
             .dashboard-page-header { flex-direction: column; align-items: flex-start !important; gap: 15px !important; }
             .hide-mobile { display: none !important; }
+            .dashboard-period-filter { width: 100% !important; }
           }
         `}</style>
       </div>
