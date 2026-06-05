@@ -366,20 +366,20 @@ export default function SuppliersPage() {
                                 <label style={LS}>{t('العنوان')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
-                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[0]} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{t(addrCfg.labels[0])}</label>
+                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[0])} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
-                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[1]} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{t(addrCfg.labels[1])}</label>
+                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[1])} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
-                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[2]} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{t(addrCfg.labels[2])}</label>
+                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[2])} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
-                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[3]} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textSecondary, marginBottom: '3px' }}>{t(addrCfg.labels[3])}</label>
+                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[3])} />
                                     </div>
                                 </div>
                             </div>

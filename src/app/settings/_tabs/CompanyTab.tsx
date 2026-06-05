@@ -235,11 +235,11 @@ export default function CompanyTab({
                                             { key: 'addressStreet',   label: addrCfg.labels[3], ph: addrCfg.placeholders[3] },
                                         ].map(f => (
                                             <div key={f.key}>
-                                                <div style={{ fontSize: '10px', color: C.textSecondary, marginBottom: '3px', fontFamily: CAIRO }}>{f.label}</div>
+                                                <div style={{ fontSize: '10px', color: C.textSecondary, marginBottom: '3px', fontFamily: CAIRO }}>{t(f.label)}</div>
                                                 <input
                                                     value={(companyForm as any)[f.key] || ''}
                                                     onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))}
-                                                    placeholder={f.ph}
+                                                    placeholder={t(f.ph)}
                                                     style={{ width: '100%', height: '36px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 10px', fontSize: '13px', fontFamily: CAIRO, outline: 'none', boxSizing: 'border-box' }}
                                                 />
                                             </div>
