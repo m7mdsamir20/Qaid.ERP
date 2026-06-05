@@ -103,7 +103,6 @@ export default function DashboardLayout({
 
     const hasPage = useCallback((featureKey: string, pageId: string): boolean => {
         try {
-            if (isSuperAdmin) return true;
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
             const businessType = user?.businessType?.toUpperCase() || 'TRADING';
@@ -117,21 +116,21 @@ export default function DashboardLayout({
             if (pageId === 'reports-installments' && businessType === 'CONTRACTING') return false;
             if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
 
-            const userPerms = user?.permissions || {};
-            const hasGranularPerms = Object.keys(userPerms).length > 0;
-
-            if (userRole === 'admin') {
-                if (featureKey === 'settings') return true;
-                if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-                    return (enabledFeatures[featureKey] || []).includes(pageId);
-                }
-                return true;
-            }
-            if (featureKey === 'settings') return !hasGranularPerms;
+            // 1. فحص الاشتراك (يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة)
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
             }
+
+            // 2. فحص الأدوار والصلاحيات
+            if (isSuperAdmin || userRole === 'admin') {
+                return true;
+            }
+
+            const userPerms = user?.permissions || {};
+            const hasGranularPerms = Object.keys(userPerms).length > 0;
+
+            if (featureKey === 'settings') return !hasGranularPerms;
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
         } catch { return true; }
@@ -144,13 +143,23 @@ export default function DashboardLayout({
         let foundFeatureKey = '';
         let foundPageId = '';
 
+        // البحث عن أفضل مطابقة مسار (الرابط الأكثر تحديداً / الأطول مساراً) لمنع تداخل المسارات القصيرة
+        let bestLink: any = null;
+        let bestSection: any = null;
         for (const section of navSections) {
-            const link = section.links?.find(l => pathname === l.href || pathname.startsWith(l.href + '/'));
-            if (link) {
-                foundFeatureKey = section.featureKey;
-                foundPageId = link.id;
-                break;
+            for (const l of section.links || []) {
+                if (pathname === l.href || pathname.startsWith(l.href + '/')) {
+                    if (!bestLink || l.href.length > bestLink.href.length) {
+                        bestLink = l;
+                        bestSection = section;
+                    }
+                }
             }
+        }
+
+        if (bestLink) {
+            foundFeatureKey = bestSection.featureKey;
+            foundPageId = bestLink.id;
         }
 
         if (foundFeatureKey && foundPageId) {

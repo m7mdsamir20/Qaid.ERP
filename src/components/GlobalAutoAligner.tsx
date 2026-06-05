@@ -70,6 +70,9 @@ function checkAndFormatEmptyState(el: HTMLElement) {
     const tag = el.tagName.toLowerCase();
     if (tag !== 'div' && tag !== 'p' && tag !== 'td') return;
     
+    // Do not format elements inside small widgets, layout sections, or explicitly excluded areas
+    if (el.closest('[data-no-align="true"]') || el.closest('.kpi-grid') || el.closest('.sidebar') || el.closest('header') || el.closest('.sidebar-wrapper')) return;
+
     // If already formatted, skip
     if (el.querySelector('.lucide-inbox')) return;
     

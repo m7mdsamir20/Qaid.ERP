@@ -68,29 +68,28 @@ export default function Sidebar({
     // 2. دالة التحقق من الصفحات
     const hasPage = useCallback((featureKey: string, pageId: string): boolean => {
         try {
-            if (isSuperAdmin) return true;
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
+
+            // 1. فحص الاشتراك (يطبق على الجميع بما فيهم السوبر أدمن لضمان عدم ظهور ميزات غير مشتراة)
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                if (!(featureKey in enabledFeatures)) return false;
+                if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
+            }
+
+            // 2. فحص الأدوار والصلاحيات
+            if (isSuperAdmin || userRole === 'admin') {
+                return true;
+            }
 
             const userPerms = user?.permissions || {};
             const hasGranularPerms = Object.keys(userPerms).length > 0;
 
-            if (userRole === 'admin') {
-                if (featureKey === 'settings') return true;
-                if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-                    return (enabledFeatures[featureKey] || []).includes(pageId);
-                }
-                return true;
-            }
             if (featureKey === 'settings') {
                 // Non-admin: only show settings if they have explicit settings permissions
                 if (hasGranularPerms) {
                     return !!userPerms[pageId]?.view;
                 }
                 return false; // No permissions defined = no settings access for non-admin
-            }
-            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-                if (!(featureKey in enabledFeatures)) return false;
-                if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
             }
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
@@ -229,7 +228,7 @@ export default function Sidebar({
                 section.links = section.links?.filter((l: any) => l.id !== 'reports-restaurant');
             }
 
-            const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id)) || [];
+            const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id) && !l.hideFromSidebar) || [];
             if (!hasFeature(section.featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;
 
