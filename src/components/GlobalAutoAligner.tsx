@@ -4,19 +4,19 @@ import { useEffect } from 'react';
 import { formatNumber } from '@/lib/currency';
 
 // Regular expression to match currency symbols and common units (including percentage)
-const currencyRegex = /(SAR|EGP|AED|KWD|QAR|BHD|OMR|JOD|LYD|IQD|USD|EUR|GBP|TRY|SDG|\$|€|£|¥|₺|ر\.س|ج\.م|د\.إ|د\.ك|ر\.ق|د\.ب|ر\.ع|د\.أ|د\.ل|د\.ع|ج\.س|ريال|جنيه|%)/gi;
+const currencyRegex = /(SAR|EGP|AED|KWD|QAR|BHD|OMR|JOD|LYD|IQD|USD|EUR|GBP|TRY|SDG|\$|€|£|¥|₺|\u0631\.\u0633|\u062c\.\u0645|\u062f\.\u0625|\u062f\.\u0643|\u0631\.\u0642|\u062f\.\u0628|\u0631\.\u0639|\u062f\.\u0623|\u062f\.\u0644|\u062f\.\u0639|\u062c\.\u0633|\u0631\u064a\u0627\u0644|\u062c\u0646\u064a\u0647|%)/gi;
 
 // List of typical keywords indicating empty results / no data
 const emptyMessages = [
-    'لا توجد',
-    'لا يوجد',
-    'لم يتم العثور',
-    'لا نتائج',
+    '\u0644\u0627 \u062a\u0648\u062c\u062f',
+    '\u0644\u0627 \u064a\u0648\u062c\u062f',
+    '\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u0639\u062b\u0648\u0631',
+    '\u0644\u0627 \u0646\u062a\u0627\u0626\u062c',
     'empty',
     'no data',
     'no results',
-    'لم يسجل',
-    'ليست هناك'
+    '\u0644\u0645 \u064a\u0633\u062c\u0644',
+    '\u0644\u064a\u0633\u062a \u0647\u0646\u0627\u0643'
 ];
 
 function isPhone(text: string): boolean {

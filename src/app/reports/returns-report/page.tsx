@@ -3,7 +3,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
-import { formatNumber } from '@/lib/currency';
+import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -14,10 +14,7 @@ import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { ArrowRightLeft, Search, Activity, Loader2, TrendingUp, TrendingDown, FileText } from 'lucide-react';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+
 
 const fmt = (n: number) => formatNumber(n);
 
@@ -78,7 +75,7 @@ export default function ReturnsReportPage() {
     }, [branchId, returnType, from, to]);
 
     const filtered = data.filter(r => (r.party || '').toLowerCase().includes(q.toLowerCase()) || String(r.invoiceNumber).includes(q));
-    const sym = getCurrencyName(currency);
+    const sym = getCurrencySymbol(currency, lang);
 
     const columns: TableColumn[] = [
         {

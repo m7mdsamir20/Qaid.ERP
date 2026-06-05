@@ -11,12 +11,14 @@ const cairo = Cairo({
 });
 
 
+const t = (s: string) => s;
+
 export const metadata: Metadata = {
-  title: "قيد - QAID | نظام إدارة موارد المؤسسات",
-  description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
+  title: t("قيد - QAID | نظام إدارة موارد المؤسسات"),
+  description: t("نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة."),
   openGraph: {
-    title: "قيد - QAID | نظام إدارة موارد المؤسسات",
-    description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
+    title: t("قيد - QAID | نظام إدارة موارد المؤسسات"),
+    description: t("نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة."),
     url: "https://qaid-erp.vercel.app/",
     siteName: "QAID ERP",
     images: [
@@ -31,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "قيد - QAID",
-    description: "نظام قيد السحابي المتكامل لإدارة المبيعات والحسابات.",
+    title: t("قيد - QAID"),
+    description: t("نظام قيد السحابي المتكامل لإدارة المبيعات والحسابات."),
     images: ["/icon.png"],
   },
   formatDetection: {

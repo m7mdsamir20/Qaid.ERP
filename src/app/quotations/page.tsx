@@ -85,7 +85,7 @@ export default function QuotationsPage() {
     };
 
     const handleDelete = async (id: string, num: number) => {
-        if (!confirm(`${t('هل أنت متأكد من حذف عرض السعر رقم')} ${num}؟`)) return;
+        if (!confirm(`${t('هل أنت متأكد من حذف عرض السعر رقم')} ${num}${t('؟')}`)) return;
         try {
             const res = await fetch(`/api/quotations?id=${id}`, { method: 'DELETE' });
             if (res.ok) {

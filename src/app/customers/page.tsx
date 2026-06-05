@@ -35,8 +35,8 @@ interface Customer {
     createdAt: string;
 }
 
-function formatAddress(c: Customer) {
-    return [c.addressRegion, c.addressCity, c.addressDistrict, c.addressStreet].filter(Boolean).join('، ');
+function formatAddress(c: Customer, isRtl = true) {
+    return [c.addressRegion, c.addressCity, c.addressDistrict, c.addressStreet].filter(Boolean).join(isRtl ? '، ' : ', ');
 }
 
 export default function CustomersPage() {
@@ -227,7 +227,7 @@ export default function CustomersPage() {
         },
         {
             header: t('العنوان'),
-            cell: (row: Customer) => formatAddress(row) || '—',
+            cell: (row: Customer) => formatAddress(row, isRtl) || '—',
             style: { color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }
         },
         ...(businessType !== 'RESTAURANTS' ? [{

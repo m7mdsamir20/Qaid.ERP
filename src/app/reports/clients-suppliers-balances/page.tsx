@@ -8,8 +8,9 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
@@ -24,7 +25,7 @@ interface PartnerBalance {
     name: string;
     phone: string | null;
     balance: number;
-    type: 'عميل' | 'مورد';
+    type: string;
     partnerType: 'customer' | 'supplier';
 }
 
@@ -91,7 +92,7 @@ export default function ClientsSuppliersBalancesPage() {
         }
     });
 
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
     const exportToExcel = () => {
         if (!filteredData.length) return;
         const excelData = filteredData.map(p => {

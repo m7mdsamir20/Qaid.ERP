@@ -3,7 +3,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
-import { formatNumber } from '@/lib/currency';
+import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -14,10 +14,7 @@ import { useSession } from 'next-auth/react';
 import { PieChart, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+
 
 const fmt = (n: number) => formatNumber(n);
 
@@ -70,7 +67,7 @@ export default function IncomeStatementPage() {
 
     useEffect(() => { fetchData(); }, [branchId]);
 
-    const sym = getCurrencyName(currency);
+    const sym = getCurrencySymbol(currency, lang);
     const netIncomeColor = data && data.netIncome >= 0 ? '#10b981' : '#fb7185';
 
     // Revenue Columns

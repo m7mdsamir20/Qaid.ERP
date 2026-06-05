@@ -2,7 +2,7 @@
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
+import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -13,10 +13,7 @@ import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
 import { DollarSign, Search, Calendar, Wallet, ArrowUpRight, TrendingDown, Loader2, Users } from 'lucide-react';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+
 
 interface PayrollRecord {
     id: string;
@@ -49,7 +46,7 @@ export default function PayrollStatementPage() {
     const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
     const [q, setQ] = useState('');
 
-    const sym = getCurrencyName(currency);
+    const sym = getCurrencySymbol(currency, lang);
     const fetchReport = async () => {
         setLoading(true);
         try {
@@ -164,7 +161,7 @@ export default function PayrollStatementPage() {
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '10px', color: C.textSecondary }}>{getCurrencyName(currency)}</span>
+                                            <span style={{ fontSize: '10px', color: C.textSecondary }}>{getCurrencySymbol(currency, lang)}</span>
                                         </div>
                                     </div>
                                     <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>

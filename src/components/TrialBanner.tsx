@@ -64,7 +64,7 @@ export default function TrialBanner() {
                     <span style={{ fontSize: '14px', fontWeight: 900, color: textColor, display: 'block', marginBottom: '4px' }}>
                         {isExpired 
                             ? (subPlan === 'trial' ? t("انتهت الفترة التجريبية للنظام!") : t("انتهى اشتراك النظام الحالي!"))
-                            : (daysLeft === 0 ? t("فترتك التجريبية تنتهي اليوم!") : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
+                            : (daysLeft === 0 ? t("فترتك التجريبية تنتهي اليوم!") : `${t("فترتك التجريبية تنتهي بعد")} ${daysLeft} ${t("يوم")}`)
                         }
                     </span>
                     <span style={{ fontSize: '12px', color: isExpired ? '#ef4444' : '#64748b', opacity: isExpired ? 0.9 : 1, display: 'block' }}>

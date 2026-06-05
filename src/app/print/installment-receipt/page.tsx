@@ -28,7 +28,7 @@ function InstallmentReceiptContent() {
             .then(r => r.json())
             .then(data => {
                 const company = data.company || {};
-                const description = `تحصيل قسط رقم #${instNo} — ${planCode}${notes ? ' — ' + notes : ''}`;
+                const description = `${t('تحصيل قسط رقم')} #${instNo} — ${planCode}${notes ? ' — ' + notes : ''}`;
                 const generated = generateThermalVoucherHTML({
                     voucherNumber: instNo,
                     date: new Date().toISOString(),

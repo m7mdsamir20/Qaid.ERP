@@ -10,9 +10,11 @@ import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, BTN_PRIMARY } from '@
 import { Clock, Plus, Loader2, X, Check, AlertCircle, RefreshCw, TrendingUp, Package, DollarSign, Printer } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 
+const t = (s: string) => s;
+
 const STATUS_COLOR: Record<string, { color: string; bg: string; label: string }> = {
-    open:   { color: '#10b981', bg: '#10b98112', label: 'مفتوحة' },
-    closed: { color: '#6b7280', bg: '#6b728012', label: 'مغلقة' },
+    open:   { color: '#10b981', bg: '#10b98112', label: t('مفتوحة') },
+    closed: { color: '#6b7280', bg: '#6b728012', label: t('مغلقة') },
 };
 
 export default function ShiftsPage() {
@@ -71,25 +73,25 @@ export default function ShiftsPage() {
             </head>
             <body>
                 <div class="text-center">
-                    <h2>تقرير الوردية #${arNum(shift.shiftNumber)}</h2>
-                    <p>الكاشير: ${shift.user?.name || shift.user?.username || '—'}</p>
-                    <p>وقت الفتح: ${formatDate(shift.openedAt)}</p>
-                    ${shift.closedAt ? `<p>وقت الإغلاق: ${formatDate(shift.closedAt)}</p>` : ''}
+                    <h2>${t('تقرير الوردية')} #${arNum(shift.shiftNumber)}</h2>
+                    <p>${t('الكاشير')}: ${shift.user?.name || shift.user?.username || '—'}</p>
+                    <p>${t('وقت الفتح')}: ${formatDate(shift.openedAt)}</p>
+                    ${shift.closedAt ? `<p>${t('وقت الإغلاق')}: ${formatDate(shift.closedAt)}</p>` : ''}
                 </div>
                 <div class="dashed-line"></div>
-                <div class="flex-between"><span>عهدة الفتح:</span> <span class="bold">${fMoneyJSX(shift.openingBalance)}</span></div>
-                <div class="flex-between"><span>إجمالي المبيعات:</span> <span class="bold">${fMoneyJSX(shift.totalSales)}</span></div>
-                <div class="flex-between"><span>المرتجعات:</span> <span class="bold">${fMoneyJSX(0)}</span></div>
-                <div class="flex-between"><span>إجمالي الطلبات:</span> <span class="bold">${arNum(shift.totalOrders)}</span></div>
+                <div class="flex-between"><span>${t('عهدة الفتح')}:</span> <span class="bold">${fMoneyJSX(shift.openingBalance)}</span></div>
+                <div class="flex-between"><span>${t('إجمالي المبيعات')}:</span> <span class="bold">${fMoneyJSX(shift.totalSales)}</span></div>
+                <div class="flex-between"><span>${t('المرتجعات')}:</span> <span class="bold">${fMoneyJSX(0)}</span></div>
+                <div class="flex-between"><span>${t('إجمالي الطلبات')}:</span> <span class="bold">${arNum(shift.totalOrders)}</span></div>
                 <div class="dashed-line"></div>
-                <div class="flex-between"><span>المتوقع في الدرج:</span> <span class="bold">${fMoneyJSX(shift.openingBalance + shift.totalSales)}</span></div>
+                <div class="flex-between"><span>${t('المتوقع في الدرج')}:</span> <span class="bold">${fMoneyJSX(shift.openingBalance + shift.totalSales)}</span></div>
                 ${shift.closedAt ? `
-                <div class="flex-between"><span>الفعلي في الدرج:</span> <span class="bold">${fMoneyJSX(shift.closingBalance)}</span></div>
-                <div class="flex-between"><span>الفرق (عجز/زيادة):</span> <span class="bold">${fMoneyJSX(shift.difference)}</span></div>
+                <div class="flex-between"><span>${t('الفعلي في الدرج')}:</span> <span class="bold">${fMoneyJSX(shift.closingBalance)}</span></div>
+                <div class="flex-between"><span>${t('الفرق (عجز/زيادة)')}:</span> <span class="bold">${fMoneyJSX(shift.difference)}</span></div>
                 ` : ''}
                 <div class="dashed-line"></div>
                 <div class="text-center" style="margin-top: 20px; font-size: 11px;">
-                    <p>تمت الطباعة: ${formatDate(new Date().toISOString())}</p>
+                    <p>${t('تمت الطباعة')}: ${formatDate(new Date().toISOString())}</p>
                 </div>
             </body>
             </html>
@@ -253,7 +255,7 @@ export default function ShiftsPage() {
             </AppModal>
 
             {/* Modal إغلاق وردية */}
-            <AppModal show={!!showClose} onClose={() => setShowClose(null)} title={`إغلاق الوردية #${showClose?.shiftNumber}`} maxWidth="520px">
+            <AppModal show={!!showClose} onClose={() => setShowClose(null)} title={`${t('إغلاق الوردية')} #${showClose?.shiftNumber}`} maxWidth="520px">
                 <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '10px', padding: '12px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     {showClose && [{ label: t("عهدة الفتح"), value: showClose.openingBalance }, { label: t("إجمالي المبيعات"), value: showClose.totalSales }, { label: t("المتوقع في الدرج"), value: showClose.openingBalance + showClose.totalSales }].map(r => (
                         <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>

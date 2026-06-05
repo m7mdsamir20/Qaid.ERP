@@ -14,8 +14,9 @@ import { Search, Phone, Clock, AlertTriangle, TrendingDown, History } from 'luci
 import * as XLSX from 'xlsx';
 import CustomSelect from '@/components/CustomSelect';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -86,22 +87,22 @@ export default function AgingReportPage() {
     }, [branchId]);
 
     const filtered = data.filter(inv => inv.customer.toLowerCase().includes(q.toLowerCase()) || String(inv.invoiceNumber).includes(q));
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
 
     const exportToExcel = () => {
         if (!data.length) return;
         const excelData = data.map(inv => ({
-            'رقم الفاتورة': `SAL-${String(inv.invoiceNumber).padStart(4, '0')}`,
-            'التاريخ': new Date(inv.date).toLocaleDateString('en-GB'),
-            'العميل': inv.customer,
-            'عمر الدين (يوم)': inv.ageDays,
-            'المبلغ المتبقي': inv.remaining,
-            'التصنيف': inv.ageDays > 90 ? t("متأخر جداً") : inv.ageDays > 60 ? t("حذر") : t("اعتيادي")
+            [t('رقم الفاتورة')]: `SAL-${String(inv.invoiceNumber).padStart(4, '0')}`,
+            [t('التاريخ')]: new Date(inv.date).toLocaleDateString('en-GB'),
+            [t('العميل')]: inv.customer,
+            [t('عمر الدين (يوم)')]: inv.ageDays,
+            [t('المبلغ المتبقي')]: inv.remaining,
+            [t('التصنيف')]: inv.ageDays > 90 ? t("متأخر جداً") : inv.ageDays > 60 ? t("حذر") : t("اعتيادي")
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t("أعمار الديون"));
-        XLSX.writeFile(wb, `تقرير_أعمار_الديون_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${t('تقرير_أعمار_الديون')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
     const columns: TableColumn[] = [

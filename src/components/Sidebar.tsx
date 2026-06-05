@@ -108,7 +108,7 @@ export default function Sidebar({
     }, [isSuperAdmin, hasPage]);
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
-        const initialState: Record<string, boolean> = { 'الرئيسية': true };
+        const initialState: Record<string, boolean> = {};
         try {
             navSections.forEach((section: any) => {
                 if (section?.links?.some((link: any) => link.href === pathname)) {

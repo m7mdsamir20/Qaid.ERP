@@ -19,11 +19,13 @@ import { printInstallmentDirectly } from '@/lib/printDirectly';
 const fmt  = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => formatNumber(n);
 
+const t = (s: string) => s;
+
 const statusColor: Record<string, { bg: string; color: string; label: string }> = {
-    paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: 'مدفوع'    },
-    partial: { bg: 'rgba(245,158,11,0.1)',  color: '#f59e0b', label: 'جزئي'    },
-    pending: { bg: 'rgba(37, 106, 244,0.1)',  color: '#256af4', label: 'قادم'    },
-    overdue: { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', label: 'متأخر'   },
+    paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: t('مدفوع')    },
+    partial: { bg: 'rgba(245,158,11,0.1)',  color: '#f59e0b', label: t('جزئي')    },
+    pending: { bg: 'rgba(37, 106, 244,0.1)',  color: '#256af4', label: t('قادم')    },
+    overdue: { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', label: t('متأخر')   },
 };
 
 export default function InstallmentDetailPage() {

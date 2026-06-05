@@ -3,7 +3,7 @@ import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
-import { formatNumber } from '@/lib/currency';
+import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -13,10 +13,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Package, TrendingUp, Search, Activity } from 'lucide-react';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+
 
 interface TopSellingItem {
     id: string;

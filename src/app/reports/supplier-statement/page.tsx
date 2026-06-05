@@ -14,8 +14,9 @@ import * as XLSX from 'xlsx';
 
 import { formatNumber } from '@/lib/currency';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -98,7 +99,7 @@ export default function SupplierStatementPage() {
         }
     }, []);
 
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
     const handlePrint = () => window.print();
 
     const exportToExcel = () => {
@@ -245,7 +246,7 @@ export default function SupplierStatementPage() {
                     printTitle={t("كشف حساب مورد تفصيلي")}
                     accountName={data ? data.supplier.name : undefined}
                     printLabel={t('المورد:')}
-                    printDate={dateFrom || dateTo ? `${dateFrom ? `من ${dateFrom}` : ''} ${dateTo ? `إلى ${dateTo}` : ''}`.trim() : undefined}
+                    printDate={dateFrom || dateTo ? `${dateFrom ? `${t('من')} ${dateFrom}` : ''} ${dateTo ? `${t('إلى')} ${dateTo}` : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', flexWrap: 'wrap' }}>

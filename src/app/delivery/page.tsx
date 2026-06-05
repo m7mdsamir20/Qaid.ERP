@@ -7,15 +7,17 @@ import { C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Truck, RefreshCw, Loader2, MapPin, Phone, Clock, User, Package, CheckCircle2, ChevronDown } from 'lucide-react';
 
+const t = (s: string) => s;
+
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
-    pending: { label: 'بانتظار المطبخ', color: '#f59e0b', bg: '#fef3c7' },
-    preparing: { label: 'قيد التجهيز', color: '#8b5cf6', bg: '#ede9fe' },
-    ready: { label: 'جاهز للاستلام', color: '#10b981', bg: '#d1fae5' },
-    assigned: { label: 'تم التعيين', color: '#6366f1', bg: '#e0e7ff' },
-    picked: { label: 'خرج للتوصيل', color: '#3b82f6', bg: '#dbeafe' },
-    delivered: { label: 'تم التسليم', color: '#14b8a6', bg: '#ccfbf1' },
-    returned: { label: 'رفض الاستلام', color: '#f97316', bg: '#ffedd5' },
-    cancelled: { label: 'ملغي', color: '#ef4444', bg: '#fee2e2' },
+    pending: { label: t('بانتظار المطبخ'), color: '#f59e0b', bg: '#fef3c7' },
+    preparing: { label: t('قيد التجهيز'), color: '#8b5cf6', bg: '#ede9fe' },
+    ready: { label: t('جاهز للاستلام'), color: '#10b981', bg: '#d1fae5' },
+    assigned: { label: t('تم التعيين'), color: '#6366f1', bg: '#e0e7ff' },
+    picked: { label: t('خرج للتوصيل'), color: '#3b82f6', bg: '#dbeafe' },
+    delivered: { label: t('تم التسليم'), color: '#14b8a6', bg: '#ccfbf1' },
+    returned: { label: t('رفض الاستلام'), color: '#f97316', bg: '#ffedd5' },
+    cancelled: { label: t('ملغي'), color: '#ef4444', bg: '#fee2e2' },
 };
 
 export default function DeliveryPage() {
@@ -145,7 +147,7 @@ export default function DeliveryPage() {
                         onChange={(e) => setFilterDate(e.target.value)}
                         style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}
                     />
-                    {[{ value: '', label: t("كل الحالات") }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: s.label }))].map(s => (
+                    {[{ value: '', label: t("كل الحالات") }, ...Object.entries(STATUS_INFO).map(([v, s]) => ({ value: v, label: t(s.label) }))].map(s => (
                         <button key={s.value} onClick={() => setFilterStatus(s.value)}
                             style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
                             {s.label}
@@ -201,7 +203,7 @@ export default function DeliveryPage() {
                                         </span>
                                         
                                         <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color }}>
-                                            {st.label}
+                                            {t(st.label)}
                                         </span>
                                         
                                         <div style={{ marginInlineStart: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={e => e.stopPropagation()}>
@@ -375,4 +377,17 @@ export default function DeliveryPage() {
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </DashboardLayout>
     );
+}
+
+// i18n-scanner-dummy
+function _dummyTranslations() {
+    const t = (s: string) => s;
+    t('بانتظار المطبخ');
+    t('قيد التجهيز');
+    t('جاهز للاستلام');
+    t('تم التعيين');
+    t('خرج للتوصيل');
+    t('تم التسليم');
+    t('رفض الاستلام');
+    t('ملغي');
 }

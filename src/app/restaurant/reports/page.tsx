@@ -9,17 +9,19 @@ import { useTranslation } from '@/lib/i18n';
 import DataTable from '@/components/DataTable';
 import TableSkeleton from '@/components/TableSkeleton';
 
+const t = (s: string) => s;
+
 const ORDER_TYPE_LABELS: Record<string, string> = {
-    'dine-in': 'صالة',
-    'takeaway': 'تيك أواي',
-    'delivery': 'توصيل',
-    'online': 'أونلاين',
+    'dine-in': t('صالة'),
+    'takeaway': t('تيك أواي'),
+    'delivery': t('توصيل'),
+    'online': t('أونلاين'),
 };
 
 const PAYMENT_LABELS: Record<string, string> = {
-    'cash': 'كاش',
-    'card': 'بطاقة',
-    'mixed': 'مختلط',
+    'cash': t('كاش'),
+    'card': t('بطاقة'),
+    'mixed': t('مختلط'),
 };
 
 export default function RestaurantReportsPage() {

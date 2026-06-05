@@ -30,17 +30,17 @@ import { useTheme } from '@/components/Providers';
 
 const getRoleLabel = (role: string, t: any) => {
     const roles: Record<string, string> = {
-        admin: 'مدير النظام',
-        manager: 'مدير فرع',
-        accountant: 'محاسب',
-        sales: 'مندوب مبيعات',
-        procurement: 'مسؤول مشتريات',
-        storekeeper: 'أمين مستودع',
-        hr: 'موارد بشرية',
-        cashier: 'كاشير',
-        custom: 'مستخدم'
+        admin: t('مدير النظام'),
+        manager: t('مدير فرع'),
+        accountant: t('محاسب'),
+        sales: t('مندوب مبيعات'),
+        procurement: t('مسؤول مشتريات'),
+        storekeeper: t('أمين مستودع'),
+        hr: t('موارد بشرية'),
+        cashier: t('كاشير'),
+        custom: t('مستخدم')
     };
-    return t(roles[role] || 'مستخدم');
+    return roles[role] || t('مستخدم');
 };
 
 /* ══════════════════════════════════════════
@@ -106,7 +106,7 @@ function SearchBox() {
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onFocus={() => results.length && setOpen(true)}
-                    placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
+                    placeholder={t("ابحث هنا...")}
                     style={{
                         flex: 1, background: 'none', border: 'none', outline: 'none',
                         color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO

@@ -18,7 +18,7 @@ export default function ApiKeysPage() {
     };
 
     const endpointCode = `
-// إنشاء طلب جديد عبر تطبيقات التوصيل (جاهز، هنقرستيشن، طلبات)
+// ${t("إنشاء طلب جديد عبر تطبيقات التوصيل (جاهز، هنقرستيشن، طلبات)")}
 POST /api/restaurant/orders
 Content-Type: application/json
 Authorization: Bearer <YOUR_API_KEY>
@@ -27,17 +27,17 @@ Authorization: Bearer <YOUR_API_KEY>
   "type": "delivery",
   "source": "api",
   "externalRef": "JAHEZ-98212",
-  "deliveryName": "محمد أحمد",
+  "deliveryName": "${t("محمد أحمد")}",
   "deliveryPhone": "0501234567",
-  "notes": "بدون طماطم",
+  "notes": "${t("بدون طماطم")}",
   "lines": [
     {
       "itemId": "cm0xyz...",
-      "itemName": "وجبة شاورما عربي",
+      "itemName": "${t("وجبة شاورما عربي")}",
       "quantity": 2,
       "unitPrice": 45,
       "modifiers": {
-        "بدون بصل": [{ "name": "نعم", "price": 0 }]
+        "${t("بدون بصل")}": [{ "name": "${t("نعم")}", "price": 0 }]
       }
     }
   ]
@@ -62,8 +62,8 @@ Authorization: Bearer <YOUR_API_KEY>
                                 <Key size={20} />
                             </div>
                             <div>
-                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>مفاتيح الربط (API Keys)</h2>
-                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>استخدم هذا المفتاح لمصادقة الطلبات القادمة من تطبيقات التوصيل.</p>
+                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>{t('مفاتيح الربط (API Keys)')}</h2>
+                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>{t('استخدم هذا المفتاح لمصادقة الطلبات القادمة من تطبيقات التوصيل.')}</p>
                             </div>
                         </div>
 
@@ -72,7 +72,7 @@ Authorization: Bearer <YOUR_API_KEY>
                                 sk_test_8f92j3n8df2j4n8sdf823j4ndf
                             </div>
                             <button onClick={() => handleCopy('sk_test_8f92j3n8df2j4n8sdf823j4ndf', 'key')} style={{ height: '36px', padding: '0 16px', borderRadius: '8px', border: 'none', background: C.primary, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, fontSize: '13px', fontWeight: 600 }}>
-                                {copied === 'key' ? <><Check size={14} /> تم النسخ</> : <><Copy size={14} /> نسخ المفتاح</>}
+                                {copied === 'key' ? <><Check size={14} /> {t('تم النسخ')}</> : <><Copy size={14} /> {t('نسخ المفتاح')}</>}
                             </button>
                         </div>
                     </div>
@@ -84,8 +84,8 @@ Authorization: Bearer <YOUR_API_KEY>
                                 <Code2 size={20} />
                             </div>
                             <div>
-                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>دليل التكامل (API Documentation)</h2>
-                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>طريقة إرسال الطلبات إلى النظام مباشرة</p>
+                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>{t('دليل التكامل (API Documentation)')}</h2>
+                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>{t('طريقة إرسال الطلبات إلى النظام مباشرة')}</p>
                             </div>
                         </div>
 
@@ -106,22 +106,22 @@ Authorization: Bearer <YOUR_API_KEY>
                                 <Webhook size={20} />
                             </div>
                             <div>
-                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>الويب هوك (Webhooks)</h2>
-                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>إرسال إشعارات للأنظمة الأخرى عند تغير حالة الطلب (مثال: الطلب جاهز)</p>
+                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary }}>{t('الويب هوك (Webhooks)')}</h2>
+                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>{t('إرسال إشعارات للأنظمة الأخرى عند تغير حالة الطلب (مثال: الطلب جاهز)')}</p>
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px', background: C.bg, padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}`, alignItems: 'center' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '6px' }}>
-                                <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>رابط الاستقبال (URL Endpoint)</label>
+                                <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t('رابط الاستقبال (URL Endpoint)')}</label>
                                 <input type="url" placeholder="https://your-domain.com/webhook" style={{ height: '40px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, outline: 'none', color: C.textPrimary, fontFamily: OUTFIT, fontSize: '14px', direction: 'ltr' }} />
                             </div>
                             <button style={{ height: '40px', padding: '0 24px', borderRadius: '8px', border: 'none', background: C.primary, color: '#fff', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, marginTop: '22px' }}>
-                                حفظ
+                                {t('حفظ')}
                             </button>
                         </div>
                         <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '6px', color: C.textMuted, fontSize: '12px' }}>
-                            <Info size={14} /> سيتم إرسال (POST Request) كلما تغيرت حالة طلب في النظام.
+                            <Info size={14} /> {t('سيتم إرسال (POST Request) كلما تغيرت حالة طلب في النظام.')}
                         </div>
                     </div>
 
