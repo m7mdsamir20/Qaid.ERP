@@ -1296,6 +1296,17 @@ select:-webkit-autofill:focus {
     vertical-align: middle !important;
   }
 
+  /* إخفاء عمود التاريخ والطرف في جدول الداشبورد على الموبايل */
+  .recent-invoices-table col.col-party {
+    width: 0 !important;
+  }
+  .recent-invoices-table th.col-party,
+  .recent-invoices-table td.col-party {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+  }
+
 }
 
 @media (max-width: 560px) {

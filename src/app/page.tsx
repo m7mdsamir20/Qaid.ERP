@@ -734,13 +734,20 @@ export default function DashboardPage() {
                   {t('عرض التقارير')} <ArrowUpDown size={14} />
                 </Link>
               )}>
-              <div style={{ padding: '0', maxHeight: '350px', overflowY: 'auto' }} className="scroll-table custom-scrollbar">
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center' }}>
+              <div style={{ padding: '0', maxHeight: '350px', overflowY: 'auto', overflowX: 'auto' }} className="scroll-table custom-scrollbar">
+                <table className="recent-invoices-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', tableLayout: 'fixed' }}>
+                  <colgroup>
+                    <col className="col-party" style={{ width: '30%' }} />
+                    <col style={{ width: '22%' }} />
+                    <col style={{ width: '30%' }} />
+                    <col style={{ width: '18%' }} />
+                  </colgroup>
                   <thead style={{ position: 'sticky', top: 0, background: C.card, zIndex: 10 }}>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                      {[t('التاريخ والطرف'), t('القيمة'), t('النوع'), t('رقم')].map((h, i) => (
-                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
-                      ))}
+                      <th className="col-party" style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: 'start', fontFamily: CAIRO }}>{t('التاريخ والطرف')}</th>
+                      <th style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: 'center', fontFamily: CAIRO }}>{t('القيمة')}</th>
+                      <th style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: 'center', fontFamily: CAIRO }}>{t('النوع')}</th>
+                      <th style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 600, textAlign: 'center', fontFamily: CAIRO }}>{t('رقم')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -758,15 +765,15 @@ export default function DashboardPage() {
                           <tr key={inv.id} style={{ borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                            <td style={{ padding: '14px 16px', textAlign: 'start' }}>
-                              <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
+                            <td className="col-party" style={{ padding: '14px 16px', textAlign: 'start', overflow: 'hidden' }}>
+                              <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '13px', textAlign: 'center' }}>{renderCurrency(inv.total)}</td>
-                            <td style={{ padding: '14px 16px', textAlign: 'center' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
+                            <td style={{ padding: '14px 16px', fontSize: '13px', textAlign: 'center', whiteSpace: 'nowrap' }}>{renderCurrency(inv.total)}</td>
+                            <td style={{ padding: '14px 8px', textAlign: 'center' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '4px 10px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO, whiteSpace: 'nowrap', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }}>
+                            <td style={{ padding: '14px 8px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }}>
                               {inv._isPosOrder ? 'POS-' : getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
                             </td>
                           </tr>
