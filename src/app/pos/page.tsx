@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield, Barcode
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield, Barcode, ShoppingBag
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -218,7 +218,12 @@ export default function POSPage() {
     const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
 
     const allOrderTypes: any[] = [
-        ...ORDER_TYPES,
+        ...ORDER_TYPES.filter(ot => !isRetail || ot.value !== 'dine-in').map(ot => {
+            if (isRetail && ot.value === 'takeaway') {
+                return { ...ot, label: t('بيع مباشر'), icon: ShoppingBag };
+            }
+            return ot;
+        }),
         ...(restaurantSettings?.deliveryApps?.length > 0 ? [{
             value: 'delivery_app',
             label: t('تطبيقات'),
@@ -564,9 +569,11 @@ export default function POSPage() {
         const paidAmount = orderData.paidAmount ?? finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
-        const typeLabel = orderData.type === 'dine-in' ? t('صالة') : 
-                          orderData.type === 'takeaway' ? t('تيك أواي') : 
-                          orderData.type === 'delivery' ? t('توصيل') : t('أونلاين');
+        const typeLabel = isRetail
+            ? (orderData.type === 'delivery' ? t('توصيل') : orderData.type === 'online' ? t('أونلاين') : t('بيع مباشر'))
+            : (orderData.type === 'dine-in' ? t('صالة') : 
+               orderData.type === 'takeaway' ? t('تيك أواي') : 
+               orderData.type === 'delivery' ? t('توصيل') : t('أونلاين'));
 
         // Use receiptFooter from restaurant settings, fall back to generic message
         const rs = typeof orderData.company?.restaurantSettings === 'string'
@@ -627,7 +634,10 @@ export default function POSPage() {
                 <div class="dashed-line"></div>
                 
                 <table class="meta-table">
-                    <tr><td>${t('رقم الطلب')}</td><td>: ${orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----'}</td></tr>
+                    <tr><td>${isRetail ? t('رقم الفاتورة') : t('رقم الطلب')}</td><td>: ${orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----'}</td></tr>
+                    ${isRetail ? `
+                    <tr><td>${t('نوع الفاتورة')}</td><td>: ${typeLabel}</td></tr>
+                    ` : `
                     ${orderData.type === 'dine-in' ? `
                     <tr><td>${t('رقم الطاولة')}</td><td>: ${orderData.table?.name || '-'}</td></tr>
                     ${orderData.guests ? `<tr><td>${t('عدد الأفراد')}</td><td>: ${orderData.guests}</td></tr>` : ''}
@@ -635,8 +645,9 @@ export default function POSPage() {
                     ${orderData.type === 'takeaway' ? `
                     <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || (orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----')}</td></tr>
                     ` : ''}
+                    `}
                     <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
-                    ${orderData.type !== 'delivery' ? `<tr><td>${t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                    ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && (orderData.deliveryName || orderData.customer) ? `
                 <div class="dashed-line"></div>
@@ -1120,7 +1131,7 @@ export default function POSPage() {
                 } catch (e) {}
             }
  
-            setSuccessMsg(isPostPay ? t('✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)') : t('✅ تم حفظ الطلب وإرساله للمطبخ'));
+            setSuccessMsg(isRetail ? t('✅ تم حفظ وطباعة الفاتورة بنجاح') : (isPostPay ? t('✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)') : t('✅ تم حفظ الطلب وإرساله للمطبخ')));
             clearCart();
             setDeliveryFloor('');
             setDeliveryApartment('');
@@ -1509,7 +1520,7 @@ export default function POSPage() {
                                 <div key={o.id} style={{ border: `1px solid ${o.status === 'pending' ? '#f59e0b50' : C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: o.status === 'pending' ? 'rgba(245, 158, 11, 0.05)' : C.bg, flexShrink: 0 }}>
                                     <div>
                                         <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {o.table?.name ? `${t('طاولة')}: ${o.table.name}` : `${t('طلب')} #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
+                                            {o.table?.name ? `${t('طاولة')}: ${o.table.name}` : `${t('طلب')} #${o.orderNumber}`} ({allOrderTypes.find(t=>t.value===o.type)?.label || o.type})
                                             {o.status === 'pending' && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>{t('طلب خارجي (بانتظار الموافقة)')}</span>}
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>

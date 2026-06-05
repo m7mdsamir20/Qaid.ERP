@@ -329,7 +329,7 @@ export default function JournalEntriesPage() {
                                             {formatEntryCode(nextNumber)}
                                         </div>
                                     </div>
-                                    <div><label style={LS}>{t('التاريخ')}</label><input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr' }} /></div>
+                                    <div><label style={LS}>{t('التاريخ')}</label><input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={IS} /></div>
                                     <div><label style={LS}>{t('البيان العام / الوصف')}</label><input required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder={t("شرح مختصر للقيد...")} style={IS} /></div>
                                 </div>
 

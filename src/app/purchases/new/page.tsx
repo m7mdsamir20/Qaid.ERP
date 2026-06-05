@@ -490,7 +490,7 @@ export default function NewPurchasePage() {
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary,  direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                             </div>

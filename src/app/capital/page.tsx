@@ -350,7 +350,7 @@ export default function CapitalPage() {
 
                         <div style={{ marginBottom: '20px' }}>
                             <label style={LS}>{t('تاريخ الحركة')}</label>
-                            <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                            <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
