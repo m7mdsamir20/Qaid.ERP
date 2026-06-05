@@ -15,8 +15,9 @@ import ReportHeader from '@/components/ReportHeader';
 import { Search, Landmark, Loader2, FileText, History, TrendingUp, TrendingDown } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -128,7 +129,7 @@ export default function BankStatementPage() {
 
     const totalReceipts = data?.movements.reduce((sum, m) => (m.type === 'receipt' ? sum + m.amount : sum), 0) || 0;
     const totalPayments = data?.movements.reduce((sum, m) => (m.type === 'payment' ? sum + m.amount : sum), 0) || 0;
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
 
     const exportToExcel = () => {
         if (!data || !movements.length) return;
@@ -255,7 +256,7 @@ export default function BankStatementPage() {
                     printTitle={data ? t("كشف حساب بنكي") : undefined}
                     accountName={data?.treasuryName}
                     printLabel={t('البنك:')}
-                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
+                    printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                     onExportExcel={exportToExcel}
                 />
 

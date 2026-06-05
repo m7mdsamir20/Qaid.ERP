@@ -8,10 +8,11 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Users, Table2, Edit3, Trash2, AlertCircle, CheckCircle2, Receipt } from 'lucide-react';
 
+const t_s = (s: string) => s;
 const TABLE_STATUSES = [
-    { value: 'available',    label: 'متاحة',        color: '#10b981', bg: '#10b98112' },
-    { value: 'occupied',     label: 'مشغولة',        color: '#f59e0b', bg: '#f59e0b12' },
-    { value: 'waiting_bill', label: 'تنتظر الحساب', color: '#ef4444', bg: '#ef444412' },
+    { value: 'available',    label: t_s('متاحة'),        color: '#10b981', bg: '#10b98112' },
+    { value: 'occupied',     label: t_s('مشغولة'),        color: '#f59e0b', bg: '#f59e0b12' },
+    { value: 'waiting_bill', label: t_s('تنتظر الحساب'), color: '#ef4444', bg: '#ef444412' },
 ];
 const statusInfo = (s: string) => TABLE_STATUSES.find(x => x.value === s) ?? TABLE_STATUSES[0];
 

@@ -115,7 +115,7 @@ export default function ExpensesReportPage() {
                     subtitle={t("عرض تفصيلي لجميع المصروفات المسجلة خلال فترة زمنية محددة.")}
                     backTab="treasury-bank"
                     printTitle={t("تقرير المصروفات")}
-                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
+                    printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                 />
 
                 {/* Filters */}

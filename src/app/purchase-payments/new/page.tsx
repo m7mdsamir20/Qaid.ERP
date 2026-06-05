@@ -92,7 +92,7 @@ export default function NewPurchasePaymentPage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) printPayVoucher(saved, selectedPartner, nextNum, form, cSymbol);
+                if (andPrint) printPayVoucher(saved, selectedPartner, nextNum, form, cSymbol, t);
                 router.push('/purchase-payments');
             } else { const d = await res.json(); alert(d.error || t("فشل في الحفظ")); }
         } catch { alert(t("فشل الاتصال بالخادم")); }
@@ -196,8 +196,8 @@ export default function NewPurchasePaymentPage() {
                                             }}>
                                                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {selectedPartner.ptype === 'supplier'
-                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
-                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
+                                                    ? (selectedPartner.balance > 0 ? `${t('له عندنا')}: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا')}: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
+                                                    : (selectedPartner.balance < 0 ? `${t('له عندنا')}: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا')}: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
                                                 }
                                             </div>
                                         )}
@@ -240,10 +240,10 @@ export default function NewPurchasePaymentPage() {
                                             onChange={v => setForm((f: any) => ({ ...f, treasuryId: v }))}
                                             icon={Building2}
                                             placeholder={form.paymentType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
-                                            options={availTreasuries.map(t => ({
-                                                value: t.id,
-                                                label: t.name,
-                                                sub: `رصيد: ${formatNumber(t.balance)} ${cSymbol}`,
+                                            options={availTreasuries.map(tr => ({
+                                                value: tr.id,
+                                                label: tr.name,
+                                                sub: `${t('رصيد')}: ${formatNumber(tr.balance)} ${cSymbol}`,
                                             }))}
                                         />
                                     </div>
@@ -348,12 +348,12 @@ export default function NewPurchasePaymentPage() {
     );
 }
 
-function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string) {
+function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any) {
     const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const amount = formatNumber(voucher.amount || 0);
     const COMPANY = {
-        name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
-        address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
+        name: t('شركة النور للتجارة'), nameEn: 'Al-Nour Trading Company',
+        address: t('القاهرة، مصر - شارع التحرير، عمارة 12'),
         phone: '01000000000  |  01100000000',
         email: 'info@alnour.com', tax: '123-456-789', logo: '',
     };
@@ -363,11 +363,11 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
     const nextBal = isCust ? (supplier?.balance || 0) + (voucher.amount || 0) : (supplier?.balance || 0) - (voucher.amount || 0);
 
     const html = `<!DOCTYPE html>
-<html lang="ar" dir={isRtl ? 'rtl' : 'ltr'}>
-<head><meta charset="UTF-8"/><title>سند صرف - PMT-${String(voucherNumber).padStart(5, '0')}</title>
+<html lang="${t('ar')}" dir="${t('rtl')}">
+<head><meta charset="UTF-8"/><title>${t('سند صرف')} - PMT-${String(voucherNumber).padStart(5, '0')}</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#1e293b;font-size:13px;direction:rtl;background:#fff}
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#1e293b;font-size:13px;direction:${t('rtl')};background:#fff}
   .page{width:148mm;min-height:105mm;margin:10mm auto;padding:10mm 12mm;border:2px solid #256af4;border-radius:12px;display:flex;flex-direction:column;gap:14px}
   .header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px dashed #e2e8f0}
   .logo-box{width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,#256af4,#256af4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;overflow:hidden}
@@ -411,40 +411,40 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
       </div>
     </div>
     <div class="badge-area">
-      <div><span class="badge-type">📤 سند صرف</span></div>
+      <div><span class="badge-type">📤 ${t('سند صرف')}</span></div>
       <div class="badge-num">PMT-${String(voucherNumber).padStart(5, '0')}</div>
       <div class="badge-date">${date}</div>
     </div>
   </div>
   <div class="amount-box">
-    <div class="amount-label">المبلغ المصروف</div>
+    <div class="amount-label">${t('المبلغ المصروف')}</div>
     <div class="amount-value">${amount} ${cSymbol}</div>
     ${form.description ? `<div class="amount-words">${form.description}</div>` : ''}
   </div>
   <div class="meta-grid">
     <div class="meta-card">
-      <div class="title">بيانات المستفيد</div>
-      <div class="ml"><span class="mk">الاسم</span><span class="mv">${supplier?.name || '—'}</span></div>
-      ${supplier?.phone ? `<div class="ml"><span class="mk">الهاتف</span><span class="mv">${supplier.phone}</span></div>` : ''}
+      <div class="title">${t('بيانات المستفيد')}</div>
+      <div class="ml"><span class="mk">${t('الاسم')}</span><span class="mv">${supplier?.name || '—'}</span></div>
+      ${supplier?.phone ? `<div class="ml"><span class="mk">${t('الهاتف')}</span><span class="mv">${supplier.phone}</span></div>` : ''}
       <div class="ml">
-        <span class="mk">الرصيد بعد السند</span>
+        <span class="mk">${t('الرصيد بعد السند')}</span>
         <span class="mv" style="color:${(isCust ? nextBal < 0 : nextBal > 0) ? '#dc2626' : '#166534'}">
           ${formatNumber(Math.abs(nextBal))} ${cSymbol}
         </span>
       </div>
     </div>
     <div class="meta-card">
-      <div class="title">تفاصيل السند</div>
-      <div class="ml"><span class="mk">رقم السند</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
-      <div class="ml"><span class="mk">التاريخ</span><span class="mv">${date}</span></div>
-      <div class="ml"><span class="mk">طريقة الدفع</span><span class="mv">${form.paymentType === 'cash' ? 'نقدي' : 'تحويل بنكي'}</span></div>
-      <div class="ml"><span class="mk">الخزينة</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
+      <div class="title">${t('تفاصيل السند')}</div>
+      <div class="ml"><span class="mk">${t('رقم السند')}</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
+      <div class="ml"><span class="mk">${t('التاريخ')}</span><span class="mv">${date}</span></div>
+      <div class="ml"><span class="mk">${t('طريقة الدفع')}</span><span class="mv">${form.paymentType === 'cash' ? t('نقدي') : t('تحويل بنكي')}</span></div>
+      <div class="ml"><span class="mk">${t('الخزينة')}</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
     </div>
   </div>
   <div class="footer">
-    <div class="sig"><div class="sl">توقيع المستفيد</div><div class="ss">الاسم والتوقيع</div></div>
-    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#256af4;font-weight:700">سند رسمي معتمد</span></div>
-    <div class="sig"><div class="sl">توقيع المُصرِف</div><div class="ss">الاسم والتوقيع</div></div>
+    <div class="sig"><div class="sl">${t('توقيع المستفيد')}</div><div class="ss">${t('الاسم والتوقيع')}</div></div>
+    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#256af4;font-weight:700">${t('سند رسمي معتمد')}</span></div>
+    <div class="sig"><div class="sl">${t('توقيع المُصرِف')}</div><div class="ss">${t('الاسم والتوقيع')}</div></div>
   </div>
 </div>
 <script>window.onload=()=>window.print();</script>

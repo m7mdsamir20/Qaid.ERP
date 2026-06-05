@@ -9,25 +9,27 @@ import PageHeader from '@/components/PageHeader';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 
+const t = (s: string) => s;
+
 const PLANS: Record<string, { label: string; color: string; bg: string }> = {
-    trial: { label: 'تجريبي', color: '#fb923c', bg: 'rgba(251,146,60,0.1)' },
-    basic: { label: 'أساسي', color: '#60a5fa', bg: 'rgba(37, 106, 244,0.1)' },
-    pro: { label: 'متقدم', color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
-    premium: { label: 'بريميوم', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
-    custom: { label: 'مخصص', color: '#34d399', bg: 'rgba(52,211,153,0.1)' },
+    trial: { label: t('تجريبي'), color: '#fb923c', bg: 'rgba(251,146,60,0.1)' },
+    basic: { label: t('أساسي'), color: '#60a5fa', bg: 'rgba(37, 106, 244,0.1)' },
+    pro: { label: t('متقدم'), color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
+    premium: { label: t('بريميوم'), color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
+    custom: { label: t('مخصص'), color: '#34d399', bg: 'rgba(52,211,153,0.1)' },
 };
 
 const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
-    TRADING: { label: 'تجارة الجملة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
-    SERVICES: { label: 'خدمات', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-    trading: { label: 'تجارة الجملة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
-    RESTAURANT: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-    RESTAURANTS: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-    restaurants: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
-    RETAIL: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-    retail: { label: 'تجارة التجزئة', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
-    CONTRACTING: { label: 'مقاولات وإنشاءات', color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
-    contracting: { label: 'مقاولات وإنشاءات', color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
+    TRADING: { label: t('تجارة الجملة'), color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
+    SERVICES: { label: t('خدمات'), color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+    trading: { label: t('تجارة الجملة'), color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
+    RESTAURANT: { label: t('مطعم'), color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    RESTAURANTS: { label: t('مطعم'), color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    restaurants: { label: t('مطعم'), color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    RETAIL: { label: t('تجارة التجزئة'), color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    retail: { label: t('تجارة التجزئة'), color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    CONTRACTING: { label: t('مقاولات وإنشاءات'), color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
+    contracting: { label: t('مقاولات وإنشاءات'), color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
 };
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -107,7 +109,7 @@ export default function SuperAdminPage() {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
-                            {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? t("ينتهي اليوم ⚠️") : `${days} يوم`}
+                            {isExpired ? `${t('موقوف')} (${Math.abs(days)} ${t('يوم')})` : days === 0 ? t("ينتهي اليوم ⚠️") : `${days} ${t('يوم')}`}
                         </div>
                         <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
                             {fmt(sub.endDate)}

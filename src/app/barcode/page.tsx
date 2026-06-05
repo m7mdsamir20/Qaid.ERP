@@ -82,10 +82,10 @@ export default function BarcodePage() {
 
         const printContent = selectedTables.map(table => `
             <div style="display:inline-block; text-align:center; margin:20px; padding:20px; border:2px solid #e2e8f0; border-radius:16px; font-family:Arial,sans-serif; page-break-inside:avoid;">
-                <div style="font-size:14px; color:#64748b; margin-bottom:8px;">طاولة</div>
+                <div style="font-size:14px; color:#64748b; margin-bottom:8px;">${t('طاولة')}</div>
                 <div style="font-size:28px; font-weight:900; color:#1e293b; margin-bottom:12px;">${table.name}</div>
                 <img src="${getQrUrl(table.id, table.companyId)}" width="160" height="160" alt="QR" style="border-radius:8px;" />
-                <div style="font-size:11px; color:#94a3b8; margin-top:10px;">امسح للطلب</div>
+                <div style="font-size:11px; color:#94a3b8; margin-top:10px;">${t('امسح للطلب')}</div>
             </div>
         `).join('');
 
@@ -93,7 +93,7 @@ export default function BarcodePage() {
         if (!win) return;
         win.document.write(`
             <html dir="rtl">
-            <head><title>QR الطاولات</title>
+            <head><title>${t('QR الطاولات')}</title>
             <style>@media print { body { margin: 0; } }</style>
             </head>
             <body style="background:#fff; padding:20px; text-align:center;">

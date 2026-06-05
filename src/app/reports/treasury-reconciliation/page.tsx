@@ -14,8 +14,9 @@ import { Activity, RefreshCw, Landmark, Wallet, CheckCircle2, TrendingUp, Trendi
 import * as XLSX from 'xlsx';
 import { useCurrency } from '@/hooks/useCurrency';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -68,7 +69,7 @@ export default function TreasuryReconciliationPage() {
     useEffect(() => { if (tab === 'history') fetchSnapshots(); }, [tab]);
 
     const filtered = treasuries.filter(t => t.name.toLowerCase().includes(q.toLowerCase()));
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
 
     const totals = treasuries.reduce((acc, t) => {
         const sys = t.balance;
@@ -300,7 +301,7 @@ export default function TreasuryReconciliationPage() {
 
                 {/* Tabs */}
                 <div className="no-print" style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
-                    {([['new', 'جرد جديد', <Activity size={15} />], ['history', 'سجل الجرد', <ClipboardList size={15} />]] as const).map(([key, label, icon]) => (
+                    {([[ 'new', t('جرد جديد'), <Activity size={15} />], ['history', t('سجل الجرد'), <ClipboardList size={15} />]] as const).map(([key, label, icon]) => (
                         <button key={key} onClick={() => setTab(key)} style={{
                             height: '40px', padding: '0 20px', borderRadius: '10px',
                             background: tab === key ? C.primary : 'transparent',

@@ -17,12 +17,14 @@ import { TableColumn } from '@/components/EmptyTableState';
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Transaction { id: string; type: string; amount: number; date: string; notes?: string; }
 
+const t = (s: string) => s;
+
 const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-    deposit: { label: 'إيداع', color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: TrendingUp },
-    withdrawal: { label: 'سحب', color: '#f87171', bg: 'rgba(239,68,68,0.1)', icon: TrendingDown },
-    profit_share: { label: 'توزيع أرباح', color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', icon: Banknote },
-    capital_increase: { label: 'زيادة رأس مال', color: '#60a5fa', bg: 'rgba(37, 106, 244,0.1)', icon: TrendingUp },
-    capital_decrease: { label: 'تخفيض رأس مال', color: '#fb923c', bg: 'rgba(249,115,22,0.1)', icon: TrendingDown },
+    deposit: { label: t('إيداع'), color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: TrendingUp },
+    withdrawal: { label: t('سحب'), color: '#f87171', bg: 'rgba(239,68,68,0.1)', icon: TrendingDown },
+    profit_share: { label: t('توزيع أرباح'), color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', icon: Banknote },
+    capital_increase: { label: t('زيادة رأس مال'), color: '#60a5fa', bg: 'rgba(37, 106, 244,0.1)', icon: TrendingUp },
+    capital_decrease: { label: t('تخفيض رأس مال'), color: '#fb923c', bg: 'rgba(249,115,22,0.1)', icon: TrendingDown },
 };
 
 export default function PartnerAccountsPage() {

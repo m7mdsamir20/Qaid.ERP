@@ -57,14 +57,16 @@ interface SaleInvoice {
 
 
 
+const t = (s: string) => s;
+
 const RETURN_REASONS = [
-    'عيب في المنتج', 'منتج تالف', 'خطأ في الطلب',
-    'تغيير رأي العميل', 'منتج غير مطابق للمواصفات', 'أخرى',
+    t('عيب في المنتج'), t('منتج تالف'), t('خطأ في الطلب'),
+    t('تغيير رأي العميل'), t('منتج غير مطابق للمواصفات'), t('أخرى'),
 ];
 
 const SERVICE_RETURN_REASONS = [
-    'عدم رضا عن الخدمة', 'خطأ في الفوترة', 'إلغاء الحجز / الموعد',
-    'تغيير رأي العميل', 'الخدمة غير مطابقة للوصف', 'أخرى',
+    t('عدم رضا عن الخدمة'), t('خطأ في الفوترة'), t('إلغاء الحجز / الموعد'),
+    t('تغيير رأي العميل'), t('الخدمة غير مطابقة للوصف'), t('أخرى'),
 ];
 
 const fmt = (v: any) => {
@@ -267,7 +269,7 @@ export default function NewReturnPage() {
             if (!form.bankId) { setFieldErrors({ bankId: t("يرجى اختيار الحساب") }); return; }
             if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: t("أدخل المبلغ") }); return; }
             if (form.paidAmount > netReturnTotal) {
-                alert(`المبلغ المحول (${form.paidAmount}) أكبر من صافي المرتجع (${netReturnTotal.toFixed(2)})`);
+                alert(`${t('المبلغ المحول')} (${form.paidAmount}) ${t('أكبر من')} ${t('صافي المرتجع')} (${netReturnTotal.toFixed(2)})`);
                 return;
             }
         }

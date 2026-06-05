@@ -193,7 +193,7 @@ export default function NewPaymentPage() {
                                             options={suppliers.map(s => ({
                                                 value: s.id,
                                                 label: s.name,
-                                                sub: s.balance < 0 ? `له: ${formatNumber(Math.abs(s.balance))} ${cSymbol}` : s.balance > 0 ? `عليه: ${formatNumber(s.balance)} ${cSymbol}` : t("رصيد: صفر")
+                                                sub: s.balance < 0 ? `${t('له')}: ${formatNumber(Math.abs(s.balance))} ${cSymbol}` : s.balance > 0 ? `${t('عليه')}: ${formatNumber(s.balance)} ${cSymbol}` : t("رصيد: صفر")
                                             }))}
                                         />
                                         <InlineError field="supplierId" />
@@ -201,7 +201,7 @@ export default function NewPaymentPage() {
                                     {selectedSupplier && (
                                         <div style={{ marginTop: '8px' }}>
                                             <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '20px', fontWeight: 700, background: selectedSupplier.balance < 0 ? `${C.success}15` : `${C.danger}15`, color: selectedSupplier.balance < 0 ? C.success : C.danger, border: `1px solid ${selectedSupplier.balance < 0 ? C.success : C.danger}30` }}>
-                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${formatNumber(Math.abs(selectedSupplier.balance))} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${formatNumber(selectedSupplier.balance)} ${cSymbol}` : t("رصيد المورد صفر")}
+                                                {selectedSupplier.balance < 0 ? `${t('للمورد طرفنا')} ${formatNumber(Math.abs(selectedSupplier.balance))} ${cSymbol}` : selectedSupplier.balance > 0 ? `${t('على المورد طرفنا')} ${formatNumber(selectedSupplier.balance)} ${cSymbol}` : t("رصيد المورد صفر")}
                                             </span>
                                         </div>
                                     )}
@@ -249,10 +249,10 @@ export default function NewPaymentPage() {
                                         onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                         icon={Building2}
                                         placeholder={form.paymentType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
-                                        options={availTreasuries.map(t => ({
-                                            value: t.id,
-                                            label: t.name,
-                                            sub: `رصيد الحالي: ${formatNumber(t.balance)} ${cSymbol}`,
+                                        options={availTreasuries.map(tr => ({
+                                            value: tr.id,
+                                            label: tr.name,
+                                            sub: `${t('رصيد الحالي')}: ${formatNumber(tr.balance)} ${cSymbol}`,
                                         }))}
                                     />
                                     <InlineError field="treasuryId" />

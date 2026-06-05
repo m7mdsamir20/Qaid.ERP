@@ -13,8 +13,9 @@ import { Calendar, RefreshCw, ShoppingCart, ArrowDownRight, ArrowUpRight, Activi
 import { C, CAIRO, PAGE_BASE, OUTFIT, SEARCH_STYLE } from '@/constants/theme';
 import { CompanyInfo } from '@/lib/printInvoices';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -77,7 +78,7 @@ export default function DailyReportPage() {
 
     const branchName = Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : '';
     const printDate = new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
     const dir = isRtl ? 'rtl' : 'ltr';
     const fAlign = isRtl ? 'right' : 'left';
     const bAlign = isRtl ? 'left' : 'right';
@@ -87,7 +88,7 @@ export default function DailyReportPage() {
         const logo = (company as any)?.logo || (company as any)?.companyLogo || '';
         const companyName = (company as any)?.companyName || (company as any)?.name || '';
         const now = new Date();
-        const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, d => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
+        const toWesternDigits = (s: string) => s.replace(/[\u0660-\u0669]/g, d => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
         const nowStr = toWesternDigits(now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' }));
         const nowTime = toWesternDigits(now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' }));
 

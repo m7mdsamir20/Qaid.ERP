@@ -8,12 +8,14 @@ import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, Chev
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
 import CustomSelect from '@/components/CustomSelect';
 
+const t_s = (s: string) => s;
+
 const PLANS = {
-    trial: { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14 },
-    basic: { label: 'أساسي', color: '#60a5fa', days: 365 },
-    pro: { label: 'متقدم', color: '#a78bfa', days: 365 },
-    premium: { label: 'بريميوم', color: '#fbbf24', days: 365 },
-    custom: { label: 'مخصص', color: '#34d399', days: 0 },
+    trial: { label: t_s('تجريبي 14 يوم'), color: '#fb923c', days: 14 },
+    basic: { label: t_s('أساسي'), color: '#60a5fa', days: 365 },
+    pro: { label: t_s('متقدم'), color: '#a78bfa', days: 365 },
+    premium: { label: t_s('بريميوم'), color: '#fbbf24', days: 365 },
+    custom: { label: t_s('مخصص'), color: '#34d399', days: 0 },
 };
 
 // الـ featureKeys الصحيحة من navSections:
@@ -21,49 +23,49 @@ const PLANS = {
 const BUSINESS_TYPES = [
     {
         value: "TRADING",
-        label: "نشاط تجارة الجملة",
+        label: t_s("نشاط تجارة الجملة"),
         modules: ['sales', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
     },
     {
         value: "RETAIL",
-        label: "نشاط تجارة التجزئة",
+        label: t_s("نشاط تجارة التجزئة"),
         modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports', 'pos', 'barcode']
     },
     {
         value: "SERVICES",
-        label: "نشاط خدمات (استشارات، صيانة، إلخ)",
+        label: t_s("نشاط خدمات (استشارات، صيانة، إلخ)"),
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
     {
         value: "RESTAURANTS",
-        label: "مطاعم وكافيهات",
+        label: t_s("مطاعم وكافيهات"),
         modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
     {
         value: "CONTRACTING",
-        label: "مقاولات وإنشاءات",
+        label: t_s("مقاولات وإنشاءات"),
         modules: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
 ];
 
 const COUNTRIES = [
-    { value: 'EG', label: '🇪🇬 مصر' },
-    { value: 'SA', label: '🇸🇦 السعودية' },
-    { value: 'AE', label: '🇦🇪 الإمارات' },
-    { value: 'KW', label: '🇰🇼 الكويت' },
-    { value: 'QA', label: '🇶🇦 قطر' },
-    { value: 'BH', label: '🇧🇭 البحرين' },
-    { value: 'OM', label: '🇴🇲 عمان' },
-    { value: 'JO', label: '🇯🇴 الأردن' },
-    { value: 'IQ', label: '🇮🇶 العراق' },
-    { value: 'LY', label: '🇱🇾 ليبيا' },
-    { value: 'SD', label: '🇸🇩 السودان' },
-    { value: 'LB', label: '🇱🇧 لبنان' },
-    { value: 'SY', label: '🇸🇾 سوريا' },
-    { value: 'YE', label: '🇾🇪 اليمن' },
-    { value: 'TN', label: '🇹🇳 تونس' },
-    { value: 'DZ', label: '🇩🇿 الجزائر' },
-    { value: 'MA', label: '🇲🇦 المغرب' },
+    { value: 'EG', label: t_s('🇪🇬 مصر') },
+    { value: 'SA', label: t_s('🇸🇦 السعودية') },
+    { value: 'AE', label: t_s('🇦🇪 الإمارات') },
+    { value: 'KW', label: t_s('🇰🇼 الكويت') },
+    { value: 'QA', label: t_s('🇶🇦 قطر') },
+    { value: 'BH', label: t_s('🇧🇭 البحرين') },
+    { value: 'OM', label: t_s('🇴🇲 عمان') },
+    { value: 'JO', label: t_s('🇯🇴 الأردن') },
+    { value: 'IQ', label: t_s('🇮🇶 العراق') },
+    { value: 'LY', label: t_s('🇱🇾 ليبيا') },
+    { value: 'SD', label: t_s('🇸🇩 السودان') },
+    { value: 'LB', label: t_s('🇱🇧 لبنان') },
+    { value: 'SY', label: t_s('🇸🇾 سوريا') },
+    { value: 'YE', label: t_s('🇾🇪 اليمن') },
+    { value: 'TN', label: t_s('🇹🇳 تونس') },
+    { value: 'DZ', label: t_s('🇩🇿 الجزائر') },
+    { value: 'MA', label: t_s('🇲🇦 المغرب') },
 ];
 
 // بناء features لكل الأقسام المتاحة (تحديد الكل)

@@ -21,10 +21,12 @@ const calcDays = (s: any, e: any) =>
 const fmtMoney = (n: number) => formatNumber(n);
 
 
+const t = (s: string) => s;
+
 const CURRENCY_AR: Record<string, string> = {
-    EGP: 'ج.م', SAR: 'ر.س', AED: 'د.إ', KWD: 'د.ك',
-    QAR: 'ر.ق', BHD: 'د.ب', OMR: 'ر.ع', JOD: 'د.أ',
-    LYD: 'د.ل', IQD: 'د.ع', TRY: '₺', USD: '$', EUR: '€', GBP: '£'
+    EGP: t('ج.م'), SAR: t('ر.س'), AED: t('د.إ'), KWD: t('د.ك'),
+    QAR: t('ر.ق'), BHD: t('د.ب'), OMR: t('ر.ع'), JOD: t('د.أ'),
+    LYD: t('د.ل'), IQD: t('د.ع'), TRY: '₺', USD: '$', EUR: '€', GBP: '£'
 };
 
 /* ── KPI card matching system design ── */
@@ -288,10 +290,10 @@ export default function FinancialYearsPage() {
                                             sub={remaining < 30 ? t('تقترب نهاية السنة') : undefined} />
                                         {activeFY.stats && <>
                                             <KpiCard icon={TrendingUp} label={t("إجمالي المبيعات")}
-                                                value={`${fmtMoney(activeFY.stats.salesTotal)} ${CURRENCY_AR[currency] || currency}`} color="#10b981"
+                                                value={`${fmtMoney(activeFY.stats.salesTotal)} ${t(CURRENCY_AR[currency] || currency)}`} color="#10b981"
                                                 sub={`${activeFY.stats.salesCount} ${t('فاتورة')}`} />
                                             <KpiCard icon={TrendingDown} label={t("إجمالي المشتريات")}
-                                                value={`${fmtMoney(activeFY.stats.purchasesTotal)} ${CURRENCY_AR[currency] || currency}`} color={C.danger}
+                                                value={`${fmtMoney(activeFY.stats.purchasesTotal)} ${t(CURRENCY_AR[currency] || currency)}`} color={C.danger}
                                                 sub={`${activeFY.stats.purchasesCount} ${t('فاتورة')}`} />
                                             <KpiCard icon={BookOpen} label={t("قيود يومية")} value={formatNumber(activeFY.stats.journalEntries)} color="#f59e0b" />
                                         </>}
@@ -363,7 +365,7 @@ export default function FinancialYearsPage() {
                                             type: 'number',
                                             cell: (row) => row.stats ? (
                                                 <div>
-                                                    <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(row.stats.salesTotal)} {CURRENCY_AR[currency] || currency}</div>
+                                                    <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(row.stats.salesTotal)} {t(CURRENCY_AR[currency] || currency)}</div>
                                                     <div style={{ fontSize: '10px', color: C.textSecondary }}>{row.stats.salesCount} {t('فاتورة')}</div>
                                                 </div>
                                             ) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>—</span>
@@ -373,7 +375,7 @@ export default function FinancialYearsPage() {
                                             type: 'number',
                                             cell: (row) => row.stats ? (
                                                 <div>
-                                                    <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(row.stats.purchasesTotal)} {CURRENCY_AR[currency] || currency}</div>
+                                                    <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(row.stats.purchasesTotal)} {t(CURRENCY_AR[currency] || currency)}</div>
                                                     <div style={{ fontSize: '10px', color: C.textSecondary }}>{row.stats.purchasesCount} {t('فاتورة')}</div>
                                                 </div>
                                             ) : <span style={{ color: C.textSecondary, fontSize: '11px' }}>—</span>
@@ -387,7 +389,7 @@ export default function FinancialYearsPage() {
                                                 return (
                                                     <div>
                                                         <div style={{ fontWeight: 600, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
-                                                            {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
+                                                            {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {t(CURRENCY_AR[currency] || currency)}
                                                         </div>
                                                         <div style={{ fontSize: '10px', color: C.textSecondary }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
                                                     </div>
@@ -433,7 +435,7 @@ export default function FinancialYearsPage() {
                     isSubmitting={isClosing}
                     isDelete={true}
                     title={t("إغلاق السنة المالية")}
-                    description={`${t('هل أنت متأكد من إغلاق')} "${confirmClose?.name}"؟ ${t('سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.')}`}
+                    description={`${t('هل أنت متأكد من إغلاق')} "${confirmClose?.name}"${t('؟')} ${t('سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.')}`}
                     confirmText={t("نعم، أغلق السنة")}
                     onConfirm={async () => {
                         setIsClosing(true);

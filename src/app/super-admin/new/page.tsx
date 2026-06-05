@@ -9,12 +9,14 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from 
 import CustomSelect from '@/components/CustomSelect';
 
 // We'll use theme constants instead of these local ones
+const t = (s: string) => s;
+
 const PLANS = {
-    trial: { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14 },
-    basic: { label: 'أساسي', color: '#60a5fa', days: 365 },
-    pro: { label: 'متقدم', color: '#a78bfa', days: 365 },
-    premium: { label: 'بريميوم', color: '#fbbf24', days: 365 },
-    custom: { label: 'مخصص', color: '#34d399', days: 0 },
+    trial: { label: t('تجريبي 14 يوم'), color: '#fb923c', days: 14 },
+    basic: { label: t('أساسي'), color: '#60a5fa', days: 365 },
+    pro: { label: t('متقدم'), color: '#a78bfa', days: 365 },
+    premium: { label: t('بريميوم'), color: '#fbbf24', days: 365 },
+    custom: { label: t('مخصص'), color: '#34d399', days: 0 },
 };
 
 // الـ featureKeys الصحيحة من navSections:
@@ -22,49 +24,49 @@ const PLANS = {
 const BUSINESS_TYPES = [
     {
         value: "TRADING",
-        label: "نشاط تجارة الجملة",
+        label: t("نشاط تجارة الجملة"),
         modules: ['sales', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
     },
     {
         value: "RETAIL",
-        label: "نشاط تجارة التجزئة",
+        label: t("نشاط تجارة التجزئة"),
         modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports', 'pos', 'barcode']
     },
     {
         value: "SERVICES",
-        label: "نشاط خدمات (استشارات، صيانة، إلخ)",
+        label: t("نشاط خدمات (استشارات، صيانة، إلخ)"),
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
     {
         value: "RESTAURANTS",
-        label: "مطاعم وكافيهات",
+        label: t("مطاعم وكافيهات"),
         modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
     {
         value: "CONTRACTING",
-        label: "مقاولات وإنشاءات",
+        label: t("مقاولات وإنشاءات"),
         modules: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
 ];
 
 const COUNTRIES = [
-    { value: 'EG', label: '🇪🇬 مصر' },
-    { value: 'SA', label: '🇸🇦 السعودية' },
-    { value: 'AE', label: '🇦🇪 الإمارات' },
-    { value: 'KW', label: '🇰🇼 الكويت' },
-    { value: 'QA', label: '🇶🇦 قطر' },
-    { value: 'BH', label: '🇧🇭 البحرين' },
-    { value: 'OM', label: '🇴🇲 عمان' },
-    { value: 'JO', label: '🇯🇴 الأردن' },
-    { value: 'IQ', label: '🇮🇶 العراق' },
-    { value: 'LY', label: '🇱🇾 ليبيا' },
-    { value: 'SD', label: '🇸🇩 السودان' },
-    { value: 'LB', label: '🇱🇧 لبنان' },
-    { value: 'SY', label: '🇸🇾 سوريا' },
-    { value: 'YE', label: '🇾🇪 اليمن' },
-    { value: 'TN', label: '🇹🇳 تونس' },
-    { value: 'DZ', label: '🇩🇿 الجزائر' },
-    { value: 'MA', label: '🇲🇦 المغرب' },
+    { value: 'EG', label: t('🇪🇬 مصر') },
+    { value: 'SA', label: t('🇸🇦 السعودية') },
+    { value: 'AE', label: t('🇦🇪 الإمارات') },
+    { value: 'KW', label: t('🇰🇼 الكويت') },
+    { value: 'QA', label: t('🇶🇦 قطر') },
+    { value: 'BH', label: t('🇧🇭 البحرين') },
+    { value: 'OM', label: t('🇴🇲 عمان') },
+    { value: 'JO', label: t('🇯🇴 الأردن') },
+    { value: 'IQ', label: t('🇮🇶 العراق') },
+    { value: 'LY', label: t('🇱🇾 ليبيا') },
+    { value: 'SD', label: t('🇸🇩 السودان') },
+    { value: 'LB', label: t('🇱🇧 لبنان') },
+    { value: 'SY', label: t('🇸🇾 سوريا') },
+    { value: 'YE', label: t('🇾🇪 اليمن') },
+    { value: 'TN', label: t('🇹🇳 تونس') },
+    { value: 'DZ', label: t('🇩🇿 الجزائر') },
+    { value: 'MA', label: t('🇲🇦 المغرب') },
 ];
 
 // بناء features لكل الأقسام المتاحة من navSections (بغض النظر عن نوع النشاط)
@@ -585,7 +587,7 @@ export default function NewCompanyPage() {
                             <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
                                 {[
                                     { label: t("الباقة"), value: PLANS[form.plan as keyof typeof PLANS]?.label },
-                                    { label: t("مدة الاشتراك"), value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000 * 60 * 60 * 24))} يوم` },
+                                    { label: t("مدة الاشتراك"), value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000 * 60 * 60 * 24))} ${t("يوم")}` },
                                     { label: t("عدد المستخدمين"), value: form.maxUsers },
                                     { label: t("عدد الفروع"), value: form.maxBranches },
                                 ].map((item, i) => (

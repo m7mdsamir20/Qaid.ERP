@@ -324,7 +324,7 @@ export default function EditEmployeePage() {
 
                             {/* ③ مالي */}
                             <FormSection label={t("الراتب والبدلات والخصومات")} icon={CreditCard} color="#10b981" description={t("تفاصيل الراتب الشهري والحوافز والاستقطاعات")}>
-                                <Field label={`الراتب الأساسي الشهري (${cSymbol})`} required>
+                                <Field label={`${t('الراتب الأساسي الشهري')} (${cSymbol})`} required>
                                     <div style={{ position: 'relative' }}>
                                         <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 600, height: '56px', paddingInlineEnd: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
                                         <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: '#64748b' }}>{cSymbol}</span>

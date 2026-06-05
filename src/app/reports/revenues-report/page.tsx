@@ -128,7 +128,7 @@ export default function RevenuesReportPage() {
                     subtitle={t("عرض تفصيلي لجميع الإيرادات الأخرى المسجلة خلال فترة زمنية محددة.")}
                     backTab="treasury-bank"
                     printTitle={t("تقرير الإيرادات الأخرى")}
-                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
+                    printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                     onExportExcel={exportToExcel}
                 />
 

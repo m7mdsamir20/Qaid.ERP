@@ -2,7 +2,7 @@
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
+import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -14,10 +14,7 @@ import { useEffect, useState } from 'react';
 import { AlertTriangle, Search, Trash2, Activity, Loader2, ArrowDownRight, Users, Calendar } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+
 
 interface DeductionRecord {
     id: string;
@@ -60,7 +57,7 @@ export default function EmployeesDeductionsPage() {
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState('');
 
-    const sym = getCurrencyName(currency);
+    const sym = getCurrencySymbol(currency, lang);
     const fetchReport = async () => {
         setLoading(true);
         try {
@@ -132,7 +129,7 @@ export default function EmployeesDeductionsPage() {
                         }}>
                             <div>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textSecondary }}>{i !== 1 ? getCurrencyName(currency) : t('جزاء')}</small></span>
+                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textSecondary }}>{i !== 1 ? getCurrencySymbol(currency, lang) : t('جزاء')}</small></span>
                             </div>
                             <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>
                         </div>

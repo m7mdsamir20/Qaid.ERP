@@ -10,21 +10,23 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
 import { generateZatcaTLV } from '@/lib/printInvoices';
 
+const t = (s: string) => s;
+
 const TYPE_ICONS: Record<string, React.ReactNode> = {
     'dine-in': <Utensils size={14} />,
     'takeaway': <ShoppingBag size={14} />,
     'delivery': <Truck size={14} />,
     'online': <Globe size={14} />
 };
-const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك اوي', 'delivery': 'توصيل', 'online': 'أونلاين' };
+const TYPE_LABELS: Record<string, string> = { 'dine-in': t('صالة'), 'takeaway': t('تيك اوي'), 'delivery': t('توصيل'), 'online': t('أونلاين') };
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
-    pending: { label: 'مكتمل', color: '#10b981', bg: '#dbeafe' }, // mapped to completed for old orders
-    preparing: { label: 'تحت التحضير', color: '#8b5cf6', bg: '#ede9fe' },
-    ready: { label: 'مكتمل', color: '#10b981', bg: '#dbeafe' },
-    delivered: { label: 'مكتمل', color: '#10b981', bg: '#d1fae5' }, // fallback
-    cancelled: { label: 'ألغيت', color: '#ef4444', bg: '#fee2e2' },
-    returned: { label: 'مرتجع', color: '#ef4444', bg: '#fee2e2' },
+    pending: { label: t('مكتمل'), color: '#10b981', bg: '#dbeafe' }, // mapped to completed for old orders
+    preparing: { label: t('تحت التحضير'), color: '#8b5cf6', bg: '#ede9fe' },
+    ready: { label: t('مكتمل'), color: '#10b981', bg: '#dbeafe' },
+    delivered: { label: t('مكتمل'), color: '#10b981', bg: '#d1fae5' }, // fallback
+    cancelled: { label: t('ألغيت'), color: '#ef4444', bg: '#fee2e2' },
+    returned: { label: t('مرتجع'), color: '#ef4444', bg: '#fee2e2' },
 };
 
 export default function OrdersHistoryPage() {
@@ -62,7 +64,7 @@ export default function OrdersHistoryPage() {
             year: 'numeric', month: '2-digit', day: '2-digit',
             hour: '2-digit', minute: '2-digit', hour12: true
         });
-        return str.replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م');
+        return str.replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'));
     };
 
     const updateStatus = async (id: string, status: string, customReason?: string, doRevert?: boolean) => {
@@ -80,7 +82,7 @@ export default function OrdersHistoryPage() {
             });
             if (!res.ok) {
                 const data = await res.json();
-                alert('حدث خطأ: ' + (data.error || 'غير معروف'));
+                alert(t('حدث خطأ') + ': ' + (data.error || t('غير معروف')));
                 return;
             }
 
@@ -88,14 +90,14 @@ export default function OrdersHistoryPage() {
                 setSelectedOrder({
                     ...selectedOrder,
                     status,
-                    notes: customReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[السبب: ${customReason}]` : `[السبب: ${customReason}]`) : selectedOrder.notes
+                    notes: customReason ? (selectedOrder.notes ? `${selectedOrder.notes}\n[${t('السبب')}: ${customReason}]` : `[${t('السبب')}: ${customReason}]`) : selectedOrder.notes
                 });
             }
             load();
             setActionPrompt({ type: null });
             setCancelReasonInput('');
         } catch (err: any) {
-            alert('حدث خطأ في الاتصال: ' + err.message);
+            alert(t('حدث خطأ في الاتصال') + ': ' + err.message);
         } finally {
             setActionLoading(false);
         }
@@ -115,7 +117,7 @@ export default function OrdersHistoryPage() {
             });
             if (!res.ok) {
                 const data = await res.json();
-                alert('حدث خطأ أثناء الدفع: ' + (data.error || 'غير معروف'));
+                alert(t('حدث خطأ أثناء الدفع') + ': ' + (data.error || t('غير معروف')));
                 return;
             }
             if (selectedOrder && selectedOrder.id === order.id) {
@@ -124,7 +126,7 @@ export default function OrdersHistoryPage() {
             load();
             setActionPrompt({ type: null });
         } catch (err: any) {
-            alert('حدث خطأ في الاتصال: ' + err.message);
+            alert(t('حدث خطأ في الاتصال') + ': ' + err.message);
         } finally {
             setActionLoading(false);
         }
@@ -141,9 +143,9 @@ export default function OrdersHistoryPage() {
 
         const formatMoney = (m: number) => Number(m).toFixed(2);
 
-        const typeLabel = orderData.type === 'dine-in' ? 'صالة' :
-            orderData.type === 'takeaway' ? 'تيك أواي' :
-                orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
+        const typeLabel = orderData.type === 'dine-in' ? t('صالة') :
+            orderData.type === 'takeaway' ? t('تيك أواي') :
+                orderData.type === 'delivery' ? t('توصيل') : t('أونلاين');
 
         // Use receiptFooter from restaurant settings, fall back to generic message
         const rs = typeof orderData.company?.restaurantSettings === 'string'
@@ -152,7 +154,7 @@ export default function OrdersHistoryPage() {
         const customFooter = rs?.receiptFooter || '';
         const footerHtml = customFooter
             ? customFooter.split('\n').map((line: string) => `<p>${line}</p>`).join('')
-            : '<p>شكراً لزيارتكم ❤️</p>';
+            : `<p>${t('شكراً لزيارتكم')} ❤️</p>`;
 
         const html = `
             <!DOCTYPE html>
@@ -209,31 +211,31 @@ export default function OrdersHistoryPage() {
                     </div>
                     ` : ''}
                     ${orderData.company?.phone ? `<p style="margin: 0 0 2px; font-weight: bold;">${orderData.company.phone}</p>` : ''}
-                    ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `<p style="margin: 2px 0;">${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}</p>` : ''}
-                    ${orderData.company?.taxNumber ? `<p style="margin: 2px 0;">الرقم الضريبي: ${orderData.company.taxNumber}</p>` : ''}
+                    ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join(t('، ')) ? `<p style="margin: 2px 0;">${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join(t('، '))}</p>` : ''}
+                    ${orderData.company?.taxNumber ? `<p style="margin: 2px 0;">${t('الرقم الضريبي')}: ${orderData.company.taxNumber}</p>` : ''}
                 </div>
                 
                 <div class="dashed-line"></div>
                 
                 <table class="meta-table">
-                    <tr><td>رقم الطلب</td><td>: ${orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    <tr><td>${t('رقم الطلب')}</td><td>: ${orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
                     ${orderData.type === 'dine-in' ? `
-                    <tr><td>رقم الطاولة</td><td>: ${orderData.table?.name || '-'}</td></tr>
-                    ${orderData.guests ? `<tr><td>عدد الأفراد</td><td>: ${orderData.guests}</td></tr>` : ''}
+                    <tr><td>${t('رقم الطاولة')}</td><td>: ${orderData.table?.name || '-'}</td></tr>
+                    ${orderData.guests ? `<tr><td>${t('عدد الأفراد')}</td><td>: ${orderData.guests}</td></tr>` : ''}
                     ` : ''}
                     ${orderData.type === 'takeaway' ? `
-                    <tr><td>رقم الانتظار</td><td>: ${orderData.queueNumber || orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
                     ` : ''}
-                    <tr><td>التاريخ</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</td></tr>
-                    ${orderData.type !== 'delivery' ? `<tr><td>الكاشير</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
+                    ${orderData.type !== 'delivery' ? `<tr><td>${t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && orderData.customer ? `
                 <div class="dashed-line"></div>
                 <table class="meta-table">
-                    <tr><td>اسم العميل</td><td>: ${orderData.customer?.name || '-'}</td></tr>
-                    <tr><td>رقم الهاتف</td><td>: ${orderData.customer?.phone || '-'}</td></tr>
-                    ${orderData.customer?.address ? `<tr><td>العنوان</td><td>: ${orderData.customer?.address}</td></tr>` : ''}
-                    ${orderData.deliveryAgent ? `<tr><td>المندوب</td><td>: ${orderData.deliveryAgent?.name}</td></tr>` : ''}
+                    <tr><td>${t('اسم العميل')}</td><td>: ${orderData.customer?.name || '-'}</td></tr>
+                    <tr><td>${t('رقم الهاتف')}</td><td>: ${orderData.customer?.phone || '-'}</td></tr>
+                    ${orderData.customer?.address ? `<tr><td>${t('العنوان')}</td><td>: ${orderData.customer?.address}</td></tr>` : ''}
+                    ${orderData.deliveryAgent ? `<tr><td>${t('المندوب')}</td><td>: ${orderData.deliveryAgent?.name}</td></tr>` : ''}
                 </table>
                 ` : ''}
 
@@ -258,7 +260,7 @@ export default function OrdersHistoryPage() {
             return `
                             <div class="item">
                                 <div class="flex-between item-main">
-                                    <span style="flex: 1; padding-left: 10px;">${l.itemName || 'صنف'} x${l.quantity}</span>
+                                    <span style="flex: 1; padding-left: 10px;">${l.itemName || t('صنف')} x${l.quantity}</span>
                                     <span>${formatMoney(rowTotal)}</span>
                                 </div>
                                 ${mods}
@@ -271,12 +273,12 @@ export default function OrdersHistoryPage() {
 
                 <div class="totals">
                     <div class="flex-between">
-                        <span>الإجمالي الفرعي</span>
+                        <span>${t('الإجمالي الفرعي')}</span>
                         <span>${formatMoney(subtotal)}</span>
                     </div>
                     ${finalDiscount > 0 ? `
                     <div class="flex-between">
-                        <span>خصم</span>
+                        <span>${t('خصم')}</span>
                         <span>${formatMoney(finalDiscount)}</span>
                     </div>` : ''}
                     ${(() => {
@@ -288,7 +290,7 @@ export default function OrdersHistoryPage() {
                     } catch (e) { }
                     return `
                             <div class="flex-between">
-                                <span>رسوم الخدمة${rate}</span>
+                                <span>${t('رسوم الخدمة')}${rate}</span>
                                 <span>${formatMoney(orderData.serviceAmount)}</span>
                             </div>`;
                 }
@@ -303,7 +305,7 @@ export default function OrdersHistoryPage() {
                     } catch (e) { }
                     return `
                             <div class="flex-between">
-                                <span>ضريبة القيمة المضافة${rate}</span>
+                                <span>${t('ضريبة القيمة المضافة')}${rate}</span>
                                 <span>${formatMoney(taxAmount)}</span>
                             </div>`;
                 }
@@ -315,38 +317,38 @@ export default function OrdersHistoryPage() {
 
                 <div class="totals">
                     <div class="flex-between grand-total">
-                        <span>الإجمالي</span>
+                        <span>${t('الإجمالي')}</span>
                         <span>${formatMoney(finalTotal)}</span>
                     </div>
                     ${(() => {
                 const paidAmount = Number(orderData.paidAmount || 0);
-                const methodStr = { 'cash': 'نقدي', 'card': 'شبكة', 'mixed': 'مختلط', 'bank': 'تحويل بنكي' }[orderData.paymentMethod as string] || orderData.paymentMethod || 'نقدي';
+                const methodStr = { 'cash': t('نقدي'), 'card': t('شبكة'), 'mixed': t('مختلط'), 'bank': t('تحويل بنكي') }[orderData.paymentMethod as string] || orderData.paymentMethod || t('نقدي');
                 if (orderData.type === 'delivery') {
                     if (paidAmount === 0) {
                         return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>طريقة الدفع</span>
-                                    <span>الدفع عند الاستلام</span>
+                                    <span>${t('طريقة الدفع')}</span>
+                                    <span>${t('الدفع عند الاستلام')}</span>
                                 </div>`;
                     }
                     return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${t('المدفوع')} (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
                                 </div>
                                 <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
-                                    <span>المتبقي</span>
+                                    <span>${t('المتبقي')}</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
                 } else {
                     if (paidAmount > 0) {
                         return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${t('المدفوع')} (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
                                 </div>
                                 <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
-                                    <span>المتبقي</span>
+                                    <span>${t('المتبقي')}</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
                     }
@@ -421,7 +423,7 @@ export default function OrdersHistoryPage() {
                             onChange={(e) => setFilterDate(e.target.value)}
                             style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}
                         />
-                        {[{ value: '', label: 'كل الحالات' }, { value: 'preparing', label: 'تحت التحضير' }, { value: 'ready', label: 'مكتمل' }, { value: 'cancelled', label: 'ألغيت' }].map(s => (
+                        {[{ value: '', label: t('كل الحالات') }, { value: 'preparing', label: t('تحت التحضير') }, { value: 'ready', label: t('مكتمل') }, { value: 'cancelled', label: t('ألغيت') }].map(s => (
                             <button key={s.value} onClick={() => setFilterStatus(s.value)}
                                 style={{ padding: '8px 16px', borderRadius: '8px', border: `1px solid ${filterStatus === s.value ? C.primary : C.border}`, background: filterStatus === s.value ? `${C.primary}12` : C.card, color: filterStatus === s.value ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', transition: 'all 0.2s' }}>
                                 {s.label}
@@ -475,7 +477,7 @@ export default function OrdersHistoryPage() {
                             cell: (row) => (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     {row.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : row.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : row.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />}
-                                    {TYPE_LABELS[row.type] ?? row.type}
+                                    {t(TYPE_LABELS[row.type] ?? row.type)}
                                 </div>
                             )
                         },
@@ -509,7 +511,7 @@ export default function OrdersHistoryPage() {
                                 const st = STATUS_INFO[row.status] ?? STATUS_INFO.pending;
                                 return (
                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: `1px solid ${st.color}50`, background: C.card, borderRadius: '20px', padding: '3px 10px', fontSize: '11px', fontWeight: 700, color: st.color }}>
-                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: st.color }}></span> {st.label}
+                                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: st.color }}></span> {t(st.label)}
                                     </span>
                                 );
                             }
@@ -556,7 +558,7 @@ export default function OrdersHistoryPage() {
                                         fontFamily: CAIRO
                                     }}>
                                         <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: STATUS_INFO[selectedOrder.status].color, boxShadow: `0 0 8px ${STATUS_INFO[selectedOrder.status].color}` }}></span>
-                                        {STATUS_INFO[selectedOrder.status].label}
+                                        {t(STATUS_INFO[selectedOrder.status].label)}
                                     </span>
                                 )}
 
@@ -580,15 +582,15 @@ export default function OrdersHistoryPage() {
                             {/* Order Info Grid */}
                             <div style={{ padding: '10px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', borderBottom: `1px dashed ${C.border}`, paddingBottom: '16px' }}>
                                 <div>
-                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>نوع الخدمة</p>
-                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type}</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('نوع الخدمة')}</p>
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{t(TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type)}</p>
                                 </div>
                                 <div>
-                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>الكاشير</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('الكاشير')}</p>
                                     <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{selectedOrder.shift?.user?.name || '-'}</p>
                                 </div>
                                 <div>
-                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>المجموع</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('المجموع')}</p>
                                     <p style={{ margin: 0, fontSize: '14px', color: C.primary, fontFamily: OUTFIT, fontWeight: 800 }}>{fMoneyJSX(selectedOrder.total)}</p>
                                 </div>
                             </div>
@@ -604,7 +606,7 @@ export default function OrdersHistoryPage() {
                             {/* Order Items List */}
                             <div style={{ marginTop: '8px' }}>
                                 <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <ShoppingBag size={14} color={C.primary} /> عناصر الطلب
+                                    <ShoppingBag size={14} color={C.primary} /> {t('عناصر الطلب')}
                                 </h3>
                                 <div className="custom-scrollbar" style={{ display: 'flex', flexDirection: 'column', gap: '0', maxHeight: '200px', overflowY: 'auto' }}>
                                     {selectedOrder.lines?.map((line: any, idx: number) => (
@@ -624,41 +626,41 @@ export default function OrdersHistoryPage() {
                             {/* Summary */}
                             <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '16px', marginTop: '4px' }}>
                                 <h3 style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <FileText size={14} color={C.primary} /> ملخص الطلب
+                                    <FileText size={14} color={C.primary} /> {t('ملخص الطلب')}
                                 </h3>
                                 <div style={{ padding: '0 8px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
-                                        <span>المجموع الفرعي</span>
+                                        <span>{t('المجموع الفرعي')}</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.subtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
-                                        <span>تخفيض</span>
+                                        <span>{t('تخفيض')}</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.discount + selectedOrder.couponDiscount)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
-                                        <span>الخدمة</span>
+                                        <span>{t('الخدمة')}</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.serviceAmount || 0)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
-                                        <span>ضريبة</span>
+                                        <span>{t('ضريبة')}</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary }}>{fMoneyJSX(selectedOrder.taxAmount)}</span>
                                     </div>
                                     <div style={{ height: '1px', background: C.border, margin: '12px 0' }}></div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '14px', color: C.textPrimary, fontWeight: 800 }}>
-                                        <span>المجموع</span>
+                                        <span>{t('المجموع')}</span>
                                         <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoneyJSX(selectedOrder.total)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', fontSize: '12px', color: C.textPrimary, fontWeight: 700 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <span>دفع</span>
+                                            <span>{t('دفع')}</span>
                                             <span style={{ fontSize: '11px', color: C.textSecondary }}>
-                                                ({selectedOrder.paymentMethod === 'cash' ? 'نقدي' : selectedOrder.paymentMethod === 'card' ? 'بطاقة' : selectedOrder.paymentMethod === 'mixed' ? 'متعدد' : 'غير محدد'})
+                                                ({selectedOrder.paymentMethod === 'cash' ? t('نقدي') : selectedOrder.paymentMethod === 'card' ? t('بطاقة') : selectedOrder.paymentMethod === 'mixed' ? t('متعدد') : t('غير محدد')})
                                             </span>
                                         </div>
                                         <span style={{ fontFamily: OUTFIT, color: C.textPrimary, fontSize: '13px' }}>{fMoneyJSX(selectedOrder.paidAmount)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: selectedOrder.paidAmount < selectedOrder.total ? C.danger : C.textSecondary, fontWeight: 700, marginTop: '4px' }}>
-                                        <span>المتبقي</span>
+                                        <span>{t('المتبقي')}</span>
                                         <span style={{ fontFamily: OUTFIT }}>{fMoneyJSX(Math.max(0, selectedOrder.total - selectedOrder.paidAmount))}</span>
                                     </div>
                                 </div>
@@ -671,29 +673,29 @@ export default function OrdersHistoryPage() {
                                     <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, width: '100%' }}>
                                         {actionPrompt.type === 'pay' ? (
                                             <>
-                                                <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>هل أنت متأكد من دفع المبلغ المتبقي نقداً؟</h4>
+                                                <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>{t('هل أنت متأكد من دفع المبلغ المتبقي نقداً؟')}</h4>
                                                 <div style={{ display: 'flex', gap: '8px' }}>
                                                     <button onClick={() => handlePay(selectedOrder)} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: C.success, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer', opacity: actionLoading ? 0.7 : 1 }}>
-                                                        {actionLoading ? 'جاري الدفع...' : 'تأكيد الدفع'}
+                                                        {actionLoading ? t('جاري الدفع...') : t('تأكيد الدفع')}
                                                     </button>
-                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>تراجع</button>
+                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('تراجع')}</button>
                                                 </div>
                                             </>
                                         ) : (
                                             <>
                                                 <h4 style={{ margin: '0 0 10px', fontSize: '14px', color: actionPrompt.type === 'cancel' ? C.danger : C.primary, fontFamily: CAIRO }}>
-                                                    {actionPrompt.type === 'cancel' ? 'إلغاء الطلب' : 'إرجاع الطلب'}
+                                                    {actionPrompt.type === 'cancel' ? t('إلغاء الطلب') : t('إرجاع الطلب')}
                                                 </h4>
                                                 <input
                                                     type="text"
-                                                    placeholder="اكتب السبب هنا..."
+                                                    placeholder={t('اكتب السبب هنا')}
                                                     value={cancelReasonInput}
                                                     onChange={e => setCancelReasonInput(e.target.value)}
                                                     style={{ width: '100%', padding: '10px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimary, marginBottom: '10px', fontFamily: CAIRO, fontSize: '13px' }}
                                                 />
                                                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>
                                                     <input type="checkbox" checked={revertInventoryCheck} onChange={e => setRevertInventoryCheck(e.target.checked)} />
-                                                    إرجاع المكونات إلى المخزن (إلغاء الاستهلاك)
+                                                    {t('إرجاع المكونات إلى المخزن (إلغاء الاستهلاك)')}
                                                 </label>
                                                 <div style={{ display: 'flex', gap: '8px' }}>
                                                     <button
@@ -701,9 +703,9 @@ export default function OrdersHistoryPage() {
                                                         disabled={actionLoading || !cancelReasonInput.trim()}
                                                         style={{ flex: 1, padding: '10px', background: actionPrompt.type === 'cancel' ? C.danger : C.primary, color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: cancelReasonInput.trim() ? 'pointer' : 'not-allowed', opacity: (actionLoading || !cancelReasonInput.trim()) ? 0.7 : 1 }}
                                                     >
-                                                        {actionLoading ? 'جاري التنفيذ...' : 'تأكيد'}
+                                                        {actionLoading ? t('جاري التنفيذ...') : t('تأكيد')}
                                                     </button>
-                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>تراجع</button>
+                                                    <button onClick={() => setActionPrompt({ type: null })} disabled={actionLoading} style={{ flex: 1, padding: '10px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '8px', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('تراجع')}</button>
                                                 </div>
                                             </>
                                         )}
@@ -713,11 +715,11 @@ export default function OrdersHistoryPage() {
                                         {selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned' && (
                                             <>
                                                 <button onClick={() => { setActionPrompt({ type: 'return' }); setCancelReasonInput(''); }} style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textPrimary, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
-                                                    <RotateCcw size={14} /> إرجاع
+                                                    <RotateCcw size={14} /> {t('إرجاع')}
                                                 </button>
 
                                                 <button onClick={() => { setActionPrompt({ type: 'cancel' }); setCancelReasonInput(''); }} style={{ padding: '6px 14px', background: `${C.danger}15`, color: C.danger, border: `1px solid ${C.danger}30`, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`} onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}>
-                                                    <X size={14} /> إلغاء
+                                                    <X size={14} /> {t('إلغاء')}
                                                 </button>
                                             </>
                                         )}
@@ -725,20 +727,20 @@ export default function OrdersHistoryPage() {
                                         {/* Order progression actions */}
                                         {selectedOrder.status === 'preparing' && (
                                             <button onClick={() => updateStatus(selectedOrder.id, 'ready')} style={{ padding: '6px 14px', background: `${C.success}20`, color: C.success, border: `1px solid ${C.success}40`, borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = `${C.success}30`} onMouseLeave={e => e.currentTarget.style.background = `${C.success}20`}>
-                                                <CheckCircle2 size={14} /> جاهز
+                                                <CheckCircle2 size={14} /> {t('جاهز')}
                                             </button>
                                         )}
 
                                         {/* Pay action if unpaid */}
                                         {selectedOrder.paidAmount < selectedOrder.total && selectedOrder.total > 0 && selectedOrder.status !== 'cancelled' && (
                                             <button onClick={() => setActionPrompt({ type: 'pay' })} style={{ padding: '6px 14px', background: C.success, color: '#fff', border: 'none', borderRadius: '8px', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, boxShadow: `0 2px 8px ${C.success}40`, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-                                                دفع
+                                                {t('دفع')}
                                             </button>
                                         )}
 
                                         {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
                                             <div style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
-                                                <Check size={14} /> مكتمل
+                                                <Check size={14} /> {t('مكتمل')}
                                             </div>
                                         )}
                                     </div>

@@ -12,8 +12,9 @@ import { useSession } from 'next-auth/react';
 import { Landmark, Scale, Sigma, TrendingUp, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
 
+const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -71,7 +72,7 @@ export default function BalanceSheetPage() {
 
     useEffect(() => { fetchData(); }, [branchId]);
 
-    const sym = getCurrencyName(currency);
+    const sym = t(getCurrencyName(currency));
     const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
 
     const handlePrint = () => {
@@ -80,7 +81,7 @@ export default function BalanceSheetPage() {
         const fAlign = isRtl ? 'right' : 'left';
         const bAlign = isRtl ? 'left' : 'right';
         const now = new Date();
-        const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
+        const toWD = (s: string) => s.replace(/[\u0660-\u0669]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
         const printDate = now.toLocaleDateString('en-GB');
         const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
         const logo = company.logo || company.companyLogo || '';

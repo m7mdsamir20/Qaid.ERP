@@ -17,7 +17,9 @@ import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';
 
-const toEnDigits = (str: string) => str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
+const t = (s: string) => s;
+
+const toEnDigits = (str: string) => str.replace(/[\u0660-\u0669]/g, d => '0123456789'['\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669'.indexOf(d)]);
 // Local fmt removed in favor of fMoney
 
 const getInvoicePrefix = (type: string) => {
@@ -35,28 +37,28 @@ const getInvoicePrefix = (type: string) => {
 };
 
 const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
-  sale: { label: 'مبيعات', color: C.success, bg: C.successBg },
-  purchase: { label: 'مشتريات', color: C.warning, bg: C.warningBg },
-  sale_return: { label: 'مرتجع مبيعات', color: C.danger, bg: C.dangerBg },
-  purchase_return: { label: 'مرتجع مشتريات', color: C.danger, bg: C.dangerBg },
-  receipt: { label: 'سند قبض', color: C.success, bg: C.successBg },
-  payment: { label: 'سند صرف', color: C.danger, bg: C.dangerBg },
-  installment: { label: 'تقسيط', color: C.primary, bg: C.primaryBg },
-  installment_receipt: { label: 'تحصيل قسط', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
+  sale: { label: t('مبيعات'), color: C.success, bg: C.successBg },
+  purchase: { label: t('مشتريات'), color: C.warning, bg: C.warningBg },
+  sale_return: { label: t('مرتجع مبيعات'), color: C.danger, bg: C.dangerBg },
+  purchase_return: { label: t('مرتجع مشتريات'), color: C.danger, bg: C.dangerBg },
+  receipt: { label: t('سند قبض'), color: C.success, bg: C.successBg },
+  payment: { label: t('سند صرف'), color: C.danger, bg: C.dangerBg },
+  installment: { label: t('تقسيط'), color: C.primary, bg: C.primaryBg },
+  installment_receipt: { label: t('تحصيل قسط'), color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
 };
 
 const projectStatusLabels: Record<string, { label: string; color: string; bg: string }> = {
-  active: { label: 'نشط', color: C.success, bg: C.successBg },
-  paused: { label: 'متوقف مؤقتاً', color: C.warning, bg: C.warningBg },
-  completed: { label: 'مكتمل', color: C.primary, bg: C.primaryBg },
-  cancelled: { label: 'ملغي', color: C.danger, bg: C.dangerBg },
+  active: { label: t('نشط'), color: C.success, bg: C.successBg },
+  paused: { label: t('متوقف مؤقتاً'), color: C.warning, bg: C.warningBg },
+  completed: { label: t('مكتمل'), color: C.primary, bg: C.primaryBg },
+  cancelled: { label: t('ملغي'), color: C.danger, bg: C.dangerBg },
 };
 
 const projectTypeLabels: Record<string, string> = {
-  residential: 'سكني',
-  commercial: 'تجاري',
-  government: 'حكومي',
-  maintenance: 'صيانة وتشغيل',
+  residential: t('سكني'),
+  commercial: t('تجاري'),
+  government: t('حكومي'),
+  maintenance: t('صيانة وتشغيل'),
 };
 
 function KpiCard({
@@ -561,8 +563,8 @@ export default function DashboardPage() {
           {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases') || isContracting) && (
             <SectionCard title={isContracting ? t("مستخلصات المالك مقابل عقود الباطن") : isRestaurants ? t("إيرادات المطعم مقابل المنصرفات") : isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
               action={<div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', gap: '15px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isContracting ? 'مستخلصات المالك' : isRestaurants || isServices ? 'إيرادات' : 'مبيعات')}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isContracting || isRestaurants || isServices ? C.danger : C.warning }} />{t(isContracting ? 'عقود الباطن' : isRestaurants ? 'منصرفات' : isServices ? 'مصروفات' : 'مشتريات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{isContracting ? t('مستخلصات المالك') : isRestaurants || isServices ? t('إيرادات') : t('مبيعات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isContracting || isRestaurants || isServices ? C.danger : C.warning }} />{isContracting ? t('عقود الباطن') : isRestaurants ? t('منصرفات') : isServices ? t('مصروفات') : t('مشتريات')}</span>
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px', minWidth: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -592,9 +594,9 @@ export default function DashboardPage() {
                       </>
                     ) : (
                       <>
-                        {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isRestaurants || isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
+                        {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={isRestaurants || isServices ? t("إيرادات") : t("مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                         {isRestaurants || isServices
-                          ? <Area type="monotone" dataKey="expenses" name={t(isRestaurants ? "منصرفات" : "مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
+                          ? <Area type="monotone" dataKey="expenses" name={isRestaurants ? t("منصرفات") : t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
                           : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
                         }
                       </>

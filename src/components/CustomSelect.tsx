@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } f
 import { createPortal } from 'react-dom';
 import { ChevronDown, LucideIcon, Plus } from 'lucide-react';
 import { C } from '@/constants/theme';
+import { useTranslation } from '@/lib/i18n';
 
 interface Option {
     value: string | number;
@@ -30,11 +31,12 @@ interface CustomSelectProps {
 }
 
 const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
+    const { t } = useTranslation();
     const {
         value,
         onChange,
         options,
-        placeholder = 'اختر...',
+        placeholder: placeholderProp,
         icon: Icon,
         style = {},
         disabled = false,
@@ -45,6 +47,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
         openUp = false,
         maxHeight = '240px'
     } = props;
+    const placeholder = placeholderProp ?? t('اختر');
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
@@ -260,7 +263,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                     type="text"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
-                                    placeholder="ابحث هنا..."
+                                    placeholder={t("ابحث هنا")}
                                     autoComplete="off"
                                     name="custom-select-search-nope"
                                     spellCheck={false}
@@ -382,14 +385,14 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                 }}
                             >
                                 <Plus size={16} />
-                                <span>إضافة جديد: "{search}"</span>
+                                <span>{t("إضافة")}: "{search}"</span>
                             </div>
                         )}
                     </div>
 
                     {filteredOptions.length === 0 && !shouldShowCreate && (
                         <div style={{ padding: '24px 16px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>
-                            لم يتم العثور على نتائج
+                            {t("لا نتائج")}
                         </div>
                     )}
                 </div>,

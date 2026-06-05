@@ -215,7 +215,7 @@ export default function TreasuryBankReportPage() {
                     printTitle={t("كشف حركة الخزينة")}
                     accountName={data ? data.treasuryName : undefined}
                     printLabel={t('الخزينة:')}
-                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
+                    printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                 />
 
                 {/* Filters */}

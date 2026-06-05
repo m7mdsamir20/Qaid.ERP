@@ -243,8 +243,8 @@ export default function NewReceiptPage() {
                                             }}>
                                                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {selectedPartner.ptype === 'supplier'
-                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
-                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
+                                                    ? (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
+                                                    : (selectedPartner.balance < 0 ? `${t('له عندنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t("رصيده الحالي: صفر"))
                                                 }
                                             </div>
                                         )}
@@ -288,10 +288,10 @@ export default function NewReceiptPage() {
                                                 onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                                 icon={Building2}
                                                 placeholder={form.paymentType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
-                                                options={availTreasuries.map(t => ({
-                                                    value: t.id,
-                                                    label: t.name,
-                                                    sub: `رصيد: ${formatNumber(t.balance)} ${cSymbol}`,
+                                                options={availTreasuries.map(tr => ({
+                                                    value: tr.id,
+                                                    label: tr.name,
+                                                    sub: `${t('رصيد:')} ${formatNumber(tr.balance)} ${cSymbol}`,
                                                 }))}
                                             />
                                             <InlineError field="treasuryId" />

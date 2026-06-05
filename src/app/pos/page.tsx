@@ -12,11 +12,13 @@ import {
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
 
+const t = (s: string) => s;
+
 const ORDER_TYPES = [
-    { value: 'dine-in',  label: 'صالة',    icon: Table2,   color: '#6366f1' },
-    { value: 'takeaway', label: 'تيك أواي', icon: Package,  color: '#f59e0b' },
-    { value: 'delivery', label: 'توصيل',    icon: Truck,    color: '#10b981' },
-    { value: 'online',   label: 'أونلاين',  icon: Wifi,     color: '#3b82f6' },
+    { value: 'dine-in',  label: t('صالة'),    icon: Table2,   color: '#6366f1' },
+    { value: 'takeaway', label: t('تيك أواي'), icon: Package,  color: '#f59e0b' },
+    { value: 'delivery', label: t('توصيل'),    icon: Truck,    color: '#10b981' },
+    { value: 'online',   label: t('أونلاين'),  icon: Wifi,     color: '#3b82f6' },
 ];
 
 const playBeep = () => {
@@ -219,7 +221,7 @@ export default function POSPage() {
         ...ORDER_TYPES,
         ...(restaurantSettings?.deliveryApps?.length > 0 ? [{
             value: 'delivery_app',
-            label: 'تطبيقات',
+            label: t('تطبيقات'),
             icon: Store,
             color: '#ec4899',
             isApp: true
@@ -230,7 +232,7 @@ export default function POSPage() {
         if (orderType.startsWith('app_')) {
             const appId = orderType.replace('app_', '');
             const app = restaurantSettings?.deliveryApps?.find((a: any) => a.id === appId);
-            return app ? app.name : 'تطبيق توصيل';
+            return app ? app.name : t('تطبيق توصيل');
         }
         return allOrderTypes.find(o => o.value === orderType)?.label || t('نوع الطلب');
     };
@@ -290,7 +292,7 @@ export default function POSPage() {
                         latestHandleItemClick.current(foundItem);
                         setSearch('');
                     } else {
-                        setErrorMsg('لم يتم العثور على صنف بالباركود: ' + code);
+                        setErrorMsg(t('لم يتم العثور على صنف بالباركود: ') + code);
                         setTimeout(() => setErrorMsg(''), 3000);
                     }
                 }
@@ -401,7 +403,7 @@ export default function POSPage() {
         const suspTotal = suspSubtotal - discount;
         const newOrder = {
             id: `susp_${Date.now()}`,
-            orderNumber: `معلق ${Math.floor(Math.random() * 1000)}`,
+            orderNumber: `${t('معلق')} ${Math.floor(Math.random() * 1000)}`,
             createdAt: new Date().toISOString(),
             cart,
             subtotal: suspSubtotal,
@@ -530,13 +532,13 @@ export default function POSPage() {
             const data = await res.json();
             if (data.valid) {
                 setAppliedCoupon({ ...data.coupon, discount: data.discount });
-                setSuccessMsg('تم تطبيق الكوبون بنجاح');
+                setSuccessMsg(t('تم تطبيق الكوبون بنجاح'));
                 setTimeout(() => setSuccessMsg(''), 3000);
             } else {
-                setCouponError(data.error || 'كود غير صحيح');
+                setCouponError(data.error || t('كود غير صحيح'));
             }
         } catch (e) {
-            setCouponError('خطأ في التحقق من الكوبون');
+            setCouponError(t('خطأ في التحقق من الكوبون'));
         } finally {
             setCouponLoading(false);
         }
@@ -562,9 +564,9 @@ export default function POSPage() {
         const paidAmount = orderData.paidAmount ?? finalTotal;
         const change = paidAmount > finalTotal ? paidAmount - finalTotal : 0;
         
-        const typeLabel = orderData.type === 'dine-in' ? 'صالة' : 
-                          orderData.type === 'takeaway' ? 'تيك أواي' : 
-                          orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
+        const typeLabel = orderData.type === 'dine-in' ? t('صالة') : 
+                          orderData.type === 'takeaway' ? t('تيك أواي') : 
+                          orderData.type === 'delivery' ? t('توصيل') : t('أونلاين');
 
         // Use receiptFooter from restaurant settings, fall back to generic message
         const rs = typeof orderData.company?.restaurantSettings === 'string'
@@ -573,7 +575,7 @@ export default function POSPage() {
         const customFooter = rs?.receiptFooter || '';
         const footerHtml = customFooter
             ? customFooter.split('\n').map((line: string) => `<p>${line}</p>`).join('')
-            : '<p>شكراً لزيارتكم ❤️</p>';
+            : `<p>${t('شكراً لزيارتكم')} ❤️</p>`;
 
         const html = `
             <!DOCTYPE html>
@@ -618,31 +620,31 @@ export default function POSPage() {
                     </div>
                     ` : ''}
                     ${orderData.company?.phone ? `<p style="margin: 0 0 2px; font-weight: bold;">${orderData.company.phone}</p>` : ''}
-                    ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ') ? `<p style="margin: 2px 0;">${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join('، ')}</p>` : ''}
-                    ${orderData.company?.taxNumber ? `<p style="margin: 2px 0;">الرقم الضريبي: ${orderData.company.taxNumber}</p>` : ''}
+                    ${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join(t('، ')) ? `<p style="margin: 2px 0;">${[orderData.company?.addressCity, orderData.company?.addressRegion, orderData.company?.addressDistrict, orderData.company?.addressStreet].filter(Boolean).join(t('، '))}</p>` : ''}
+                    ${orderData.company?.taxNumber ? `<p style="margin: 2px 0;">${t('الرقم الضريبي')}: ${orderData.company.taxNumber}</p>` : ''}
                 </div>
                 
                 <div class="dashed-line"></div>
                 
                 <table class="meta-table">
-                    <tr><td>رقم الطلب</td><td>: ${orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----'}</td></tr>
+                    <tr><td>${t('رقم الطلب')}</td><td>: ${orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----'}</td></tr>
                     ${orderData.type === 'dine-in' ? `
-                    <tr><td>رقم الطاولة</td><td>: ${orderData.table?.name || '-'}</td></tr>
-                    ${orderData.guests ? `<tr><td>عدد الأفراد</td><td>: ${orderData.guests}</td></tr>` : ''}
+                    <tr><td>${t('رقم الطاولة')}</td><td>: ${orderData.table?.name || '-'}</td></tr>
+                    ${orderData.guests ? `<tr><td>${t('عدد الأفراد')}</td><td>: ${orderData.guests}</td></tr>` : ''}
                     ` : ''}
                     ${orderData.type === 'takeaway' ? `
-                    <tr><td>رقم الانتظار</td><td>: ${orderData.queueNumber || (orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----')}</td></tr>
+                    <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || (orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----')}</td></tr>
                     ` : ''}
-                    <tr><td>التاريخ</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', 'ص').replace('pm', 'م').replace('AM', 'ص').replace('PM', 'م')}</td></tr>
-                    ${orderData.type !== 'delivery' ? `<tr><td>الكاشير</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
+                    ${orderData.type !== 'delivery' ? `<tr><td>${t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && (orderData.deliveryName || orderData.customer) ? `
                 <div class="dashed-line"></div>
                 <table class="meta-table">
-                    <tr><td>اسم العميل</td><td>: ${orderData.deliveryName || orderData.customer?.name || '-'}</td></tr>
-                    <tr><td>رقم الهاتف</td><td>: ${orderData.deliveryPhone || orderData.customer?.phone || '-'}</td></tr>
-                    ${orderData.deliveryAddress || orderData.customer?.address ? `<tr><td>العنوان</td><td>: ${orderData.deliveryAddress || orderData.customer?.address}</td></tr>` : ''}
-                    ${orderData.driver ? `<tr><td>المندوب</td><td>: ${orderData.driver.name}</td></tr>` : ''}
+                    <tr><td>${t('اسم العميل')}</td><td>: ${orderData.deliveryName || orderData.customer?.name || '-'}</td></tr>
+                    <tr><td>${t('رقم الهاتف')}</td><td>: ${orderData.deliveryPhone || orderData.customer?.phone || '-'}</td></tr>
+                    ${orderData.deliveryAddress || orderData.customer?.address ? `<tr><td>${t('العنوان')}</td><td>: ${orderData.deliveryAddress || orderData.customer?.address}</td></tr>` : ''}
+                    ${orderData.driver ? `<tr><td>${t('المندوب')}</td><td>: ${orderData.driver.name}</td></tr>` : ''}
                 </table>
                 ` : ''}
 
@@ -667,7 +669,7 @@ export default function POSPage() {
                         return `
                             <div class="item">
                                 <div class="flex-between item-main">
-                                    <span style="flex: 1; padding-left: 10px;">${l.itemName || 'صنف'} x${l.quantity}</span>
+                                    <span style="flex: 1; padding-left: 10px;">${l.itemName || t('صنف')} x${l.quantity}</span>
                                     <span>${formatMoney(rowTotal)}</span>
                                 </div>
                                 ${mods}
@@ -680,12 +682,12 @@ export default function POSPage() {
 
                 <div class="totals">
                     <div class="flex-between">
-                        <span>الإجمالي الفرعي</span>
+                        <span>${t('الإجمالي الفرعي')}</span>
                         <span>${formatMoney(subtotal)}</span>
                     </div>
                     ${finalDiscount > 0 ? `
                     <div class="flex-between">
-                        <span>خصم</span>
+                        <span>${t('خصم')}</span>
                         <span>${formatMoney(finalDiscount)}</span>
                     </div>` : ''}
                     ${(() => {
@@ -697,7 +699,7 @@ export default function POSPage() {
                             } catch(e) {}
                             return `
                             <div class="flex-between">
-                                <span>رسوم الخدمة${rate}</span>
+                                <span>${t('رسوم الخدمة')}${rate}</span>
                                 <span>${formatMoney(orderData.serviceAmount)}</span>
                             </div>`;
                         }
@@ -712,7 +714,7 @@ export default function POSPage() {
                             } catch(e) {}
                             return `
                             <div class="flex-between">
-                                <span>ضريبة القيمة المضافة${rate}</span>
+                                <span>${t('ضريبة القيمة المضافة')}${rate}</span>
                                 <span>${formatMoney(orderData.taxAmount)}</span>
                             </div>`;
                         }
@@ -720,7 +722,7 @@ export default function POSPage() {
                     })()}
                     ${orderData.type === 'delivery' && orderData.deliveryFee > 0 ? `
                     <div class="flex-between">
-                        <span>رسوم التوصيل</span>
+                        <span>${t('رسوم التوصيل')}</span>
                         <span>${formatMoney(orderData.deliveryFee)}</span>
                     </div>` : ''}
                 </div>
@@ -729,38 +731,38 @@ export default function POSPage() {
 
                 <div class="totals">
                     <div class="flex-between grand-total">
-                        <span>الإجمالي</span>
+                        <span>${t('الإجمالي')}</span>
                         <span>${formatMoney(finalTotal)}</span>
                     </div>
                     ${(() => {
                         const paidAmount = Number(orderData.paidAmount || 0);
-                        const methodStr = { 'cash': 'نقدي', 'card': 'شبكة', 'mixed': 'مختلط', 'bank': 'تحويل بنكي' }[orderData.paymentMethod as string] || orderData.paymentMethod || 'نقدي';
+                        const methodStr = { 'cash': t('نقدي'), 'card': t('شبكة'), 'mixed': t('مختلط'), 'bank': t('تحويل بنكي') }[orderData.paymentMethod as string] || orderData.paymentMethod || t('نقدي');
                         if (orderData.type === 'delivery') {
                             if (paidAmount === 0) {
                                 return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>طريقة الدفع</span>
-                                    <span>الدفع عند الاستلام</span>
+                                    <span>${t('طريقة الدفع')}</span>
+                                    <span>${t('الدفع عند الاستلام')}</span>
                                 </div>`;
                             }
                             return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${t('المدفوع')} (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
                                 </div>
                                 <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
-                                    <span>المتبقي</span>
+                                    <span>${t('المتبقي')}</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
                         } else {
                             if (paidAmount > 0) {
                                 return `
                                 <div class="flex-between" style="font-size: 14px; margin-top: 6px;">
-                                    <span>المدفوع (${methodStr})</span>
+                                    <span>${t('المدفوع')} (${methodStr})</span>
                                     <span>${formatMoney(paidAmount)}</span>
                                 </div>
                                 <div class="flex-between" style="font-size: 14px; margin-top: 4px;">
-                                    <span>المتبقي</span>
+                                    <span>${t('المتبقي')}</span>
                                     <span>${formatMoney(Math.max(0, finalTotal - paidAmount))}</span>
                                 </div>`;
                             }
@@ -824,7 +826,7 @@ export default function POSPage() {
                 try { parsedMods = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers; } catch(e){}
             }
             return {
-                itemName: item?.name || 'صنف غير معروف',
+                itemName: item?.name || t('صنف غير معروف'),
                 quantity: l.quantity,
                 unitPrice: l.unitPrice,
                 total: l.total,
@@ -835,13 +837,13 @@ export default function POSPage() {
     };
 
     const printKitchenTicket = (orderData: any, lines: CartItem[]) => {
-        const title = orderData.type === 'dine-in' ? (orderData.table?.name || 'صالة') : orderData.type === 'takeaway' ? 'تيك أواي' : orderData.type === 'delivery' ? 'توصيل' : 'أونلاين';
+        const title = orderData.type === 'dine-in' ? (orderData.table?.name || t('صالة')) : orderData.type === 'takeaway' ? t('تيك أواي') : orderData.type === 'delivery' ? t('توصيل') : t('أونلاين');
         const html = `
             <!DOCTYPE html>
             <html lang="ar" dir="rtl">
             <head>
                 <meta charset="UTF-8">
-                <title>بون المطبخ</title>
+                <title>${t('بون المطبخ')}</title>
                 <style>
                     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
                     body { font-family: 'Cairo', sans-serif; margin: 0; padding: 10px; width: 80mm; background: #fff; color: #000; }
@@ -863,8 +865,8 @@ export default function POSPage() {
             </head>
             <body>
                 <div class="header">
-                    <h1 class="title">بون تحضير</h1>
-                    <p class="order-num">رقم الطلب: ${orderData.orderNumber?.toString().padStart(4, '0') || '----'}</p>
+                    <h1 class="title">${t('بون تحضير')}</h1>
+                    <p class="order-num">${t('رقم الطلب')}: ${orderData.orderNumber?.toString().padStart(4, '0') || '----'}</p>
                     <div class="table-name">${title}</div>
                     <p class="date">${new Date().toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                 </div>
@@ -887,7 +889,7 @@ export default function POSPage() {
                                 <span class="name">${l.item.name}</span>
                             </div>
                             ${modsHtml}
-                            ${l.notes ? `<div class="notes">ملاحظة: ${l.notes}</div>` : ''}
+                            ${l.notes ? `<div class="notes">${t('ملاحظة')}: ${l.notes}</div>` : ''}
                         </div>
                         `;
                     }).join('')}
@@ -963,7 +965,7 @@ export default function POSPage() {
 
     const payOpenOrder = async (order: any) => {
         if (!selectedTreasury) {
-            alert('يجب اختيار الخزنة أولاً!');
+            alert(t('يجب اختيار الخزنة أولاً!'));
             return;
         }
         try {
@@ -978,24 +980,24 @@ export default function POSPage() {
                 })
             });
             if (res.ok) {
-                setSuccessMsg('تم محاسبة الطاولة وإخلائها بنجاح');
+                setSuccessMsg(t('تم محاسبة الطاولة وإخلائها بنجاح'));
                 setPayingOrder(null);
                 setShowOpenOrders(false);
                 load();
                 setTimeout(() => setSuccessMsg(''), 3000);
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل في المحاسبة');
+                alert(d.error || t('فشل في المحاسبة'));
             }
         } catch(e) {}
     };
 
     const handleInitialSubmit = () => {
-        if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
+        if (cart.length === 0) { setErrorMsg(t('السلة فارغة')); return; }
         
         const isPostPay = !isRetail && ((orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery');
         
-        if (!isRetail && orderType === 'dine-in' && restaurantSettings.requireTableForDineIn !== false && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
+        if (!isRetail && orderType === 'dine-in' && restaurantSettings.requireTableForDineIn !== false && !selectedTable) { setErrorMsg(t('اختر الطاولة أولاً')); return; }
         
         if (!isPostPay) {
             setShowPaymentModal(true);
@@ -1014,13 +1016,13 @@ export default function POSPage() {
         // append split details to notes if split payment
         let finalNotes = orderNotes;
         if (isSplit) {
-            finalNotes += `\n[تقسيم الفاتورة: نقدي ${splitAmounts.cash} | شبكة ${splitAmounts.card}]`;
+            finalNotes += `\n[${t('تقسيم الفاتورة')}: ${t('نقدي')} ${splitAmounts.cash} | ${t('شبكة')} ${splitAmounts.card}]`;
         }
 
         if (paymentMethod === 'card' && restaurantSettings?.paymentTerminalIp) {
             try {
                 setShowTerminalLoading(true);
-                setTerminalStatusMsg('جاري الاتصال بماكينة الدفع (ECR). يرجى تمرير البطاقة...');
+                setTerminalStatusMsg(t('جاري الاتصال بماكينة الدفع (ECR). يرجى تمرير البطاقة...'));
                 
                 if (typeof window !== 'undefined' && (window as any).electronAPI && (window as any).electronAPI.startPayment) {
                     const result = await (window as any).electronAPI.startPayment({
@@ -1030,19 +1032,19 @@ export default function POSPage() {
                     });
                     
                     if (!result.success) {
-                        setErrorMsg(result.message || 'فشلت عملية الدفع بالبطاقة');
+                        setErrorMsg(result.message || t('فشلت عملية الدفع بالبطاقة'));
                         setSubmitting(false);
                         setShowTerminalLoading(false);
                         return;
                     }
                     
-                    finalNotes += `\n[رقم العملية (ECR): ${result.transactionId}]`;
+                    finalNotes += `\n[${t('رقم العملية')} (ECR): ${result.transactionId}]`;
                 } else {
                     console.warn('Electron API not found, simulating success...');
                     await new Promise(r => setTimeout(r, 1500));
                 }
             } catch (err: any) {
-                setErrorMsg('تعذر الاتصال بالماكينة');
+                setErrorMsg(t('تعذر الاتصال بالماكينة'));
                 setSubmitting(false);
                 setShowTerminalLoading(false);
                 return;
@@ -1062,8 +1064,8 @@ export default function POSPage() {
 
             const finalDeliveryAddress = [
                 deliveryAddress.trim(),
-                deliveryFloor.trim() ? `طابق: ${deliveryFloor.trim()}` : '',
-                deliveryApartment.trim() ? `شقة: ${deliveryApartment.trim()}` : ''
+                deliveryFloor.trim() ? `${t('طابق')}: ${deliveryFloor.trim()}` : '',
+                deliveryApartment.trim() ? `${t('شقة')}: ${deliveryApartment.trim()}` : ''
             ].filter(Boolean).join(' - ');
 
             const res = await fetch('/api/restaurant/orders', {
@@ -1093,7 +1095,7 @@ export default function POSPage() {
                     lines: cart.map(c => ({ ...c })),
                 }),
             });
-            if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || 'فشل'); setSubmitting(false); return; }
+            if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || t('فشل')); setSubmitting(false); return; }
             
             const isPostPay = (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') || orderType === 'delivery';
             
@@ -1109,7 +1111,7 @@ export default function POSPage() {
                     printKitchenTicket(savedOrder, cart);
                 }, 1000); // Wait 1s after receipt to avoid print dialog overlap
             }
-
+ 
             if (restaurantSettings.enableCustomerDisplay) {
                 try {
                     const bc = new BroadcastChannel('qaid-customer-display');
@@ -1117,18 +1119,18 @@ export default function POSPage() {
                     bc.close();
                 } catch (e) {}
             }
-
-            setSuccessMsg(isPostPay ? '✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)' : '✅ تم حفظ الطلب وإرساله للمطبخ');
+ 
+            setSuccessMsg(isPostPay ? t('✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)') : t('✅ تم حفظ الطلب وإرساله للمطبخ'));
             clearCart();
             setDeliveryFloor('');
             setDeliveryApartment('');
             setShowPaymentModal(false);
             load();
             setTimeout(() => setSuccessMsg(''), 3000);
-        } catch { setErrorMsg('حدث خطأ'); }
+        } catch { setErrorMsg(t('حدث خطأ')); }
         finally { setSubmitting(false); }
     };
-
+ 
     const handleStartShift = async () => {
         if (shiftOpeningBalance === '') return;
         setShiftLoading(true);
@@ -1138,12 +1140,12 @@ export default function POSPage() {
                 const shift = await res.json();
                 setCurrentShift(shift);
                 setShowStartShift(false);
-                setSuccessMsg('تم بدء الوردية بنجاح');
+                setSuccessMsg(t('تم بدء الوردية بنجاح'));
                 setTimeout(() => setSuccessMsg(''), 3000);
             }
         } catch {} finally { setShiftLoading(false); }
     };
-
+ 
     const handleEndShift = async () => {
         if (shiftClosingBalance === '' || !currentShift) return;
         setShiftLoading(true);
@@ -1153,15 +1155,15 @@ export default function POSPage() {
                 const data = await res.json();
                 setCurrentShift(null);
                 setShowEndShift(false);
-                setSuccessMsg('تم إنهاء الوردية بنجاح. الفارق: ' + fMoneyJSX(data.difference));
+                setSuccessMsg(t('تم إنهاء الوردية بنجاح. الفارق: ') + fMoneyJSX(data.difference));
                 setTimeout(() => setSuccessMsg(''), 5000);
             }
         } catch {} finally { setShiftLoading(false); }
     };
-
+ 
     const handleDrawerOperation = async () => {
         if (!drawerAmount || !currentShift || !selectedTreasury) {
-            setErrorMsg('تأكد من اختيار الخزنة وإدخال المبلغ');
+            setErrorMsg(t('تأكد من اختيار الخزنة وإدخال المبلغ'));
             setTimeout(() => setErrorMsg(''), 3000);
             return;
         }
@@ -1172,7 +1174,7 @@ export default function POSPage() {
                 setShowDrawerModal(false);
                 setDrawerAmount('');
                 setDrawerNotes('');
-                setSuccessMsg(drawerType === 'in' ? 'تم إضافة المبلغ للدرج' : 'تم سحب المبلغ من الدرج');
+                setSuccessMsg(drawerType === 'in' ? t('تم إضافة المبلغ للدرج') : t('تم سحب المبلغ من الدرج'));
                 setTimeout(() => setSuccessMsg(''), 3000);
             }
         } catch {} finally { setShiftLoading(false); }
@@ -1205,14 +1207,14 @@ export default function POSPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button onClick={() => window.location.href='/'} style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 24px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO }}>
-                                    <LogOut size={18} /> عودة للنظام
+                                    <LogOut size={18} /> {t('عودة للنظام')}
                                 </button>
                                 <button onClick={() => setShowStartShift(true)} style={{ background: C.primary, color: 'white', border: 'none', padding: '12px 32px', borderRadius: '10px', fontSize: '15px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', fontFamily: CAIRO }}>
-                                    <Power size={18} /> ابدأ العمل
+                                    <Power size={18} /> {t('ابدأ العمل')}
                                 </button>
                             </div>
-                            <p style={{ marginTop: '16px', color: 'white', fontWeight: 700, fontSize: '16px', fontFamily: CAIRO }}>لم يتم بدء العمل بعد</p>
-                            <p style={{ marginTop: '4px', color: '#e5e7eb', fontSize: '13px', fontFamily: CAIRO }}>قم بالبدء لرؤية المنتجات أو إنشاء طلب</p>
+                            <p style={{ marginTop: '16px', color: 'white', fontWeight: 700, fontSize: '16px', fontFamily: CAIRO }}>{t('لم يتم بدء العمل بعد')}</p>
+                            <p style={{ marginTop: '4px', color: '#e5e7eb', fontSize: '13px', fontFamily: CAIRO }}>{t('قم بالبدء لرؤية المنتجات أو إنشاء طلب')}</p>
                         </div>
                     </div>
                 )}
@@ -1224,13 +1226,13 @@ export default function POSPage() {
                     <div style={{ padding: '10px 20px', background: C.card, borderBottom: `1px solid ${C.border}`, display: 'flex', gap: '12px', alignItems: 'center' }}>
                         
                         {/* Exit System */}
-                        <button onClick={() => window.location.href='/'} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.danger}15`, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="الخروج للنظام">
+                        <button onClick={() => window.location.href='/'} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.danger}15`, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('الخروج للنظام')}>
                             <LogOut size={18} />
                         </button>
 
                         {/* Customer Display Button */}
                         {restaurantSettings.enableCustomerDisplay && (
-                            <button onClick={() => window.open('/pos/customer', '_blank', 'width=800,height=600')} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="فتح شاشة العميل">
+                            <button onClick={() => window.open('/pos/customer', '_blank', 'width=800,height=600')} style={{ width: 40, height: 40, borderRadius: '10px', border: 'none', background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('فتح شاشة العميل')}>
                                 <Monitor size={18} />
                             </button>
                         )}
@@ -1283,7 +1285,7 @@ export default function POSPage() {
                     <div style={{ display: 'flex', gap: '8px', padding: '12px 20px', overflowX: 'auto', flexShrink: 0 }}>
                         <button onClick={() => setSelectedCategory('')}
                             style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${!selectedCategory ? C.primary : C.border}`, background: !selectedCategory ? `${C.primary}15` : 'transparent', color: !selectedCategory ? C.primary : C.textSecondary, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', fontFamily: CAIRO }}>
-                            الكل
+                            {t('الكل')}
                         </button>
                         {categories.filter(cat => items.some(item => item.categoryId === cat.id && item.isPosEligible !== false && item.type !== 'raw' && !item.parentId)).map(cat => (
                             <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
@@ -1431,7 +1433,7 @@ export default function POSPage() {
                             )}
                             {taxAmount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
-                                    <span>{t('ضريبة')} ({taxRate}%) {isTaxInclusive && '(شامل)'}</span>
+                                    <span>{t('ضريبة')} ({taxRate}%) {isTaxInclusive && `(${t('شامل')})`}</span>
                                     <span style={{ fontFamily: OUTFIT }}>{!isTaxInclusive && '+ '}{fMoneyJSX(taxAmount)}</span>
                                 </div>
                             )}
@@ -1507,26 +1509,26 @@ export default function POSPage() {
                                 <div key={o.id} style={{ border: `1px solid ${o.status === 'pending' ? '#f59e0b50' : C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: o.status === 'pending' ? 'rgba(245, 158, 11, 0.05)' : C.bg, flexShrink: 0 }}>
                                     <div>
                                         <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {o.table?.name ? `طاولة: ${o.table.name}` : `طلب #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
-                                            {o.status === 'pending' && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>طلب خارجي (بانتظار الموافقة)</span>}
+                                            {o.table?.name ? `${t('طاولة')}: ${o.table.name}` : `${t('طلب')} #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
+                                            {o.status === 'pending' && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>{t('طلب خارجي (بانتظار الموافقة)')}</span>}
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
-                                            <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(o.total)}</b></span>
-                                            {o.status !== 'suspended' && <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - (o.paidAmount || 0))}</b></span>}
+                                            <span>{t('الإجمالي')}: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoneyJSX(o.total)}</b></span>
+                                            {o.status !== 'suspended' && <span>{t('المتبقي')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoneyJSX(o.total - (o.paidAmount || 0))}</b></span>}
                                             {o.status === 'suspended' && <span style={{ color: C.textMuted }}>{new Date(o.createdAt).toLocaleTimeString('ar-EG')}</span>}
                                         </div>
                                     </div>
                                     {o.status === 'suspended' ? (
                                         <button onClick={() => restoreSuspendedOrder(o)} style={{ padding: '8px 16px', borderRadius: '8px', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>
-                                            استرجاع للسلة
+                                            {t('استرجاع للسلة')}
                                         </button>
                                     ) : o.status === 'pending' ? (
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             <button onClick={() => acceptPendingOrder(o.id)} style={{ padding: '8px 16px', borderRadius: '8px', background: '#10b981', color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <CheckCircle2 size={14} /> قبول الطلب
+                                                <CheckCircle2 size={14} /> {t('قبول الطلب')}
                                             </button>
                                             <button onClick={() => rejectPendingOrder(o.id)} style={{ padding: '8px 12px', borderRadius: '8px', background: '#ef4444', color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <XCircle size={14} /> رفض
+                                                <XCircle size={14} /> {t('رفض')}
                                             </button>
                                         </div>
                                     ) : o.total - o.paidAmount > 0 ? (
@@ -1539,7 +1541,7 @@ export default function POSPage() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <span style={{ fontSize: '12px', color: C.success, fontWeight: 700, background: `${C.success}20`, padding: '4px 8px', borderRadius: '6px' }}>تم الدفع</span>
+                                        <span style={{ fontSize: '12px', color: C.success, fontWeight: 700, background: `${C.success}20`, padding: '4px 8px', borderRadius: '6px' }}>{t('تم الدفع')}</span>
                                     )}
                                 </div>
                             ))}
@@ -1697,7 +1699,7 @@ export default function POSPage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={{ background: `${C.primary}10`, padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
-                                <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>المبلغ المطلوب</p>
+                                <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{t('المبلغ المطلوب')}</p>
                                 <p style={{ margin: '4px 0 0', fontSize: '20px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(total)}</p>
                             </div>
 
@@ -1718,14 +1720,14 @@ export default function POSPage() {
                             {paymentMethod === 'mixed' && (
                                 <>
                                     <div>
-                                        <label style={LS}>المبلغ المدفوع (نقدي) 💵</label>
+                                        <label style={LS}>{t('المبلغ المدفوع (نقدي)')} 💵</label>
                                         <input type="number" min="0" value={splitAmounts.cash || ''} 
                                             onChange={e => setSplitAmounts({ cash: Number(e.target.value), card: total - Number(e.target.value) })}
                                             style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
                                         />
                                     </div>
                                     <div>
-                                        <label style={LS}>المبلغ المدفوع (شبكة) 💳</label>
+                                        <label style={LS}>{t('المبلغ المدفوع (شبكة)')} 💳</label>
                                         <input type="number" min="0" value={splitAmounts.card || ''} 
                                             onChange={e => setSplitAmounts({ card: Number(e.target.value), cash: total - Number(e.target.value) })}
                                             style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
@@ -1733,7 +1735,7 @@ export default function POSPage() {
                                     </div>
                                     {splitAmounts.cash + splitAmounts.card !== total && (
                                         <div style={{ color: C.danger, fontSize: '12px', textAlign: 'center', fontFamily: CAIRO, fontWeight: 600 }}>
-                                            مجموع المبالغ لا يساوي إجمالي الفاتورة!
+                                            {t('مجموع المبالغ لا يساوي إجمالي الفاتورة!')}
                                         </div>
                                     )}
                                 </>
@@ -1751,13 +1753,13 @@ export default function POSPage() {
 
                         </div>
                         <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-                            <button onClick={() => setShowPaymentModal(false)} style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button onClick={() => setShowPaymentModal(false)} style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                             <button onClick={() => {
                                 setShowPaymentModal(false);
                                 handleSubmit(paymentMethod === 'mixed');
                             }} disabled={submitting || !selectedTreasury || (paymentMethod === 'mixed' && splitAmounts.cash + splitAmounts.card !== total)} 
                                 style={{ ...BTN_PRIMARY(submitting || !selectedTreasury || (paymentMethod === 'mixed' && splitAmounts.cash + splitAmounts.card !== total), false), flex: 2, height: '44px', borderRadius: '12px' }}>
-                                {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'تأكيد الدفع وطباعة'}
+                                {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد الدفع وطباعة')}
                             </button>
                         </div>
                     </div>
@@ -1832,17 +1834,17 @@ export default function POSPage() {
                                             const cust = customers.find(c => c.phone === val);
                                             if (cust) {
                                                 if (!deliveryName) setDeliveryName(cust.name);
-                                                const custAddress = [cust.addressCity, cust.addressRegion, cust.addressDistrict, cust.addressStreet].filter(Boolean).join('، ');
+                                                const custAddress = [cust.addressCity, cust.addressRegion, cust.addressDistrict, cust.addressStreet].filter(Boolean).join(t('، '));
                                                 if (!deliveryAddress && custAddress) {
                                                     let addr = custAddress;
                                                     let floor = '';
                                                     let apt = '';
-                                                    const floorMatch = custAddress.match(/ - طابق: (.*?)(?: - |$)/);
+                                                    const floorMatch = custAddress.match(new RegExp(" - " + t('طابق') + ": (.*?)(?: - |$)"));
                                                     if (floorMatch) {
                                                         floor = floorMatch[1];
                                                         addr = addr.replace(floorMatch[0], '');
                                                     }
-                                                    const aptMatch = custAddress.match(/ - شقة: (.*?)(?: - |$)/);
+                                                    const aptMatch = custAddress.match(new RegExp(" - " + t('شقة') + ": (.*?)(?: - |$)"));
                                                     if (aptMatch) {
                                                         apt = aptMatch[1];
                                                         addr = addr.replace(aptMatch[0], '');
@@ -1998,7 +2000,7 @@ export default function POSPage() {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '40px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', textAlign: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
                         <CreditCard size={48} color={C.primary} className="animate-pulse" />
-                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>الدفع بالبطاقة</h2>
+                        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('الدفع بالبطاقة')}</h2>
                         <p style={{ margin: 0, fontSize: '15px', color: C.textSecondary, fontFamily: CAIRO }}>{terminalStatusMsg}</p>
                         <div style={{ fontSize: '32px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT, margin: '10px 0' }}>
                             {fMoneyJSX(total)}
@@ -2013,26 +2015,26 @@ export default function POSPage() {
                 <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
                         <h2 style={{ margin: '0 0 20px', fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <User size={20} /> بدء الوردية
+                            <User size={20} /> {t('بدء الوردية')}
                         </h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
-                                <label style={LS}>الرصيد الافتتاحي للدرج <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('الرصيد الافتتاحي للدرج')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontWeight: 700, fontSize: '15px' }}>
-                                        {cSymbol || 'ر.س'}
+                                        {cSymbol || t('ر.س')}
                                     </span>
                                     <input type="text" value={shiftOpeningBalance === '' ? '' : shiftOpeningBalance.toString().split('.').map((p, i) => i === 0 ? p.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : p).join('.')} onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (raw === '') setShiftOpeningBalance(''); else if (!isNaN(Number(raw))) setShiftOpeningBalance(raw as any); }} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT, fontSize: shiftOpeningBalance === '' ? '15px' : '18px', fontWeight: shiftOpeningBalance === '' ? 500 : 700, textAlign: 'center', paddingInlineStart: '45px', paddingInlineEnd: '45px' }} autoFocus />
                                 </div>
                             </div>
                             <div>
-                                <label style={LS}>ملاحظات (اختياري)</label>
+                                <label style={LS}>{t('ملاحظات (اختياري)')}</label>
                                 <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={{ ...IS, textAlign: 'center' }} />
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                             <button onClick={handleStartShift} disabled={shiftOpeningBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftOpeningBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '12px', fontSize: '15px' }}>
-                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'بداية العمل'}
+                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : t('بداية العمل')}
                             </button>
                             <button onClick={() => setShowStartShift(false)} style={{ flex: 1, height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
@@ -2046,28 +2048,28 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <LogOut size={20} /> إنهاء الوردية
+                                <LogOut size={20} /> {t('إنهاء الوردية')}
                             </h2>
                             <button onClick={() => setShowEndShift(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
-                                <label style={LS}>الرصيد الفعلي الموجود بالدرج <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('الرصيد الفعلي الموجود بالدرج')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, fontWeight: 700, fontSize: '15px' }}>
-                                        {cSymbol || 'ر.س'}
+                                        {cSymbol || t('ر.س')}
                                     </span>
                                     <input type="text" value={shiftClosingBalance === '' ? '' : shiftClosingBalance.toString().split('.').map((p, i) => i === 0 ? p.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : p).join('.')} onChange={e => { const raw = e.target.value.replace(/,/g, ''); if (raw === '') setShiftClosingBalance(''); else if (!isNaN(Number(raw))) setShiftClosingBalance(raw as any); }} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT, fontSize: shiftClosingBalance === '' ? '15px' : '18px', fontWeight: shiftClosingBalance === '' ? 500 : 700, textAlign: 'center', paddingInlineStart: '45px', paddingInlineEnd: '45px' }} autoFocus />
                                 </div>
                             </div>
                             <div>
-                                <label style={LS}>ملاحظات العجز/الزيادة (اختياري)</label>
+                                <label style={LS}>{t('ملاحظات العجز/الزيادة (اختياري)')}</label>
                                 <input value={shiftNotes} onChange={e => setShiftNotes(e.target.value)} style={{ ...IS, textAlign: 'center' }} />
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                             <button onClick={handleEndShift} disabled={shiftClosingBalance === '' || shiftLoading} style={{ ...BTN_PRIMARY(shiftClosingBalance === '' || shiftLoading, false), flex: 2, height: '48px', borderRadius: '12px', fontSize: '15px', background: C.danger, borderColor: C.dangerBorder }}>
-                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'تأكيد الإنهاء وإصدار التقرير'}
+                                {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : t('تأكيد الإنهاء وإصدار التقرير')}
                             </button>
                             <button onClick={() => setShowEndShift(false)} style={{ flex: 1, height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
@@ -2082,7 +2084,7 @@ export default function POSPage() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <Store size={20} color={C.primary} />
-                                الفروع
+                                {t('الفروع')}
                             </h3>
                             <button onClick={() => setShowBranchModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
                         </div>
@@ -2093,12 +2095,12 @@ export default function POSPage() {
                                     <Store size={20} />
                                     <div>
                                         <div style={{ fontWeight: 600, fontSize: '15px' }}>{br.name}</div>
-                                        <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>{br.address || 'بدون عنوان'}</div>
+                                        <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>{br.address || t('بدون عنوان')}</div>
                                     </div>
                                 </button>
                             ))}
                             {branches.length === 0 && (
-                                <div style={{ padding: '20px', textAlign: 'center', color: C.textSecondary, fontSize: '14px' }}>لا توجد فروع متاحة</div>
+                                <div style={{ padding: '20px', textAlign: 'center', color: C.textSecondary, fontSize: '14px' }}>{t('لا توجد فروع متاحة')}</div>
                             )}
                         </div>
                     </div>
@@ -2111,30 +2113,30 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>
-                                إدارة الدرج النقدية
+                                {t('إدارة الدرج النقدية')}
                             </h2>
                             <button onClick={() => setShowDrawerModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
                         </div>
                         <div style={{ display: 'flex', background: `${C.border}40`, borderRadius: '10px', padding: '4px', marginBottom: '20px' }}>
-                            <button onClick={() => setDrawerType('in')} style={{ flex: 1, height: '34px', borderRadius: '8px', border: 'none', background: drawerType === 'in' ? C.success : 'transparent', color: drawerType === 'in' ? '#fff' : C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s' }}>إيداع نقدي</button>
-                            <button onClick={() => setDrawerType('out')} style={{ flex: 1, height: '34px', borderRadius: '8px', border: 'none', background: drawerType === 'out' ? C.danger : 'transparent', color: drawerType === 'out' ? '#fff' : C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s' }}>سحب نقدي</button>
+                            <button onClick={() => setDrawerType('in')} style={{ flex: 1, height: '34px', borderRadius: '8px', border: 'none', background: drawerType === 'in' ? C.success : 'transparent', color: drawerType === 'in' ? '#fff' : C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s' }}>{t('إيداع نقدي')}</button>
+                            <button onClick={() => setDrawerType('out')} style={{ flex: 1, height: '34px', borderRadius: '8px', border: 'none', background: drawerType === 'out' ? C.danger : 'transparent', color: drawerType === 'out' ? '#fff' : C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s' }}>{t('سحب نقدي')}</button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                                <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الخزنة <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t('الخزنة')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect value={selectedTreasury} onChange={v => setSelectedTreasury(v)} options={treasuries.map(t => ({ value: t.id, label: t.name }))} placeholder={t('— اختر الخزنة —')} />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '12px' }}>المبلغ <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '12px' }}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
                                 <input type="number" min="0" value={drawerAmount} onChange={e => setDrawerAmount(e.target.value ? Number(e.target.value) : '')} style={{ ...IS, height: '40px', fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '12px' }}>السبب / ملاحظات <span style={{ color: C.danger }}>*</span></label>
-                                <input value={drawerNotes} onChange={e => setDrawerNotes(e.target.value)} style={{ ...IS, height: '40px', fontSize: '13px' }} placeholder="أدخل تفاصيل العملية..." />
+                                <label style={{ ...LS, fontSize: '12px' }}>{t('السبب / ملاحظات')} <span style={{ color: C.danger }}>*</span></label>
+                                <input value={drawerNotes} onChange={e => setDrawerNotes(e.target.value)} style={{ ...IS, height: '40px', fontSize: '13px' }} placeholder={t('أدخل تفاصيل العملية')} />
                             </div>
                         </div>
                         <button onClick={handleDrawerOperation} disabled={drawerAmount === '' || !drawerNotes || !selectedTreasury || shiftLoading} style={{ ...BTN_PRIMARY(drawerAmount === '' || !drawerNotes || !selectedTreasury || shiftLoading, false), width: '100%', height: '48px', borderRadius: '12px', marginTop: '24px', fontSize: '15px' }}>
-                            {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : 'تنفيذ'}
+                            {shiftLoading ? <Loader2 size={18} className="animate-spin" /> : t('تنفيذ')}
                         </button>
                     </div>
                 </div>

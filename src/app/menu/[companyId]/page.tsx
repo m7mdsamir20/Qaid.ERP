@@ -5,6 +5,8 @@ import MenuClient from './MenuClient';
 
 import { Metadata } from 'next';
 
+const t = (s: string) => s;
+
 export async function generateMetadata({ params }: { params: Promise<{ companyId: string }> }): Promise<Metadata> {
     const { companyId } = await params;
     const company = await prisma.company.findUnique({
@@ -12,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ companyId
         select: { name: true }
     });
     return {
-        title: company ? `${company.name} — المنيو الرقمي` : 'المنيو الرقمي',
+        title: company ? `${company.name} — ${t('المنيو الرقمي')}` : t('المنيو الرقمي'),
         viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
     };
 }
