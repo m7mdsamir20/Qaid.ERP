@@ -143,23 +143,28 @@ export default function DashboardLayout({
         let foundFeatureKey = '';
         let foundPageId = '';
 
-        // البحث عن أفضل مطابقة مسار (الرابط الأكثر تحديداً / الأطول مساراً) لمنع تداخل المسارات القصيرة
-        let bestLink: any = null;
-        let bestSection: any = null;
-        for (const section of navSections) {
-            for (const l of section.links || []) {
-                if (pathname === l.href || pathname.startsWith(l.href + '/')) {
-                    if (!bestLink || l.href.length > bestLink.href.length) {
-                        bestLink = l;
-                        bestSection = section;
+        if (pathname === '/reports/sales-representatives' || pathname.startsWith('/reports/sales-representatives/')) {
+            foundFeatureKey = 'sales';
+            foundPageId = '/sales/representatives';
+        } else {
+            // البحث عن أفضل مطابقة مسار (الرابط الأكثر تحديداً / الأطول مساراً) لمنع تداخل المسارات القصيرة
+            let bestLink: any = null;
+            let bestSection: any = null;
+            for (const section of navSections) {
+                for (const l of section.links || []) {
+                    if (pathname === l.href || pathname.startsWith(l.href + '/')) {
+                        if (!bestLink || l.href.length > bestLink.href.length) {
+                            bestLink = l;
+                            bestSection = section;
+                        }
                     }
                 }
             }
-        }
 
-        if (bestLink) {
-            foundFeatureKey = bestSection.featureKey;
-            foundPageId = bestLink.id;
+            if (bestLink) {
+                foundFeatureKey = bestSection.featureKey;
+                foundPageId = bestLink.id;
+            }
         }
 
         if (foundFeatureKey && foundPageId) {
