@@ -4629,6 +4629,10 @@ export const dictionaries = {
         "مثال: رام الله": "Example: Ramallah",
         "مثال: البيرة": "Example: beer",
         "مثال: شارع الارسال": "Example: Al-Irsal Street",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "تجربة الترجمة التلقائية الفورية": "Experience instant automatic translation",
 }
 };
 
