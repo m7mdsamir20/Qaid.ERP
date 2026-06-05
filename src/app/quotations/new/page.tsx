@@ -490,15 +490,22 @@ export default function NewQuotationPage() {
                                 </button>
                             </div>
 
-                            <div className="scroll-table" style={{ marginTop: '10px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <div className="scroll-table" style={{ marginTop: '10px', borderRadius: '12px', border: `1px solid ${C.border}`, overflowX: 'auto' }}>
+                                <table className="quotation-items-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                                    <colgroup>
+                                        <col />
+                                        <col className="col-qty" style={{ width: '90px' }} />
+                                        <col className="col-price" style={{ width: '120px' }} />
+                                        <col className="col-total" style={{ width: '120px' }} />
+                                        <col className="col-actions" style={{ width: '80px' }} />
+                                    </colgroup>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
-                                            <th style={{ padding: '12px', width: '80px' }}></th>
+                                            <th style={{ padding: '12px', textAlign: 'start', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            <th className="col-qty" style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th className="col-price" style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th className="col-total" style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
+                                            <th className="col-actions" style={{ padding: '12px' }}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -507,23 +514,23 @@ export default function NewQuotationPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ padding: '12px' }}>
-                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
-                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, marginTop: '2px' }}>{l.description}</div>}
+                                                <td style={{ padding: '12px', overflow: 'hidden' }}>
+                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.description}</div>}
                                                 </td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.quantity}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
-                                                <td style={{ padding: '12px', }}>
-                                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                                        <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>
-                                                        <button type="button" onClick={() => removeLine(idx)} style={{ color: C.danger, border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Trash2 size={16} /></button>
+                                                <td className="col-qty" style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px', whiteSpace: 'nowrap' }}>{l.quantity}</td>
+                                                <td className="col-price" style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap' }}>{fmt(l.price)}</td>
+                                                <td className="col-total" style={{ padding: '12px', textAlign: 'center', fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '13px', whiteSpace: 'nowrap' }}>{fmt(l.total)}</td>
+                                                <td className="col-actions" style={{ padding: '12px' }}>
+                                                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                                        <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer' }}><Pencil size={14} /></button>
+                                                        <button type="button" onClick={() => removeLine(idx)} style={{ color: C.danger, border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={15} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={5} style={{ padding: '40px',  color: C.textSecondary, fontSize: '13px', textAlign: 'center' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
+                                            <tr><td colSpan={5} style={{ padding: '40px', color: C.textSecondary, fontSize: '13px', textAlign: 'center' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
                                         )}
                                     </tbody>
                                 </table>
