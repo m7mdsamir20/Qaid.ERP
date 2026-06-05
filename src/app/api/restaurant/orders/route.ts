@@ -55,6 +55,11 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const company = await prisma.company.findUnique({
+            where: { id: companyId },
+            select: { businessType: true }
+        });
+        const isRetail = company?.businessType?.toUpperCase() === 'RETAIL';
 
         // Get next order number for today
         const startOfDay = new Date();
@@ -96,6 +101,17 @@ export const POST = withProtection(async (request, session, body) => {
                                 error: `المواد الخام غير كافية لعمل "${item.name}". المتاح من "${ri.item.name}" هو ${available} فقط.`
                             }, { status: 400 });
                         }
+                    }
+                } else if (isRetail && item && item.type !== 'service') {
+                    const requiredQty = line.quantity;
+                    const stock = await prisma.stock.findUnique({
+                        where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } }
+                    });
+                    const available = stock?.quantity || 0;
+                    if (available < requiredQty) {
+                        return NextResponse.json({
+                            error: `المخزون غير كافٍ للصنف "${item.name}". المتاح في المستودع هو ${available} فقط.`
+                        }, { status: 400 });
                     }
                 }
             }
@@ -156,7 +172,7 @@ export const POST = withProtection(async (request, session, body) => {
             data: {
                 orderNumber,
                 type: body.type ?? 'dine-in',
-                status: (body.source && body.source !== 'pos') ? 'pending' : 'preparing',
+                status: isRetail ? 'ready' : ((body.source && body.source !== 'pos') ? 'pending' : 'preparing'),
                 tableId: body.tableId ?? null,
                 shiftId: activeShift?.id ?? null,
                 customerId: finalCustomerId,
@@ -455,6 +471,26 @@ export const POST = withProtection(async (request, session, body) => {
                 } else if (item.type !== 'service') {
                     // بناءً على طلب المستخدم: المنتج التام لا يسحب بالسالب ولا يتم خصمه من المخزون إلا إذا كان له وصفة (مواد خام)
                     // لذلك قمنا بتعطيل الخصم المباشر للمنتج التام الذي ليس له وصفة
+                    if (isRetail) {
+                        const deductionQty = line.quantity;
+                        await prisma.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
+                            create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                            update: { quantity: { decrement: deductionQty } }
+                        });
+                        await prisma.stockMovement.create({
+                            data: {
+                                type: 'out',
+                                date: new Date(),
+                                itemId: item.id,
+                                warehouseId: defaultWarehouse.id,
+                                quantity: deductionQty,
+                                reference: `POS-${order.orderNumber}`,
+                                notes: `مبيعات كاشير تجزئة للصنف ${item.name}`,
+                                companyId
+                            }
+                        });
+                    }
                 }
 
                 // 3. Deduct Modifiers Inventory
@@ -498,6 +534,11 @@ export const POST = withProtection(async (request, session, body) => {
 export const PUT = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const company = await prisma.company.findUnique({
+            where: { id: companyId },
+            select: { businessType: true }
+        });
+        const isRetail = company?.businessType?.toUpperCase() === 'RETAIL';
         if (!body.id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
         if (body.action === 'pay_and_close') {
@@ -737,6 +778,21 @@ export const PUT = withProtection(async (request, session, body) => {
                             }
                         }
                         // المنتجات التامة بدون وصفة لا يتم إرجاعها لأنها أصلاً لا تُخصم من المخزون عند البيع
+                        else if (item.type !== 'service' && isRetail) {
+                            const qty = line.quantity;
+                            await prisma.stock.upsert({
+                                where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
+                                create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: qty },
+                                update: { quantity: { increment: qty } }
+                            });
+                            await prisma.stockMovement.create({
+                                data: {
+                                    type: 'in', date: new Date(), itemId: item.id, warehouseId: defaultWarehouse.id,
+                                    quantity: qty, reference: `CANCEL-${order.orderNumber}`,
+                                    notes: `مرتجع مبيعات كاشير تجزئة لإلغاء طلب`, companyId
+                                }
+                            });
+                        }
 
                         // 3. Return Modifiers
                         if (line.modifiers) {

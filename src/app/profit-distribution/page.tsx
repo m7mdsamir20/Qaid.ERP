@@ -322,7 +322,7 @@ export default function ProfitDistributionPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>{t('تاريخ التوزيع')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 

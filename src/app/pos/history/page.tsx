@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
+import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -33,6 +34,9 @@ export default function OrdersHistoryPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
     const { fMoneyJSX } = useCurrency();
+    const { data: session } = useSession();
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isRetail = businessType === 'RETAIL';
 
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -143,9 +147,11 @@ export default function OrdersHistoryPage() {
 
         const formatMoney = (m: number) => Number(m).toFixed(2);
 
-        const typeLabel = orderData.type === 'dine-in' ? t('صالة') :
-            orderData.type === 'takeaway' ? t('تيك أواي') :
-                orderData.type === 'delivery' ? t('توصيل') : t('أونلاين');
+        const typeLabel = isRetail
+            ? (orderData.type === 'delivery' ? t('توصيل') : orderData.type === 'online' ? t('أونلاين') : t('بيع مباشر'))
+            : (orderData.type === 'dine-in' ? t('صالة') :
+               orderData.type === 'takeaway' ? t('تيك أواي') :
+               orderData.type === 'delivery' ? t('توصيل') : t('أونلاين'));
 
         // Use receiptFooter from restaurant settings, fall back to generic message
         const rs = typeof orderData.company?.restaurantSettings === 'string'
@@ -218,7 +224,10 @@ export default function OrdersHistoryPage() {
                 <div class="dashed-line"></div>
                 
                 <table class="meta-table">
-                    <tr><td>${t('رقم الطلب')}</td><td>: ${orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    <tr><td>${isRetail ? t('رقم الفاتورة') : t('رقم الطلب')}</td><td>: ${orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
+                    ${isRetail ? `
+                    <tr><td>${t('نوع الفاتورة')}</td><td>: ${typeLabel}</td></tr>
+                    ` : `
                     ${orderData.type === 'dine-in' ? `
                     <tr><td>${t('رقم الطاولة')}</td><td>: ${orderData.table?.name || '-'}</td></tr>
                     ${orderData.guests ? `<tr><td>${t('عدد الأفراد')}</td><td>: ${orderData.guests}</td></tr>` : ''}
@@ -226,8 +235,9 @@ export default function OrdersHistoryPage() {
                     ${orderData.type === 'takeaway' ? `
                     <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
                     ` : ''}
+                    `}
                     <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
-                    ${orderData.type !== 'delivery' ? `<tr><td>${t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                    ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && orderData.customer ? `
                 <div class="dashed-line"></div>
@@ -472,17 +482,21 @@ export default function OrdersHistoryPage() {
                             )
                         },
                         {
-                            header: t('نوع الخدمة'),
+                            header: isRetail ? t('نوع العملية') : t('نوع الخدمة'),
                             type: 'text',
                             cell: (row) => (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    {row.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : row.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : row.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />}
-                                    {t(TYPE_LABELS[row.type] ?? row.type)}
+                                    {isRetail && (row.type === 'takeaway' || row.type === 'dine-in') ? (
+                                        <ShoppingBag size={14} color={C.textPrimary} />
+                                    ) : (
+                                        row.type === 'dine-in' ? <Utensils size={14} color={C.textPrimary} /> : row.type === 'takeaway' ? <ShoppingBag size={14} color={C.textPrimary} /> : row.type === 'delivery' ? <Truck size={14} color={C.textPrimary} /> : <Globe size={14} color={C.textPrimary} />
+                                    )}
+                                    {isRetail && (row.type === 'takeaway' || row.type === 'dine-in') ? t('بيع مباشر') : t(TYPE_LABELS[row.type] ?? row.type)}
                                 </div>
                             )
                         },
                         {
-                            header: t('الكاشير'),
+                            header: isRetail ? t('البائع') : t('الكاشير'),
                             type: 'text',
                             cell: (row) => row.shift?.user?.name || '-'
                         },
@@ -582,11 +596,11 @@ export default function OrdersHistoryPage() {
                             {/* Order Info Grid */}
                             <div style={{ padding: '10px 0', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', textAlign: 'center', borderBottom: `1px dashed ${C.border}`, paddingBottom: '16px' }}>
                                 <div>
-                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('نوع الخدمة')}</p>
-                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{t(TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type)}</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{isRetail ? t('نوع العملية') : t('نوع الخدمة')}</p>
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{isRetail && (selectedOrder.type === 'takeaway' || selectedOrder.type === 'dine-in') ? t('بيع مباشر') : t(TYPE_LABELS[selectedOrder.type] ?? selectedOrder.type)}</p>
                                 </div>
                                 <div>
-                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('الكاشير')}</p>
+                                    <p style={{ margin: '0 0 4px', fontSize: '11px', color: C.textMuted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{isRetail ? t('البائع') : t('الكاشير')}</p>
                                     <p style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 700 }}>{selectedOrder.shift?.user?.name || '-'}</p>
                                 </div>
                                 <div>

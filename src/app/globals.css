@@ -626,6 +626,7 @@ select.input:focus,
 input[type="date"] {
   position: relative;
   text-align: center !important;
+  direction: inherit !important;
 }
 
 /* Fallback for wrapper if still used */
@@ -1747,5 +1748,79 @@ td.table-cell-text {
   .installment-cart-grid > *:first-child,
   .installment-cart-grid > *:last-child {
     grid-column: 1 / -1 !important;
+  }
+}
+
+/* ── شبكات الإحصائيات (repeat(N, 1fr) بدون class مُعرَّف) ──────
+   تنهار من N أعمدة → عمودين عند 992px ─────────────────────────── */
+@media (max-width: 992px) {
+  [style*="repeat(7, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(6, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(5, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(4, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(4,1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(3, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(3,1fr)"]:not(.stats-grid):not(.stats-grid-responsive) {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* عمود واحد عند 480px */
+@media (max-width: 480px) {
+  [style*="repeat(7, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(6, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(5, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(4, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(4,1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(3, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(3,1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
+  [style*="repeat(2, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── balance-sheet و detailed-balance-sheet: شبكة 1fr 1fr الرئيسية ──
+   تنهار عند 768px على الموبايل ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .print-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── .filter-bar-responsive (accounts/page.tsx وصفحات مشابهة) ──
+   شريط الفلترة الأفقي ينهار إلى عمود على الموبايل ─────────────── */
+@media (max-width: 768px) {
+  .filter-bar-responsive {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .filter-bar-responsive > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  /* .hide-mobile-text → يخفي النص داخل أزرار شريط العرض */
+  .hide-mobile-text {
+    display: none !important;
+  }
+}
+
+/* ── صفحة الإعدادات: تقليل padding بطاقة التاب على الموبايل ── */
+@media (max-width: 640px) {
+  .settings-content-area > div {
+    padding: 20px !important;
+    border-radius: 16px !important;
+  }
+  /* تصغير عرض الـ label في حقول الإعدادات */
+  .settings-content-area [style*="width: 180px"] {
+    width: 110px !important;
+    min-width: 110px !important;
+    padding: 12px 12px !important;
+    font-size: 11.5px !important;
+  }
+  /* position:sticky للسايدبار تُوقف في column layout */
+  .settings-sidebar {
+    position: relative !important;
+    top: auto !important;
   }
 }

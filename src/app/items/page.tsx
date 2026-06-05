@@ -291,7 +291,7 @@ export default function ItemsPage() {
         return q === 0;
     }).length;
     
-    const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT', 'RESTAURANTS', 'RETAIL', 'TRADING'].includes(companyBusinessType);
+    const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT', 'RESTAURANTS', 'RETAIL'].includes(companyBusinessType);
     const isRestaurant = companyBusinessType === 'RESTAURANTS';
     const isRetail = companyBusinessType === 'RETAIL';
     const isWholesale = companyBusinessType === 'WHOLESALE';
@@ -742,7 +742,7 @@ export default function ItemsPage() {
                                     </div>
                                 )}
                                 
-                                {form.type === 'product' && companyBusinessType !== 'CONTRACTING' && (
+                                {form.type === 'product' && companyBusinessType !== 'CONTRACTING' && companyBusinessType !== 'TRADING' && (
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
                                         <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span><Boxes size={14} style={{ marginInlineEnd: '6px' }}/> {t('أنواع ومقاسات الصنف (اختياري)')}</span>

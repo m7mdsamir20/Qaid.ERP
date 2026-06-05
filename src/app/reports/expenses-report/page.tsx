@@ -132,8 +132,7 @@ export default function ExpensesReportPage() {
                                     ...IS, width: '100%', height: '42px', padding: '0 12px',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                    direction: 'ltr'
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
                                 }}
                             />
                         </div>
@@ -148,8 +147,7 @@ export default function ExpensesReportPage() {
                                     ...IS, width: '100%', height: '42px', padding: '0 12px',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
-                                    direction: 'ltr'
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
                                 }}
                             />
                         </div>

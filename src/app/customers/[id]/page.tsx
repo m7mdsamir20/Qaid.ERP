@@ -123,14 +123,14 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>{t('تاريخ البداية')}</label>
                             <div style={{ position: 'relative' }}>
                                 <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                                <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
+                                <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none' }} />
                             </div>
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>{t('تاريخ النهاية')}</label>
                             <div style={{ position: 'relative' }}>
                                 <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                                <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
+                                <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none' }} />
                             </div>
                         </div>
                         <button onClick={fetchLedger} style={{ height: '44px', borderRadius: '12px', border: 'none', background: 'var(--primary)', color: '#fff', fontWeight: 950, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
