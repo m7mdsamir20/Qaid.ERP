@@ -73,6 +73,7 @@ model Company {
   warehouses              Warehouse[]
   warehouseTransfers      WarehouseTransfer[]
   reconciliationSnapshots ReconciliationSnapshot[]
+  salesRepresentatives     SalesRepresentative[]
   // 🍽️ Restaurant
   restaurantTables        RestaurantTable[]
   shifts                  Shift[]
@@ -190,6 +191,7 @@ model User {
   customRole      Role?    @relation(fields: [roleId], references: [id])
   branch          Branch?  @relation(fields: [branchId], references: [id])
   shifts          Shift[]
+  salesRepresentatives SalesRepresentative[]
 }
 
 model Notification {
@@ -587,6 +589,8 @@ model Customer {
   vouchers         Voucher[]
   quotations       Quotation[]
   projects         Project[]
+  salesRepresentativeId String?
+  salesRepresentative   SalesRepresentative? @relation(fields: [salesRepresentativeId], references: [id], onDelete: SetNull)
 }
 
 model Supplier {
@@ -688,6 +692,9 @@ model Invoice {
   stockMovements      StockMovement[]
   PosOrder            PosOrder[]
   installmentPlans    InstallmentPlan[]
+  status              String          @default("approved")
+  salesRepresentativeId String?
+  salesRepresentative   SalesRepresentative? @relation(fields: [salesRepresentativeId], references: [id], onDelete: SetNull)
 
   @@index([companyId, type, date])
   @@index([companyId, date])
@@ -756,6 +763,7 @@ model Employee {
   department         Department?   @relation(fields: [departmentId], references: [id])
   payrolls           PayrollLine[]
   managedProjects    Project[]
+  salesRepresentatives SalesRepresentative[]
 }
 
 model Advance {
@@ -939,6 +947,8 @@ model Quotation {
   customer           Customer?       @relation(fields: [customerId], references: [id])
   lines              QuotationLine[]
   convertedInvoiceId String?
+  salesRepresentativeId String?
+  salesRepresentative   SalesRepresentative? @relation(fields: [salesRepresentativeId], references: [id], onDelete: SetNull)
 
   @@index([companyId, date])
 }
@@ -1294,3 +1304,29 @@ model SubContract {
   @@unique([contractNumber, companyId])
   @@index([companyId, projectId])
 }
+
+model SalesRepresentative {
+  id             String      @id @default(cuid())
+  name           String
+  code           String?     // رمز المندوب
+  phone          String?
+  email          String?
+  commissionRate Float       @default(0) // نسبة العمولة الافتراضية
+  commissionType String      @default("invoice_total") // invoice_total أو collected_amount
+  isActive       Boolean     @default(true)
+  userId         String?     // ربط اختياري بمستخدم في النظام
+  employeeId     String?     // ربط اختياري بموظف في الموارد البشرية
+  companyId      String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  company        Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  employee       Employee?   @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  invoices       Invoice[]
+  quotations     Quotation[]
+  customers      Customer[]
+
+  @@unique([code, companyId])
+}
+

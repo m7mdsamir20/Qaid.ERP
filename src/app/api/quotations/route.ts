@@ -26,23 +26,35 @@ export const GET = withProtection(async (request, session) => {
                 include: {
                     customer: true,
                     lines: { include: { item: { include: { unit: true } } } },
+                    salesRepresentative: { select: { id: true, name: true, commissionRate: true } }
                 }
             });
             return NextResponse.json(quotation);
         }
 
+        const user = session.user as any;
         const branchFilter = getBranchFilter(session);
+
+        const where: any = {
+            companyId,
+            ...branchFilter,
+        };
+
+        const userRep = await prisma.salesRepresentative.findFirst({
+            where: { userId: user.id, companyId, isActive: true }
+        });
+        if (userRep) {
+            where.salesRepresentativeId = userRep.id;
+        }
 
         // @ts-ignore
         const quotations = await prisma.quotation.findMany({
-            where: {
-                companyId,
-                ...branchFilter,
-            },
+            where,
             orderBy: { createdAt: 'desc' },
             include: {
                 customer: true,
                 lines: { include: { item: { include: { unit: true } } } },
+                salesRepresentative: { select: { id: true, name: true } }
             },
         });
 
@@ -57,6 +69,16 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const branchId = (session.user as any).activeBranchId === 'all' ? null : (session.user as any).activeBranchId;
+
+        const user = session.user as any;
+        const userRep = await prisma.salesRepresentative.findFirst({
+            where: { userId: user.id, companyId, isActive: true }
+        });
+
+        let salesRepresentativeId = body.salesRepresentativeId || null;
+        if (userRep) {
+            salesRepresentativeId = userRep.id;
+        }
 
         const {
             date, customerId, taxRate, taxInclusive, taxLabel,
@@ -90,6 +112,7 @@ export const POST = withProtection(async (request, session, body) => {
                 status: 'pending',
                 companyId,
                 branchId,
+                salesRepresentativeId,
                 lines: {
                     create: lines.map((l: any) => ({
                         itemId: l.itemId,

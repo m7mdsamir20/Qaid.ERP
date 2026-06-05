@@ -69,6 +69,7 @@ function NewSalePageInner() {
     const [entryTaxRate, setEntryTaxRate] = useState<number | ''>(0);
     const [entryStock, setEntryStock] = useState<number | null>(null);
 
+    const [salesReps, setSalesReps] = useState<any[]>([]);
     const [lines, setLines] = useState<InvoiceLine[]>([]);
     const [attachments, setAttachments] = useState<{ name: string; type: string; data: string }[]>([]);
     const [taxSettings, setTaxSettings] = useState<any>(null);
@@ -89,6 +90,7 @@ function NewSalePageInner() {
         date: new Date().toISOString().split('T')[0],
         taxRate: 0,
         taxAmount: 0,
+        salesRepresentativeId: '',
     });
 
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
@@ -119,10 +121,10 @@ function NewSalePageInner() {
 
     const loadData = useCallback(async () => {
         try {
-            const [invR, custR, whR, trR, itemR, coR] = await Promise.all([
+            const [invR, custR, whR, trR, itemR, coR, repR] = await Promise.all([
                 fetch('/api/sales?justNextNum=true'), fetch('/api/customers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
-                fetch('/api/company'),
+                fetch('/api/company'), fetch('/api/sales-reps')
             ]);
             const nextNumData = await invR.json();
             setNextNum(nextNumData.nextNum || 1);
@@ -139,9 +141,13 @@ function NewSalePageInner() {
             const itsData = await itemR.json();
             const its = Array.isArray(itsData) ? itsData : (itsData.items || []);
 
+            const repsData = await repR.json();
+            const reps = Array.isArray(repsData) ? repsData : [];
+
             setCustomers(cus);
             setWarehouses(whs); setTreasuries(trs);
             setItems(its);
+            setSalesReps(reps);
             if (coR.ok) setCompany(await coR.json());
 
             const taxRes = await fetch('/api/settings');
@@ -170,7 +176,30 @@ function NewSalePageInner() {
         } catch { } finally { setLoading(false); }
     }, []);
 
-    useEffect(() => { loadData(); }, [loadData]);
+    // Auto-prefill representative based on logged in user
+    useEffect(() => {
+        if (salesReps.length > 0 && session?.user?.id) {
+            const currentRep = salesReps.find(r => r.userId === (session.user as any).id);
+            if (currentRep) {
+                setForm((f: any) => ({ ...f, salesRepresentativeId: currentRep.id }));
+            }
+        }
+    }, [salesReps, session?.user?.id]);
+
+    // Auto-prefill representative based on selected customer's default representative
+    useEffect(() => {
+        if (form.customerId && salesReps.length > 0) {
+            const customer = customers.find(c => c.id === form.customerId);
+            if (customer && (customer as any).salesRepresentativeId) {
+                const isUserRep = salesReps.some(r => r.userId === session?.user?.id);
+                if (!isUserRep) {
+                    setForm((f: any) => ({ ...f, salesRepresentativeId: (customer as any).salesRepresentativeId }));
+                }
+            }
+        }
+    }, [form.customerId, customers, salesReps, session?.user?.id]);
+
+    useEffect(() => { loadData(); }, [loadData]); // Just to keep standard effect structure
 
     // Prefill from quotation if quotationId param is present
     useEffect(() => {
@@ -413,6 +442,7 @@ function NewSalePageInner() {
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
+                    salesRepresentativeId: form.salesRepresentativeId || undefined,
                     lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price), description: l.description })),
                 }),
             });
@@ -666,6 +696,36 @@ function NewSalePageInner() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Sales Representative Selection - dynamically shown if reps exist */}
+                            {salesReps.length > 0 && (
+                                <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+                                    <div>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مندوب المبيعات')}</label>
+                                        </div>
+                                        <CustomSelect
+                                            value={form.salesRepresentativeId}
+                                            onChange={v => setForm((f: any) => ({ ...f, salesRepresentativeId: v }))}
+                                            disabled={salesReps.some(r => r.userId === session?.user?.id)}
+                                            placeholder={t('اختر مندوب المبيعات...')}
+                                            options={[
+                                                { value: '', label: t('لا يوجد مندوب (بيع مباشر)') },
+                                                ...salesReps.map(r => ({ value: r.id, label: r.name }))
+                                            ]}
+                                            minWidth="100%"
+                                        />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '10px' }}>
+                                        {salesReps.some(r => r.userId === session?.user?.id) && (
+                                            <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                ✓ {t('تم قفل الحقل لأنك مسجل دخول كـ مندوب')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
 
                         {/* Items */}

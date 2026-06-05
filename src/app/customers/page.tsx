@@ -62,13 +62,15 @@ export default function CustomersPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [deleteItem, setDeleteItem] = useState<Customer | null>(null);
     const [deleteError, setDeleteError] = useState('');
+    const [salesReps, setSalesReps] = useState<any[]>([]);
 
     const [form, setForm] = useState({
         name: '', phone: '',
         addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
         type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
         openingBalance: '', balanceType: 'debit' as 'credit' | 'debit',
-        creditLimit: ''
+        creditLimit: '',
+        salesRepresentativeId: ''
     });
 
     const fetchData = useCallback(async () => {
@@ -84,6 +86,20 @@ export default function CustomersPage() {
     }, []);
 
     useEffect(() => { fetchData(); }, [fetchData]);
+
+    useEffect(() => {
+        const fetchReps = async () => {
+            try {
+                const res = await fetch('/api/sales-reps');
+                if (res.ok) {
+                    setSalesReps(await res.json());
+                }
+            } catch (err) {
+                console.error('Failed to fetch sales representatives:', err);
+            }
+        };
+        fetchReps();
+    }, []);
 
     const formatWithCommas = (val: string | number) => {
         if (val === undefined || val === null || val === '') return '';
@@ -114,6 +130,7 @@ export default function CustomersPage() {
                 openingBalance: parseFloat(form.openingBalance.replace(/,/g, '')) || 0,
                 balanceType: form.balanceType,
                 creditLimit: parseFloat(form.creditLimit.replace(/,/g, '')) || 0,
+                salesRepresentativeId: form.salesRepresentativeId || null,
                 ...(editingId ? { id: editingId } : {}),
             };
 
@@ -170,7 +187,8 @@ export default function CustomersPage() {
             contactPerson: c.contactPerson || '',
             openingBalance: '',
             balanceType: c.balance < 0 ? 'credit' : 'debit',
-            creditLimit: c.creditLimit ? String(c.creditLimit) : ''
+            creditLimit: c.creditLimit ? String(c.creditLimit) : '',
+            salesRepresentativeId: (c as any).salesRepresentativeId || ''
         });
         setShowModal(true);
     };
@@ -273,7 +291,8 @@ export default function CustomersPage() {
                                 name: '', phone: '',
                                 addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
                                 type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
-                                openingBalance: '', balanceType: 'debit', creditLimit: ''
+                                openingBalance: '', balanceType: 'debit', creditLimit: '',
+                                salesRepresentativeId: ''
                             });
                             setShowModal(true);
                         },
@@ -501,6 +520,25 @@ export default function CustomersPage() {
                                             <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                         </div>
                                     </div>
+                                    {salesReps.length > 0 && (
+                                        <div>
+                                            <label style={LS}>{t('مندوب المبيعات الافتراضي')}</label>
+                                            <select
+                                                value={form.salesRepresentativeId}
+                                                onChange={e => setForm({ ...form, salesRepresentativeId: e.target.value })}
+                                                style={{ ...IS, cursor: 'pointer' }}
+                                                onFocus={focusIn}
+                                                onBlur={focusOut}
+                                            >
+                                                <option value="">{t('بدون مندوب مبيعات افتراضي')}</option>
+                                                {salesReps.map(rep => (
+                                                    <option key={rep.id} value={rep.id}>
+                                                        {rep.name} {rep.code ? `(${rep.code})` : ''}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
                                     {!editingId && (
                                         <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                             <label style={{ ...LS, marginBottom: 0 }}>{t('الرصيد الافتتاحي (عند بداية التعامل)')}</label>

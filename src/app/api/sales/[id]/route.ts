@@ -16,6 +16,7 @@ export const GET = withProtection(async (request, session, body, context) => {
             include: {
                 customer: true,
                 supplier: true,
+                salesRepresentative: true,
                 lines: { 
                     include: { 
                         item: { 
@@ -66,5 +67,34 @@ export const GET = withProtection(async (request, session, body, context) => {
     } catch (error) {
         console.error('Fetch invoice error:', error);
         return NextResponse.json({ error: 'فشل في جلب الفاتورة' }, { status: 500 });
+    }
+});
+
+export const DELETE = withProtection(async (request, session, body, context) => {
+    try {
+        const { id } = await context.params;
+        const companyId = (session.user as any).companyId;
+
+        const invoice = await prisma.invoice.findFirst({
+            where: { id, companyId }
+        });
+
+        if (!invoice) {
+            return NextResponse.json({ error: "الفاتورة غير موجودة" }, { status: 404 });
+        }
+
+        if (invoice.status !== 'pending') {
+            return NextResponse.json({ error: "لا يمكن حذف الفاتورة بعد اعتمادها" }, { status: 400 });
+        }
+
+        // Safe to delete since it didn't create stock movements or ledger entries
+        await prisma.invoice.delete({
+            where: { id }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Delete invoice error:', error);
+        return NextResponse.json({ error: 'فشل في حذف الفاتورة' }, { status: 500 });
     }
 });
