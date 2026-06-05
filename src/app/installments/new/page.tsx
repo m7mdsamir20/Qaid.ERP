@@ -336,7 +336,7 @@ const handleAddToCart = () => {
                 <div style={{ background: C.card, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)', border: `1px solid ${C.border}` }}>
 <form onSubmit={handleSubmit}>
     
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+    <div className="installment-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
                             
                             {/* Section 1: Basic Contract Info */}
@@ -405,7 +405,7 @@ const handleAddToCart = () => {
                                 <span style={{ fontSize: '12.5px', fontWeight: 600, color: C.primary }}>{t('المنتجات')}</span>
                             </div>
                             
-                            <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '8px', alignItems: 'end' }}>
+                            <div className="installment-cart-grid" style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr auto', gap: '8px', alignItems: 'end' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('المنتج')}</label>
                                     <CustomSelect

@@ -88,9 +88,9 @@ export default function DuePage() {
 
                 {/* Content Container (Table & Header) */}
                 <div style={{ ...SC, background: 'transparent', border: 'none', boxShadow: 'none', padding: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
+                    <div className="installments-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
                         {/* Filters */}
-                        <div style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
+                        <div className="installments-filter" style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
                             {[
                                 { id: 'current', label: t('الشهر الحالي'), icon: <Calendar size={14} /> },
                                 { id: 'next', label: t('الشهر القادم'), icon: <ArrowLeftCircle size={14} /> },
@@ -98,8 +98,8 @@ export default function DuePage() {
                             ].map(t => (
                                 <button key={t.id} onClick={() => setMonthFilter(t.id)}
                                     style={{
-                                        padding: '8px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 700, border: 'none', cursor: 'pointer',
-                                        display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s',
+                                        flex: 1, padding: '8px 12px', borderRadius: '9px', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s',
                                         background: monthFilter === t.id ? C.primary : 'transparent',
                                         color: monthFilter === t.id ? '#fff' : C.textSecondary,
                                         boxShadow: monthFilter === t.id ? '0 4px 12px rgba(37,106,244,0.3)' : 'none',
@@ -110,7 +110,7 @@ export default function DuePage() {
                         </div>
 
                         {/* Integrated KPI Card */}
-                        <div style={{
+                        <div className="installments-kpi" style={{
                             minWidth: '220px', background: 'rgba(37,106,244,0.05)', border: `1px solid ${C.primaryBorder}`, borderRadius: '12px',
                             padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', overflow: 'hidden'
                         }}>

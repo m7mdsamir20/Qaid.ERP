@@ -625,6 +625,7 @@ select.input:focus,
 /* Date Input Appearance */
 input[type="date"] {
   position: relative;
+  text-align: center !important;
 }
 
 /* Fallback for wrapper if still used */
@@ -1593,16 +1594,16 @@ td.table-cell-text {
 
 /* ── داخل النوافذ المنبثقة: اطوِ الشبكات الثنائية على الشاشات الصغيرة ── */
 @media (max-width: 560px) {
-  /* طي جميع شبكات العمودين داخل AppModal */
-  .app-modal-inner [style*="display: grid"],
-  .modal-content [style*="display: grid"] {
-    grid-template-columns: 1fr !important;
-  }
-
   /* كما يطوي الشبكة الثنائية في النماذج العامة */
   [style*="grid-template-columns: 1fr 1fr"],
   [style*="grid-template-columns:1fr 1fr"] {
     grid-template-columns: 1fr !important;
+  }
+
+  /* استثناء: شبكات 1fr 1fr داخل النوافذ تبقى عمودين (المودال عرضه 94% كافٍ) */
+  .app-modal-inner [style*="grid-template-columns: 1fr 1fr"],
+  .modal-content [style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr 1fr !important;
   }
 
   /* KPI cards → عمود واحد على الهاتف */
@@ -1703,5 +1704,48 @@ td.table-cell-text {
   [style*="grid-template-columns: 1fr 2fr"],
   [style*="grid-template-columns: 2fr 1fr"] {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── شريط الفلترة في صفحة العملاء ── */
+@media (max-width: 640px) {
+  .customers-toolbar {
+    flex-wrap: wrap !important;
+  }
+  .customers-filter {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+
+  /* ── شريط الفلترة وكارت KPI في صفحات الأقساط ── */
+  .installments-toolbar {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  .installments-filter {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+  .installments-kpi {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 0 0 100% !important;
+  }
+
+  /* ── نموذج إنشاء خطة تقسيط جديدة ── */
+  .installment-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .installment-form-grid > * {
+    grid-column: auto !important;
+  }
+
+  /* ── شبكة إضافة صنف في خطة التقسيط ── */
+  .installment-cart-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .installment-cart-grid > *:first-child,
+  .installment-cart-grid > *:last-child {
+    grid-column: 1 / -1 !important;
   }
 }

@@ -375,7 +375,7 @@ export default function NewPurchaseReturnPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ المرتجع')}</label>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
+                                            style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'center', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                     <div>

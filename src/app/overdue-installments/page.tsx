@@ -89,9 +89,9 @@ export default function OverduePage() {
 
                 {/* Content Container (Table & Header) */}
                 <div style={{ ...SC, background: 'transparent', border: 'none', boxShadow: 'none', padding: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
+                    <div className="installments-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
                         {/* Filters */}
-                        <div style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
+                        <div className="installments-filter" style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
                             {[
                                 { id: 'current', label: t('الشهر الحالي'), icon: <Calendar size={14} /> },
                                 { id: 'next', label: t('الشهر القادم'), icon: <ArrowLeftCircle size={14} /> },
@@ -99,8 +99,8 @@ export default function OverduePage() {
                             ].map(t_f => (
                                 <button key={t_f.id} onClick={() => setMonthFilter(t_f.id)}
                                     style={{
-                                        padding: '8px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 700, border: 'none', cursor: 'pointer',
-                                        display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s',
+                                        flex: 1, padding: '8px 12px', borderRadius: '9px', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s',
                                         background: monthFilter === t_f.id ? C.danger : 'transparent',
                                         color: monthFilter === t_f.id ? '#fff' : C.textSecondary,
                                         boxShadow: monthFilter === t_f.id ? '0 4px 12px rgba(239,68,68,0.3)' : 'none',
@@ -111,7 +111,7 @@ export default function OverduePage() {
                         </div>
 
                         {/* Integrated KPI Card (Danger themed) */}
-                        <div style={{
+                        <div className="installments-kpi" style={{
                             minWidth: '220px', background: 'rgba(251,113,133,0.05)', border: `1px solid ${C.danger}30`, borderRadius: '12px',
                             padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', overflow: 'hidden'
                         }}>
