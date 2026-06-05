@@ -325,11 +325,12 @@ function Actions() {
             </div>
             )}
 
-            <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
+            <div className="mobile-hide" style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
 
             {/* User Menu */}
             <div ref={userRef} style={{ position: 'relative' }}>
                 <button onClick={() => setOpenUser(!openUser)}
+                    className="user-menu-btn"
                     style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
                         padding: isRtl ? '4px 6px 4px 12px' : '4px 12px 4px 6px', borderRadius: '12px',
@@ -347,7 +348,7 @@ function Actions() {
                             {sessionStatus === 'loading' ? '' : getRoleLabel((session?.user as any)?.role, t)}
                         </div>
                     </div>
-                    <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                    <ChevronDown className="mobile-hide" size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                 </button>
 
                 {openUser && (

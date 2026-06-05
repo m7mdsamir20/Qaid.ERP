@@ -1015,20 +1015,46 @@ select option {
     grid-column: 1 / -1 !important;
   }
 
-  /* Quotation form: العميل full-width in first row, then رقم + تاريخ side by side */
+  /* Quotation form: رقم + تاريخ جنب بعض، والعميل full-width تحتهم */
   .quotation-form-grid {
     grid-template-columns: 1fr 1fr !important;
   }
 
-  /* العميل يأخذ الصف كامل */
+  /* العميل يأخذ العرض كامل ويجي في آخر الصف */
   .quotation-form-grid > div:nth-child(2) {
     grid-column: 1 / -1 !important;
-    order: -1 !important;
+    order: 3 !important;
   }
 
   /* مندوب المبيعات يتحول لعمود واحد */
   .quotation-rep-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  /* جدول الأصناف داخل عرض السعر: ضغط الأعمدة للموبايل */
+  .quotation-items-table {
+    table-layout: fixed !important;
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+  .quotation-items-table th,
+  .quotation-items-table td {
+    padding: 8px 6px !important;
+    font-size: 12px !important;
+  }
+
+  .quotation-items-table .col-qty {
+    width: 44px !important;
+  }
+
+  .quotation-items-table .col-price,
+  .quotation-items-table .col-total {
+    width: 72px !important;
+  }
+
+  .quotation-items-table .col-actions {
+    width: 52px !important;
   }
 }
 
@@ -1352,6 +1378,31 @@ select:-webkit-autofill:focus {
   }
 
 
+}
+
+/* ── داشبورد: كارتين في كل صف على الموبايل ── */
+@media (max-width: 768px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-quick-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* هيدر: زر المستخدم يبقى مجرد أفاتار دائري */
+  .user-menu-btn {
+    padding: 4px !important;
+    border-radius: 50% !important;
+    gap: 0 !important;
+  }
+
+  /* أزرار الهيدر بنفس الحجم */
+  .main-header button {
+    flex-shrink: 0;
+  }
 }
 
 @media (max-width: 560px) {
