@@ -6,7 +6,7 @@ export type Language = 'ar' | 'en';
 
 // Bump this string whenever translation keys are added or changed.
 // The app will clear any stale cached language data automatically.
-export const I18N_VERSION = '2.1.0';
+export const I18N_VERSION = '2.2.0';
 
 interface LanguageContextType {
     lang: Language;
@@ -605,7 +605,6 @@ export const dictionaries = {
         "فواتير الخدمات": "Service Invoices",
         "مدير فرع": "Branch Manager",
         "محاسب": "Accountant",
-        "مندوب مبيعات": "Sales Representative",
         "مسؤول مشتريات": "Procurement Officer",
         "أمين مستودع": "Storekeeper",
         "موارد بشرية": "Human Resources",
@@ -2466,7 +2465,6 @@ export const dictionaries = {
         "في الانتظار": "Waiting",
         "في الطريق": "On the way",
         "تم التسليم اليوم": "Delivered today",
-        "المناديب": "The delegates",
         "إدارة ←": "Management ←",
         "لا توجد طلبات توصيل": "No delivery requests",
         "المندوب:": "Delegate:",
@@ -4497,7 +4495,6 @@ export const dictionaries = {
         "رقم الطاولة": "Table number",
         "عدد الأفراد": "Number of individuals",
         "رقم الانتظار": "Waiting number",
-        "المندوب": "The delegate",
         "الإجمالي الفرعي": "Subtotal",
         "رسوم الخدمة": "Service fees",
         "الدفع عند الاستلام": "Payment upon receipt",

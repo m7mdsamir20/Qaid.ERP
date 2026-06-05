@@ -219,22 +219,18 @@ export default function DashboardPage() {
   })();
 
   const hasPage = (pageId: string, featureKey?: string): boolean => {
-    if (isSuperAdmin) return true;
-
-    // Core pages are usually always allowed if not restricted by granular permissions
     const isCore = pageId === '/' || pageId === '/settings' || featureKey === 'dashboard';
 
-    if (isUserAdmin) {
-      if (isCore) return true;
-      if (Object.keys(enabledFeatures).length === 0) return true;
-      const pagesInSub = enabledFeatures[featureKey || ''] || [];
-      return pagesInSub.includes(pageId);
-    }
-
-    // Check subscription for non-admins
+    // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
     if (!isCore && Object.keys(enabledFeatures).length > 0 && featureKey) {
       const pagesInSub = enabledFeatures[featureKey] || [];
       if (!pagesInSub.includes(pageId)) return false;
+    }
+
+    if (isSuperAdmin) return true;
+
+    if (isUserAdmin) {
+      return true;
     }
 
     // Granular permissions

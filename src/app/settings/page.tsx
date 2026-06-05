@@ -396,13 +396,20 @@ function SettingsContent() {
 
     // Helper to check if a page is accessible
     const hasPage = (featureKey: string, pageId: string): boolean => {
-        if (isSuperAdmin) return true;
-
         const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
         const contractingFeatures = ['projects', 'subcontractors'];
         if (restaurantFeatures.includes(featureKey) && !isRestaurants) return false;
         if (contractingFeatures.includes(featureKey) && !isContracting) return false;
         if (pageId === 'reports-restaurant' && !isRestaurants) return false;
+
+        // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
+        if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings') {
+            if (!(featureKey in enabledFeatures)) return false;
+            const pagesInSub = enabledFeatures[featureKey];
+            if (!pagesInSub.includes(pageId)) return false;
+        }
+
+        if (isSuperAdmin) return true;
 
         const userRole = (session?.user as any)?.role;
         const userPerms = (session?.user as any)?.permissions || {};
@@ -410,22 +417,7 @@ function SettingsContent() {
 
         if (isUserAdmin) {
             if (featureKey === 'settings') return true;
-            if (Object.keys(enabledFeatures).length > 0) {
-                if (!(featureKey in enabledFeatures)) return false;
-                const pagesInSub = enabledFeatures[featureKey];
-                return pagesInSub.includes(pageId);
-            }
             return true;
-        }
-
-        // 1. Check subscription (granular check)
-        if (Object.keys(enabledFeatures).length > 0) {
-            if (!(featureKey in enabledFeatures)) return false;
-            const pagesInSub = enabledFeatures[featureKey];
-            if (!pagesInSub.includes(pageId)) return false;
-        } else if (featureKey !== 'dashboard' && featureKey !== 'settings') {
-            // If no subscription features are defined, we might want to restrict or allow all.
-            // Based on existing code (line 56), it returns true if empty.
         }
 
         // 2. Check user permissions

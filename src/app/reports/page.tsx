@@ -56,7 +56,7 @@ function ReportsHubPageInner() {
         ],
         'sales-purchases': [
             { title: isContracting ? t('تقرير المبيعات وفواتير الأعمال') : isServices ? t('تقرير الخدمات') : t('تقرير المبيعات'), description: isContracting ? t('حركة المبيعات وفواتير بنود الأعمال خلال فترة زمنية') : isServices ? t('حركة طلب الخدمات خلال فترة زمنية') : t('حركة المبيعات خلال فترة زمنية'), href: '/reports/sales-report', icon: BarChart3, color: '#0ea5e9', status: 'ready', requiredPages: ['/sales'] },
-            { title: t('تقرير عمولات مناديب المبيعات'), description: t('تتبع أداء المبيعات والتحصيلات للمناديب واحتساب عمولاتهم المستحقة بدقة'), href: '/reports/sales-representatives', icon: Award, color: '#a78bfa', status: 'ready', requiredPages: ['/sales'] },
+            { title: t('تقرير عمولات مناديب المبيعات'), description: t('تتبع أداء المبيعات والتحصيلات للمناديب واحتساب عمولاتهم المستحقة بدقة'), href: '/reports/sales-representatives', icon: Award, color: '#a78bfa', status: 'ready', requiredPages: ['/reports/sales-representatives'] },
             { title: isContracting ? t('تقرير المشتريات ومواد البناء') : t('تقرير المشتريات'), description: isContracting ? t('إجمالي مشتريات مواد البناء وتكاليف الموردين وتفاصيل الفواتير') : t('إجمالي المشتريات وتفاصيل الفواتير'), href: '/reports/purchases-report', icon: ShoppingCart, color: '#fb923c', status: 'ready', requiredPages: ['/purchases'] },
             { title: isContracting ? t('البنود والمواد الأكثر استخداماً') : isServices ? t('أكثر الخدمات طلباً') : t('أكثر الأصناف مبيعاً'), description: isContracting ? t('المواد وبنود الأعمال الأعلى استخداماً في المشاريع') : isServices ? t('الخدمات الأعلى طلباً في المنشأة') : t('المنتجات الأعلى حركة طلباً ومبيعاً'), href: '/reports/top-selling-items', icon: TrendingUp, color: '#eab308', status: 'ready', requiredPages: ['/sales'] },
             { title: isContracting ? t('تقرير المرتجعات وإلغاء الأعمال') : isServices ? t('مرتجعات الخدمات') : t('تقرير المرتجعات'), description: isContracting ? t('تحليل مرتجعات المواد وإلغاء بنود الأعمال لمعرفة أسبابها') : isServices ? t('تحليل مرتجعات الخدمات لمعرفة الأسباب') : t('تحليل المرتجعات لمعرفة أسباب الخسارة'), href: '/reports/returns-report', icon: ArrowRightLeft, color: '#f43f5e', status: 'ready', requiredPages: ['/sale-returns'] },
@@ -123,13 +123,13 @@ function ReportsHubPageInner() {
     })();
 
     const hasPageAccess = (pageId: string, featureKey?: string): boolean => {
-        if (isSuperAdmin) return true;
-        
-        // 1. تحقق من الـ subscription
+        // 1. تحقق من الـ subscription (يطبق على الجميع بما فيهم السوبر أدمن)
         if (hasSubscription && featureKey) {
             const pagesInSub = enabledFeatures[featureKey] || [];
             if (!pagesInSub.includes(pageId)) return false;
         }
+
+        if (isSuperAdmin) return true;
 
         // 2. لو admin واجتاز اشتراك الموديول يتم السماح له
         if (session?.user?.role === 'admin') return true;
