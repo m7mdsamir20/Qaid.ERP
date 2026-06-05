@@ -1335,4 +1335,178 @@ td.table-cell-center {
 th.table-cell-text,
 td.table-cell-text {
   text-align: start !important;
+}
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE UTILITY CLASSES
+   مطلوبة لكل الصفحات — كانت مستخدمة في الكود بدون تعريف CSS
+   Desktop: لا تأثير. Mobile: تغييرات layout فقط.
+   ════════════════════════════════════════════════════════ */
+
+/* .stats-grid-responsive → شبكة إحصائيات مرنة (تُستخدم في الموظفين والأصول وغيرها) */
+.stats-grid-responsive {
+  display: grid;
+}
+
+@media (max-width: 992px) {
+  .stats-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* .responsive-grid → يطوي شبكة عمودين (المحتوى + الشريط الجانبي) إلى عمود واحد */
+@media (max-width: 992px) {
+  .responsive-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* .mobile-column → يحول الصف (flex-row) إلى عمود على الموبايل */
+  .mobile-column {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* .mobile-hide → يخفي العنصر على الموبايل (مثل رقم الفاتورة في الجداول) */
+  .mobile-hide {
+    display: none !important;
+  }
+
+  /* .mobile-full → يمتد العنصر على كامل عرض الشاشة */
+  .mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+
+  /* .mobile-stack → يكدّس أزرار الإجراءات في PageHeader على الموبايل */
+  .mobile-stack {
+    flex-wrap: wrap !important;
+    width: 100% !important;
+  }
+
+  .mobile-stack > * {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* ── شريط بحث بـ margin-bottom: 16px (يكمّل ما يعمله الـ 20px أعلاه) ──
+     يستهدف أشرطة البحث/التصفية التي تستخدم 16px بدلاً من 20px.
+     :not([style*="background:"]) يستثني صناديق التنبيه التي لها لون خلفية. */
+  main [style*="margin-bottom: 16px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main [style*="margin-bottom: 16px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* ── شريط بحث بـ margin-bottom: 20px و gap: 15px (صفحة الأصناف) ── */
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 15px"][style*="align-items: center"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 15px"][style*="align-items: center"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* ── إصلاح min-width ثابتة تمنع الانكماش على الموبايل ── */
+  main [style*="min-width: 220px"] {
+    min-width: 0 !important;
+  }
+
+  /* ── إصلاح شبكات KPI ذات الأعمدة المحددة على الموبايل ── */
+  [style*="grid-template-columns: repeat(3, 1fr)"],
+  [style*="grid-template-columns:repeat(3, 1fr)"],
+  [style*="grid-template-columns: repeat(3,1fr)"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* ── داخل النوافذ المنبثقة: اطوِ الشبكات الثنائية على الشاشات الصغيرة ── */
+@media (max-width: 560px) {
+  /* طي جميع شبكات العمودين داخل AppModal */
+  .app-modal-inner [style*="display: grid"],
+  .modal-content [style*="display: grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* كما يطوي الشبكة الثنائية في النماذج العامة */
+  [style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* KPI cards → عمود واحد على الهاتف */
+  [style*="grid-template-columns: repeat(3, 1fr)"],
+  [style*="grid-template-columns:repeat(3, 1fr)"],
+  [style*="grid-template-columns: repeat(3,1fr)"],
+  [style*="grid-template-columns: repeat(2, 1fr)"],
+  [style*="grid-template-columns:repeat(2, 1fr)"],
+  [style*="grid-template-columns: repeat(2,1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── شبكات ذات سايدبار بعرض ثابت (بدون .responsive-grid) — تنهار في 992px ── */
+@media (max-width: 992px) {
+  /* advances/[id], deductions/[id], cost-centers/[id], installments/[id] */
+  [style*="grid-template-columns: 1fr 320px"],
+  [style*="grid-template-columns: 1fr 340px"],
+  /* employees/[id], employees/[id]/edit, top-selling-items */
+  [style*="grid-template-columns: minmax(0, 1fr) 320px"],
+  [style*="grid-template-columns: minmax(0, 1fr) 340px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── أشرطة فلترة التقارير (margin-bottom: 24px) و .report-filter-bar ── */
+@media (max-width: 768px) {
+  /* صفحات التقارير التي تستخدم gap: 12px و marginBottom: 24px */
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* .report-filter-bar → يستخدمه flexWrap: wrap لكن نضمن عرض 100% للعناصر الداخلية */
+  .report-filter-bar {
+    flex-wrap: wrap !important;
+  }
+  .report-filter-bar > * {
+    min-width: 0 !important;
+    flex: 1 1 160px !important;
+  }
+}
+
+/* ── شبكات fr غير متساوية في نماذج الصفحات (خارج الـ modals) — تنهار في 560px ── */
+@media (max-width: 560px) {
+  /* profile/page.tsx، sales/[id]، إلخ */
+  [style*="grid-template-columns: 1.5fr 1fr"],
+  [style*="grid-template-columns: 1fr 1.5fr"],
+  [style*="grid-template-columns: 1.2fr 1fr"],
+  [style*="grid-template-columns: 1fr 1.2fr"],
+  [style*="grid-template-columns: 1fr 2fr"],
+  [style*="grid-template-columns: 2fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
 }

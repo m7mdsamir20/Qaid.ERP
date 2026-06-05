@@ -225,7 +225,7 @@ export default function SalesRepresentativesPage() {
                 )}
 
                 {/* Toolbar */}
-                <div style={{ ...SEARCH_STYLE.container, alignItems: 'stretch', marginBottom: '20px' }}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch', marginBottom: '20px' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
