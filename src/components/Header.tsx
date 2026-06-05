@@ -558,38 +558,37 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
                 </div>
             </Link>
 
-            {/* Mobile Search Toggle */}
-            <button
-                className="mobile-search-toggle"
-                onClick={() => setShowMobSearch(true)}
-                style={{
-                    width: '38px', height: '38px', borderRadius: '10px',
-                    border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
-                    color: C.textPrimary, display: 'none', alignItems: 'center',
-                    justifyContent: 'center', cursor: 'pointer', marginInlineEnd: '8px'
-                }}
-            >
-                <Search size={20} />
-            </button>
-
             {/* Branch Switcher - Fixed Position */}
             <div className="branch-switcher-wrap" style={{ order: 1 }}>
                 <BranchSwitcher />
             </div>
 
-            {/* Center: Search */}
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', order: 5 }}>
+            {/* Center: Search — مخفي على الموبايل بالكامل */}
+            <div className="header-search-center" style={{ flex: 1, display: 'flex', justifyContent: 'center', order: 5 }}>
                 <SearchBox />
             </div>
 
-            {/* Actions & User Menu - Fixed Position */}
-            <div style={{ order: 10 }}>
+            {/* Actions & User Menu + Mobile Search Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', order: 10 }}>
+                {/* زر البحث على الموبايل — بجوار الأيقونات */}
+                <button
+                    className="mobile-search-toggle"
+                    onClick={() => setShowMobSearch(true)}
+                    style={{
+                        width: '36px', height: '36px', borderRadius: '10px',
+                        border: `1px solid ${C.border}`, background: C.card,
+                        color: C.textSecondary, display: 'none', alignItems: 'center',
+                        justifyContent: 'center', cursor: 'pointer'
+                    }}
+                >
+                    <Search size={18} />
+                </button>
                 <Actions />
             </div>
 
             <style jsx global>{`
                 @media (max-width: 1023px) {
-                    .search-box-container { display: none; }
+                    .header-search-center { display: none !important; }
                     .mobile-search-toggle { display: flex !important; }
                     .main-header { padding: 0 12px !important; }
                 }
