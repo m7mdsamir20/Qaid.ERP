@@ -334,6 +334,7 @@ export default function ItemsPage() {
         ...(showQuantitiesAndCosts ? [
             {
                 header: companyBusinessType === 'CONTRACTING' ? t('الكمية المتوفرة') : t('الكمية'),
+                type: 'number' as const,
                 cell: (row: Item) => {
                     const totalQty = row.stocks?.reduce((s, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? s + st.quantity : s, 0) || 0;
                     return (
@@ -342,37 +343,38 @@ export default function ItemsPage() {
                         </>
                     );
                 },
-                style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
+                style: { fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary } as React.CSSProperties
             },
             {
                 header: companyBusinessType === 'CONTRACTING' ? t('تكلفة الشراء / التنفيذ') : t('سعر التكلفة'),
-                cell: (row: Item) => fMoneyJSX(row.costPrice),
-                style: { textAlign: 'center' } as React.CSSProperties
+                type: 'number' as const,
+                cell: (row: Item) => fMoneyJSX(row.costPrice)
             }
         ] : []),
         {
             header: companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية') : t('سعر البيع'),
-            cell: (row: Item) => fMoneyJSX(row.sellPrice),
-            style: { textAlign: 'center' } as React.CSSProperties
+            type: 'number' as const,
+            cell: (row: Item) => fMoneyJSX(row.sellPrice)
         },
         ...(showQuantitiesAndCosts ? [
             {
                 header: t('متوسط التكلفة'),
-                cell: (row: Item) => fMoneyJSX(row.averageCost || row.costPrice),
-                style: { textAlign: 'center' } as React.CSSProperties
+                type: 'number' as const,
+                cell: (row: Item) => fMoneyJSX(row.averageCost || row.costPrice)
             },
             {
                 header: t('إجمالي التكلفة'),
+                type: 'number' as const,
                 cell: (row: Item) => {
                     const totalQty = row.stocks?.reduce((s, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? s + st.quantity : s, 0) || 0;
                     const avgCost = row.averageCost || row.costPrice;
                     return fMoneyJSX(totalQty * avgCost);
-                },
-                style: { textAlign: 'center' } as React.CSSProperties
+                }
             }
         ] : []),
         {
             header: t('إجراء'),
+            type: 'action' as const,
             cell: (row: Item) => (
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                     {companyBusinessType !== 'SERVICES' && usesBarcode && (
@@ -383,8 +385,7 @@ export default function ItemsPage() {
                     <button onClick={() => handleOpenModal(row)} style={TABLE_STYLE.actionBtn()}><Pencil size={TABLE_STYLE.actionIconSize} /></button>
                     <button onClick={() => setDeleteItem(row)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
                 </div>
-            ),
-            style: { textAlign: 'center' } as React.CSSProperties
+            )
         }
     ];
 
