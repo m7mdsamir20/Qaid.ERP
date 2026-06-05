@@ -265,3 +265,18 @@ export const navSections = [
     },
 
 ];
+
+// Dummy translation function so that extract-translations.js will pick up these static keys
+function _dummyNavigationTranslations() {
+    const { t } = { t: (s: string) => s };
+    t("نقطة البيع (POS)");
+    t("شاشة الكاشير");
+    t("سجل الطلبات");
+    t("الطاولات والصالة");
+    t("المطبخ");
+    t("التوصيل");
+    t("طلبات التوصيل");
+    t("تطبيقات التوصيل");
+    t("الربط البرمجي (API)");
+}
+
