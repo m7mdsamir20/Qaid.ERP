@@ -1498,6 +1498,48 @@ td.table-cell-text {
   }
 }
 
+/* ── إصلاح الجداول داخل scroll-table: DashboardLayout يحول الجداول لـ display:block
+   مما يكسر محاذاة الأعمدة. نعيد هنا display:table الصحيح للجداول المغلفة بـ scroll-table ── */
+@media (max-width: 768px) {
+  /* أعد table الصحيح ليحافظ على محاذاة الأعمدة */
+  .scroll-table table,
+  .table-container table,
+  .table-scroll-wrap table {
+    display: table !important;
+    width: max-content !important;
+    min-width: 100% !important;
+    white-space: nowrap;
+  }
+  .scroll-table table thead,
+  .table-container table thead,
+  .table-scroll-wrap table thead {
+    display: table-header-group !important;
+  }
+  .scroll-table table tbody,
+  .table-container table tbody,
+  .table-scroll-wrap table tbody {
+    display: table-row-group !important;
+  }
+  .scroll-table table tfoot,
+  .table-container table tfoot,
+  .table-scroll-wrap table tfoot {
+    display: table-footer-group !important;
+  }
+  .scroll-table table tr,
+  .table-container table tr,
+  .table-scroll-wrap table tr {
+    display: table-row !important;
+  }
+  .scroll-table table th,
+  .scroll-table table td,
+  .table-container table th,
+  .table-container table td,
+  .table-scroll-wrap table th,
+  .table-scroll-wrap table td {
+    display: table-cell !important;
+  }
+}
+
 /* ── شبكات fr غير متساوية في نماذج الصفحات (خارج الـ modals) — تنهار في 560px ── */
 @media (max-width: 560px) {
   /* profile/page.tsx، sales/[id]، إلخ */
