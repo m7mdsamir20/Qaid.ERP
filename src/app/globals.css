@@ -1859,4 +1859,37 @@ td.table-cell-text {
     position: relative !important;
     top: auto !important;
   }
+}
+
+/* ── settings/UsersTab: شبكة السايدبار بعرض ثابت 280px ── */
+@media (max-width: 992px) {
+  [style*="grid-template-columns: 280px 1fr"],
+  [style*="grid-template-columns:280px 1fr"],
+  [style*="grid-template-columns: 1fr 280px"],
+  [style*="grid-template-columns:1fr 280px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── daily-report: sidebar-report لا يبقى sticky عند طي الشبكة ── */
+@media (max-width: 992px) {
+  .sidebar-report {
+    position: static !important;
+    top: auto !important;
+  }
+}
+
+/* ── customers/[id]: شبكة 3 أعمدة بعرض ثابت 150px ── */
+@media (max-width: 640px) {
+  [style*="grid-template-columns: 1fr 1fr 150px"],
+  [style*="grid-template-columns:1fr 1fr 150px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── journal-entries: صف إدخال (رقم + تاريخ + وصف) ── */
+@media (max-width: 640px) {
+  [style*="grid-template-columns: minmax(120px, 150px)"] {
+    grid-template-columns: 1fr !important;
+  }
 }
