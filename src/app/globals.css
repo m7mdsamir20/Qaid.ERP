@@ -634,6 +634,29 @@ input[type="date"] {
   width: 100%;
 }
 
+/* فلتر التاريخ (من / إلى) - يمتد على كامل العرض */
+.date-filter-row {
+  width: 100%;
+}
+
+/* اللابيل (من / إلى) لا يمتد - يأخذ حجمه فقط */
+.date-filter-row > span.date-label-desktop {
+  flex: 0 0 auto !important;
+  width: auto !important;
+}
+
+/* الـ wrapper يأخذ المساحة المتبقية */
+.date-filter-row > .date-input-wrapper {
+  flex: 1 1 0% !important;
+  width: auto !important;
+  min-width: 0;
+}
+
+/* الـ input يمتد داخل الـ wrapper */
+.date-filter-row > .date-input-wrapper input[type="date"] {
+  width: 100% !important;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1221,6 +1244,22 @@ select:-webkit-autofill:focus {
   .mobile-flex-row>* {
     flex: 1 !important;
     width: auto !important;
+  }
+
+  /* date-filter-row: اللابيل لا يمتد - الـ input فقط يأخذ المساحة */
+  .date-filter-row > span.date-label-desktop {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    white-space: nowrap;
+  }
+
+  .date-filter-row > .date-input-wrapper {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+  }
+
+  .date-filter-row > .date-input-wrapper input[type="date"] {
+    width: 100% !important;
   }
 
   input,
