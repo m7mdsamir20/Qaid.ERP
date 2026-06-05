@@ -106,7 +106,7 @@ export const navSections = [
         featureKey: 'projects',
         links: [
             { id: '/projects', href: '/projects', label: 'قائمة المشاريع' },
-            { id: '/projects/new', href: '/projects/new', label: 'مشروع جديد' },
+            { id: '/projects/new', href: '/projects/new', label: 'مشروع جديد', hideFromSidebar: true },
             { id: '/progress-bills', href: '/progress-bills', label: 'المستخلصات' },
         ],
     },
