@@ -334,7 +334,7 @@ export default function JournalEntriesPage() {
                                 </div>
 
                                 {/* Lines Editor */}
-                                <div style={{ marginBottom: '24px', overflowX: 'visible' }}>
+                                <div className="scroll-table" style={{ marginBottom: '24px', overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>

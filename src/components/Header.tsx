@@ -232,6 +232,7 @@ function Actions() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Language Switcher */}
             <button
+                className="header-lang-btn"
                 onClick={() => toggleLang()}
                 style={{
                     height: '36px', padding: '0 12px', borderRadius: '10px',
@@ -248,6 +249,7 @@ function Actions() {
 
             {/* Theme Toggle */}
             <button
+                className="header-theme-btn"
                 onClick={toggleTheme}
                 title={theme === 'dark' ? t('تفعيل الوضع الفاتح') : t('تفعيل الوضع الداكن')}
                 style={{
@@ -339,7 +341,7 @@ function Actions() {
                     }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                    <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
+                    <Avatar id={(session?.user as any)?.avatar || 'av1'} size={28} />
                     <div className="mobile-hide" style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
@@ -549,8 +551,8 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             )}
 
             {/* Header Logo taking the place of the toggle button */}
-            <Link href="/" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '24px' }}>
-                <div style={{ position: 'relative', width: '160px', height: '46px' }}>
+            <Link href="/" className="header-logo-link" style={{ display: 'flex', alignItems: 'center', marginInlineEnd: '24px' }}>
+                <div className="header-logo-div" style={{ position: 'relative', width: '160px', height: '46px' }}>
                     <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
                     <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
                 </div>

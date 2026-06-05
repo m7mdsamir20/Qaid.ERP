@@ -175,11 +175,11 @@ export const BTN_DANGER = (disabled: boolean, submitting: boolean): React.CSSPro
 
 /* ─── Premium UI Design Tokens (Reusable) ─── */
 
-/** Standard Search Design (التصميم الموحد للبحث) 
+/** Standard Search Design (التصميم الموحد للبحث)
  * يُستخدم بشكل مستقل فوق الجداول مباشرة
  */
 export const SEARCH_STYLE = {
-    container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' },
+    container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' as 'wrap' },
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
         ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', height: '42px',
@@ -260,3 +260,23 @@ export const KPI_ICON = (color: string): React.CSSProperties => ({
     width: '32px', height: '32px', borderRadius: '8px', background: `${color}15`, color: color,
     display: 'flex', alignItems: 'center', justifyContent: 'center'
 });
+
+/* ══════════════════════════════════════════════════════════════
+   MOBILE-RESPONSIVE HELPERS — استخدمها في أي صفحة جديدة لضمان
+   التوافق مع الموبايل تلقائياً بدون CSS إضافي
+   ══════════════════════════════════════════════════════════════ */
+
+/** شبكة فورم عمودين تنهار إلى عمود واحد على الموبايل
+ *  الاستخدام: <div className={RESPONSIVE_GRID} style={{ display: 'grid', ... }}>
+ */
+export const RESPONSIVE_GRID = 'responsive-grid';
+
+/** Wrapper للجداول يضمن التمرير الأفقي على الموبايل
+ *  الاستخدام: <div className={TABLE_WRAP}>
+ */
+export const TABLE_WRAP = 'scroll-table';
+
+/** شريط فلتر التاريخ (من/إلى) يتكيف مع الموبايل
+ *  الاستخدام: <div className={DATE_FILTER_ROW} style={{ display: 'flex', gap: '10px' }}>
+ */
+export const DATE_FILTER_ROW = 'date-filter-row';

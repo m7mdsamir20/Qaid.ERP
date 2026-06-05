@@ -89,7 +89,7 @@ export const authOptions: AuthOptions = {
                     branches: branches.map((b: any) => ({ id: b.id, name: b.name, isMain: b.isMain })),
                     allowedBranches,
                     gender: user.gender || 'male',
-                    avatar: user.avatar || 'm1',
+                    avatar: user.avatar || 'av1',
                     permissions,
                     currency: user.company?.currency || 'EGP',
                     countryCode: user.company?.countryCode || 'EG',

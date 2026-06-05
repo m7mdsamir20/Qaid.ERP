@@ -1451,6 +1451,26 @@ select:-webkit-autofill:focus {
   .main-header button {
     flex-shrink: 0;
   }
+
+  /* تصغير اللوجو على الموبايل */
+  .header-logo-div {
+    width: 110px !important;
+  }
+  .header-logo-link {
+    margin-inline-end: 12px !important;
+  }
+}
+
+/* ── هيدر على شاشات الموبايل الصغيرة (≤480px):
+   إخفاء اللغة والثيم للحفاظ على الأفاتار ظاهراً ── */
+@media (max-width: 480px) {
+  .header-lang-btn,
+  .header-theme-btn {
+    display: none !important;
+  }
+  .header-logo-div {
+    width: 90px !important;
+  }
 }
 
 @media (max-width: 560px) {
@@ -1802,6 +1822,22 @@ td.table-cell-text {
   /* .hide-mobile-text → يخفي النص داخل أزرار شريط العرض */
   .hide-mobile-text {
     display: none !important;
+  }
+}
+
+/* ── نموذج بيانات الموظف (employees/new) ── */
+@media (max-width: 640px) {
+  .fields-grid,
+  .deductions-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .allowances-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+@media (max-width: 480px) {
+  .allowances-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
