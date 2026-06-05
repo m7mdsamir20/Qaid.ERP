@@ -79,6 +79,30 @@ export const POST = withProtection(async (request, session, body) => {
             })
         ]);
 
+        // Fetch sales representatives linked to these employees
+        const reps = await prisma.salesRepresentative.findMany({
+            where: { companyId, employeeId: { in: employeeIds }, isActive: true }
+        });
+
+        const startDate = new Date(Number(year), Number(month) - 1, 1);
+        const endDate = new Date(Number(year), Number(month), 0, 23, 59, 59, 999);
+
+        // Fetch all approved invoices for these reps in the selected month & year
+        const repInvoices = reps.length > 0 ? await prisma.invoice.findMany({
+            where: {
+                companyId,
+                status: 'approved',
+                date: { gte: startDate, lte: endDate },
+                salesRepresentativeId: { in: reps.map(r => r.id) }
+            },
+            select: {
+                id: true,
+                total: true,
+                paidAmount: true,
+                salesRepresentativeId: true
+            }
+        }) : [];
+
         // Map data to employees
         const employeesWithData = employees.map(emp => ({
             ...emp,
@@ -90,10 +114,23 @@ export const POST = withProtection(async (request, session, body) => {
         let [totalSalaries, totalAllowances, totalAdvances, totalDiscounts, totalNet] = [0, 0, 0, 0, 0];
 
         const linesData = employeesWithData.map(emp => {
+            // Calculate sales commission
+            const rep = reps.find(r => r.employeeId === emp.id);
+            let commission = 0;
+            if (rep) {
+                const invoicesForRep = repInvoices.filter(inv => inv.salesRepresentativeId === rep.id);
+                if (rep.commissionType === 'collected_amount') {
+                    commission = invoicesForRep.reduce((sum, inv) => sum + (inv.paidAmount * rep.commissionRate / 100), 0);
+                } else {
+                    commission = invoicesForRep.reduce((sum, inv) => sum + (inv.total * rep.commissionRate / 100), 0);
+                }
+            }
+
             const basic      = Number(emp.basicSalary) || 0;
             const allowances = (Number(emp.housingAllowance)   || 0)
                              + (Number(emp.transportAllowance) || 0)
-                             + (Number(emp.foodAllowance)      || 0);
+                             + (Number(emp.foodAllowance)      || 0)
+                             + commission;
             const statutory  = (Number(emp.insuranceDeduction) || 0)
                              + (Number(emp.taxDeduction)        || 0);
 

@@ -20,7 +20,8 @@ export const GET = withProtection(async (request, session) => {
                 },
                 installmentPlans: {
                     select: { grandTotal: true, downPayment: true }
-                }
+                },
+                salesRepresentative: { select: { id: true, name: true } }
             },
             orderBy: { createdAt: 'desc' },
         });
@@ -67,6 +68,7 @@ export const POST = withProtection(async (request, session, body) => {
                     contactPerson: body.contactPerson || null,
                     balance:       signedBalance,
                     creditLimit:   parseFloat(body.creditLimit) || 0,
+                    salesRepresentativeId: body.salesRepresentativeId || null,
                     companyId,
                 },
             });
@@ -152,6 +154,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 crNumber:        body.crNumber        || null,
                 contactPerson:   body.contactPerson   || null,
                 creditLimit:     parseFloat(body.creditLimit) || 0,
+                salesRepresentativeId: body.salesRepresentativeId || null,
             },
         });
         return NextResponse.json(customer);

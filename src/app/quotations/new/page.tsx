@@ -41,6 +41,7 @@ export default function NewQuotationPage() {
     const [items, setItems] = useState<Item[]>([]);
     const [company, setCompany] = useState<CompanyInfo>({});
     const [nextNum, setNextNum] = useState(1);
+    const [salesReps, setSalesReps] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -71,6 +72,7 @@ export default function NewQuotationPage() {
         discountAmt: 0,
         notes: '',
         taxRate: 0,
+        salesRepresentativeId: '',
     });
 
     const [taxSettings, setTaxSettings] = useState<any>(null);
@@ -78,12 +80,13 @@ export default function NewQuotationPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [custRes, itemRes, numRes, settingsRes, comRes] = await Promise.all([
+            const [custRes, itemRes, numRes, settingsRes, comRes, repRes] = await Promise.all([
                 fetch('/api/customers'),
                 fetch('/api/items?all=true'),
                 fetch('/api/quotations?justNextNum=true'),
                 fetch('/api/settings'),
-                fetch('/api/company')
+                fetch('/api/company'),
+                fetch('/api/sales-reps')
             ]);
             if (custRes.ok) setCustomers(await custRes.json());
             if (itemRes.ok) {
@@ -96,6 +99,10 @@ export default function NewQuotationPage() {
             }
             if (comRes.ok) {
                 setCompany(await comRes.json());
+            }
+            if (repRes.ok) {
+                const reps = await repRes.json();
+                setSalesReps(Array.isArray(reps) ? reps : []);
             }
             if (settingsRes.ok) {
                 const setts = await settingsRes.json();
@@ -112,6 +119,29 @@ export default function NewQuotationPage() {
             setLoading(false);
         }
     }, []);
+
+    // Auto-prefill representative based on logged in user
+    useEffect(() => {
+        if (salesReps.length > 0 && session?.user?.id) {
+            const currentRep = salesReps.find(r => r.userId === (session.user as any).id);
+            if (currentRep) {
+                setForm((f: any) => ({ ...f, salesRepresentativeId: currentRep.id }));
+            }
+        }
+    }, [salesReps, session?.user?.id]);
+
+    // Auto-prefill representative based on selected customer's default representative
+    useEffect(() => {
+        if (form.customerId && salesReps.length > 0) {
+            const customer = customers.find(c => c.id === form.customerId);
+            if (customer && (customer as any).salesRepresentativeId) {
+                const isUserRep = salesReps.some(r => r.userId === session?.user?.id);
+                if (!isUserRep) {
+                    setForm((f: any) => ({ ...f, salesRepresentativeId: (customer as any).salesRepresentativeId }));
+                }
+            }
+        }
+    }, [form.customerId, customers, salesReps, session?.user?.id]);
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -223,6 +253,7 @@ export default function NewQuotationPage() {
                 subtotal,
                 taxAmount,
                 total: finalTotal,
+                salesRepresentativeId: form.salesRepresentativeId || undefined,
                 lines: lines.map(l => ({
                     ...l,
                     taxAmount: l.taxRate ? (l.total * (l.taxRate / 100)) : 0
@@ -343,6 +374,36 @@ export default function NewQuotationPage() {
                                     <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
+
+                            {/* Sales Representative Selection - dynamically shown if reps exist */}
+                            {salesReps.length > 0 && (
+                                <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+                                    <div>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مندوب المبيعات')}</label>
+                                        </div>
+                                        <CustomSelect
+                                            value={form.salesRepresentativeId}
+                                            onChange={v => setForm((f: any) => ({ ...f, salesRepresentativeId: v }))}
+                                            disabled={salesReps.some(r => r.userId === session?.user?.id)}
+                                            placeholder={t('اختر مندوب المبيعات...')}
+                                            options={[
+                                                { value: '', label: t('لا يوجد مندوب (بيع مباشر)') },
+                                                ...salesReps.map(r => ({ value: r.id, label: r.name }))
+                                            ]}
+                                            minWidth="100%"
+                                        />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '10px' }}>
+                                        {salesReps.some(r => r.userId === session?.user?.id) && (
+                                            <span style={{ fontSize: '11px', color: '#94a3b8', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                ✓ {t('تم قفل الحقل لأنك مسجل دخول كـ مندوب')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
 
                         {/* Items Selection */}

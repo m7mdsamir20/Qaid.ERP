@@ -129,6 +129,7 @@ export const navSections = [
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
             { id: '/customers', href: '/customers', label: 'العملاء' },
+            { id: '/sales/representatives', href: '/sales/representatives', label: 'مناديب المبيعات' },
             { id: '/coupons', href: '/coupons', label: 'كوبونات الخصم' },
         ],
     },

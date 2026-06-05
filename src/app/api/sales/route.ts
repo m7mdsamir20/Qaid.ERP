@@ -26,11 +26,13 @@ export const GET = withProtection(async (request, session) => {
                     supplier: true,
                     warehouse: true,
                     lines: { include: { item: { include: { unit: true } } } },
+                    salesRepresentative: { select: { id: true, name: true, commissionRate: true, commissionType: true } }
                 }
             });
             return NextResponse.json(invoice);
         }
 
+        const user = session.user as any;
         const branchFilter = getBranchFilter(session);
         const page = parseInt(url.searchParams.get('page') || '1');
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
@@ -38,10 +40,24 @@ export const GET = withProtection(async (request, session) => {
         const search = url.searchParams.get('search') || '';
 
         const where: any = { companyId, type: 'sale', ...branchFilter };
+        
+        // Data isolation: sales reps only see their own invoices
+        const userRep = await prisma.salesRepresentative.findFirst({
+            where: { userId: user.id, companyId, isActive: true }
+        });
+        if (userRep) {
+            where.salesRepresentativeId = userRep.id;
+        }
+
         if (url.searchParams.get('status') === 'unpaid') {
             where.remaining = { gt: 0 };
             where.paymentMethod = { not: 'installment_plan' };
+        } else if (url.searchParams.get('status') === 'pending') {
+            where.status = 'pending';
+        } else if (url.searchParams.get('status') === 'approved') {
+            where.status = 'approved';
         }
+
         if (search) {
             where.OR = [
                 { invoiceNumber: { equals: parseInt(search) || undefined } },
@@ -67,8 +83,10 @@ export const GET = withProtection(async (request, session) => {
                     type: true,
                     paymentMethod: true,
                     notes: true,
+                    status: true,
                     customer: { select: { id: true, name: true, balance: true } },
-                    supplier: { select: { id: true, name: true, balance: true } }
+                    supplier: { select: { id: true, name: true, balance: true } },
+                    salesRepresentative: { select: { id: true, name: true } }
                 }
             }),
             prisma.invoice.count({ where }),
@@ -107,13 +125,26 @@ export const POST = withProtection(async (request, session, body) => {
             financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount, projectId
         } = body;
 
+        // Check if the current user is a sales representative
+        const userRep = await prisma.salesRepresentative.findFirst({
+            where: { userId: user.id, companyId, isActive: true }
+        });
+
+        let status = "approved";
+        let salesRepresentativeId = body.salesRepresentativeId || null;
+
+        if (userRep) {
+            status = "pending";
+            salesRepresentativeId = userRep.id;
+        }
+
         // Use bankId if treasuryId is missing
         const effectiveTreasuryId = treasuryId || bankId;
 
         const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
 
-        // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (query واحد بدل N)
-        if (!isServices && warehouseId) {
+        // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط إذا كانت الفاتورة معتمدة وليست قيد الاعتماد)
+        if (status !== 'pending' && !isServices && warehouseId) {
             const itemIds = lines.map((l: any) => l.itemId);
             const [stocks, itemNames] = await Promise.all([
                 prisma.stock.findMany({
@@ -219,6 +250,8 @@ export const POST = withProtection(async (request, session, body) => {
                 supplierNewBalance,
                 projectId: projectId || null,
                 branchId: body.branchId || (session.user as any).activeBranchId || null,
+                status,
+                salesRepresentativeId,
                 lines: {
                     create: lines.map((line: any) => ({
                         itemId: line.itemId,
@@ -240,6 +273,11 @@ export const POST = withProtection(async (request, session, body) => {
                 data: invoiceData,
                 include: { lines: { include: { item: { include: { unit: true } } } }, customer: true },
             });
+
+            // If the invoice is pending approval, we skip all financial, inventory and ledger impacts
+            if (status === 'pending') {
+                return invoice;
+            }
 
             // 2. تحديث المخزون بشكل متوازي بدل sequential
             if (!isServices && warehouseId) {

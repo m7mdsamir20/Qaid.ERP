@@ -13,6 +13,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly } from '@/lib/printDirectly';
+import AppModal from '@/components/AppModal';
 
 
 interface ReturnInvoice {
@@ -62,6 +63,54 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
 
+    const userRole = (session?.user as any)?.role;
+    const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
+    const canApprove = isSuperAdmin || userRole === 'admin' || userRole === 'accountant';
+
+    const [showApproveModal, setShowApproveModal] = useState(false);
+    const [treasuries, setTreasuries] = useState<any[]>([]);
+    const [selectedTreasuryId, setSelectedTreasuryId] = useState('');
+    const [approving, setApproving] = useState(false);
+    const [approveError, setApproveError] = useState('');
+
+    useEffect(() => {
+        if (canApprove) {
+            fetch('/api/treasuries')
+                .then(res => res.json())
+                .then(data => setTreasuries(Array.isArray(data) ? data : []))
+                .catch(err => console.error(err));
+        }
+    }, [canApprove]);
+
+    const handleApprove = async () => {
+        if (invoice && invoice.paidAmount > 0 && !selectedTreasuryId) {
+            setApproveError(t('الرجاء اختيار الخزينة أو الحساب البنكي'));
+            return;
+        }
+        setApproving(true);
+        setApproveError('');
+        try {
+            const res = await fetch(`/api/sales/${params.id}/approve`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    treasuryId: selectedTreasuryId
+                })
+            });
+            if (res.ok) {
+                setShowApproveModal(false);
+                fetchDetail();
+            } else {
+                const errData = await res.json();
+                setApproveError(errData.error || t('حدث خطأ أثناء الاعتماد'));
+            }
+        } catch (error) {
+            setApproveError(t('خطأ في الاتصال بالسيرفر'));
+        } finally {
+            setApproving(false);
+        }
+    };
+
     const fetchDetail = useCallback(async () => {
         try {
             const [invR, coR] = await Promise.all([
@@ -93,6 +142,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const fmt = (v: number) => formatNumber(v);
 
     const getStatus = () => {
+        if ((invoice as any).status === 'pending') return { label: t('قيد الاعتماد'), color: '#f59e0b', icon: Clock, bg: 'rgba(245,158,11,0.1)' };
         if (invoice.paymentMethod === 'installment_plan') return { label: t('مُقسطة'), color: '#a78bfa', icon: Clock, bg: 'rgba(167,139,250,0.1)' };
         if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
         if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
@@ -201,12 +251,68 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     }}
                 />
 
+                {/* Pending Approval Banner */}
+                {(invoice as any).status === 'pending' && (
+                    <div style={{
+                        background: 'rgba(245, 158, 11, 0.08)',
+                        border: '1px solid rgba(245, 158, 11, 0.2)',
+                        borderRadius: '12px',
+                        padding: '16px 20px',
+                        marginBottom: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '15px'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <AlertCircle size={22} style={{ color: '#f59e0b', flexShrink: 0 }} />
+                            <div>
+                                <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#f59e0b' }}>{t('فاتورة معلقة قيد الاعتماد')}</h4>
+                                <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary }}>
+                                    {t('هذه الفاتورة محفوظة كمسودة معلقة. لن تؤثر على المخزون أو الحسابات المالية أو أرصدة العملاء والخزائن حتى يتم اعتمادها.')}
+                                </p>
+                            </div>
+                        </div>
+                        {canApprove && (
+                            <button
+                                onClick={() => {
+                                    setApproveError('');
+                                    setSelectedTreasuryId('');
+                                    setShowApproveModal(true);
+                                }}
+                                style={{
+                                    padding: '0 20px',
+                                    height: '38px',
+                                    background: '#f59e0b',
+                                    color: '#000',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    fontFamily: CAIRO,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    transition: 'all 0.2s',
+                                    whiteSpace: 'nowrap'
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = '#d97706'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = '#f59e0b'; }}
+                            >
+                                <CheckCircle2 size={16} />
+                                {t('اعتماد الفاتورة الآن')}
+                            </button>
+                        )}
+                    </div>
+                )}
+
                 <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         {/* ── Metadata Icons ── */}
-                        <div className="stats-grid" style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
+                        <div className="stats-grid" style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <User size={18} />
@@ -248,6 +354,18 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
+
+                            {(invoice as any).salesRepresentative && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <User size={18} />
+                                    </div>
+                                    <div>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('مندوب المبيعات')}</p>
+                                        <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{(invoice as any).salesRepresentative.name}</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* ── Items Table ── */}
@@ -405,6 +523,101 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                 </div>
             </div>
             <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
+
+            {/* Approval Dialog */}
+            <AppModal
+                show={showApproveModal}
+                onClose={() => { setShowApproveModal(false); setApproveError(''); }}
+                title={t('اعتماد فاتورة المبيعات')}
+                icon={CheckCircle2}
+                maxWidth="480px"
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, margin: 0 }}>
+                        {t('هل أنت متأكد من رغبتك في اعتماد هذه الفاتورة؟ بعد الاعتماد سيتم ترحيل تأثيراتها على المخزون وحسابات الأستاذ العام وأرصدة العملاء نهائياً، ولا يمكن تعديل الفاتورة أو حذفها بعد ذلك.')}
+                    </p>
+
+                    {invoice && invoice.paidAmount > 0 && (
+                        <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
+                                <span style={{ color: C.textSecondary }}>{t('المبلغ المدفوع المقبوض:')}</span>
+                                <span style={{ fontWeight: 700, color: C.success, fontFamily: OUTFIT }}>{invoice.paidAmount.toLocaleString()} {cSymbol}</span>
+                            </div>
+                            
+                            <div>
+                                <label style={LS}>{t('الحساب المالي المستلم (الخزينة / البنك)')} <span style={{ color: C.danger }}>*</span></label>
+                                <select
+                                    value={selectedTreasuryId}
+                                    onChange={e => setSelectedTreasuryId(e.target.value)}
+                                    style={{ ...IS, cursor: 'pointer', marginTop: '6px' }}
+                                >
+                                    <option value="">{t('اختر الخزينة أو الحساب البنكي لاستلام الكاش...')}</option>
+                                    {treasuries.map(t => (
+                                        <option key={t.id} value={t.id}>
+                                            {t.name} ({t.type === 'bank' ? t('بنك') : t('خزينة')})
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+                    )}
+
+                    {approveError && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#fb7185', fontSize: '12px' }}>
+                            <AlertCircle size={16} />
+                            <span>{approveError}</span>
+                        </div>
+                    )}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '10px' }}>
+                        <button
+                            type="button"
+                            disabled={approving}
+                            onClick={handleApprove}
+                            style={{
+                                height: '44px',
+                                borderRadius: '10px',
+                                background: C.success,
+                                color: '#fff',
+                                border: 'none',
+                                fontWeight: 600,
+                                fontSize: '13px',
+                                fontFamily: CAIRO,
+                                cursor: approving ? 'not-allowed' : 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px'
+                            }}
+                        >
+                            {approving ? (
+                                <>
+                                    <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                                    {t('جاري الاعتماد والترحيل...')}
+                                </>
+                            ) : (
+                                t('اعتماد الفاتورة الآن')
+                            )}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setShowApproveModal(false); setApproveError(''); }}
+                            style={{
+                                height: '44px',
+                                borderRadius: '10px',
+                                background: 'transparent',
+                                border: `1px solid ${C.border}`,
+                                color: C.textSecondary,
+                                fontWeight: 700,
+                                fontFamily: CAIRO,
+                                cursor: 'pointer'
+                            }}
+                        >
+                            {t('إلغاء')}
+                        </button>
+                    </div>
+                </div>
+            </AppModal>
         </DashboardLayout>
     );
 }

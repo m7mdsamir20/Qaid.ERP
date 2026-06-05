@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2 } from 'lucide-react';
+import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 
@@ -56,6 +56,7 @@ function ReportsHubPageInner() {
         ],
         'sales-purchases': [
             { title: isContracting ? t('تقرير المبيعات وفواتير الأعمال') : isServices ? t('تقرير الخدمات') : t('تقرير المبيعات'), description: isContracting ? t('حركة المبيعات وفواتير بنود الأعمال خلال فترة زمنية') : isServices ? t('حركة طلب الخدمات خلال فترة زمنية') : t('حركة المبيعات خلال فترة زمنية'), href: '/reports/sales-report', icon: BarChart3, color: '#0ea5e9', status: 'ready', requiredPages: ['/sales'] },
+            { title: t('تقرير عمولات مناديب المبيعات'), description: t('تتبع أداء المبيعات والتحصيلات للمناديب واحتساب عمولاتهم المستحقة بدقة'), href: '/reports/sales-representatives', icon: Award, color: '#a78bfa', status: 'ready', requiredPages: ['/sales'] },
             { title: isContracting ? t('تقرير المشتريات ومواد البناء') : t('تقرير المشتريات'), description: isContracting ? t('إجمالي مشتريات مواد البناء وتكاليف الموردين وتفاصيل الفواتير') : t('إجمالي المشتريات وتفاصيل الفواتير'), href: '/reports/purchases-report', icon: ShoppingCart, color: '#fb923c', status: 'ready', requiredPages: ['/purchases'] },
             { title: isContracting ? t('البنود والمواد الأكثر استخداماً') : isServices ? t('أكثر الخدمات طلباً') : t('أكثر الأصناف مبيعاً'), description: isContracting ? t('المواد وبنود الأعمال الأعلى استخداماً في المشاريع') : isServices ? t('الخدمات الأعلى طلباً في المنشأة') : t('المنتجات الأعلى حركة طلباً ومبيعاً'), href: '/reports/top-selling-items', icon: TrendingUp, color: '#eab308', status: 'ready', requiredPages: ['/sales'] },
             { title: isContracting ? t('تقرير المرتجعات وإلغاء الأعمال') : isServices ? t('مرتجعات الخدمات') : t('تقرير المرتجعات'), description: isContracting ? t('تحليل مرتجعات المواد وإلغاء بنود الأعمال لمعرفة أسبابها') : isServices ? t('تحليل مرتجعات الخدمات لمعرفة الأسباب') : t('تحليل المرتجعات لمعرفة أسباب الخسارة'), href: '/reports/returns-report', icon: ArrowRightLeft, color: '#f43f5e', status: 'ready', requiredPages: ['/sale-returns'] },
