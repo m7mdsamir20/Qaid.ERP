@@ -1462,9 +1462,8 @@ select:-webkit-autofill:focus {
 }
 
 /* ── هيدر على شاشات الموبايل الصغيرة (≤480px):
-   إخفاء اللغة والثيم للحفاظ على الأفاتار ظاهراً ── */
+   إخفاء الثيم فقط — اللغة تبقى ظاهرة ── */
 @media (max-width: 480px) {
-  .header-lang-btn,
   .header-theme-btn {
     display: none !important;
   }
