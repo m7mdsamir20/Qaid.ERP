@@ -469,13 +469,18 @@ export default function DashboardLayout({
 
                     /* KPI / stats cards */
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+                    .dashboard-quick-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+                    /* زر المستخدم: أفاتار دائري فقط */
+                    .user-menu-btn { width: 40px !important; height: 40px !important; min-height: 40px !important; padding: 6px !important; border-radius: 50% !important; gap: 0 !important; }
 
                     /* Sidebar search bar on header */
                     .header-search { display: none !important; }
                 }
 
                 @media (max-width: 640px) {
-                    .stats-grid, .kpi-grid { grid-template-columns: 1fr !important; }
+                    .stats-grid { grid-template-columns: 1fr !important; }
+                    .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
                     main { padding: 72px 10px 16px !important; }
                     
                     .item-entry-grid { grid-template-columns: 1fr 1fr !important; }

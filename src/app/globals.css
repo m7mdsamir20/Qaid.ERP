@@ -298,7 +298,8 @@ h6 {
   inset-inline-end: 0;
   top: 0;
   width: 280px;
-  height: 100vh;
+  height: 100%;
+  min-height: 100%;
   background: var(--surface-800);
   border-inline-start: 1px solid var(--border-color);
   display: flex;
@@ -1055,6 +1056,51 @@ select option {
 
   .quotation-items-table .col-actions {
     width: 52px !important;
+  }
+
+  /* Sales invoice form: رقم الفاتورة مخفي، العميل full-width */
+  .sales-form-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* العميل هو الطفل الثاني (الأول mobile-hide) يأخذ العرض كامل */
+  .sales-form-grid > div:nth-child(2) {
+    grid-column: 1 / -1 !important;
+    order: -1 !important;
+  }
+
+  /* مندوب المبيعات عمود واحد */
+  .sales-rep-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* جدول أصناف فاتورة المبيعات */
+  .sales-items-table {
+    table-layout: fixed !important;
+    min-width: unset !important;
+  }
+
+  .sales-items-table th,
+  .sales-items-table td {
+    padding: 8px 6px !important;
+    font-size: 12px !important;
+  }
+
+  .sales-items-table .col-unit {
+    display: none !important;
+  }
+
+  .sales-items-table .col-qty {
+    width: 50px !important;
+  }
+
+  .sales-items-table .col-price,
+  .sales-items-table .col-total {
+    width: 80px !important;
+  }
+
+  .sales-items-table .col-actions {
+    width: 56px !important;
   }
 }
 

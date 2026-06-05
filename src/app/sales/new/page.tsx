@@ -613,7 +613,7 @@ function NewSalePageInner() {
                         {/* Basic Data */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#256af4' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
-                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
+                            <div className="sales-form-grid" style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
                                 <div className="mobile-hide">
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
@@ -699,7 +699,7 @@ function NewSalePageInner() {
 
                             {/* Sales Representative Selection - dynamically shown if reps exist */}
                             {salesReps.length > 0 && (
-                                <div style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
+                                <div className="sales-rep-grid" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px' }}>
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                             <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مندوب المبيعات')}</label>
@@ -844,25 +844,24 @@ function NewSalePageInner() {
                             )}
 
                             {/* Lines Table */}
-                            <div className="scroll-table" style={{ marginTop: '10px' }}>
-                                <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <div className="scroll-table" style={{ marginTop: '10px', overflowX: 'auto' }}>
+                                <table className="sales-items-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                                    <colgroup>
+                                        <col />
+                                        {!isServices && <col className="col-unit" style={{ width: '70px' }} />}
+                                        <col className="col-qty" style={{ width: '60px' }} />
+                                        <col className="col-price" style={{ width: '100px' }} />
+                                        <col className="col-total" style={{ width: '100px' }} />
+                                        <col className="col-actions" style={{ width: '70px' }} />
+                                    </colgroup>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            {isServices ? (
-                                                [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{
-                                                        textAlign: i === 0 ? 'start' : (i === 4 ? 'center' : 'center'),
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
-                                                    }}>{h}</th>
-                                                ))
-                                            ) : (
-                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{
-                                                        textAlign: i === 0 ? 'start' : (i === 5 ? 'center' : 'center'),
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
-                                                    }}>{h}</th>
-                                                ))
-                                            )}
+                                            <th style={{ textAlign: 'start', padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            {!isServices && <th className="col-unit" style={{ textAlign: 'center', padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الوحدة')}</th>}
+                                            <th className="col-qty" style={{ textAlign: 'center', padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th className="col-price" style={{ textAlign: 'center', padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th className="col-total" style={{ textAlign: 'center', padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
+                                            <th className="col-actions" style={{ padding: '12px' }}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -871,21 +870,20 @@ function NewSalePageInner() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
-                                                    <div style={{ marginBottom: '2px' }}>{l.itemName}</div>
-                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400 }}>{l.description}</div>}
+                                                <td style={{ padding: '12px', overflow: 'hidden' }}>
+                                                    <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.description}</div>}
                                                 </td>
-                                                {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
-                                                    <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                {!isServices && (
+                                                    <td className="col-unit" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap' }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
-
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
-                                                <td style={{ padding: '12px', }}>
-                                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>
-                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Trash2 size={16} /></button>
+                                                <td className="col-qty" style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '13px', whiteSpace: 'nowrap' }}>{formatNumber(l.quantity)}</td>
+                                                <td className="col-price" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.price)}</td>
+                                                <td className="col-total" style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.total)}</td>
+                                                <td className="col-actions" style={{ padding: '12px' }}>
+                                                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={14} /></button>
+                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={15} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
