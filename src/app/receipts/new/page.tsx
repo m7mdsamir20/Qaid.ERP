@@ -194,7 +194,7 @@ export default function NewReceiptPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>{t("تاريخ السند")} <span style={{ color: C.danger }}>*</span></label>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.inputBg, fontSize: '13px', fontFamily: CAIRO }}
+                                            style={{ ...IS, direction: 'ltr', textAlign: 'center', background: C.inputBg, fontSize: '13px', fontFamily: OUTFIT }}
                                             className="blue-date-icon" onFocus={focusIn} onBlur={focusOut}
                                         />
                                     </div>

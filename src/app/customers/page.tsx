@@ -326,7 +326,7 @@ export default function CustomersPage() {
                 </div>
 
                 {/* Toolbar - Search & Status Filters */}
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
+                <div className="customers-toolbar" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
@@ -345,7 +345,7 @@ export default function CustomersPage() {
                     </div>
 
                     {businessType !== 'RESTAURANTS' && (
-                        <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                        <div className="customers-filter" style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                             {[
                                 { id: 'all', label: t('الكل') },
                                 { id: 'debit', label: t('المدينين') },
@@ -355,7 +355,7 @@ export default function CustomersPage() {
                                     key={f.id}
                                     onClick={() => setStatusFilter(f.id as any)}
                                     style={{
-                                        padding: '0 16px', height: '32px', borderRadius: '8px',
+                                        flex: 1, padding: '0 16px', height: '32px', borderRadius: '8px',
                                         border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
                                         fontFamily: CAIRO, transition: 'all 0.2s',
                                         background: statusFilter === f.id ? C.primary : 'transparent',
