@@ -68,12 +68,12 @@ export default function TrialBalancePage() {
             cell: (row: TrialBalanceLine) => (
                 <span style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{row.code}</span>
             ),
-            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}` }
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },
         {
             header: t('اسم الحساب'),
             cell: (row: TrialBalanceLine) => row.name,
-            style: { fontFamily: CAIRO, fontSize: '13px', fontWeight: 600, color: C.textSecondary, borderInlineStart: `1px solid ${C.border}` }
+            style: { fontFamily: CAIRO, fontSize: '13px', fontWeight: 600, color: C.textSecondary }
         },
         {
             header: t('مدين'),
@@ -83,7 +83,7 @@ export default function TrialBalancePage() {
                     {row.totalDebit > 0 ? <Currency amount={row.totalDebit} /> : '0.00'}
                 </span>
             ),
-            style: { fontFamily: OUTFIT, fontSize: '13px', borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' } as React.CSSProperties
+            style: { fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('دائن'),
@@ -93,7 +93,7 @@ export default function TrialBalancePage() {
                     {row.totalCredit > 0 ? <Currency amount={row.totalCredit} /> : '0.00'}
                 </span>
             ),
-            style: { fontFamily: OUTFIT, fontSize: '13px', borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' } as React.CSSProperties
+            style: { fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('مدين'),
@@ -103,7 +103,7 @@ export default function TrialBalancePage() {
                     {row.balanceDebit > 0 ? <Currency amount={row.balanceDebit} /> : '0.00'}
                 </span>
             ),
-            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, background: 'rgba(16, 185, 129, 0.01)', borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' } as React.CSSProperties
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, background: 'rgba(16, 185, 129, 0.01)', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('دائن'),
@@ -119,28 +119,28 @@ export default function TrialBalancePage() {
 
     const customHeader = (
         <>
-            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                <th rowSpan={2} style={{ padding: '16px', fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}`, textAlign: 'start' }}>{t('رمز الحساب')}</th>
-                <th rowSpan={2} style={{ padding: '16px', fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}`, textAlign: 'start' }}>{t('اسم الحساب')}</th>
-                <th colSpan={2} style={{ padding: '10px', fontSize: '12px', fontWeight: 600, background: 'rgba(37, 106, 244, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}>{t('بالمجاميع (المعاملات)')}</th>
-                <th colSpan={2} style={{ padding: '10px', fontSize: '12px', fontWeight: 600, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('بالأرصدة (النهائي)')}</th>
+            <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                <th rowSpan={2} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'start' }}>{t('رمز الحساب')}</th>
+                <th rowSpan={2} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'start' }}>{t('اسم الحساب')}</th>
+                <th colSpan={2} style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, background: 'rgba(37, 106, 244, 0.03)', color: C.primary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('بالمجاميع (المعاملات)')}</th>
+                <th colSpan={2} style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, background: 'rgba(139, 92, 246, 0.03)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('بالأرصدة (النهائي)')}</th>
             </tr>
-            <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                <th style={{ padding: '10px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}>{t('مدين')}</th>
-                <th style={{ padding: '10px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}>{t('دائن')}</th>
-                <th style={{ padding: '10px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}>{t('مدين')}</th>
-                <th style={{ padding: '10px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{t('دائن')}</th>
+            <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                <th style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('مدين')}</th>
+                <th style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('دائن')}</th>
+                <th style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>{t('مدين')}</th>
+                <th style={{ padding: '12px 20px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{t('دائن')}</th>
             </tr>
         </>
     );
 
     const footerElement = (
         <tr style={{ background: 'rgba(37, 106, 244, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
-            <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
-            <td style={{ padding: '18px 16px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}><Currency amount={grandTotalDebit} /></td>
-            <td style={{ padding: '18px 16px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}><Currency amount={grandTotalCredit} /></td>
-            <td style={{ padding: '18px 16px', fontWeight: 950, color: C.success, fontSize: '13px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}`, textAlign: 'center' }}><Currency amount={grandBalanceDebit} /></td>
-            <td style={{ padding: '18px 16px', fontWeight: 950, color: C.danger, fontSize: '13px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={grandBalanceCredit} /></td>
+            <td colSpan={2} style={{ padding: '18px 20px', fontWeight: 950, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجماليات الكلية للميزان')}</td>
+            <td style={{ padding: '18px 20px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={grandTotalDebit} /></td>
+            <td style={{ padding: '18px 20px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={grandTotalCredit} /></td>
+            <td style={{ padding: '18px 20px', fontWeight: 950, color: C.success, fontSize: '13px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={grandBalanceDebit} /></td>
+            <td style={{ padding: '18px 20px', fontWeight: 950, color: C.danger, fontSize: '13px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={grandBalanceCredit} /></td>
         </tr>
     );
 

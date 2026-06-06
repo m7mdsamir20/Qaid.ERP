@@ -80,11 +80,9 @@ export const GET = withProtection(async (request, session) => {
                 journalEntryLines: {
                     where: {
                         journalEntry: {
+                            companyId,
                             isPosted: true,
-                            date: {
-                                gte: currentYear.startDate,
-                                lte: currentYear.endDate
-                            },
+                            financialYearId: currentYear.id,
                             AND: [
                                 {
                                     OR: [
