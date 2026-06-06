@@ -526,14 +526,15 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
 
             {onMenuToggle && (
-                <button 
-                    onClick={onMenuToggle} 
-                    style={{ 
-                        background: 'transparent', 
-                        color: C.textPrimary, 
-                        cursor: 'pointer', 
-                        display: 'flex', 
-                        alignItems: 'center', 
+                <button
+                    className="header-menu-btn"
+                    onClick={onMenuToggle}
+                    style={{
+                        background: 'transparent',
+                        color: C.textPrimary,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'center',
                         width: '36px',
                         height: '36px',
@@ -569,7 +570,7 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             </div>
 
             {/* Actions & User Menu + Mobile Search Toggle */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', order: 10 }}>
+            <div className="header-actions-wrap" style={{ display: 'flex', alignItems: 'center', gap: '8px', order: 10 }}>
                 {/* زر البحث على الموبايل — بجوار الأيقونات */}
                 <button
                     className="mobile-search-toggle"

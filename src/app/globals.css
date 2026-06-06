@@ -1461,15 +1461,19 @@ select:-webkit-autofill:focus {
   }
 }
 
-/* ── هيدر على شاشات الموبايل الصغيرة (≤480px):
-   إخفاء الثيم فقط — اللغة تبقى ظاهرة ── */
+/* ── هيدر على شاشات الموبايل الصغيرة (≤480px): compact لـ 7 عناصر ── */
 @media (max-width: 480px) {
-  .header-theme-btn {
-    display: none !important;
-  }
-  .header-logo-div {
-    width: 90px !important;
-  }
+  /* Logo أصغر */
+  .header-logo-div { width: 75px !important; }
+  .header-logo-link { margin-inline-end: 6px !important; }
+  /* تقليل margin الـ hamburger */
+  .header-menu-btn { margin-inline-end: 6px !important; }
+  /* تقليل gap أيقونات الهيدر */
+  .header-actions-wrap { gap: 4px !important; }
+  /* زر اللغة أضيق */
+  .header-lang-btn { padding: 0 8px !important; font-size: 12px !important; min-width: 32px; }
+  /* زر الثيم يبقى ظاهرًا — لا تخفه */
+  .header-theme-btn { display: flex !important; width: 32px !important; height: 32px !important; }
 }
 
 @media (max-width: 560px) {
@@ -1786,15 +1790,20 @@ td.table-cell-text {
 
 /* عمود واحد عند 480px */
 @media (max-width: 480px) {
-  [style*="repeat(7, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(6, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(5, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(4, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(4,1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(3, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(3,1fr)"]:not(.stats-grid):not(.stats-grid-responsive),
-  [style*="repeat(2, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive) {
+  [style*="repeat(7, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(6, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(5, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(4, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(4,1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(3, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(3,1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid),
+  [style*="repeat(2, 1fr)"]:not(.stats-grid):not(.stats-grid-responsive):not(.kpi-grid):not(.dashboard-quick-grid) {
     grid-template-columns: 1fr !important;
+  }
+  /* KPI grid دايمًا كارتين جنب بعض حتى على الشاشات الصغيرة */
+  .kpi-grid, .dashboard-quick-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
   }
 }
 
