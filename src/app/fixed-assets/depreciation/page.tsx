@@ -131,7 +131,7 @@ export default function DepreciationPage() {
                 />
 
                 {/* KPI Section */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+                <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                     {[
                         { label: t('الأصول النشطة حاليّاً'), val: assets.length, color: C.blue, icon: <Briefcase size={18} />, isCount: true },
                         { label: t('إجمالي قيمة الأصول'), val: totalCurrentAssetsCost, color: '#10b981', icon: <Activity size={18} /> },
@@ -161,8 +161,8 @@ export default function DepreciationPage() {
                 </div>
 
                 {/* Filters Row (No region) */}
-                <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
-                    <div style={{ width: '240px' }}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
+                    <div>
                         <label style={LS}>{t('السنة المالية المحاسبية')}</label>
                         <CustomSelect
                             value={selectedYearId} onChange={setSelectedYearId} icon={Calendar}
@@ -170,7 +170,7 @@ export default function DepreciationPage() {
                             options={years.filter(y => y.isOpen).map(y => ({ value: y.id, label: y.name }))}
                         />
                     </div>
-                    <div style={{ width: '180px' }}>
+                    <div>
                         <label style={LS}>{t('دورة الإهلاك الحالية')}</label>
                         <CustomSelect
                             value={period} onChange={setPeriod} icon={History}
