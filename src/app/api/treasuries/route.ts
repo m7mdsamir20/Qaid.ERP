@@ -9,8 +9,28 @@ export const GET = withProtection(async (request, session) => {
         const { searchParams } = new URL(request.url);
         const branchId = searchParams.get('branchId') || activeBranchId;
 
+        // Find the main branch of this company to include null branchIds
+        const mainBranch = await prisma.branch.findFirst({
+            where: { companyId, isMain: true },
+            select: { id: true }
+        });
+
         const where: any = { companyId };
-        if (branchId && branchId !== 'all') where.branchId = branchId;
+        if (branchId && branchId !== 'all') {
+            if (mainBranch && branchId === mainBranch.id) {
+                where.OR = [
+                    { branchId },
+                    { branchId: null }
+                ];
+            } else {
+                where.branchId = branchId;
+            }
+        } else if (branchId === 'all') {
+            const allowedBranches: string[] | null = (session.user as any)?.allowedBranches || null;
+            if (allowedBranches && allowedBranches.length > 0) {
+                where.branchId = { in: allowedBranches };
+            }
+        }
 
         // ✅ جلب السنة المالية المفتوحة لتحديد نطاق الرصيد
         const currentYear = await prisma.financialYear.findFirst({
@@ -28,10 +48,7 @@ export const GET = withProtection(async (request, session) => {
                             where: {
                                 journalEntry: {
                                     isPosted: true,
-                                    date: currentYear ? {
-                                        gte: currentYear.startDate,
-                                        lte: currentYear.endDate
-                                    } : undefined
+                                    financialYearId: currentYear?.id
                                 }
                             },
                             select: { debit: true, credit: true }
