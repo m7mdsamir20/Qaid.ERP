@@ -100,19 +100,36 @@ export const POST = withProtection(async (request, session, body) => {
 
         const result = await prisma.$transaction(async (tx) => {
 
-            // ① جيب الحساب المناسب تلقائياً
-            const accountKeywords = type === 'bank'
-                ? ['حسابات بنكية', 'الحسابات البنكية', 'بنك', 'بنوك']
-                : ['الصندوق الرئيسي', 'صندوق', 'نقدية', 'نقد'];
+            // ① إنشاء حساب أستاذ فرعي مخصص لهذه الخزينة / الحساب البنكي
+            const parentAccount = await tx.account.findFirst({
+                where: { companyId, code: '1110' }
+            });
 
-            let linkedAccount = null;
-            for (const keyword of accountKeywords) {
-                linkedAccount = await tx.account.findFirst({
-                    where: { companyId, name: { contains: keyword } },
-                    orderBy: { code: 'asc' }
+            let nextCode = '1114';
+            if (parentAccount) {
+                const siblings = await tx.account.findMany({
+                    where: { companyId, parentId: parentAccount.id },
+                    orderBy: { code: 'desc' },
+                    take: 1
                 });
-                if (linkedAccount) break;
+                if (siblings.length > 0) {
+                    const lastVal = parseInt(siblings[0].code);
+                    nextCode = (lastVal + 1).toString();
+                }
             }
+
+            const linkedAccount = await tx.account.create({
+                data: {
+                    code: nextCode,
+                    name: name,
+                    nature: 'debit',
+                    type: 'asset',
+                    accountCategory: 'detail',
+                    level: parentAccount ? parentAccount.level + 1 : 2,
+                    parentId: parentAccount?.id || null,
+                    companyId
+                }
+            });
 
             // ② أنشئ الخزينة
             const activeBranchId = (session.user as any).activeBranchId;
