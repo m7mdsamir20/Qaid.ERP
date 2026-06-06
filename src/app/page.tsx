@@ -847,10 +847,12 @@ export default function DashboardPage() {
             from { opacity: 0; transform: translateY(15px); }
             to   { opacity: 1; transform: translateY(0); }
           }
+          .dashboard-period-filter button { white-space: nowrap; }
           @media (max-width: 1023px) {
             .dashboard-page-header { flex-direction: column; align-items: flex-start !important; gap: 15px !important; }
             .hide-mobile { display: none !important; }
             .dashboard-period-filter { width: 100% !important; }
+            .dashboard-period-filter button { padding: 8px 12px !important; font-size: 12px !important; }
           }
         `}</style>
       </div>

@@ -637,21 +637,21 @@ input[type="date"] {
   width: 100%;
 }
 
-/* فلتر التاريخ (من / إلى) - يمتد على كامل العرض */
+/* فلتر التاريخ (من / إلى) */
+/* لا تضع width: 100% هنا — يكسر flex row على الديسكتوب بجانب خانة البحث */
+/* الـ flex-basis: auto (default) يسمح للـ flexbox بحساب الحجم الطبيعي */
 .date-filter-row {
-  width: 100%;
+  min-width: 0;
 }
 
-/* اللابيل (من / إلى) لا يمتد - يأخذ حجمه فقط */
+/* اللابيل (من / إلى) لا يمتد */
 .date-filter-row > span.date-label-desktop {
   flex: 0 0 auto !important;
   width: auto !important;
 }
 
-/* الـ wrapper يأخذ المساحة المتبقية */
+/* الـ wrapper يحترم width الـ inline style على الديسكتوب */
 .date-filter-row > .date-input-wrapper {
-  flex: 1 1 0% !important;
-  width: auto !important;
   min-width: 0;
 }
 
@@ -1890,5 +1890,82 @@ td.table-cell-text {
 @media (max-width: 640px) {
   [style*="grid-template-columns: minmax(120px, 150px)"] {
     grid-template-columns: 1fr !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   REPORTS MOBILE — إصلاح شامل لصفحات التقارير على الموبايل
+   ════════════════════════════════════════════════════════ */
+
+/* ── date-filter-row على الموبايل: ينهار عموديًا داخل mobile-column أو report-filter-bar ── */
+@media (max-width: 768px) {
+  .mobile-column .date-filter-row,
+  .report-filter-bar .date-filter-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .mobile-column .date-filter-row .date-input-wrapper,
+  .report-filter-bar .date-filter-row .date-input-wrapper {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  .mobile-column .date-filter-row .date-input-wrapper input[type="date"],
+  .report-filter-bar .date-filter-row .date-input-wrapper input[type="date"] {
+    width: 100% !important;
+  }
+  /* إخفاء لابيلات من/إلى على الموبايل (الـ input نفسه placeholder يكفي) */
+  .mobile-column .date-filter-row > span,
+  .report-filter-bar .date-filter-row > span {
+    display: none !important;
+  }
+  /* زر تحديث/استخراج: عرض كامل */
+  .report-filter-bar .update-btn,
+  .report-filter-bar > button,
+  .mobile-column > button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  /* الـ select داخل report-filter-bar: عرض كامل */
+  .report-filter-bar .account-select-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+  }
+}
+
+/* ── شرائط فلتر التقارير بـ gap: 14px (مثل cash-statement) ── */
+@media (max-width: 768px) {
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 14px"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 14px"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  /* gap: 10px أيضًا (مثل installments/overdue) */
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 10px"]:not([style*="background:"]):not([style*="grid"]) {
+    flex-wrap: wrap !important;
+  }
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 10px"]:not([style*="background:"]):not([style*="grid"]) > [style*="flex: 1"],
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 10px"]:not([style*="background:"]):not([style*="grid"]) > [style*="flex:1"] {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+  /* زر داخل شريط فلتر (gap: 10px) */
+  main [style*="margin-bottom: 24px"][style*="display: flex"][style*="gap: 10px"]:not([style*="background:"]) > button {
+    flex: 1 1 100% !important;
+    justify-content: center !important;
+  }
+
+  /* ── تقليل padding للحالات الفارغة (لا data محملة) ── */
+  main [style*="padding: 120px"] {
+    padding: 40px 16px !important;
+  }
+  main [style*="padding: 100px"] {
+    padding: 40px 16px !important;
   }
 }
