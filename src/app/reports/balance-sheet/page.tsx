@@ -59,7 +59,7 @@ export default function BalanceSheetPage() {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            if (branchId) params.set('branchId', branchId);
             const res = await fetch(`/api/reports/balance-sheet?${params}`);
             if (res.ok) {
                 setData(await res.json());

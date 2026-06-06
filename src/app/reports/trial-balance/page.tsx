@@ -42,7 +42,7 @@ export default function TrialBalancePage() {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            if (branchId) params.set('branchId', branchId);
             const res = await fetch(`/api/reports/trial-balance?${params}`);
             if (res.ok) {
                 setReport(await res.json());

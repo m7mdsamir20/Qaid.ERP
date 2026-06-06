@@ -12,12 +12,49 @@ export const GET = withProtection(async (request, session) => {
 
         const financialYearId = request.nextUrl.searchParams.get('financialYearId');
         const urlBranchId = request.nextUrl.searchParams.get('branchId');
+
+        // Find the main branch of this company to include null branchIds
+        const mainBranch = await prisma.branch.findFirst({
+            where: { companyId, isMain: true },
+            select: { id: true }
+        });
+
         const branchFilter = (() => {
-            if (urlBranchId && urlBranchId !== 'all') return { branchId: urlBranchId };
+            if (urlBranchId && urlBranchId !== 'all') {
+                if (mainBranch && urlBranchId === mainBranch.id) {
+                    return {
+                        OR: [
+                            { branchId: urlBranchId },
+                            { branchId: null }
+                        ]
+                    };
+                }
+                return { branchId: urlBranchId };
+            }
+            if (urlBranchId === 'all') {
+                const allowedBranches: string[] | null = (session.user as any)?.allowedBranches || null;
+                if (allowedBranches && allowedBranches.length > 0) {
+                    return { branchId: { in: allowedBranches } };
+                }
+                return {};
+            }
+            // Fallback: active branch from session
             const bf = getBranchFilter(session);
-            if (bf.branchId) return { branchId: bf.branchId };
+            if (bf.branchId) {
+                const activeId = typeof bf.branchId === 'string' ? bf.branchId : (bf.branchId.in ? null : bf.branchId);
+                if (activeId && mainBranch && activeId === mainBranch.id) {
+                    return {
+                        OR: [
+                            { branchId: activeId },
+                            { branchId: null }
+                        ]
+                    };
+                }
+                return { branchId: bf.branchId };
+            }
             return {};
         })();
+
         let yearFilter: { financialYearId?: string } = {};
 
         if (financialYearId) {
@@ -40,10 +77,14 @@ export const GET = withProtection(async (request, session) => {
                     companyId, 
                     isPosted: true, 
                     ...yearFilter,
-                    ...branchFilter,
-                    OR: [
-                        { referenceType: { not: 'opening_balance' } },
-                        { referenceType: null }
+                    AND: [
+                        {
+                            OR: [
+                                { referenceType: { not: 'opening_balance' } },
+                                { referenceType: null }
+                            ]
+                        },
+                        branchFilter
                     ]
                 },
                 account: {
