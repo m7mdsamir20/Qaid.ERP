@@ -150,8 +150,8 @@ export default function DisposalsPage() {
                 )}
 
                 {/* Filters Row */}
-                <div className="filters-row-responsive" style={{ ...SEARCH_STYLE.container, marginBottom: '16px' }}>
-                    <div style={{ ...SEARCH_STYLE.wrapper, flex: 1 }}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
+                    <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
                         <input value={search} onChange={e => setSearch(e.target.value)} 
                             placeholder={t("ابحث باسم الأصل المستبعد أو الكود...")} 
