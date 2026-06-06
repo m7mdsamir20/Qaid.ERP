@@ -179,7 +179,7 @@ export const BTN_DANGER = (disabled: boolean, submitting: boolean): React.CSSPro
  * يُستخدم بشكل مستقل فوق الجداول مباشرة
  */
 export const SEARCH_STYLE = {
-    container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' as 'wrap' },
+    container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' },
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
         ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', height: '42px',

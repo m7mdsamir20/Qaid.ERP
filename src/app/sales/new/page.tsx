@@ -646,6 +646,27 @@ function NewSalePageInner() {
                                                 value: p.id,
                                                 label: p.name
                                             }))}
+                                            onCreate={(val) => {
+                                                setSubmitting(true);
+                                                fetch('/api/customers', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ name: val })
+                                                })
+                                                .then(res => {
+                                                    if (res.ok) return res.json();
+                                                    throw new Error();
+                                                })
+                                                .then(newCustomer => {
+                                                    if (newCustomer && newCustomer.id) {
+                                                        setCustomers(prev => [...prev, newCustomer]);
+                                                        setForm((f: any) => ({ ...f, customerId: newCustomer.id }));
+                                                        clearError('customerId');
+                                                    }
+                                                })
+                                                .catch(() => alert(t('فشل في إضافة العميل')))
+                                                .finally(() => setSubmitting(false));
+                                            }}
                                         />
                                         <InlineError field="customerId" />
                                     </div>

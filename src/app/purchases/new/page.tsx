@@ -450,6 +450,27 @@ export default function NewPurchasePage() {
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
+                                            onCreate={(val) => {
+                                                setSubmitting(true);
+                                                fetch('/api/suppliers', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ name: val })
+                                                })
+                                                .then(res => {
+                                                    if (res.ok) return res.json();
+                                                    throw new Error();
+                                                })
+                                                .then(newSupplier => {
+                                                    if (newSupplier && newSupplier.id) {
+                                                        setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newSupplier]);
+                                                        setForm((f: any) => ({ ...f, supplierId: newSupplier.id }));
+                                                        clearError('supplierId');
+                                                    }
+                                                })
+                                                .catch(() => alert(t('فشل في إضافة المورد')))
+                                                .finally(() => setSubmitting(false));
+                                            }}
                                             value={form.supplierId}
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
                                             icon={Search}
