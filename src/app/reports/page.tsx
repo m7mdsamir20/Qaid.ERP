@@ -349,7 +349,7 @@ function ReportsHubPageInner() {
                 />
 
                 {/* ── Tabs Navigation ── */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '30px' }}>
+                <div className="reports-tabs-scroll" style={{ display: 'flex', gap: '10px', marginBottom: '30px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' as any, paddingBottom: '4px' }}>
                     {visibleTabs.map(tab => {
                         const active = activeTab === tab.key;
                         return (
@@ -369,8 +369,8 @@ function ReportsHubPageInner() {
                                     cursor: 'pointer',
                                     transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
                                     whiteSpace: 'nowrap',
+                                    flexShrink: 0,
                                     boxShadow: active ? `0 4px 12px rgba(37,106,244,0.1)` : '0 2px 8px rgba(0,0,0,0.05)',
-                                    insetInlineStart: 'auto'
                                 }}
                                 onMouseEnter={e => {
                                     if (!active) { e.currentTarget.style.background = 'rgba(37,106,244,0.05)'; e.currentTarget.style.color = C.primary; }
@@ -394,6 +394,11 @@ function ReportsHubPageInner() {
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+                .reports-tabs-scroll::-webkit-scrollbar { display: none; }
+                .reports-tabs-scroll { scrollbar-width: none; }
+                @media (max-width: 768px) {
+                    .reports-tabs-scroll { padding-bottom: 0; }
                 }
             `}</style>
         </DashboardLayout>

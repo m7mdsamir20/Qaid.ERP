@@ -290,30 +290,8 @@ export default function DashboardLayout({
                 @media (max-width: 1023px) {
                     .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 12px !important; height: 60px !important; z-index: 1000 !important; }
 
-                    /* ── شريط الفرع: شريط ثابت أسفل الهيدر، محاذٍ لمنطقة المحتوى ── */
-                    .branch-switcher-wrap {
-                        position: fixed !important;
-                        top: 60px !important;
-                        z-index: 985 !important;
-                        padding: 6px 8px 8px !important;
-                        background: ${C.card} !important;
-                        border-bottom: 1px solid ${C.border} !important;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.15) !important;
-                    }
-                    .ltr-mode .branch-switcher-wrap { left: 70px !important; right: 0 !important; }
-                    .rtl-mode .branch-switcher-wrap { right: 70px !important; left: 0 !important; }
-                    /* إخفاء الشريط إذا لم يكن هناك محتوى (مستخدم بفرع واحد) */
-                    .branch-switcher-wrap:empty { display: none !important; }
+                    /* الفرع: ايكون مدمج في الهيدر جنب اللوجو */
                     .branch-switcher-wrap:not(:has(*)) { display: none !important; }
-                    /* زر الفرع: عرض كامل مع المسافة بين النص والسهم */
-                    .branch-switcher-wrap > div { width: 100% !important; }
-                    .branch-switcher-wrap > div > button {
-                        width: 100% !important;
-                        justify-content: space-between !important;
-                        border-radius: 8px !important;
-                        padding: 0 10px !important;
-                        height: 36px !important;
-                    }
                     
                     .sidebar-wrapper {
                         position: fixed; top: 60px; bottom: 0; z-index: 990; 
@@ -349,8 +327,6 @@ export default function DashboardLayout({
                     .rtl-mode .dashboard-content { margin-right: 70px !important; margin-left: 0 !important; width: calc(100% - 70px) !important; }
                     
                     main { padding: 76px 16px 20px !important; }
-                    /* عندما يكون شريط الفرع ظاهراً: زيادة padding-top بمقدار ارتفاع الشريط (~50px) */
-                    .app-container:has(.branch-switcher-wrap:not(:empty)) main { padding-top: 118px !important; }
 
                     /* ─── Global Responsive Helpers ─── */
                     .mobile-column, .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }

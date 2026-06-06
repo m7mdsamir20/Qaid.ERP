@@ -448,10 +448,10 @@ function BranchSwitcher() {
                     flexDirection: isRtl ? 'row' : 'row'
                 }}>
                 <GitBranch size={14} color={C.primary} />
-                <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
+                <span className="branch-name-text" style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
                     {activeBranchId === 'all' || !activeBranchId ? t('كل الفروع') : t(activeBranch?.name || '')}
                 </span>
-                <ChevronDown size={14} color={C.primary} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                <ChevronDown className="branch-chevron-icon" size={14} color={C.primary} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
             </button>
 
             {open && (
@@ -592,6 +592,11 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
                     .header-search-center { display: none !important; }
                     .mobile-search-toggle { display: flex !important; }
                     .main-header { padding: 0 12px !important; }
+                    /* branch: icon only next to logo */
+                    .branch-name-text { display: none !important; }
+                    .branch-switcher-wrap > div > button { padding: 0 8px !important; gap: 4px !important; }
+                    /* fix avatar button empty gap (hidden text leaves padding) */
+                    .user-menu-btn { padding: 4px !important; }
                 }
             `}</style>
         </header>

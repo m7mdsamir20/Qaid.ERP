@@ -1977,4 +1977,131 @@ td.table-cell-text {
   main [style*="padding: 100px"] {
     padding: 40px 16px !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════
+   إصلاح شامل لجميع صفحات التقارير — التغطية الكاملة
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* date-filter-row يتكدس عموديًا في أي مكان داخل main (بغض النظر عن الكلاس الأب) */
+  main .date-filter-row {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  main .date-filter-row .date-input-wrapper {
+    width: 100% !important;
+    flex: 0 0 auto !important;
+  }
+  main .date-filter-row .date-input-wrapper input[type="date"] {
+    width: 100% !important;
+  }
+  main .date-filter-row > span {
+    display: none !important;
+  }
+
+  /* margin-bottom: 20px — يغطي returns-report, treasury-reconciliation */
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"]:not([style*="background:"]):not([style*="position: absolute"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"]:not([style*="background:"]):not([style*="position: absolute"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 14px"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 14px"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* الأزرار داخل div مباشر أسفل شريط الفلتر (branch wrapper) */
+  main [style*="margin-bottom: 24px"] > div > button.update-btn,
+  main [style*="margin-bottom: 20px"] > div > button.update-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* حالات space-between (top-selling-items, low-stock-items): إخفاء الزر خارج الشاشة وجعل البحث كامل */
+  main [style*="justify-content: space-between"][style*="display: flex"][style*="gap: 24px"]:not([style*="background:"]) {
+    flex-wrap: wrap !important;
+  }
+  main [style*="justify-content: space-between"][style*="display: flex"][style*="gap: 24px"]:not([style*="background:"]) > * {
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* شبكات KPI في صفحات التقارير (repeat(3, 1fr) → repeat(2, 1fr) على التابلت) */
+  main [data-print-include][style*="repeat(3, 1fr)"],
+  main [data-print-include][style*="repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   صفحات الأصول الثابتة — إصلاح موبايل
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* شبكة KPI (stats-grid-responsive) → 2 أعمدة */
+  .stats-grid-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* شريط الفلتر (filters-row-responsive) → عمودي */
+  .filters-row-responsive {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .filters-row-responsive > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* أزرار الحالة / السبب: تمرير أفقي (scroll) */
+  .status-filter-scroll,
+  .reason-filter-scroll {
+    overflow-x: auto !important;
+    width: 100% !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* إهلاك: gap 16px + marginBottom 20px + flexWrap wrap */
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 16px"][style*="flex-wrap: wrap"] {
+    gap: 10px !important;
+  }
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 16px"][style*="flex-wrap: wrap"] > div[style*="width:"],
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 16px"][style*="flex-wrap: wrap"] > div[style*="width: "] {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: 1 1 100% !important;
+  }
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 16px"][style*="flex-wrap: wrap"] > button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* margin-bottom: 16px variants */
+  main [style*="margin-bottom: 16px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  main [style*="margin-bottom: 16px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]:not([style*="background:"]) > * {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
 }
