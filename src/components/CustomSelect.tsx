@@ -53,7 +53,6 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [portalPos, setPortalPos] = useState<{ top?: number; bottom?: number; left: number; width: number; isUp: boolean } | null>(null);
     const lastInteraction = useRef<'mouse' | 'keyboard'>('keyboard');
-    const hasNavigated = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
     const portalRef = useRef<HTMLDivElement>(null);
@@ -70,7 +69,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
         opt.label.toLowerCase().includes(search.toLowerCase())
     );
 
-    const shouldShowCreate = !!(onCreate && search.trim() && !filteredOptions.some(o => o.label === search.trim()));
+    const shouldShowCreate = !!(onCreate && search.trim() && !options.some(o => o.label.trim().toLowerCase() === search.trim().toLowerCase()));
     const totalItems = filteredOptions.length + (shouldShowCreate ? 1 : 0);
 
     const selectedOption = options.find(opt => opt.value === value);
@@ -113,7 +112,6 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
 
         if (isOpen) {
             setSearch('');
-            hasNavigated.current = false;
             setActiveIndex(0);
             requestAnimationFrame(() => {
                 calcPortalPos();
@@ -133,7 +131,6 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
 
     useEffect(() => {
         setActiveIndex(0);
-        hasNavigated.current = false;
     }, [search]);
 
     // Scroll active item into view
@@ -288,23 +285,21 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         if (e.key === 'Enter') {
                                             lastInteraction.current = 'keyboard';
                                             e.preventDefault();
-                                            if (shouldShowCreate && (!hasNavigated.current || activeIndex === filteredOptions.length)) {
-                                                onCreate!(search.trim());
-                                                setIsOpen(false);
-                                            } else if (activeIndex < filteredOptions.length) {
+                                            if (activeIndex < filteredOptions.length) {
                                                 const opt = filteredOptions[activeIndex];
                                                 onChange(opt.value);
                                                 setIsOpen(false);
                                                 if (onQuickAction) onQuickAction();
+                                            } else if (shouldShowCreate && activeIndex === filteredOptions.length) {
+                                                onCreate!(search.trim());
+                                                setIsOpen(false);
                                             }
                                         } else if (e.key === 'ArrowDown') {
                                             lastInteraction.current = 'keyboard';
-                                            hasNavigated.current = true;
                                             e.preventDefault();
                                             setActiveIndex(prev => (prev + 1) % totalItems);
                                         } else if (e.key === 'ArrowUp') {
                                             lastInteraction.current = 'keyboard';
-                                            hasNavigated.current = true;
                                             e.preventDefault();
                                             setActiveIndex(prev => (prev - 1 + totalItems) % totalItems);
                                         }
