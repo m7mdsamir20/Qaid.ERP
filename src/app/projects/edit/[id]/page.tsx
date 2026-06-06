@@ -202,6 +202,26 @@ export default function EditProjectPage() {
                                         <div>
                                             <label style={LS}>{isContracting ? t('المالك / صاحب المشروع') : t('العميل / المالك')}</label>
                                             <CustomSelect
+                                                onCreate={(val) => {
+                                                    setSubmitting(true);
+                                                    fetch('/api/customers', {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({ name: val })
+                                                    })
+                                                    .then(res => {
+                                                        if (res.ok) return res.json();
+                                                        throw new Error();
+                                                    })
+                                                    .then(newCustomer => {
+                                                        if (newCustomer && newCustomer.id) {
+                                                            setCustomers(prev => [...(Array.isArray(prev) ? prev : []), newCustomer]);
+                                                            setForm(f => ({ ...f, customerId: newCustomer.id }));
+                                                        }
+                                                    })
+                                                    .catch(() => alert(t('فشل في إضافة العميل')))
+                                                    .finally(() => setSubmitting(false));
+                                                }}
                                                 value={form.customerId}
                                                 onChange={val => setForm({ ...form, customerId: val })}
                                                 placeholder={isContracting ? t('اختر المالك...') : t('اختر العميل...')}
