@@ -206,18 +206,18 @@ export default function SalesRepresentativesPage() {
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 transition: 'all 0.2s', position: 'relative'
                             }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                                onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                                onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                             >
-                                <div style={{ textAlign: isRtl ? 'right' : 'left' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
+                                <div style={{ textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                        <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.val}</span>
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                    <s.icon size={20} />
+                                    <s.icon size={18} />
                                 </div>
                             </div>
                         ))}
