@@ -836,43 +836,74 @@ input[type="date"]:not([value=""])::-webkit-datetime-edit-text {
 
 
 /* ==================== Universal Select ==================== */
-select {
-  background-color: var(--surface-900);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
-  font-size: 14px;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: inline-start 10px center;
-  padding-inline-start: 32px;
-  outline: none;
-  cursor: pointer;
-  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+select,
+.form-select,
+select.input {
+  background-color: var(--c-card) !important;
+  color: var(--c-text-primary) !important;
+  border: 1px solid var(--c-border) !important;
+  border-radius: 10px !important;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif !important;
+  font-size: 14px !important;
+  height: 42px !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 14px center !important;
+  padding-left: 36px !important;
+  padding-right: 14px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal) !important;
 }
 
-select:focus {
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 3px var(--primary-light);
+select:focus,
+.form-select:focus,
+select.input:focus {
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-light) !important;
 }
 
-select:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+select:disabled,
+.form-select:disabled,
+select.input:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
 }
 
 select option {
-  background-color: var(--surface-900);
-  color: var(--text-primary);
-  padding: 10px 14px;
-  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
+  background-color: var(--c-card) !important;
+  color: var(--c-text-primary) !important;
+  padding: 12px 16px !important;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif !important;
 }
 
-[data-theme='light'] select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+  background-color: var(--c-primary) !important;
+  color: #ffffff !important;
+}
+
+/* LTR Override */
+[dir="ltr"] select,
+[dir="ltr"] .form-select,
+[dir="ltr"] select.input,
+body[dir="ltr"] select,
+body[dir="ltr"] .form-select,
+body[dir="ltr"] select.input {
+  background-position: right 14px center !important;
+  padding-left: 14px !important;
+  padding-right: 36px !important;
+}
+
+/* Light Theme Overrides */
+[data-theme='light'] select,
+[data-theme='light'] .form-select,
+[data-theme='light'] select.input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
 }
 
 /* ==================== Spin Animation ==================== */
