@@ -95,7 +95,7 @@ function VerifyContent() {
     };
 
     return (
-        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden',  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
             {/* زخرفة داخلية */}
             <div style={{ position: 'absolute', top: '-20px', insetInlineEnd: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
             

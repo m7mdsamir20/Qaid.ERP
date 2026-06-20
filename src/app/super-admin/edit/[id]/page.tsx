@@ -231,7 +231,7 @@ export default function EditCompanyPage() {
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = t("فواتير الخدمات");
-                    section.links = section.links.filter((l: any) => l.id !== '/coupons').map((l: any) => {
+                    section.links = section.links.filter((l: any) => !['/coupons', '/sales/representatives'].includes(l.id)).map((l: any) => {
                         if (l.label === t("فواتير المبيعات")) return { ...l, label: t("فواتير الخدمات") };
                         if (l.label === t("مرتجع مبيعات")) return { ...l, label: t("مرتجع خدمات") };
                         return l;
@@ -239,14 +239,17 @@ export default function EditCompanyPage() {
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = t("الخدمات");
-                    section.links = section.links.map((l: any) => {
+                    section.links = section.links.filter((l: any) => !['/warehouses', '/stocktakings', '/warehouse-transfers'].includes(l.id)).map((l: any) => {
                         if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
                         if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
                         return l;
                     });
                 }
+                if (section.featureKey === 'treasury') {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
                 if (section.featureKey === 'reports') {
-                    section.links = section.links.map((l: any) => {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-restaurant').map((l: any) => {
                         if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الخدمات والمشتريات") };
                         if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير الخدمات") };
                         return l;
