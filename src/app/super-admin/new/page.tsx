@@ -35,7 +35,7 @@ const BUSINESS_TYPES = [
     {
         value: "SERVICES",
         label: t("نشاط خدمات (استشارات، صيانة، إلخ)"),
-        modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
+        modules: ['sales', 'inventory', 'accounting', 'treasury', 'reports']
     },
     {
         value: "RESTAURANTS",
@@ -240,6 +240,7 @@ export default function NewCompanyPage() {
             const isRestaurants = form.businessType === 'RESTAURANTS';
             const isRetail = form.businessType === 'RETAIL';
             const isContracting = form.businessType === 'CONTRACTING';
+            const isServices = form.businessType === 'SERVICES';
             
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
             if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
@@ -247,6 +248,7 @@ export default function NewCompanyPage() {
             if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
             if (isRetail && ['installments', 'barcode'].includes(s.featureKey)) return;
             if (isContracting && ['installments', 'pos', 'barcode'].includes(s.featureKey)) return;
+            if (isServices && s.featureKey === 'installments') return;
 
             let section = { ...s };
 
@@ -290,7 +292,7 @@ export default function NewCompanyPage() {
                     section.links = section.links.filter((l: any) => l.id !== '/settlements');
                 }
                 if (section.featureKey === 'reports') {
-                    section.links = section.links.filter((l: any) => l.id !== 'reports-restaurant').map((l: any) => {
+                    section.links = section.links.filter((l: any) => !['reports-restaurant', 'reports-installments'].includes(l.id)).map((l: any) => {
                         if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الخدمات والمشتريات") };
                         if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير الخدمات") };
                         return l;

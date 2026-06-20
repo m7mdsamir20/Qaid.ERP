@@ -135,6 +135,7 @@ export default function Sidebar({
         return navSections.map((sectionOrigin: any) => {
             let section = { ...sectionOrigin };
             if (businessType === 'SERVICES') {
+                if (section.featureKey === 'installments') return null;
                 if (section.featureKey === 'sales') {
                     section.title = t("فواتير الخدمات");
                     section.links = section.links?.filter((l: any) => l.id !== '/coupons').map((l: any) => {
@@ -150,6 +151,9 @@ export default function Sidebar({
                         if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
                         return l;
                     });
+                }
+                if (section.featureKey === 'reports' && section.links) {
+                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments');
                 }
             } else if (businessType !== 'RESTAURANTS') {
                 if (section.featureKey === 'sales') {

@@ -440,6 +440,8 @@ function SettingsContent() {
             if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
             if (contractingFeatures.includes(sectionOrigin.featureKey || '') && !isContracting) return false;
             if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
+            if (isServices && sectionOrigin.featureKey === 'installments') return false;
+            if (businessType === 'RETAIL' && sectionOrigin.featureKey === 'installments') return false;
             return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })
         .map(sectionOrigin => {

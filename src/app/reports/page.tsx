@@ -248,7 +248,7 @@ function ReportsHubPageInner() {
     ];
 
     const hasModuleAccess = (tab: ModuleTab) => {
-        if ((businessType === 'RESTAURANTS' || businessType === 'CONTRACTING') && tab.key === 'installments') return false;
+        if ((businessType === 'RESTAURANTS' || businessType === 'CONTRACTING' || businessType === 'SERVICES') && tab.key === 'installments') return false;
         if (isSuperAdmin) return true;
 
         // Admin can see all report tabs
