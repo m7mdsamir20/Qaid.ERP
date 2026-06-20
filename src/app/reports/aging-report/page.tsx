@@ -13,6 +13,7 @@ import ReportHeader from '@/components/ReportHeader';
 import { Search, Phone, Clock, AlertTriangle, TrendingDown, History } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import CustomSelect from '@/components/CustomSelect';
+import { navSections } from '@/constants/navigation';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -53,6 +54,37 @@ export default function AgingReportPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
+
+    const isSuperAdmin = session?.user?.isSuperAdmin;
+    const featuresRaw = session?.user?.subscription?.features;
+    const hasSubscription = !!session?.user?.subscription;
+    const userPermissions = session?.user?.permissions || {};
+
+    const enabledFeatures: Record<string, string[]> = (() => {
+        if (!featuresRaw) return {};
+        try {
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
+            if (Array.isArray(parsed)) {
+                return {};
+            }
+            return parsed || {};
+        }
+        catch { return {}; }
+    })();
+
+    const hasPageAccess = (pageId: string, featureKey?: string): boolean => {
+        if (hasSubscription && featureKey) {
+            const pagesInSub = enabledFeatures[featureKey] || [];
+            if (!pagesInSub.includes(pageId)) return false;
+        }
+        if (isSuperAdmin) return true;
+        if (session?.user?.role === 'admin') return true;
+        const perms = userPermissions as Record<string, { view?: boolean }>;
+        return !!perms[pageId]?.view;
+    };
+
+    const hasCustomers = hasPageAccess('/customers', 'sales') || hasPageAccess('/partners', 'partners');
+    const hasSuppliers = hasPageAccess('/suppliers', 'purchases');
 
     const [data, setData] = useState<AgingInvoice[]>([]);
     const [buckets, setBuckets] = useState<AgingBuckets | null>(null);
@@ -101,8 +133,18 @@ export default function AgingReportPage() {
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, t("أعمار الديون"));
-        XLSX.writeFile(wb, `${t('تقرير_أعمار_الديون')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        const sheetName = hasCustomers && hasSuppliers 
+            ? t("أعمار الديون") 
+            : hasCustomers 
+                ? t("أعمار ديون العملاء") 
+                : t("أعمار ديون الموردين");
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        const fileName = hasCustomers && hasSuppliers 
+            ? t("تقرير_أعمار_الديون") 
+            : hasCustomers 
+                ? t("تقرير_أعمار_ديون_العملاء") 
+                : t("تقرير_أعمار_ديون_الموردين");
+        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
     const columns: TableColumn[] = [
@@ -181,9 +223,22 @@ export default function AgingReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t("تقرير أعمار الديون")}
-                    subtitle={t("تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل.")}
+                    title={hasCustomers && hasSuppliers 
+                        ? t("تقرير أعمار الديون") 
+                        : hasCustomers 
+                            ? t("أعمار ديون العملاء") 
+                            : t("أعمار ديون الموردين")}
+                    subtitle={hasCustomers && hasSuppliers 
+                        ? t("تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل.") 
+                        : hasCustomers 
+                            ? t("تحليل مديونيات العملاء المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل.") 
+                            : t("تحليل مستحقات الموردين المتأخرة وتصنيفها حسب المدة الزمنية.")}
                     backTab="partners"
+                    printTitle={hasCustomers && hasSuppliers 
+                        ? t("تقرير أعمار الديون") 
+                        : hasCustomers 
+                            ? t("أعمار ديون العملاء") 
+                            : t("أعمار ديون الموردين")}
                     onExportExcel={exportToExcel}
                 />
 

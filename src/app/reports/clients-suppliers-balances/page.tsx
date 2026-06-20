@@ -7,6 +7,7 @@ import { formatNumber } from '@/lib/currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
+import { navSections } from '@/constants/navigation';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -42,6 +43,37 @@ export default function ClientsSuppliersBalancesPage() {
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
+    const isSuperAdmin = session?.user?.isSuperAdmin;
+    const featuresRaw = session?.user?.subscription?.features;
+    const hasSubscription = !!session?.user?.subscription;
+    const userPermissions = session?.user?.permissions || {};
+
+    const enabledFeatures: Record<string, string[]> = (() => {
+        if (!featuresRaw) return {};
+        try {
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
+            if (Array.isArray(parsed)) {
+                return {};
+            }
+            return parsed || {};
+        }
+        catch { return {}; }
+    })();
+
+    const hasPageAccess = (pageId: string, featureKey?: string): boolean => {
+        if (hasSubscription && featureKey) {
+            const pagesInSub = enabledFeatures[featureKey] || [];
+            if (!pagesInSub.includes(pageId)) return false;
+        }
+        if (isSuperAdmin) return true;
+        if (session?.user?.role === 'admin') return true;
+        const perms = userPermissions as Record<string, { view?: boolean }>;
+        return !!perms[pageId]?.view;
+    };
+
+    const hasCustomers = hasPageAccess('/customers', 'sales') || hasPageAccess('/partners', 'partners');
+    const hasSuppliers = hasPageAccess('/suppliers', 'purchases');
+
     const [result, setResult] = useState<ReportResult | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -64,6 +96,13 @@ export default function ClientsSuppliersBalancesPage() {
 
     let filteredData = result?.data || [];
     
+    if (!hasSuppliers) {
+        filteredData = filteredData.filter(d => d.partnerType !== 'supplier');
+    }
+    if (!hasCustomers) {
+        filteredData = filteredData.filter(d => d.partnerType !== 'customer');
+    }
+
     // Search filter
     if (search) {
         filteredData = filteredData.filter(d => 
@@ -106,7 +145,7 @@ export default function ClientsSuppliersBalancesPage() {
                 else maden = Math.abs(p.balance);
             }
             return {
-                [t('النوع')]: p.type === t("عميل") ? t('عميل') : t('مورد'),
+                ...(hasCustomers && hasSuppliers ? { [t('النوع')]: p.partnerType === 'customer' ? t('عميل') : t('مورد') } : {}),
                 [t('الاسم')]: p.name,
                 [t('الهاتف')]: p.phone || '—',
                 [t('مدين (عليه)')]: maden,
@@ -117,22 +156,29 @@ export default function ClientsSuppliersBalancesPage() {
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('الأرصدة'));
-        XLSX.writeFile(wb, `${t('ارصدة_العملاء_والموردين')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        const fileName = hasCustomers && hasSuppliers
+            ? t('ارصدة_العملاء_والموردين')
+            : hasCustomers
+                ? t('ارصدة_العملاء')
+                : t('ارصدة_الموردين');
+        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
     const columns: TableColumn[] = [
-        {
-            header: t('النوع'),
-            cell: (row: PartnerBalance) => (
-                <span style={{
-                    padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
-                    background: row.partnerType === 'customer' ? 'rgba(37, 106, 244,0.1)' : 'rgba(245,158,11,0.1)',
-                    color: row.partnerType === 'customer' ? '#256af4' : '#f59e0b'
-                }}>
-                    {row.partnerType === 'customer' ? t('عميل') : t('مورد')}
-                </span>
-            )
-        },
+        ...(hasCustomers && hasSuppliers ? [
+            {
+                header: t('النوع'),
+                cell: (row: PartnerBalance) => (
+                    <span style={{
+                        padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
+                        background: row.partnerType === 'customer' ? 'rgba(37, 106, 244,0.1)' : 'rgba(245,158,11,0.1)',
+                        color: row.partnerType === 'customer' ? '#256af4' : '#f59e0b'
+                    }}>
+                        {row.partnerType === 'customer' ? t('عميل') : t('مورد')}
+                    </span>
+                )
+            }
+        ] : []),
         {
             header: t('الاسم'),
             cell: (row: PartnerBalance) => row.name,
@@ -213,10 +259,22 @@ export default function ClientsSuppliersBalancesPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t("أرصدة العملاء والموردين")}
-                    subtitle={t("تقرير شامل يعرض جميع المستحقات (ما لنا وما علينا) لكل حساب.")}
+                    title={hasCustomers && hasSuppliers 
+                        ? t("أرصدة العملاء والموردين") 
+                        : hasCustomers 
+                            ? t("أرصدة العملاء") 
+                            : t("أرصدة الموردين")}
+                    subtitle={hasCustomers && hasSuppliers 
+                        ? t("تقرير شامل يعرض جميع المستحقات (ما لنا وما علينا) لكل حساب.") 
+                        : hasCustomers 
+                            ? t("تقرير شامل يعرض أرصدة ومستحقات جميع العملاء.") 
+                            : t("تقرير شامل يعرض أرصدة ومستحقات جميع الموردين.")}
                     backTab="partners"
-                    printTitle={t("أرصدة العملاء والموردين")}
+                    printTitle={hasCustomers && hasSuppliers 
+                        ? t("أرصدة العملاء والموردين") 
+                        : hasCustomers 
+                            ? t("أرصدة العملاء") 
+                            : t("أرصدة الموردين")}
                     onExportExcel={exportToExcel}
                 />
 
@@ -238,8 +296,8 @@ export default function ClientsSuppliersBalancesPage() {
                     <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
                         {[
                             { key: 'all', label: t('الكل'), icon: UserCheck, color: C.primary },
-                            { key: 'customer', label: t('العملاء'), icon: Users, color: '#256af4' },
-                            { key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' },
+                            ...(hasCustomers ? [{ key: 'customer', label: t('العملاء'), icon: Users, color: '#256af4' }] : []),
+                            ...(hasSuppliers ? [{ key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' }] : []),
                             { key: 'debtor', label: t('المدينون (عليهم)'), icon: ArrowUpRight, color: '#ef4444' },
                             { key: 'creditor', label: t('الدائنون (لهم)'), icon: ArrowDownLeft, color: '#10b981' },
                         ].map(t_btn => (
