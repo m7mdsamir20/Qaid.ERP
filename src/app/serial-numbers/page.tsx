@@ -19,9 +19,11 @@ interface SerialRecord {
     soldAt: string | null;
     warrantyEnd: string | null;
     notes: string | null;
+    customerId: string | null;
+    warehouseId: string | null;
+    customerName: string | null;
+    warehouseName: string | null;
     item: { name: string; code: string };
-    customer: { name: string } | null;
-    warehouse: { name: string } | null;
 }
 
 const STATUS_OPTIONS = [
@@ -135,7 +137,7 @@ export default function SerialNumbersPage() {
             header: 'المخزن',
             type: 'text',
             cell: (r: SerialRecord) => (
-                <span style={{ color: C.textSecondary, fontSize: '12px' }}>{r.warehouse?.name || '—'}</span>
+                <span style={{ color: C.textSecondary, fontSize: '12px' }}>{r.warehouseName || '—'}</span>
             ),
         },
         {
@@ -158,7 +160,7 @@ export default function SerialNumbersPage() {
             header: 'العميل',
             type: 'text',
             cell: (r: SerialRecord) => (
-                <span style={{ color: C.textSecondary, fontSize: '12px' }}>{r.customer?.name || '—'}</span>
+                <span style={{ color: C.textSecondary, fontSize: '12px' }}>{r.customerName || '—'}</span>
             ),
         },
         {

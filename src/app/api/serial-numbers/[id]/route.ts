@@ -11,8 +11,6 @@ export const GET = withProtection(async (request, session, _body, { params }) =>
         where: { id, companyId },
         include: {
             item: { select: { name: true, code: true } },
-            customer: { select: { name: true } },
-            warehouse: { select: { name: true } },
         },
     });
 
@@ -20,7 +18,16 @@ export const GET = withProtection(async (request, session, _body, { params }) =>
         return NextResponse.json({ error: 'الرقم التسلسلي غير موجود' }, { status: 404 });
     }
 
-    return NextResponse.json(record);
+    const [customerData, warehouseData] = await Promise.all([
+        record.customerId ? prisma.customer.findUnique({ where: { id: record.customerId }, select: { name: true } }) : null,
+        record.warehouseId ? prisma.warehouse.findUnique({ where: { id: record.warehouseId }, select: { name: true } }) : null,
+    ]);
+
+    return NextResponse.json({
+        ...record,
+        customerName: customerData?.name || null,
+        warehouseName: warehouseData?.name || null,
+    });
 });
 
 export const PUT = withProtection(async (request, session, body, { params }) => {

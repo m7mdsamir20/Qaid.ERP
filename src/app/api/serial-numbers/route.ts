@@ -32,14 +32,29 @@ export const GET = withProtection(async (request, session) => {
             orderBy: { createdAt: 'desc' },
             include: {
                 item: { select: { name: true, code: true } },
-                customer: { select: { name: true } },
-                warehouse: { select: { name: true } },
             },
         }),
         prisma.serialNumber.count({ where }),
     ]);
 
-    return NextResponse.json({ records, total, page, pageSize });
+    const customerIds = [...new Set(records.map(r => r.customerId).filter(Boolean))] as string[];
+    const warehouseIds = [...new Set(records.map(r => r.warehouseId).filter(Boolean))] as string[];
+
+    const [customers, warehouses] = await Promise.all([
+        customerIds.length > 0 ? prisma.customer.findMany({ where: { id: { in: customerIds } }, select: { id: true, name: true } }) : [],
+        warehouseIds.length > 0 ? prisma.warehouse.findMany({ where: { id: { in: warehouseIds } }, select: { id: true, name: true } }) : [],
+    ]);
+
+    const customerMap = Object.fromEntries(customers.map(c => [c.id, c.name]));
+    const warehouseMap = Object.fromEntries(warehouses.map(w => [w.id, w.name]));
+
+    const enriched = records.map(r => ({
+        ...r,
+        customerName: r.customerId ? (customerMap[r.customerId] || null) : null,
+        warehouseName: r.warehouseId ? (warehouseMap[r.warehouseId] || null) : null,
+    }));
+
+    return NextResponse.json({ records: enriched, total, page, pageSize });
 });
 
 export const POST = withProtection(async (request, session, body) => {
