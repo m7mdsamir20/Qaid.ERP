@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
-import { FileText, Save, Search, X } from 'lucide-react';
+import { FileText, Save, Search, X, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -28,8 +28,7 @@ export default function NewServiceContractPage() {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [customerSearch, setCustomerSearch] = useState('');
-    const [showCustomerList, setShowCustomerList] = useState(false);
+
 
     const [form, setForm] = useState({
         customerId: '',
@@ -51,20 +50,7 @@ export default function NewServiceContractPage() {
             .catch(() => setCustomers([]));
     }, []);
 
-    const filteredCustomers = customers.filter(c =>
-        c.name.toLowerCase().includes(customerSearch.toLowerCase())
-    );
 
-    const selectCustomer = (c: Customer) => {
-        setForm(f => ({ ...f, customerId: c.id, customerName: c.name }));
-        setCustomerSearch(c.name);
-        setShowCustomerList(false);
-    };
-
-    const clearCustomer = () => {
-        setForm(f => ({ ...f, customerId: '', customerName: '' }));
-        setCustomerSearch('');
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -126,42 +112,23 @@ export default function NewServiceContractPage() {
                                 <p style={STitle}><FileText size={14} /> بيانات العقد</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
-                                    {/* Customer Searchable */}
+                                    {/* Customer Select */}
                                     <div>
                                         <label style={LS}>العميل</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <Search size={15} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none' }} />
-                                            <input
-                                                type="text"
-                                                placeholder="ابحث عن عميل..."
-                                                value={customerSearch}
-                                                onChange={e => { setCustomerSearch(e.target.value); setShowCustomerList(true); }}
-                                                onFocus={() => setShowCustomerList(true)}
-                                                onBlur={() => setTimeout(() => setShowCustomerList(false), 200)}
-                                                style={{ ...inputStyle, paddingInlineStart: '38px', paddingInlineEnd: form.customerId ? '36px' : '12px' }}
-                                            />
-                                            {form.customerId && (
-                                                <button type="button" onClick={clearCustomer} style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, padding: '2px' }}>
-                                                    <X size={14} />
-                                                </button>
-                                            )}
-                                            {showCustomerList && filteredCustomers.length > 0 && (
-                                                <div style={{ position: 'absolute', top: '100%', insetInlineStart: 0, insetInlineEnd: 0, background: '#0e172a', border: `1px solid ${C.border}`, borderRadius: '10px', zIndex: 50, maxHeight: '200px', overflowY: 'auto', marginTop: '4px' }}>
-                                                    {filteredCustomers.slice(0, 20).map(c => (
-                                                        <div
-                                                            key={c.id}
-                                                            onMouseDown={() => selectCustomer(c)}
-                                                            style={{ padding: '10px 14px', cursor: 'pointer', fontSize: '13px', color: C.textPrimary, borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO }}
-                                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                                        >
-                                                            {c.name}
-                                                            {c.phone && <span style={{ color: C.textMuted, marginInlineStart: '8px', fontSize: '12px', fontFamily: OUTFIT }}>{c.phone}</span>}
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
+                                        <CustomSelect
+                                            value={form.customerId}
+                                            onChange={val => {
+                                                const c = customers.find(cust => cust.id === val);
+                                                setForm(f => ({ ...f, customerId: val, customerName: c ? c.name : '' }));
+                                            }}
+                                            options={customers.map(c => ({
+                                                value: c.id,
+                                                label: c.name,
+                                                sub: c.phone || undefined
+                                            }))}
+                                            placeholder="ابحث عن عميل..."
+                                            style={{ width: '100%' }}
+                                        />
                                     </div>
 
                                     {/* Type */}
@@ -220,14 +187,19 @@ export default function NewServiceContractPage() {
 
                                 {/* Auto Renew */}
                                 <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <input
-                                        type="checkbox"
-                                        id="autoRenew"
-                                        checked={form.autoRenew}
-                                        onChange={e => setForm(f => ({ ...f, autoRenew: e.target.checked }))}
-                                        style={{ width: '16px', height: '16px', cursor: 'pointer' }}
-                                    />
-                                    <label htmlFor="autoRenew" style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>تجديد تلقائي</label>
+                                    <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                        <input
+                                            type="checkbox"
+                                            id="autoRenew"
+                                            checked={form.autoRenew}
+                                            onChange={e => setForm(f => ({ ...f, autoRenew: e.target.checked }))}
+                                            style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }}
+                                        />
+                                        <div style={{ position: 'absolute', inset: 0, background: form.autoRenew ? C.primary : 'transparent', border: `2px solid ${form.autoRenew ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                            {form.autoRenew && <Check size={14} color="#fff" strokeWidth={3} />}
+                                        </div>
+                                    </div>
+                                    <label htmlFor="autoRenew" style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer', margin: 0 }}>تجديد تلقائي</label>
                                 </div>
                             </div>
 
