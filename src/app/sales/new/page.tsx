@@ -86,7 +86,7 @@ function NewSalePageInner() {
     const [form, setForm] = useState<any>({
         customerId: '', warehouseId: '', discountPct: 0, discountAmt: 0,
         paidAmount: '', paymentType: 'cash' as 'cash' | 'bank' | 'credit',
-        treasuryId: '', bankId: '', notes: '',
+        treasuryId: '', bankId: '', notes: '', customerPONumber: '',
         date: new Date().toISOString().split('T')[0],
         taxRate: 0,
         taxAmount: 0,
@@ -439,6 +439,7 @@ function NewSalePageInner() {
                     treasuryId: form.paymentType === 'cash' ? form.treasuryId : undefined,
                     bankId: form.paymentType === 'bank' ? form.bankId : undefined,
                     notes: form.notes, attachments,
+                    customerPONumber: form.customerPONumber || undefined,
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
@@ -975,6 +976,22 @@ function NewSalePageInner() {
                                 </div>
                             )}
                         </div>
+
+                        {/* PO Number — SERVICES only */}
+                        {isServices && (
+                            <div style={SC}>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('رقم طلب الشراء (PO Number)')}</label>
+                                <input
+                                    type="text"
+                                    value={form.customerPONumber}
+                                    onChange={e => setForm((f: any) => ({ ...f, customerPONumber: e.target.value }))}
+                                    style={{ ...IS, height: '42px', fontSize: '13px' }}
+                                    placeholder="PO-00001"
+                                    onFocus={focusIn} onBlur={focusOut}
+                                    dir="ltr"
+                                />
+                            </div>
+                        )}
 
                         {/* Notes */}
                         <div style={SC}>

@@ -40,6 +40,7 @@ interface SaleInvoice {
     taxAmount?: number;
     taxRate?: number;
     notes?: string;
+    customerPONumber?: string;
     lines: {
         id: string;
         item: { name: string; code: string; unit?: { name: string } };

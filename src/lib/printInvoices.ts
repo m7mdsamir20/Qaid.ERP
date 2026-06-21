@@ -89,8 +89,9 @@ export function generateA4HTML(
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
+    const isServicesCompany = company.businessType?.toUpperCase() === 'SERVICES';
     const isSaudi = country === 'SA';
-    const isBilingual = country !== 'EG'; // كل الدول العربية ماعدا مصر
+    const isBilingual = country !== 'EG' || isServicesCompany; // كل الدول العربية ماعدا مصر + شركات الخدمات
     const addrLabels = {
         region: isBilingual ? 'المنطقة / Region' : 'المنطقة',
         city: isBilingual ? 'المدينة / City' : 'المدينة',
@@ -151,7 +152,7 @@ export function generateA4HTML(
     const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
 
     // تحديد ما إذا كان النشاط خدمياً
-    const isServicesLine = company.businessType?.toUpperCase() === 'SERVICES' || lines.some((l: any) => l.description || (l.item?.businessType?.toUpperCase() === 'SERVICES'));
+    const isServicesLine = isServicesCompany || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
 
     // ضريبة على مستوى الفاتورة
     const invoiceTaxRate = Number(invoice.taxRate || 0);
@@ -339,6 +340,7 @@ tbody tr:nth-child(even){background: #fff;}
         })()}
             ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
             ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
+            ${invoice.customerPONumber ? `<div class="info-row"><span class="ik">${blInline('رقم طلب الشراء', 'PO Number')}:</span><span class="iv" style="font-family:monospace;direction:ltr;display:inline-block;">${invoice.customerPONumber}</span></div>` : ''}
         </div>
     </div>
 
@@ -407,7 +409,7 @@ tbody tr:nth-child(even){background: #fff;}
         <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
     </div>`;
         })()}
-    ${isSaudi ? `
+    ${(isSaudi || isServicesCompany) ? `
     <div style="width: 100%; text-align: left; margin-top: 10px; clear: both; display: block;">
         <table style="width: 340px; display: inline-table; border-collapse: collapse; border: 1.5px solid #333; background: #fff;">
             <tbody>
