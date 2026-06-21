@@ -4,7 +4,7 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useEffect, useState } from 'react';
 import { Clock, Plus, Pencil, Trash2, Loader2, Users } from 'lucide-react';
-import { C, CAIRO, IS, focusIn, focusOut } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, IS, focusIn, focusOut } from '@/constants/theme';
 
 interface WorkSchedule {
     id: string;
