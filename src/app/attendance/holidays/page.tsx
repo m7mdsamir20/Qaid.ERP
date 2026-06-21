@@ -140,7 +140,7 @@ export default function HolidaysPage() {
             </div>
 
             {showModal && (
-                <AppModal onClose={() => setShowModal(false)} title="إضافة عطلة رسمية">
+                <AppModal show={showModal} onClose={() => setShowModal(false)} title="إضافة عطلة رسمية">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0' }}>
                         <div>
                             <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>اسم العطلة *</label>

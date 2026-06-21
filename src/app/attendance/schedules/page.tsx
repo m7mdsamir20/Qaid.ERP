@@ -193,7 +193,7 @@ export default function SchedulesPage() {
             </div>
 
             {showModal && (
-                <AppModal onClose={() => setShowModal(false)} title={editing ? 'تعديل جدول العمل' : 'جدول عمل جديد'}>
+                <AppModal show={showModal} onClose={() => setShowModal(false)} title={editing ? 'تعديل جدول العمل' : 'جدول عمل جديد'}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0' }}>
                         <div>
                             <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>اسم الجدول *</label>
