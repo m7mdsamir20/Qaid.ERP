@@ -429,6 +429,13 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             </div>
                         </div>
 
+                        {invoice.customerPONumber && (
+                            <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}>{t('رقم طلب الشراء')}</div>
+                                <p style={{ fontSize: '13px', color: C.textPrimary, margin: '8px 0 0', fontWeight: 700, fontFamily: 'monospace', direction: 'ltr', textAlign: 'start' }}>{invoice.customerPONumber}</p>
+                            </div>
+                        )}
+
                         {invoice.notes && (
                             <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
                                 <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}><Info size={12} /> {t('ملاحظات')}</div>
