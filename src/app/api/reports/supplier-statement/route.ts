@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getInvoiceRef, getVoucherRef } from '@/lib/invoiceRef';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -84,7 +85,7 @@ export const GET = withProtection(async (request, session) => {
                 id: inv.id,
                 date: inv.date,
                 type: inv.type === 'purchase' ? 'فاتورة مشتريات' : 'مرتجع مشتريات',
-                ref: inv.type === 'purchase' ? `PUR-${String(inv.invoiceNumber).padStart(5, '0')}` : `PRET-${String(inv.invoiceNumber).padStart(5, '0')}`,
+                ref: getInvoiceRef(inv.invoiceNumber, inv.type, (session.user as any).businessType),
                 description: inv.type === 'purchase' ? 'شراء بضاعة فاتورة' : 'مرتجع بضاعة فاتورة',
                 debit: inv.type === 'purchase_return' ? inv.total : 0,
                 credit: inv.type === 'purchase' ? inv.total : 0,
@@ -99,7 +100,7 @@ export const GET = withProtection(async (request, session) => {
                 id: v.id,
                 date: v.date,
                 type: v.type === 'payment' ? 'سند صرف' : 'سند قبض',
-                ref: v.type === 'payment' ? `PMT-${String(v.voucherNumber).padStart(5, '0')}` : `RCP-${String(v.voucherNumber).padStart(5, '0')}`,
+                ref: getVoucherRef(v.voucherNumber, v.type),
                 description: (v.type === 'payment' ? 'سند صرف' : 'سند قبض') + (v.description ? ` - ${v.description}` : ''),
                 debit: v.type === 'payment' ? v.amount : 0,
                 credit: v.type === 'receipt' ? v.amount : 0,

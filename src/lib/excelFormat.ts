@@ -20,9 +20,20 @@ function buildNumFmt(currencyCode: string, lang: 'ar' | 'en'): string {
         : `"${symbol}" #,##0.00`;
 }
 
+/** Returns true if any header cell in the worksheet contains Arabic characters. */
+function hasArabicHeaders(ws: XLSX.WorkSheet): boolean {
+    if (!ws['!ref']) return false;
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let C = range.s.c; C <= range.e.c; C++) {
+        const cell = ws[XLSX.utils.encode_cell({ r: range.s.r, c: C })];
+        if (cell && typeof cell.v === 'string' && /[؀-ۿ]/.test(cell.v)) return true;
+    }
+    return false;
+}
+
 /**
  * Applies Excel currency number format to all numeric cells in monetary columns.
- * Monetary columns are identified by Arabic keyword matching on the header row.
+ * Also sets sheet direction to RTL automatically when Arabic headers are detected.
  * Call this after XLSX.utils.json_to_sheet() and before book_append_sheet().
  */
 export function applyExcelMoneyFormat(
@@ -30,6 +41,10 @@ export function applyExcelMoneyFormat(
     currencyCode: string,
     lang: 'ar' | 'en' = 'ar',
 ): void {
+    // Auto-set RTL when content is Arabic (regardless of UI language)
+    if (hasArabicHeaders(ws)) {
+        (ws as any)['!rightToLeft'] = true;
+    }
     if (!ws['!ref']) return;
     const range = XLSX.utils.decode_range(ws['!ref']);
     const numFmt = buildNumFmt(currencyCode, lang);

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
+import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
 import { ClipboardList, Save, Search, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -152,27 +153,22 @@ function NewWorkOrderForm() {
 
                                     <div>
                                         <label style={LS}>نوع الأمر <span style={{ color: C.danger }}>*</span></label>
-                                        <select
+                                        <CustomSelect
                                             value={form.type}
-                                            onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-                                            style={{ ...IS, cursor: 'pointer' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                            required
-                                        >
-                                            {ORDER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                                        </select>
+                                            onChange={val => setForm(f => ({ ...f, type: val }))}
+                                            options={ORDER_TYPES.map(t => ({ value: t.value, label: t.label }))}
+                                            hideSearch
+                                        />
                                     </div>
 
                                     <div>
                                         <label style={LS}>الأولوية</label>
-                                        <select
+                                        <CustomSelect
                                             value={form.priority}
-                                            onChange={e => setForm(f => ({ ...f, priority: e.target.value }))}
-                                            style={{ ...IS, cursor: 'pointer' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                        >
-                                            {PRIORITIES.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
-                                        </select>
+                                            onChange={val => setForm(f => ({ ...f, priority: val }))}
+                                            options={PRIORITIES.map(p => ({ value: p.value, label: p.label }))}
+                                            hideSearch
+                                        />
                                     </div>
 
                                     <div>
@@ -213,19 +209,16 @@ function NewWorkOrderForm() {
 
                                     <div>
                                         <label style={LS}>عقد الخدمة</label>
-                                        <select
+                                        <CustomSelect
                                             value={form.contractId}
-                                            onChange={e => setForm(f => ({ ...f, contractId: e.target.value }))}
-                                            style={{ ...IS, cursor: 'pointer' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                        >
-                                            <option value="">— بدون عقد —</option>
-                                            {filteredContracts.map(c => (
-                                                <option key={c.id} value={c.id}>
-                                                    {`SC-${String(c.contractNumber).padStart(5, '0')}`}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            onChange={val => setForm(f => ({ ...f, contractId: val }))}
+                                            placeholder="— بدون عقد —"
+                                            options={[
+                                                { value: '', label: '— بدون عقد —' },
+                                                ...filteredContracts.map(c => ({ value: c.id, label: `SC-${String(c.contractNumber).padStart(5, '0')}` }))
+                                            ]}
+                                            hideSearch
+                                        />
                                     </div>
 
                                     <div>
@@ -242,19 +235,15 @@ function NewWorkOrderForm() {
 
                                     <div>
                                         <label style={LS}>الموظف المسؤول</label>
-                                        <select
+                                        <CustomSelect
                                             value={form.assignedTo}
-                                            onChange={e => setForm(f => ({ ...f, assignedTo: e.target.value }))}
-                                            style={{ ...IS, cursor: 'pointer' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                        >
-                                            <option value="">— غير مُسنَد —</option>
-                                            {employees.map(emp => (
-                                                <option key={emp.id} value={emp.id}>
-                                                    {emp.name}{emp.position ? ` — ${emp.position}` : ''}
-                                                </option>
-                                            ))}
-                                        </select>
+                                            onChange={val => setForm(f => ({ ...f, assignedTo: val }))}
+                                            placeholder="— غير مُسنَد —"
+                                            options={[
+                                                { value: '', label: '— غير مُسنَد —' },
+                                                ...employees.map(emp => ({ value: emp.id, label: emp.name + (emp.position ? ` — ${emp.position}` : '') }))
+                                            ]}
+                                        />
                                     </div>
 
                                     <div style={{ gridColumn: '1 / -1' }}>

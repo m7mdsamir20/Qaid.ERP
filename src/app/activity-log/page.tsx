@@ -493,7 +493,7 @@ export default function ActivityLogPage() {
                     </div>
 
                     {/* Action filter */}
-                    <div style={{ width: '150px', marginInlineStart: '6px' }}>
+                    <div style={{ width: '150px' }}>
                         <CustomSelect
                             value={actionFilter}
                             onChange={setActionFilter}

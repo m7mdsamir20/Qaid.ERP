@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
+import CustomSelect from '@/components/CustomSelect';
 import Link from 'next/link';
 import { ClipboardCheck, Loader2, Save } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
@@ -103,19 +104,15 @@ export default function NewDailySiteReportPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }} className="responsive-grid">
                                 <div>
                                     <label style={LS}>المشروع <span style={{ color: C.danger }}>*</span></label>
-                                    <select
-                                        required
-                                        style={{ ...IS, cursor: 'pointer' }}
+                                    <CustomSelect
                                         value={form.projectId}
-                                        onChange={e => setForm({ ...form, projectId: e.target.value })}
-                                        onFocus={focusIn}
-                                        onBlur={focusOut}
-                                    >
-                                        <option value="">اختر المشروع...</option>
-                                        {projects.map(p => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
+                                        onChange={val => setForm({ ...form, projectId: val })}
+                                        placeholder="اختر المشروع..."
+                                        options={[
+                                            { value: '', label: 'اختر المشروع...' },
+                                            ...projects.map(p => ({ value: p.id, label: p.name }))
+                                        ]}
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>التاريخ <span style={{ color: C.danger }}>*</span></label>
@@ -131,20 +128,20 @@ export default function NewDailySiteReportPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>الطقس</label>
-                                    <select
-                                        style={{ ...IS, cursor: 'pointer' }}
+                                    <CustomSelect
                                         value={form.weather}
-                                        onChange={e => setForm({ ...form, weather: e.target.value })}
-                                        onFocus={focusIn}
-                                        onBlur={focusOut}
-                                    >
-                                        <option value="">اختر حالة الطقس...</option>
-                                        <option value="sunny">مشمس</option>
-                                        <option value="cloudy">غائم</option>
-                                        <option value="rainy">ممطر</option>
-                                        <option value="stormy">عاصف</option>
-                                        <option value="hot">حار</option>
-                                    </select>
+                                        onChange={val => setForm({ ...form, weather: val })}
+                                        placeholder="اختر حالة الطقس..."
+                                        options={[
+                                            { value: '', label: 'اختر حالة الطقس...' },
+                                            { value: 'sunny', label: 'مشمس' },
+                                            { value: 'cloudy', label: 'غائم' },
+                                            { value: 'rainy', label: 'ممطر' },
+                                            { value: 'stormy', label: 'عاصف' },
+                                            { value: 'hot', label: 'حار' },
+                                        ]}
+                                        hideSearch
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>عدد العمال</label>

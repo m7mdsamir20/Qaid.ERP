@@ -70,6 +70,16 @@ export default function Sidebar({
         try {
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
+            // الإعدادات دائماً متاحة للـ admin والـ superadmin بغض النظر عن الاشتراك
+            // (settings مستبعدة من buildAllFeatures لذا لا تظهر في enabledFeatures)
+            if (featureKey === 'settings') {
+                if (isSuperAdmin || userRole === 'admin') return true;
+                // للمستخدم العادي: يحتاج صلاحية صريحة
+                const userPerms = user?.permissions || {};
+                const hasGranularPerms = Object.keys(userPerms).length > 0;
+                return hasGranularPerms ? !!userPerms[pageId]?.view : false;
+            }
+
             // 1. فحص الاشتراك (يطبق على الجميع بما فيهم السوبر أدمن لضمان عدم ظهور ميزات غير مشتراة)
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
@@ -83,14 +93,6 @@ export default function Sidebar({
 
             const userPerms = user?.permissions || {};
             const hasGranularPerms = Object.keys(userPerms).length > 0;
-
-            if (featureKey === 'settings') {
-                // Non-admin: only show settings if they have explicit settings permissions
-                if (hasGranularPerms) {
-                    return !!userPerms[pageId]?.view;
-                }
-                return false; // No permissions defined = no settings access for non-admin
-            }
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
         } catch { return true; }

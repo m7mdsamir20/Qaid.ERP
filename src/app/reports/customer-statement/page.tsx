@@ -129,8 +129,6 @@ export default function CustomerStatementPage() {
         }
 
         const ws = XLSX.utils.json_to_sheet(excelData);
-        const isArabic = document.documentElement.lang === 'ar' || document.documentElement.dir === 'rtl';
-        if (isArabic) (ws as any)['!rightToLeft'] = true;
         applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف الحساب'));
