@@ -294,6 +294,7 @@ tbody tr:nth-child(even){background: #fff;}
         ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
         <div class="inv-num" style="margin-top:6px; font-size:13px;">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
+        ${invoice.customerPONumber ? `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${invoice.customerPONumber}</div>` : ''}
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
         ${isSaudi
@@ -340,7 +341,6 @@ tbody tr:nth-child(even){background: #fff;}
         })()}
             ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
             ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
-            ${invoice.customerPONumber ? `<div class="info-row"><span class="ik">${blInline('رقم طلب الشراء', 'PO Number')}:</span><span class="iv" style="font-family:monospace;direction:ltr;display:inline-block;">${invoice.customerPONumber}</span></div>` : ''}
         </div>
     </div>
 
