@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
@@ -26,6 +26,10 @@ const PRIORITIES = [
 ];
 
 export default function NewWorkOrderPage() {
+    return <Suspense><NewWorkOrderForm /></Suspense>;
+}
+
+function NewWorkOrderForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const presetContractId = searchParams.get('contractId') || '';
