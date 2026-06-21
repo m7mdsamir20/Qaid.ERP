@@ -95,11 +95,11 @@ export default function HolidaysPage() {
 
             <div style={{ padding: '0 24px 24px' }}>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textPrimarySecondary }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
                     </div>
                 ) : holidays.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '60px', color: C.textPrimarySecondary, fontFamily: CAIRO }}>
+                    <div style={{ textAlign: 'center', padding: '60px', color: C.textSecondary, fontFamily: CAIRO }}>
                         <CalendarDays size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
                         <p>لا توجد عطلات رسمية مضافة بعد</p>
                     </div>
@@ -107,7 +107,7 @@ export default function HolidaysPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         {Object.entries(byMonth).map(([month, items]) => (
                             <div key={month}>
-                                <h3 style={{ fontFamily: CAIRO, fontSize: '15px', fontWeight: 700, color: C.textPrimarySecondary, marginBottom: '10px', paddingBottom: '8px', borderBottom: `1px solid ${C.border}` }}>{month}</h3>
+                                <h3 style={{ fontFamily: CAIRO, fontSize: '15px', fontWeight: 700, color: C.textSecondary, marginBottom: '10px', paddingBottom: '8px', borderBottom: `1px solid ${C.border}` }}>{month}</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {items.map(h => (
                                         <div key={h.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.surface, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '14px 18px' }}>
@@ -117,7 +117,7 @@ export default function HolidaysPage() {
                                                 </div>
                                                 <div>
                                                     <div style={{ fontFamily: CAIRO, fontWeight: 700, fontSize: '15px', color: C.textPrimary }}>{h.name}</div>
-                                                    <div style={{ fontFamily: CAIRO, fontSize: '12px', color: C.textPrimarySecondary, marginTop: '2px' }}>
+                                                    <div style={{ fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>
                                                         {new Date(h.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                                         {h.isRecurring && (
                                                             <span style={{ marginRight: '8px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
@@ -143,11 +143,11 @@ export default function HolidaysPage() {
                 <AppModal onClose={() => setShowModal(false)} title="إضافة عطلة رسمية">
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0' }}>
                         <div>
-                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>اسم العطلة *</label>
+                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>اسم العطلة *</label>
                             <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ ...IS, width: '100%' }} placeholder="مثال: عيد الفطر المبارك" onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>تاريخ العطلة *</label>
+                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>تاريخ العطلة *</label>
                             <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontFamily: CAIRO, fontSize: '14px', color: C.textPrimary }}>
@@ -155,7 +155,7 @@ export default function HolidaysPage() {
                             عطلة سنوية متكررة
                         </label>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
-                            <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimarySecondary, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                            <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
                             <button onClick={handleSave} disabled={saving} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', background: C.primary, color: '#fff', border: 'none', borderRadius: '8px', fontFamily: CAIRO, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
                                 {saving && <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />}
                                 إضافة العطلة

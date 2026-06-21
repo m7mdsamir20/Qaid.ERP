@@ -135,11 +135,11 @@ export default function SchedulesPage() {
 
             <div style={{ padding: '0 24px 24px' }}>
                 {loading ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textPrimarySecondary }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textSecondary }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
                     </div>
                 ) : schedules.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '60px', color: C.textPrimarySecondary, fontFamily: CAIRO }}>
+                    <div style={{ textAlign: 'center', padding: '60px', color: C.textSecondary, fontFamily: CAIRO }}>
                         <Clock size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
                         <p>لا توجد جداول عمل بعد</p>
                     </div>
@@ -153,7 +153,7 @@ export default function SchedulesPage() {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                                         <div>
                                             <div style={{ fontFamily: CAIRO, fontWeight: 700, fontSize: '16px', color: C.textPrimary }}>{s.name}</div>
-                                            <div style={{ fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                            <div style={{ fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                 <Users size={13} /> {s._count.employees} موظف
                                             </div>
                                         </div>
@@ -164,23 +164,23 @@ export default function SchedulesPage() {
                                     </div>
                                     <div style={{ display: 'flex', gap: '16px', marginBottom: '12px' }}>
                                         <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 12px', flex: 1, textAlign: 'center' }}>
-                                            <div style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textPrimarySecondary }}>الحضور</div>
+                                            <div style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary }}>الحضور</div>
                                             <div style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '18px', color: '#10b981' }}>{s.checkInTime}</div>
                                         </div>
                                         <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 12px', flex: 1, textAlign: 'center' }}>
-                                            <div style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textPrimarySecondary }}>الانصراف</div>
+                                            <div style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textSecondary }}>الانصراف</div>
                                             <div style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '18px', color: '#ef4444' }}>{s.checkOutTime}</div>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                                         {ALL_DAYS.map(d => (
-                                            <span key={d} style={{ padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, background: days.includes(d) ? C.primary : 'rgba(255,255,255,0.05)', color: days.includes(d) ? '#fff' : C.textPrimarySecondary }}>
+                                            <span key={d} style={{ padding: '2px 8px', borderRadius: '6px', fontSize: '11px', fontFamily: CAIRO, background: days.includes(d) ? C.primary : 'rgba(255,255,255,0.05)', color: days.includes(d) ? '#fff' : C.textSecondary }}>
                                                 {DAY_LABELS[d]}
                                             </span>
                                         ))}
                                     </div>
                                     {(s.lateToleranceMinutes > 0 || s.overtimeStartAfter > 0) && (
-                                        <div style={{ marginTop: '10px', display: 'flex', gap: '8px', fontSize: '12px', fontFamily: CAIRO, color: C.textPrimarySecondary }}>
+                                        <div style={{ marginTop: '10px', display: 'flex', gap: '8px', fontSize: '12px', fontFamily: CAIRO, color: C.textSecondary }}>
                                             {s.lateToleranceMinutes > 0 && <span>تسامح التأخير: {s.lateToleranceMinutes} د</span>}
                                             {s.overtimeStartAfter > 0 && <span>| العمل الإضافي بعد: {s.overtimeStartAfter} د</span>}
                                         </div>
@@ -196,24 +196,24 @@ export default function SchedulesPage() {
                 <AppModal onClose={() => setShowModal(false)} title={editing ? 'تعديل جدول العمل' : 'جدول عمل جديد'}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '4px 0' }}>
                         <div>
-                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>اسم الجدول *</label>
+                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>اسم الجدول *</label>
                             <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ ...IS, width: '100%' }} placeholder="مثال: الدوام الرسمي" onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                             <div>
-                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>وقت الحضور *</label>
+                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>وقت الحضور *</label>
                                 <input type="time" value={form.checkInTime} onChange={e => setForm(f => ({ ...f, checkInTime: e.target.value }))} style={{ ...IS, width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>وقت الانصراف *</label>
+                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>وقت الانصراف *</label>
                                 <input type="time" value={form.checkOutTime} onChange={e => setForm(f => ({ ...f, checkOutTime: e.target.value }))} style={{ ...IS, width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '8px' }}>أيام العمل</label>
+                            <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '8px' }}>أيام العمل</label>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                 {ALL_DAYS.map(d => (
-                                    <button key={d} onClick={() => toggleDay(d)} style={{ padding: '6px 14px', borderRadius: '8px', border: `1px solid ${form.workDays.includes(d) ? C.primary : C.border}`, background: form.workDays.includes(d) ? C.primary : 'transparent', color: form.workDays.includes(d) ? '#fff' : C.textPrimarySecondary, fontFamily: CAIRO, fontSize: '13px', cursor: 'pointer' }}>
+                                    <button key={d} onClick={() => toggleDay(d)} style={{ padding: '6px 14px', borderRadius: '8px', border: `1px solid ${form.workDays.includes(d) ? C.primary : C.border}`, background: form.workDays.includes(d) ? C.primary : 'transparent', color: form.workDays.includes(d) ? '#fff' : C.textSecondary, fontFamily: CAIRO, fontSize: '13px', cursor: 'pointer' }}>
                                         {DAY_LABELS[d]}
                                     </button>
                                 ))}
@@ -221,16 +221,16 @@ export default function SchedulesPage() {
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                             <div>
-                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>مدة التسامح في التأخير (دقيقة)</label>
+                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>مدة التسامح في التأخير (دقيقة)</label>
                                 <input type="number" value={form.lateToleranceMinutes} onChange={e => setForm(f => ({ ...f, lateToleranceMinutes: Number(e.target.value) }))} style={{ ...IS, width: '100%' }} min={0} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textPrimarySecondary, marginBottom: '6px' }}>بداية العمل الإضافي بعد (دقيقة)</label>
+                                <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>بداية العمل الإضافي بعد (دقيقة)</label>
                                 <input type="number" value={form.overtimeStartAfter} onChange={e => setForm(f => ({ ...f, overtimeStartAfter: Number(e.target.value) }))} style={{ ...IS, width: '100%' }} min={0} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>
-                            <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimarySecondary, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                            <button onClick={() => setShowModal(false)} style={{ padding: '10px 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
                             <button onClick={handleSave} disabled={saving} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 24px', background: C.primary, color: '#fff', border: 'none', borderRadius: '8px', fontFamily: CAIRO, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1 }}>
                                 {saving && <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />}
                                 {editing ? 'حفظ التعديلات' : 'إنشاء الجدول'}
