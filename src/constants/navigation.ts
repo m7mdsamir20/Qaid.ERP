@@ -36,6 +36,15 @@ import {
     QrCode,
     HardHat,
     FolderKanban,
+    History,
+    CalendarCheck,
+    Wrench,
+    FileCheck,
+    PackagePlus,
+    Gift,
+    Hash,
+    ClipboardCheck,
+    CalendarDays,
 } from 'lucide-react';
 
 export const navSections = [
@@ -120,11 +129,45 @@ export const navSections = [
         ],
     },
     {
+        title: 'إدارة الموقع',
+        icon: ClipboardCheck,
+        featureKey: 'site_management',
+        links: [
+            { id: '/material-requests', href: '/material-requests', label: 'طلبات المواد' },
+            { id: '/daily-site-reports', href: '/daily-site-reports', label: 'التقارير اليومية' },
+        ],
+    },
+    // ═══════════════════════════════════════════════════════
+    // 🔧  أقسام الخدمات (تظهر فقط لنشاط SERVICES)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'إدارة الخدمات',
+        icon: Wrench,
+        featureKey: 'services',
+        links: [
+            { id: '/service-contracts', href: '/service-contracts', label: 'عقود الخدمة' },
+            { id: '/work-orders', href: '/work-orders', label: 'أوامر العمل' },
+        ],
+    },
+    // ═══════════════════════════════════════════════════════
+    // 🎁  أقسام التجزئة (تظهر فقط لنشاط RETAIL)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'ولاء العملاء',
+        icon: Gift,
+        featureKey: 'loyalty',
+        links: [
+            { id: '/loyalty', href: '/loyalty', label: 'نقاط الولاء' },
+            { id: '/serial-numbers', href: '/serial-numbers', label: 'الأرقام التسلسلية' },
+        ],
+    },
+    {
         title: 'المبيعات',
         icon: Receipt,
         featureKey: 'sales',
         links: [
             { id: '/quotations', href: '/quotations', label: 'عروض الأسعار' },
+            { id: '/sales-orders', href: '/sales-orders', label: 'أوامر البيع' },
             { id: '/sales', href: '/sales', label: 'فواتير المبيعات' },
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
@@ -148,6 +191,7 @@ export const navSections = [
         icon: ShoppingCart,
         featureKey: 'purchases',
         links: [
+            { id: '/purchase-orders', href: '/purchase-orders', label: 'أوامر الشراء' },
             { id: '/purchases', href: '/purchases', label: 'فواتير المشتريات' },
             { id: '/purchase-returns', href: '/purchase-returns', label: 'مرتجع مشتريات' },
             { id: '/purchase-payments', href: '/purchase-payments', label: 'سندات الصرف' },
@@ -204,6 +248,11 @@ export const navSections = [
         featureKey: 'hr',
         links: [
             { id: '/employees', href: '/employees', label: 'الموظفين' },
+            { id: '/attendance', href: '/attendance', label: 'الحضور والانصراف' },
+            { id: '/attendance/monthly', href: '/attendance/monthly', label: 'كشف الحضور الشهري' },
+            { id: '/attendance/leaves', href: '/attendance/leaves', label: 'إدارة الإجازات' },
+            { id: '/attendance/schedules', href: '/attendance/schedules', label: 'جداول مواعيد العمل' },
+            { id: '/attendance/holidays', href: '/attendance/holidays', label: 'العطلات الرسمية' },
             { id: '/payrolls', href: '/payrolls', label: 'مسير الرواتب' },
             { id: '/advances', href: '/advances', label: 'السلف' },
             { id: '/deductions', href: '/deductions', label: 'الخصومات والجزاءات' },
@@ -246,6 +295,16 @@ export const navSections = [
             { id: 'reports-hr', href: '/reports', label: 'تقارير الموظفين' },
             { id: 'reports-installments', href: '/reports/installments', label: 'تقارير الأقساط' },
             { id: 'reports-restaurant', href: '/restaurant/reports', label: 'تقارير المطعم' },
+        ],
+    },
+    {
+        title: 'سجل النشاط',
+        icon: History,
+        featureKey: 'activity_log',
+        isStandalone: true,
+        href: '/activity-log',
+        links: [
+            { id: '/activity-log', href: '/activity-log', label: 'سجل النشاط' },
         ],
     },
     {

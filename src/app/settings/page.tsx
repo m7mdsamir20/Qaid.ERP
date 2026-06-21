@@ -152,21 +152,23 @@ function SettingsContent() {
             ], ['reports-financial', 'reports-treasury-bank']);
         } else if (role === 'sales') {
             // مندوب مبيعات / خدمات: مبيعات + عملاء
-            const salesPages = isServices ? ['/', '/sales', '/customers', '/receipts'] : ['/', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
+            const salesPages = isServices ? ['/', '/sales-orders', '/sales', '/customers', '/receipts'] : ['/', '/sales-orders', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
             grant(salesPages, ['reports-sales-purchases']);
         } else if (role === 'procurement') {
             // مسؤول مشتريات: مشتريات + موردين
             grant([
-                '/', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers',
+                '/', '/purchase-orders', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers',
             ], ['reports-sales-purchases']);
         } else if (role === 'storekeeper') {
             // أمين مستودع / مسؤول خدمات: قائمة الخدمات + الفروع
             const invPages = isServices ? ['/', '/categories', '/items', '/warehouses'] : ['/', '/units', '/items', '/warehouses', '/stocktakings', '/warehouse-transfers'];
             grant(invPages, ['reports-inventory']);
         } else if (role === 'hr') {
-            // موارد بشرية: موظفين + رواتب + سلف + خصومات + أقسام
+            // موارد بشرية: موظفين + رواتب + سلف + خصومات + أقسام + حضور
             grant([
-                '/', '/employees', '/payrolls', '/advances', '/deductions', '/departments',
+                '/', '/employees', '/attendance', '/attendance/monthly', '/attendance/leaves',
+                '/attendance/schedules', '/attendance/holidays',
+                '/payrolls', '/advances', '/deductions', '/departments',
             ], ['reports-hr']);
         } else if (role === 'cashier') {
             // كاشير: نقاط البيع + سندات القبض + صفحات المطاعم
@@ -397,9 +399,13 @@ function SettingsContent() {
     // Helper to check if a page is accessible
     const hasPage = (featureKey: string, pageId: string): boolean => {
         const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
-        const contractingFeatures = ['projects', 'subcontractors'];
+        const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
+        const servicesFeatures = ['services'];
+        const retailFeatures = ['loyalty'];
         if (restaurantFeatures.includes(featureKey) && !isRestaurants) return false;
         if (contractingFeatures.includes(featureKey) && !isContracting) return false;
+        if (servicesFeatures.includes(featureKey) && !isServices) return false;
+        if (retailFeatures.includes(featureKey) && businessType !== 'RETAIL') return false;
         if (pageId === 'reports-restaurant' && !isRestaurants) return false;
 
         // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
@@ -436,9 +442,13 @@ function SettingsContent() {
     const permissionHierarchy = navSections
         .filter(sectionOrigin => {
             const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
-            const contractingFeatures = ['projects', 'subcontractors'];
+            const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
+            const servicesFeatures = ['services'];
+            const retailFeatures = ['loyalty'];
             if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
             if (contractingFeatures.includes(sectionOrigin.featureKey || '') && !isContracting) return false;
+            if (servicesFeatures.includes(sectionOrigin.featureKey || '') && !isServices) return false;
+            if (retailFeatures.includes(sectionOrigin.featureKey || '') && businessType !== 'RETAIL') return false;
             if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
             if (isServices && sectionOrigin.featureKey === 'installments') return false;
             if (businessType === 'RETAIL' && sectionOrigin.featureKey === 'installments') return false;
@@ -520,13 +530,13 @@ function SettingsContent() {
         } else if (roleId === 'accountant') {
             grant(['/', '/accounts', '/opening-balances', '/journal-entries', '/cost-centers', '/closing-entries', '/treasuries', '/other-income', '/expenses', '/partners', '/partner-accounts', '/profit-distribution', '/capital']);
         } else if (roleId === 'sales') {
-            grant(['/', '/sales', '/sale-returns', '/receipts', '/customers', '/settlements', '/installments', '/due-installments', '/overdue-installments'], { view: true, create: true, editDelete: false });
+            grant(['/', '/sales-orders', '/sales', '/sale-returns', '/receipts', '/customers', '/settlements', '/installments', '/due-installments', '/overdue-installments'], { view: true, create: true, editDelete: false });
         } else if (roleId === 'procurement') {
-            grant(['/', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers'], { view: true, create: true, editDelete: false });
+            grant(['/', '/purchase-orders', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers'], { view: true, create: true, editDelete: false });
         } else if (roleId === 'storekeeper') {
             grant(['/', '/units', '/items', '/warehouses', '/stocktakings', '/warehouse-transfers'], { view: true, create: true, editDelete: false });
         } else if (roleId === 'hr') {
-            grant(['/', '/employees', '/payrolls', '/advances', '/deductions', '/departments', 'reports-hr']);
+            grant(['/', '/employees', '/attendance', '/attendance/monthly', '/attendance/leaves', '/attendance/schedules', '/attendance/holidays', '/payrolls', '/advances', '/deductions', '/departments', 'reports-hr']);
         }
 
         setNewUserForm(prev => ({ ...prev, roleId, customPermissions: perms }));

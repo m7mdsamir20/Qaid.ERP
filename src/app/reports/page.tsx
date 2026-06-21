@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award } from 'lucide-react';
+import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck, Hash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 
@@ -175,7 +175,21 @@ function ReportsHubPageInner() {
             { title: t('تقارير التحصيل'), description: t('متابعة المبالغ المحصلة من الأقساط خلال فترة زمنية محددة'), href: '/reports/installments/collection', icon: FileText, color: '#34d399', status: 'ready', requiredPages: ['/installments'] },
             { title: t('تقرير المتأخرات الشامل'), description: t('كشف بجميع المديونيات المتأخرة وحساب أيام التأخير لكل عميل'), href: '/reports/installments/overdue', icon: AlertTriangle, color: '#f43f5e', status: 'ready', requiredPages: ['/installments'] },
             { title: t('كشف حساب أقساط عميل'), description: t('ملخص شامل لكل خطط التقسيط الخاصة بعميل معين وتفاصيل سداده'), href: '/reports/installments/customer-statement', icon: Users, color: '#818cf8', status: 'ready', requiredPages: ['/installments'] },
-        ]
+        ],
+        'orders': [
+            { title: t('تقرير أوامر الشراء'), description: t('قائمة أوامر الشراء مع حالة الاستلام والفوترة لكل أمر'), href: '/reports/purchase-orders-report', icon: ShoppingCart, color: '#f97316', status: 'new', requiredPages: ['/purchase-orders'] },
+            { title: t('أوامر الشراء المعلقة'), description: t('أوامر الشراء المعتمدة التي لم تُستلم بعد أو تجاوزت تاريخ التسليم'), href: '/reports/purchase-orders-pending', icon: AlertTriangle, color: '#ef4444', status: 'new', requiredPages: ['/purchase-orders'] },
+            { title: t('تقرير أوامر البيع'), description: t('قائمة أوامر البيع مع حالة التسليم والفوترة لكل أمر'), href: '/reports/sales-orders-report', icon: Receipt, color: '#22c55e', status: 'new', requiredPages: ['/sales-orders'] },
+            { title: t('أوامر البيع المعلقة'), description: t('أوامر البيع التي لم تُسلَّم بعد أو تجاوزت موعد التسليم'), href: '/reports/sales-orders-pending', icon: AlertTriangle, color: '#f43f5e', status: 'new', requiredPages: ['/sales-orders'] },
+            { title: t('تقرير المطابقة (PO vs فاتورة)'), description: t('مقارنة أوامر الشراء بالفواتير المرتبطة والفجوات بينهما'), href: '/reports/po-invoice-match', icon: FileBarChart2, color: '#8b5cf6', status: 'new', requiredPages: ['/purchase-orders', '/purchases'] },
+        ],
+        'attendance': [
+            { title: t('كشف الحضور الشهري'), description: t('تقرير تفصيلي لحضور وغياب جميع الموظفين خلال شهر محدد'), href: '/reports/attendance-monthly', icon: CalendarCheck, color: '#10b981', status: 'new', requiredPages: ['/attendance'] },
+            { title: t('تقرير التأخيرات'), description: t('قائمة بأكثر الموظفين تأخراً وإجمالي دقائق التأخير لكل موظف'), href: '/reports/attendance-late', icon: Clock, color: '#f59e0b', status: 'new', requiredPages: ['/attendance'] },
+            { title: t('تقرير الغيابات'), description: t('أيام الغياب غير المبررة وتأثيرها على الراتب'), href: '/reports/attendance-absence', icon: AlertTriangle, color: '#ef4444', status: 'new', requiredPages: ['/attendance'] },
+            { title: t('تقرير العمل الإضافي'), description: t('ساعات العمل الإضافي لكل موظف وإجمالي الاستحقاقات'), href: '/reports/attendance-overtime', icon: TrendingUp, color: '#6366f1', status: 'new', requiredPages: ['/attendance'] },
+            { title: t('تقرير رصيد الإجازات'), description: t('رصيد الإجازات المتبقي لكل موظف حسب نوع الإجازة'), href: '/reports/leave-balance', icon: Users, color: '#14b8a6', status: 'new', requiredPages: ['/attendance/leaves'] },
+        ],
     };
 
     const TABS: ModuleTab[] = [
@@ -245,6 +259,20 @@ function ReportsHubPageInner() {
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
         }] : []),
+        {
+            key: 'orders',
+            label: t('أوامر الشراء والبيع'),
+            icon: Hash,
+            requiredFeatures: ['purchases', 'sales'],
+            requiredPages: ['/purchase-orders', '/sales-orders']
+        },
+        {
+            key: 'attendance',
+            label: t('الحضور والانصراف'),
+            icon: CalendarCheck,
+            requiredFeatures: ['hr'],
+            requiredPages: ['/attendance']
+        },
     ];
 
     const hasModuleAccess = (tab: ModuleTab) => {
