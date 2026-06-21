@@ -8,6 +8,7 @@ import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE 
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import DataTable from '@/components/DataTable';
 import Link from 'next/link';
 
@@ -147,17 +148,17 @@ export default function DailySiteReportsPage() {
                         />
                     </div>
 
-                    <div style={{ minWidth: '180px' }}>
-                        <select
-                            style={{ ...IS, height: '40px', fontSize: '13px', background: C.card, borderRadius: '12px', cursor: 'pointer' }}
+                     <div style={{ minWidth: '180px' }}>
+                        <CustomSelect
                             value={projectFilter}
-                            onChange={e => setProjectFilter(e.target.value)}
-                        >
-                            <option value="">{t('كل المشاريع')}</option>
-                            {projects.map(p => (
-                                <option key={p.id} value={p.id}>{p.name}</option>
-                            ))}
-                        </select>
+                            onChange={setProjectFilter}
+                            placeholder={t('كل المشاريع')}
+                            options={[
+                                { value: '', label: t('كل المشاريع') },
+                                ...projects.map(p => ({ value: p.id, label: p.name }))
+                            ]}
+                            style={{ height: '40px', width: '100%' }}
+                        />
                     </div>
 
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

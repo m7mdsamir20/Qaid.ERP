@@ -6,6 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import DataTable from '@/components/DataTable';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import Link from 'next/link';
 import { ClipboardList, Plus, Search, Eye, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
@@ -99,13 +100,17 @@ export default function MaterialRequestsPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <select
-                        style={{ ...IS, width: '180px', height: '40px', fontSize: '13px', borderRadius: '12px', cursor: 'pointer' }}
-                        value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
-                    >
-                        <option value="all">كل الحالات</option>
-                        {Object.entries(STATUS_MAP).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
-                    </select>
+                    <CustomSelect
+                        value={statusFilter}
+                        onChange={setStatusFilter}
+                        placeholder="كل الحالات"
+                        hideSearch={true}
+                        options={[
+                            { value: 'all', label: 'كل الحالات' },
+                            ...Object.entries(STATUS_MAP).map(([k, v]) => ({ value: k, label: v.label }))
+                        ]}
+                        style={{ height: '40px', width: '180px' }}
+                    />
                 </div>
 
                 <DataTable

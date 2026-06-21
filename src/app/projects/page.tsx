@@ -9,6 +9,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE } from 
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
@@ -196,17 +197,20 @@ export default function ProjectsPage() {
                     </div>
                     {/* Status Filter */}
                     <div style={{ width: '160px' }}>
-                        <select
-                            style={{ ...IS, height: '40px', fontSize: '13px', background: C.card, borderRadius: '12px', cursor: 'pointer' }}
+                        <CustomSelect
                             value={statusFilter}
-                            onChange={e => setStatusFilter(e.target.value)}
-                        >
-                            <option value="all">{t('كل الحالات')}</option>
-                            <option value="active">{t('نشط')}</option>
-                            <option value="paused">{t('متوقف مؤقتاً')}</option>
-                            <option value="completed">{t('مكتمل')}</option>
-                            <option value="cancelled">{t('ملغي')}</option>
-                        </select>
+                            onChange={setStatusFilter}
+                            placeholder={t('كل الحالات')}
+                            hideSearch={true}
+                            options={[
+                                { value: 'all', label: t('كل الحالات') },
+                                { value: 'active', label: t('نشط') },
+                                { value: 'paused', label: t('متوقف مؤقتاً') },
+                                { value: 'completed', label: t('مكتمل') },
+                                { value: 'cancelled', label: t('ملغي') }
+                            ]}
+                            style={{ height: '40px', width: '100%' }}
+                        />
                     </div>
                 </div>
 

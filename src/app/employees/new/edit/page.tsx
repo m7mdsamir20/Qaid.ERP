@@ -287,11 +287,17 @@ export default function EditEmployeePage() {
                                 </Grid2>
                                 <Grid2>
                                     <Field label={t("الجنس")}>
-                                        <select className="input" value={form.gender} onChange={e => set('gender')(e.target.value)} style={{ height: '45px' }}>
-                                            <option value="">{t("اختر")}</option>
-                                            <option value="male">{t("ذكر")}</option>
-                                            <option value="female">{t("أنثى")}</option>
-                                        </select>
+                                        <CustomSelect
+                                            value={form.gender}
+                                            onChange={set('gender')}
+                                            options={[
+                                                { value: '', label: t("اختر") },
+                                                { value: 'male', label: t("ذكر") },
+                                                { value: 'female', label: t("أنثى") }
+                                            ]}
+                                            hideSearch={true}
+                                            style={{ height: '45px', width: '100%' }}
+                                        />
                                     </Field>
                                     <Field label={t("رقم الهاتف")}>
                                         <input type="text" className="input" value={form.phone} onChange={e => set('phone')(e.target.value)} placeholder="01xxxxxxxxx" style={{ direction: 'ltr', fontFamily: 'monospace', height: '45px' }} />

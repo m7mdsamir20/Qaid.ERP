@@ -4,6 +4,7 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
+import CustomSelect from '@/components/CustomSelect';
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -223,16 +224,16 @@ export default function TreasuryBankReportPage() {
                     <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('اختر الخزينة / البنك')}</label>
-                            <select
+                            <CustomSelect
                                 value={selectedTreasuryId}
-                                onChange={(e) => setSelectedTreasuryId(e.target.value)}
-                                style={{ flex: 1, height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', fontSize: '12px', outline: 'none', fontFamily: CAIRO }}
-                            >
-                                <option value="" style={{ background: '#1e293b' }}>{t('اختر المرجع المالي...')}</option>
-                                {treasuries.map(t_sys => (
-                                    <option key={t_sys.id} value={t_sys.id} style={{ background: '#1e293b' }}>{t_sys.name} ({t_sys.type === 'bank' ? t('بنك') : t('خزينة')})</option>
-                                ))}
-                            </select>
+                                onChange={setSelectedTreasuryId}
+                                placeholder={t('اختر المرجع المالي...')}
+                                options={treasuries.map(t_sys => ({
+                                    value: t_sys.id,
+                                    label: `${t_sys.name} (${t_sys.type === 'bank' ? t('بنك') : t('خزينة')})`
+                                }))}
+                                style={{ flex: 1 }}
+                            />
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('من')}</label>

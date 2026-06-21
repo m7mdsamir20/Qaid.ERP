@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -625,11 +626,18 @@ export default function ProjectDetailsPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t('الحالة')}</label>
-                                <select style={{ ...IS, cursor: 'pointer' }} value={phaseForm.status} onChange={e => setPhaseForm({ ...phaseForm, status: e.target.value })} onFocus={focusIn} onBlur={focusOut}>
-                                    <option value="pending">{t('قيد الانتظار')}</option>
-                                    <option value="in_progress">{t('جاري التنفيذ')}</option>
-                                    <option value="completed">{t('مكتملة')}</option>
-                                </select>
+                                <CustomSelect
+                                    value={phaseForm.status}
+                                    onChange={val => setPhaseForm({ ...phaseForm, status: val })}
+                                    placeholder={t('اختر الحالة')}
+                                    hideSearch={true}
+                                    options={[
+                                        { value: 'pending', label: t('قيد الانتظار') },
+                                        { value: 'in_progress', label: t('جاري التنفيذ') },
+                                        { value: 'completed', label: t('مكتملة') }
+                                    ]}
+                                    style={{ height: '42px', width: '100%' }}
+                                />
                             </div>
                             <div>
                                 <label style={LS}>{t('ملاحظات')}</label>

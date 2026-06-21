@@ -8,6 +8,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, PAGE_BASE, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
+import CustomSelect from '@/components/CustomSelect';
 import { useTranslation } from '@/lib/i18n';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
@@ -209,16 +210,17 @@ export default function PurchaseOrdersPage() {
                     </div>
 
                     {/* Status Filter */}
-                    <select
+                    <CustomSelect
                         value={statusFilter}
-                        onChange={e => setStatusFilter(e.target.value)}
-                        style={{ ...IS, width: '160px', height: '42px', cursor: 'pointer' }}
-                    >
-                        <option value="">{t('كل الحالات')}</option>
-                        {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
-                            <option key={key} value={key}>{cfg.label}</option>
-                        ))}
-                    </select>
+                        onChange={setStatusFilter}
+                        placeholder={t('كل الحالات')}
+                        hideSearch={true}
+                        options={[
+                            { value: '', label: t('كل الحالات') },
+                            ...Object.entries(STATUS_CONFIG).map(([key, cfg]) => ({ value: key, label: cfg.label }))
+                        ]}
+                        style={{ height: '42px', width: '160px' }}
+                    />
 
                     {/* Date Filters */}
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

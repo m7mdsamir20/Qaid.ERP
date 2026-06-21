@@ -7,6 +7,7 @@ import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
+import CustomSelect from '@/components/CustomSelect';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SEARCH_STYLE, TABLE_STYLE } from '@/constants/theme';
 import { ShoppingBag, Plus, Search, Trash2, Loader2, Eye, Filter } from 'lucide-react';
@@ -225,16 +226,14 @@ export default function SalesOrdersPage() {
                     {/* Status filter */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <Filter size={14} style={{ color: C.textSecondary }} />
-                        <select
+                        <CustomSelect
                             value={statusFilter}
-                            onChange={e => setStatusFilter(e.target.value)}
-                            style={{ ...IS, width: '160px', height: '42px', cursor: 'pointer' }}
-                            onFocus={focusIn} onBlur={focusOut}
-                        >
-                            {STATUS_OPTIONS.map(opt => (
-                                <option key={opt.value} value={opt.value}>{opt.label}</option>
-                            ))}
-                        </select>
+                            onChange={setStatusFilter}
+                            placeholder={t('كل الحالات')}
+                            hideSearch={true}
+                            options={STATUS_OPTIONS.map(opt => ({ value: opt.value, label: t(opt.label) }))}
+                            style={{ height: '42px', width: '160px' }}
+                        />
                     </div>
 
                     {/* Date filters */}

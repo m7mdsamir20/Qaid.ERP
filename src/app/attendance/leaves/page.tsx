@@ -7,6 +7,7 @@ import { TableColumn } from '@/components/EmptyTableState';
 import { useEffect, useState } from 'react';
 import { FileText, Plus, CheckCircle, XCircle, Loader2, Clock, Users } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, PAGE_BASE } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
 
 interface Employee {
     id: string;
@@ -298,20 +299,23 @@ export default function LeavesPage() {
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>الموظف <span style={{ color: C.danger }}>*</span></label>
-                            <select value={form.employeeId} onChange={e => setForm({ ...form, employeeId: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} required>
-                                <option value="">اختر الموظف...</option>
-                                {employees.map(emp => (
-                                    <option key={emp.id} value={emp.id}>{emp.code} - {emp.name}</option>
-                                ))}
-                            </select>
+                            <CustomSelect
+                                value={form.employeeId}
+                                onChange={val => setForm({ ...form, employeeId: val })}
+                                options={employees.map(emp => ({ value: emp.id, label: `${emp.code} - ${emp.name}` }))}
+                                placeholder="اختر الموظف..."
+                                style={{ width: '100%', height: '42px' }}
+                            />
                         </div>
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>نوع الإجازة <span style={{ color: C.danger }}>*</span></label>
-                            <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut}>
-                                {Object.entries(LEAVE_TYPES).map(([v, l]) => (
-                                    <option key={v} value={v}>{l}</option>
-                                ))}
-                            </select>
+                            <CustomSelect
+                                value={form.type}
+                                onChange={val => setForm({ ...form, type: val })}
+                                options={Object.entries(LEAVE_TYPES).map(([v, l]) => ({ value: v, label: l }))}
+                                hideSearch={true}
+                                style={{ width: '100%', height: '42px' }}
+                            />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
                             <div>

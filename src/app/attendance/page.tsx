@@ -4,6 +4,7 @@ import PageHeader from '@/components/PageHeader';
 import { useEffect, useState } from 'react';
 import { Clock, Users, CheckCircle, XCircle, Loader2, Save, AlertTriangle, Check } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, PAGE_BASE } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
 
 interface Employee {
     id: string;
@@ -264,19 +265,13 @@ export default function AttendancePage() {
                                             </td>
                                             {/* الحالة */}
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <select
+                                                <CustomSelect
                                                     value={row.status}
-                                                    onChange={e => updateRow(idx, 'status', e.target.value)}
-                                                    style={{ ...IS, width: '130px', height: '34px', fontSize: '12px', color: statusColor(row.status) }}
-                                                    onFocus={focusIn}
-                                                    onBlur={focusOut}
-                                                >
-                                                    {STATUS_OPTIONS.map(opt => (
-                                                        <option key={opt.value} value={opt.value} style={{ color: opt.color }}>
-                                                            {opt.label}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                    onChange={val => updateRow(idx, 'status', val)}
+                                                    options={STATUS_OPTIONS.map(opt => ({ value: opt.value, label: opt.label, style: { color: opt.color } }))}
+                                                    hideSearch={true}
+                                                    style={{ width: '130px', height: '34px', fontSize: '12px', color: statusColor(row.status) }}
+                                                />
                                             </td>
                                             {/* ساعات العمل */}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

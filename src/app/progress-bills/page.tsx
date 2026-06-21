@@ -9,6 +9,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE } from 
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
@@ -351,12 +352,13 @@ export default function ProgressBillsPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('المشروع')} <span style={{ color: C.danger }}>*</span></label>
-                                    <select required style={{ ...IS, cursor: 'pointer' }} value={form.projectId} onChange={e => handleProjectChange(e.target.value)}>
-                                        <option value="">{t('اختر المشروع لرفع الأعمال عليه...')}</option>
-                                        {projects.map((p: any) => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.projectId}
+                                        onChange={handleProjectChange}
+                                        placeholder={t('اختر المشروع لرفع الأعمال عليه...')}
+                                        options={projects.map((p: any) => ({ value: p.id, label: p.name }))}
+                                        style={{ height: '42px', width: '100%' }}
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>{t('التاريخ')} <span style={{ color: C.danger }}>*</span></label>
@@ -445,10 +447,17 @@ export default function ProgressBillsPage() {
                                         </div>
                                         <div>
                                             <label style={LS}>{t('حالة المستخلص')}</label>
-                                            <select style={{ ...IS, cursor: 'pointer' }} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
-                                                <option value="draft">{t('مسودة')}</option>
-                                                <option value="approved">{t('معتمد للمطالبة')}</option>
-                                            </select>
+                                            <CustomSelect
+                                                value={form.status}
+                                                onChange={val => setForm({ ...form, status: val })}
+                                                placeholder={t('اختر الحالة')}
+                                                hideSearch={true}
+                                                options={[
+                                                    { value: 'draft', label: t('مسودة') },
+                                                    { value: 'approved', label: t('معتمد للمطالبة') }
+                                                ]}
+                                                style={{ height: '42px', width: '100%' }}
+                                            />
                                         </div>
                                     </div>
 

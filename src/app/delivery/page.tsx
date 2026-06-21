@@ -4,6 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Truck, RefreshCw, Loader2, MapPin, Phone, Clock, User, Package, CheckCircle2, ChevronDown } from 'lucide-react';
 
@@ -210,16 +211,17 @@ export default function DeliveryPage() {
                                             
                                             {/* Quick Actions in Header */}
                                             {(!order.driverId && order.status !== 'delivered' && order.status !== 'cancelled') && (
-                                                <select
+                                                <CustomSelect
                                                     value=""
-                                                    onChange={(e) => { if (e.target.value) updateStatus(order.id, 'assigned', e.target.value); }}
-                                                    style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.border}`, background: C.card, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary, outline: 'none', cursor: 'pointer' }}
-                                                >
-                                                    <option value="" disabled>{t("تعيين مندوب...")}</option>
-                                                    {drivers.filter(d => d.status === 'available').map(d => (
-                                                        <option key={d.id} value={d.id}>{d.name}</option>
-                                                    ))}
-                                                </select>
+                                                    onChange={(val) => { if (val) updateStatus(order.id, 'assigned', val); }}
+                                                    placeholder={t("تعيين مندوب...")}
+                                                    hideSearch={true}
+                                                    options={drivers.filter(d => d.status === 'available').map(d => ({
+                                                        value: d.id,
+                                                        label: d.name
+                                                    }))}
+                                                    style={{ height: '30px', minWidth: '130px', fontSize: '11px' }}
+                                                />
                                             )}
 
                                             {(order.driverId && order.status !== 'picked' && order.status !== 'delivered' && order.status !== 'cancelled') && (

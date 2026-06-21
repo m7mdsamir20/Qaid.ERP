@@ -15,6 +15,7 @@ import AppModal from '@/components/AppModal';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
+import CustomSelect from '@/components/CustomSelect';
 import { getCountryPlaceholders } from '@/lib/placeholders';
 import { getAddressConfig } from '@/lib/addressConfig';
 
@@ -523,20 +524,18 @@ export default function CustomersPage() {
                                     {salesReps.length > 0 && (
                                         <div>
                                             <label style={LS}>{t('مندوب المبيعات الافتراضي')}</label>
-                                            <select
+                                            <CustomSelect
                                                 value={form.salesRepresentativeId}
-                                                onChange={e => setForm({ ...form, salesRepresentativeId: e.target.value })}
-                                                style={{ ...IS, cursor: 'pointer' }}
-                                                onFocus={focusIn}
-                                                onBlur={focusOut}
-                                            >
-                                                <option value="">{t('بدون مندوب مبيعات افتراضي')}</option>
-                                                {salesReps.map(rep => (
-                                                    <option key={rep.id} value={rep.id}>
-                                                        {rep.name} {rep.code ? `(${rep.code})` : ''}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                onChange={val => setForm({ ...form, salesRepresentativeId: val })}
+                                                options={[
+                                                    { value: '', label: t('بدون مندوب مبيعات افتراضي') },
+                                                    ...salesReps.map(rep => ({
+                                                        value: rep.id,
+                                                        label: `${rep.name} ${rep.code ? `(${rep.code})` : ''}`
+                                                    }))
+                                                ]}
+                                                style={{ height: '42px', width: '100%' }}
+                                            />
                                         </div>
                                     )}
                                     {!editingId && (

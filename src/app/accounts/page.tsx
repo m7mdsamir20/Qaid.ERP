@@ -529,16 +529,28 @@ export default function AccountsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         <div>
                             <label style={LS}>{t('نوع الحساب')}</label>
-                            <select value={form.type} disabled style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed' }}>
-                                {accountTypes.map(at => <option key={at.value} value={at.value}>{at.label}</option>)}
-                            </select>
+                            <CustomSelect
+                                value={form.type}
+                                onChange={() => {}}
+                                options={accountTypes.map(at => ({ value: at.value, label: at.label }))}
+                                disabled={true}
+                                hideSearch={true}
+                                style={{ width: '100%', height: '42px' }}
+                            />
                         </div>
                         <div>
                             <label style={LS}>{t('طبيعة الحساب')}</label>
-                            <select value={form.nature} disabled style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed' }}>
-                                <option value="debit">{t('مدين')}</option>
-                                <option value="credit">{t('دائن')}</option>
-                            </select>
+                            <CustomSelect
+                                value={form.nature}
+                                onChange={() => {}}
+                                options={[
+                                    { value: 'debit', label: t('مدين') },
+                                    { value: 'credit', label: t('دائن') }
+                                ]}
+                                disabled={true}
+                                hideSearch={true}
+                                style={{ width: '100%', height: '42px' }}
+                            />
                         </div>
                     </div>
 

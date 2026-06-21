@@ -6,6 +6,7 @@ import Pagination from '@/components/Pagination';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { ClipboardList, Plus, Search, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import CustomSelect from '@/components/CustomSelect';
 
 interface WorkOrder {
     id: string;
@@ -135,21 +136,19 @@ export default function WorkOrdersPage() {
                             </button>
                         ))}
                     </div>
-                    <select
+                    <CustomSelect
                         value={priorityFilter}
-                        onChange={e => setPriorityFilter(e.target.value)}
-                        style={{
-                            ...IS, width: 'auto', minWidth: '130px', height: '42px',
-                            paddingInlineStart: '12px', paddingInlineEnd: '12px',
-                            cursor: 'pointer', fontSize: '13px',
-                        }}
-                    >
-                        <option value="all">كل الأولويات</option>
-                        <option value="low">منخفضة</option>
-                        <option value="normal">عادية</option>
-                        <option value="high">عالية</option>
-                        <option value="urgent">عاجلة</option>
-                    </select>
+                        onChange={setPriorityFilter}
+                        hideSearch={true}
+                        options={[
+                            { value: 'all', label: 'كل الأولويات' },
+                            { value: 'low', label: 'منخفضة' },
+                            { value: 'normal', label: 'عادية' },
+                            { value: 'high', label: 'عالية' },
+                            { value: 'urgent', label: 'عاجلة' }
+                        ]}
+                        style={{ width: '150px' }}
+                    />
                 </div>
 
                 <div style={TABLE_STYLE.container}>

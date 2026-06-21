@@ -5,6 +5,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
 import { FileText, Save, Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import CustomSelect from '@/components/CustomSelect';
 
 interface Customer { id: string; name: string; phone: string | null; }
 
@@ -166,9 +167,13 @@ export default function NewServiceContractPage() {
                                     {/* Type */}
                                     <div>
                                         <label style={LS}>نوع العقد <span style={{ color: C.danger }}>*</span></label>
-                                        <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} style={{ ...inputStyle, cursor: 'pointer' }} onFocus={focusIn} onBlur={focusOut} required>
-                                            {CONTRACT_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-                                        </select>
+                                        <CustomSelect
+                                            value={form.type}
+                                            onChange={val => setForm(f => ({ ...f, type: val }))}
+                                            options={CONTRACT_TYPES}
+                                            hideSearch={true}
+                                            style={{ width: '100%' }}
+                                        />
                                     </div>
 
                                     {/* Start Date */}
@@ -203,9 +208,13 @@ export default function NewServiceContractPage() {
                                     {/* Billing Cycle */}
                                     <div>
                                         <label style={LS}>دورية الفوترة</label>
-                                        <select value={form.billingCycle} onChange={e => setForm(f => ({ ...f, billingCycle: e.target.value }))} style={{ ...inputStyle, cursor: 'pointer' }} onFocus={focusIn} onBlur={focusOut}>
-                                            {BILLING_CYCLES.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
-                                        </select>
+                                        <CustomSelect
+                                            value={form.billingCycle}
+                                            onChange={val => setForm(f => ({ ...f, billingCycle: val }))}
+                                            options={BILLING_CYCLES}
+                                            hideSearch={true}
+                                            style={{ width: '100%' }}
+                                        />
                                     </div>
                                 </div>
 

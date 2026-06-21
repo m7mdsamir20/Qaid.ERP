@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import Link from 'next/link';
+import CustomSelect from '@/components/CustomSelect';
 import { ClipboardList, Loader2, Save, Plus, Trash2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 
@@ -115,17 +116,24 @@ export default function NewMaterialRequestPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }} className="responsive-grid">
                                 <div>
                                     <label style={LS}>المشروع <span style={{ color: C.danger }}>*</span></label>
-                                    <select required style={{ ...IS, cursor: 'pointer' }} value={form.projectId} onChange={e => setForm({ ...form, projectId: e.target.value, phaseId: '' })} onFocus={focusIn} onBlur={focusOut}>
-                                        <option value="">اختر المشروع...</option>
-                                        {projects.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.projectId}
+                                        onChange={val => setForm({ ...form, projectId: val, phaseId: '' })}
+                                        placeholder="اختر المشروع..."
+                                        options={projects.map(p => ({ value: p.id, label: p.name }))}
+                                        style={{ height: '42px', width: '100%' }}
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>المرحلة</label>
-                                    <select style={{ ...IS, cursor: 'pointer' }} value={form.phaseId} onChange={e => setForm({ ...form, phaseId: e.target.value })} onFocus={focusIn} onBlur={focusOut} disabled={!form.projectId || phases.length === 0}>
-                                        <option value="">اختر المرحلة (اختياري)...</option>
-                                        {phases.map(ph => <option key={ph.id} value={ph.id}>{ph.name}</option>)}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.phaseId}
+                                        onChange={val => setForm({ ...form, phaseId: val })}
+                                        placeholder="اختر المرحلة (اختياري)..."
+                                        disabled={!form.projectId || phases.length === 0}
+                                        options={phases.map(ph => ({ value: ph.id, label: ph.name }))}
+                                        style={{ height: '42px', width: '100%' }}
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>تاريخ المطلوب</label>
@@ -156,10 +164,13 @@ export default function NewMaterialRequestPage() {
 
                             {lines.map((line, idx) => (
                                 <div key={idx} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 2fr 40px', gap: '8px', marginBottom: '8px', alignItems: 'center' }}>
-                                    <select style={{ ...IS, height: '38px', fontSize: '12px' }} value={line.itemId} onChange={e => updateLine(idx, 'itemId', e.target.value)} onFocus={focusIn} onBlur={focusOut}>
-                                        <option value="">اختر الصنف...</option>
-                                        {items.map((it: any) => <option key={it.id} value={it.id}>{it.name}</option>)}
-                                    </select>
+                                    <CustomSelect
+                                        value={line.itemId}
+                                        onChange={val => updateLine(idx, 'itemId', val)}
+                                        placeholder="اختر الصنف..."
+                                        options={items.map((it: any) => ({ value: it.id, label: it.name }))}
+                                        style={{ height: '38px', minWidth: '150px', fontSize: '12px' }}
+                                    />
                                     <input type="number" min="0" step="any" placeholder="0" style={{ ...IS, height: '38px', fontSize: '12px', fontFamily: OUTFIT }} value={line.quantity} onChange={e => updateLine(idx, 'quantity', e.target.value)} onFocus={focusIn} onBlur={focusOut} />
                                     <input type="text" placeholder="وحدة" style={{ ...IS, height: '38px', fontSize: '12px' }} value={line.unit} onChange={e => updateLine(idx, 'unit', e.target.value)} onFocus={focusIn} onBlur={focusOut} />
                                     <input type="text" placeholder="ملاحظة..." style={{ ...IS, height: '38px', fontSize: '12px' }} value={line.notes} onChange={e => updateLine(idx, 'notes', e.target.value)} onFocus={focusIn} onBlur={focusOut} />

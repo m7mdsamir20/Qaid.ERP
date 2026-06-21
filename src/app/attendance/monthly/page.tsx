@@ -4,6 +4,7 @@ import PageHeader from '@/components/PageHeader';
 import { useEffect, useState } from 'react';
 import { CalendarDays, Loader2, Users } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
 
 interface DayRecord {
     date: string;
@@ -141,17 +142,23 @@ export default function MonthlyAttendancePage() {
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '20px', flexWrap: 'wrap' }}>
                     <div>
                         <label style={LS}>الشهر</label>
-                        <select value={month} onChange={e => setMonth(Number(e.target.value))} style={{ ...IS, width: '150px' }} onFocus={focusIn} onBlur={focusOut}>
-                            {MONTH_NAMES.map((name, i) => (
-                                <option key={i + 1} value={i + 1}>{name}</option>
-                            ))}
-                        </select>
+                        <CustomSelect
+                            value={month}
+                            onChange={val => setMonth(Number(val))}
+                            options={MONTH_NAMES.map((name, i) => ({ value: i + 1, label: name }))}
+                            hideSearch={true}
+                            style={{ width: '150px', height: '42px' }}
+                        />
                     </div>
                     <div>
                         <label style={LS}>السنة</label>
-                        <select value={year} onChange={e => setYear(Number(e.target.value))} style={{ ...IS, width: '120px' }} onFocus={focusIn} onBlur={focusOut}>
-                            {years.map(y => <option key={y} value={y}>{y}</option>)}
-                        </select>
+                        <CustomSelect
+                            value={year}
+                            onChange={val => setYear(Number(val))}
+                            options={years.map(y => ({ value: y, label: String(y) }))}
+                            hideSearch={true}
+                            style={{ width: '120px', height: '42px' }}
+                        />
                     </div>
                     <div style={{ marginBottom: '2px' }}>
                         <button onClick={fetchData} style={{ height: '42px', padding: '0 20px', borderRadius: '10px', background: C.primary, border: 'none', color: '#fff', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}>
@@ -285,11 +292,13 @@ export default function MonthlyAttendancePage() {
                             </h3>
                             <div style={{ marginBottom: '16px' }}>
                                 <label style={LS}>الحالة</label>
-                                <select value={editStatus} onChange={e => setEditStatus(e.target.value)} style={{ ...IS }} onFocus={focusIn} onBlur={focusOut}>
-                                    {Object.entries(STATUS_LABELS).map(([v, l]) => (
-                                        <option key={v} value={v}>{l}</option>
-                                    ))}
-                                </select>
+                                <CustomSelect
+                                    value={editStatus}
+                                    onChange={val => setEditStatus(val)}
+                                    options={Object.entries(STATUS_LABELS).map(([v, l]) => ({ value: v, label: l }))}
+                                    hideSearch={true}
+                                    style={{ width: '100%', height: '42px' }}
+                                />
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
                                 <div>

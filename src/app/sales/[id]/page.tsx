@@ -14,6 +14,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly } from '@/lib/printDirectly';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 
 
 interface ReturnInvoice {
@@ -546,18 +547,17 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             
                             <div>
                                 <label style={LS}>{t('الحساب المالي المستلم (الخزينة / البنك)')} <span style={{ color: C.danger }}>*</span></label>
-                                <select
+                                <CustomSelect
                                     value={selectedTreasuryId}
-                                    onChange={e => setSelectedTreasuryId(e.target.value)}
-                                    style={{ ...IS, cursor: 'pointer', marginTop: '6px' }}
-                                >
-                                    <option value="">{t('اختر الخزينة أو الحساب البنكي لاستلام الكاش...')}</option>
-                                    {treasuries.map(t => (
-                                        <option key={t.id} value={t.id}>
-                                            {t.name} ({t.type === 'bank' ? t('بنك') : t('خزينة')})
-                                        </option>
-                                    ))}
-                                </select>
+                                    onChange={val => setSelectedTreasuryId(val)}
+                                    placeholder={t('اختر الخزينة أو الحساب البنكي لاستلام الكاش...')}
+                                    hideSearch={true}
+                                    options={treasuries.map(treas => ({
+                                        value: treas.id,
+                                        label: `${treas.name} (${treas.type === 'bank' ? 'بنك' : 'خزينة'})`
+                                    }))}
+                                    style={{ height: '42px', width: '100%', marginTop: '6px' }}
+                                />
                             </div>
                         </div>
                     )}

@@ -7,6 +7,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { PieChart, Plus, Loader2, X, TrendingUp, CalendarDays, CheckCircle2, ChevronDown, ChevronUp, History, Percent, Banknote, Users, Info, DollarSign, Wallet } from 'lucide-react';
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import DataTable from '@/components/DataTable';
@@ -360,12 +361,17 @@ export default function ProfitDistributionPage() {
                                     </button>
                                 </div>
                                 {form.treasuryId && (
-                                    <select value={form.treasuryId} onChange={e => setForm(f => ({ ...f, treasuryId: e.target.value }))}
-                                        style={{ ...IS, marginBottom: 0 }} onFocus={focusIn} onBlur={focusOut}>
-                                        {treasuries.map(tData => (
-                                            <option key={tData.id} value={tData.id}>{tData.name} — {t('رصيد')}: {tData.balance.toLocaleString()}</option>
-                                        ))}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.treasuryId}
+                                        onChange={val => setForm(f => ({ ...f, treasuryId: val }))}
+                                        placeholder={t('اختر الخزينة...')}
+                                        hideSearch={true}
+                                        options={treasuries.map(tData => ({
+                                            value: tData.id,
+                                            label: `${tData.name} — ${t('رصيد')}: ${tData.balance.toLocaleString()}`
+                                        }))}
+                                        style={{ height: '42px', width: '100%' }}
+                                    />
                                 )}
                                 {form.treasuryId && totalAmt > 0 && (() => {
                                     const tObj = treasuries.find(tData => tData.id === form.treasuryId);

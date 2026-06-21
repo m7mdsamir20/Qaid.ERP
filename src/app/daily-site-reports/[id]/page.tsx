@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { useParams } from 'next/navigation';
 import { ClipboardCheck, Loader2, Edit3, Trash2, Save, X, Calendar, Users, CloudSun, BarChart2, FileText, AlertTriangle, ShieldAlert, MessageSquare } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRIMARY } from '@/constants/theme';
@@ -194,14 +195,21 @@ export default function DailySiteReportDetailPage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }} className="responsive-grid">
                                     <div>
                                         <label style={LS}>الطقس</label>
-                                        <select style={{ ...IS, cursor: 'pointer' }} value={editForm.weather} onChange={e => setEditForm({ ...editForm, weather: e.target.value })} onFocus={focusIn} onBlur={focusOut}>
-                                            <option value="">اختر حالة الطقس...</option>
-                                            <option value="sunny">مشمس</option>
-                                            <option value="cloudy">غائم</option>
-                                            <option value="rainy">ممطر</option>
-                                            <option value="stormy">عاصف</option>
-                                            <option value="hot">حار</option>
-                                        </select>
+                                        <CustomSelect
+                                            value={editForm.weather}
+                                            onChange={val => setEditForm({ ...editForm, weather: val })}
+                                            placeholder="اختر حالة الطقس..."
+                                            hideSearch={true}
+                                            options={[
+                                                { value: '', label: 'اختر حالة الطقس...' },
+                                                { value: 'sunny', label: 'مشمس' },
+                                                { value: 'cloudy', label: 'غائم' },
+                                                { value: 'rainy', label: 'ممطر' },
+                                                { value: 'stormy', label: 'عاصف' },
+                                                { value: 'hot', label: 'حار' }
+                                            ]}
+                                            style={{ height: '42px', width: '100%' }}
+                                        />
                                     </div>
                                     <div>
                                         <label style={LS}>عدد العمال</label>

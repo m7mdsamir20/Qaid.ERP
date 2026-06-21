@@ -11,6 +11,7 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import DataTable from '@/components/DataTable';
+import CustomSelect from '@/components/CustomSelect';
 
 interface SubContract {
     id: string;
@@ -299,21 +300,23 @@ export default function SubContractsPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('المشروع')} <span style={{ color: C.danger }}>*</span></label>
-                                    <select required style={{ ...IS, cursor: 'pointer' }} value={form.projectId} onChange={e => setForm({ ...form, projectId: e.target.value })}>
-                                        <option value="">{t('اختر المشروع...')}</option>
-                                        {projects.map((p: any) => (
-                                            <option key={p.id} value={p.id}>{p.name}</option>
-                                        ))}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.projectId}
+                                        onChange={val => setForm({ ...form, projectId: val })}
+                                        placeholder={t('اختر المشروع...')}
+                                        options={projects.map((p: any) => ({ value: p.id, label: p.name }))}
+                                        style={{ width: '100%' }}
+                                    />
                                 </div>
                                 <div>
                                     <label style={LS}>{t('مقاول الباطن')} <span style={{ color: C.danger }}>*</span></label>
-                                    <select required style={{ ...IS, cursor: 'pointer' }} value={form.subcontractorId} onChange={e => setForm({ ...form, subcontractorId: e.target.value })}>
-                                        <option value="">{t('اختر المقاول...')}</option>
-                                        {subcontractors.map((s: any) => (
-                                            <option key={s.id} value={s.id}>{s.name} ({s.specialty || t('بدون تخصص')})</option>
-                                        ))}
-                                    </select>
+                                    <CustomSelect
+                                        value={form.subcontractorId}
+                                        onChange={val => setForm({ ...form, subcontractorId: val })}
+                                        placeholder={t('اختر المقاول...')}
+                                        options={subcontractors.map((s: any) => ({ value: s.id, label: `${s.name} (${s.specialty || t('بدون تخصص')})` }))}
+                                        style={{ width: '100%' }}
+                                    />
                                 </div>
                             </div>
 
