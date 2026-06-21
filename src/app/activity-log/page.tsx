@@ -11,7 +11,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import {
     History, Search, Filter, Eye, EyeOff, User, Calendar,
-    AlertTriangle, ChevronDown, ChevronUp,
+    ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE, SC, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import { TableColumn } from '@/components/EmptyTableState';
@@ -456,18 +456,6 @@ export default function ActivityLogPage() {
                     icon={History}
                 />
 
-                {/* Read-only notice */}
-                <div style={{
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    padding: '10px 16px', borderRadius: '10px', marginBottom: '16px',
-                    background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)',
-                    fontSize: '12px', fontWeight: 600, color: '#fbbf24',
-                    fontFamily: CAIRO,
-                }}>
-                    <AlertTriangle size={15} />
-                    سجل النشاط للقراءة فقط — لا يمكن حذف أو تعديل السجلات
-                </div>
-
                 {/* Filters */}
                 <div
                     className="activity-filters"
@@ -505,7 +493,7 @@ export default function ActivityLogPage() {
                     </div>
 
                     {/* Action filter */}
-                    <div style={{ width: '150px' }}>
+                    <div style={{ width: '150px', marginInlineStart: '6px' }}>
                         <CustomSelect
                             value={actionFilter}
                             onChange={setActionFilter}
@@ -604,7 +592,6 @@ export default function ActivityLogPage() {
                         alignItems: 'center', justifyContent: 'center',
                         padding: '60px 20px', gap: '12px',
                     }}>
-                        <History size={40} style={{ color: C.textMuted, opacity: 0.4 }} />
                         <p style={{ fontSize: '14px', color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>
                             لا توجد سجلات مطابقة للبحث
                         </p>

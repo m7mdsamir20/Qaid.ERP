@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import { Search, Landmark, Loader2, FileText, History, TrendingUp, TrendingDown } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -152,6 +153,7 @@ export default function BankStatementPage() {
             }))
         ];
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف حساب بنكي'));
         XLSX.writeFile(

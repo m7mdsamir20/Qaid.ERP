@@ -12,6 +12,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Activity, RefreshCw, Landmark, Wallet, CheckCircle2, TrendingUp, TrendingDown, Search, Loader2, FileText, ShieldCheck, Save, ClipboardList, History as HistoryIcon } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 import { useCurrency } from '@/hooks/useCurrency';
 
 const t = (s: string) => s;
@@ -139,6 +140,7 @@ export default function TreasuryReconciliationPage() {
             };
         });
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('تقرير العجز والزيادة'));
         XLSX.writeFile(wb, `${t('تقرير_الجرد')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);

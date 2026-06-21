@@ -11,6 +11,7 @@ import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, ArrowRightLeft, FileDown, Activity, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 import { formatNumber } from '@/lib/currency';
 
@@ -127,6 +128,7 @@ export default function SupplierStatementPage() {
         }
 
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف الحساب'));
         XLSX.writeFile(wb, `${t('كشف_حساب_مورد')}_${data.supplier.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);

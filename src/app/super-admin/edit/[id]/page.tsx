@@ -191,8 +191,10 @@ export default function EditCompanyPage() {
         const map = new Map<string, any>();
         const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
         const posFeatures = ['pos', 'barcode'];
-        const contractingFeatures = ['projects', 'subcontractors'];
-        
+        const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
+        const servicesOnlyFeatures = ['services'];
+        const retailOnlyFeatures = ['loyalty'];
+
         const isRestaurants = form.businessType === 'RESTAURANTS';
         const isRetail = form.businessType === 'RETAIL';
         const isContracting = form.businessType === 'CONTRACTING';
@@ -201,11 +203,14 @@ export default function EditCompanyPage() {
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
+            if (s.featureKey === 'activity_log') return; // يظهر في إعدادات السوبر ادمن فقط
 
             // فلترة حسب نوع النشاط
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
             if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
             if (contractingFeatures.includes(s.featureKey) && !isContracting) return;
+            if (servicesOnlyFeatures.includes(s.featureKey) && !isServices) return;
+            if (retailOnlyFeatures.includes(s.featureKey) && !isRetail) return;
             if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
             if (isRetail && ['installments', 'barcode'].includes(s.featureKey)) return;
             if (isContracting && ['installments', 'pos', 'barcode'].includes(s.featureKey)) return;

@@ -11,6 +11,7 @@ import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
@@ -57,6 +58,7 @@ export default function CustomerStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
+    const isServices = (session?.user as any)?.businessType === 'SERVICES';
     const { fMoney, symbol, currency } = useCurrency();
 
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -102,14 +104,16 @@ export default function CustomerStatementPage() {
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
+        const debitLabel = isServices ? t('الخدمات (عليه)') : t('مدين (عليه)');
+        const creditLabel = t('دائن (له)');
         const excelData = data.statement.map((row: StatementRow) => ({
             [t('التاريخ')]: new Date(row.date).toLocaleDateString('en-GB'),
             [t('طبيعة الحركة')]: row.type,
             [t('المرجع')]: row.ref || '—',
             [t('البيان')]: row.description,
-            [t('مدين (عليه)')]: fMoney(row.debit),
-            [t('دائن (له)')]: fMoney(row.credit),
-            [t('الرصيد')]: fMoney(row.balance)
+            [debitLabel]: row.debit,
+            [creditLabel]: row.credit,
+            [t('الرصيد')]: row.balance,
         }));
 
         if (data.initialBalance !== 0) {
@@ -118,13 +122,16 @@ export default function CustomerStatementPage() {
                 [t('طبيعة الحركة')]: t('رصيد افتتاحي'),
                 [t('المرجع')]: '—',
                 [t('البيان')]: t('رصيد ما قبل فترة التقرير'),
-                [t('مدين (عليه)')]: data.initialBalance > 0 ? fMoney(data.initialBalance) : '—',
-                [t('دائن (له)')]: data.initialBalance < 0 ? fMoney(Math.abs(data.initialBalance)) : '—',
-                [t('الرصيد')]: fMoney(data.initialBalance)
+                [debitLabel]: data.initialBalance > 0 ? data.initialBalance : 0,
+                [creditLabel]: data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0,
+                [t('الرصيد')]: data.initialBalance,
             });
         }
 
         const ws = XLSX.utils.json_to_sheet(excelData);
+        const isArabic = document.documentElement.lang === 'ar' || document.documentElement.dir === 'rtl';
+        if (isArabic) (ws as any)['!rightToLeft'] = true;
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف الحساب'));
         XLSX.writeFile(wb, `${t('كشف_حساب')}_${data.customer.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
@@ -170,8 +177,8 @@ export default function CustomerStatementPage() {
                 return (
                     <span style={{
                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
-                        background: row.type.includes(t("مبيعات")) ? 'rgba(16,185,129,0.1)' : row.type.includes(t("قبض")) ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
-                        color: row.type.includes(t("مبيعات")) ? '#10b981' : row.type.includes(t("قبض")) ? '#ef4444' : C.textMuted
+                        background: (row.type.includes(t("مبيعات")) || row.type.includes(t("خدمات"))) ? 'rgba(16,185,129,0.1)' : row.type.includes(t("قبض")) ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
+                        color: (row.type.includes(t("مبيعات")) || row.type.includes(t("خدمات"))) ? '#10b981' : row.type.includes(t("قبض")) ? '#ef4444' : C.textMuted
                     }}>
                         {t(row.type)}
                     </span>
@@ -238,7 +245,7 @@ export default function CustomerStatementPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title={t("كشف حساب عميل تفصيلي")}
-                    subtitle={t("استخراج بيان بكافة مبيعات، مدفوعات، ومرتجعات عميل محدد خلال فترة زمنية مختارة.")}
+                    subtitle={isServices ? t("استخراج بيان بكافة الخدمات المقدمة، المدفوعات، ومرتجعات الخدمات لعميل محدد خلال فترة زمنية مختارة.") : t("استخراج بيان بكافة مبيعات، مدفوعات، ومرتجعات عميل محدد خلال فترة زمنية مختارة.")}
                     backTab="partners"
                     onExportExcel={exportToExcel}
                     printTitle={t("كشف حساب عميل تفصيلي")}
@@ -323,7 +330,7 @@ export default function CustomerStatementPage() {
                         <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('رصيد سابق (منقول)'), value: Math.abs(data.initialBalance), sign: data.initialBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.initialBalance > 0 ? '#ef4444' : '#10b981', icon: <History size={20} /> },
-                                { label: t('إجمالي المبيعات (عليه)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: t('فواتير مبيعات'), color: '#ef4444', icon: <TrendingDown size={20} /> },
+                                { label: isServices ? t('إجمالي الخدمات (عليه)') : t('إجمالي المبيعات (عليه)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: isServices ? t('فواتير خدمات') : t('فواتير مبيعات'), color: '#ef4444', icon: <TrendingDown size={20} /> },
                                 { label: t('إجمالي المدفوعات (له)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0), sign: t('سندات قبض'), color: '#10b981', icon: <TrendingUp size={20} /> },
                                 { label: t('الرصيد النهائي (الآن)'), value: Math.abs(data.finalBalance), sign: data.finalBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.finalBalance > 0 ? '#ef4444' : '#10b981', icon: <FileText size={20} /> },
                             ].map((s, i) => (

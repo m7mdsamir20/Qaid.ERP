@@ -12,6 +12,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Search, Phone, Clock, AlertTriangle, TrendingDown, History } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 import CustomSelect from '@/components/CustomSelect';
 import { navSections } from '@/constants/navigation';
 
@@ -132,6 +133,7 @@ export default function AgingReportPage() {
             [t('التصنيف')]: inv.ageDays > 90 ? t("متأخر جداً") : inv.ageDays > 60 ? t("حذر") : t("اعتيادي")
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         const sheetName = hasCustomers && hasSuppliers 
             ? t("أعمار الديون") 

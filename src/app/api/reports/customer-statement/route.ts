@@ -34,6 +34,8 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: "العميل غير موجود" }, { status: 404 });
         }
 
+        const isServices = (session.user as any).businessType === 'SERVICES';
+
         const [allInvoices, allVouchers, allPlans] = await Promise.all([
             prisma.invoice.findMany({
                 where: { customerId, companyId, type: { in: ['sale', 'sale_return'] } },
@@ -88,9 +90,13 @@ export const GET = withProtection(async (request, session) => {
             }).map(inv => ({
                 id: inv.id,
                 date: inv.date,
-                type: inv.type === 'sale' ? 'فاتورة مبيعات' : 'مرتجع مبيعات',
+                type: inv.type === 'sale'
+                    ? (isServices ? 'فاتورة خدمات' : 'فاتورة مبيعات')
+                    : (isServices ? 'مرتجع خدمات' : 'مرتجع مبيعات'),
                 ref: inv.type === 'sale' ? `SAL-${String(inv.invoiceNumber).padStart(5, '0')}` : `SRET-${String(inv.invoiceNumber).padStart(5, '0')}`,
-                description: inv.type === 'sale' ? 'بيع بضاعة فاتورة' : 'مرتجع بضاعة فاتورة',
+                description: inv.type === 'sale'
+                    ? (isServices ? 'تقديم خدمة - فاتورة' : 'بيع بضاعة فاتورة')
+                    : (isServices ? 'مرتجع خدمة - فاتورة' : 'مرتجع بضاعة فاتورة'),
                 debit: inv.type === 'sale' ? inv.total : 0,
                 credit: inv.type === 'sale_return' ? inv.total : 0,
             })),

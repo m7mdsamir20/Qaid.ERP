@@ -13,6 +13,7 @@ import ReportHeader from '@/components/ReportHeader';
 import { Search, FileText, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 const SC = '#10b981';
 
@@ -35,7 +36,7 @@ interface RevenuesReportData {
 export default function RevenuesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, currency } = useCurrency();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [data, setData] = useState<RevenuesReportData | null>(null);
@@ -68,6 +69,7 @@ export default function RevenuesReportPage() {
             [t('المبلغ')]: row.amount,
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('تقرير الإيرادات'));
         XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);

@@ -3,6 +3,8 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
+import * as XLSX from 'xlsx';
+import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -19,7 +21,6 @@ import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
 import { Users, Truck, Phone, Search, Loader2, ArrowUpRight, ArrowDownLeft, UserCheck } from 'lucide-react';
-import * as XLSX from 'xlsx';
 
 interface PartnerBalance {
     id: string;
@@ -154,6 +155,7 @@ export default function ClientsSuppliersBalancesPage() {
             };
         });
         const ws = XLSX.utils.json_to_sheet(excelData);
+        applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('الأرصدة'));
         const fileName = hasCustomers && hasSuppliers
