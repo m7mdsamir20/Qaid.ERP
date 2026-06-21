@@ -125,7 +125,7 @@ export default function AgingReportPage() {
     const exportToExcel = () => {
         if (!data.length) return;
         const excelData = data.map(inv => ({
-            [t('رقم الفاتورة')]: `SAL-${String(inv.invoiceNumber).padStart(4, '0')}`,
+            [t('رقم الفاتورة')]: `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`,
             [t('التاريخ')]: new Date(inv.date).toLocaleDateString('en-GB'),
             [t('العميل')]: inv.customer,
             [t('عمر الدين (يوم)')]: inv.ageDays,
@@ -155,7 +155,7 @@ export default function AgingReportPage() {
             type: 'number' as const,
             cell: (row: AgingInvoice) => (
                 <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
-                    SAL-{String(row.invoiceNumber).padStart(4, '0')}
+                    SAL-{String(row.invoiceNumber).padStart(5, '0')}
                 </span>
             )
         },

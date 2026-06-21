@@ -87,7 +87,7 @@ export default function InstallmentDetailPage() {
                     treasuryName:  treasury?.name || '',
                     paymentType:   treasury?.type === 'bank' ? 'bank' : 'cash',
                     notes:         collectForm.notes,
-                    planCode:      `PLAN-${String(plan?.planNumber || 1).padStart(4, '0')}`,
+                    planCode:      `PLAN-${String(plan?.planNumber || 1).padStart(5, '0')}`,
                 });
                 setCollectTarget(null);
                 setCollectForm({ amount: '', treasuryId: '', notes: '' });
@@ -176,7 +176,7 @@ export default function InstallmentDetailPage() {
                         </div>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <h1 style={{ fontSize: '13px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span></h1>
+                                <h1 style={{ fontSize: '13px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>PLAN-{String(plan.planNumber || 1).padStart(5, '0')}</span></h1>
                                 {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 600 }}>{t('ملغاة')}</span>}
                             </div>
                             <p style={{ fontSize: '13px', color: C.textSecondary, margin: '2px 0 0', fontWeight: 600 }}>{t('تتبع دورة التحصيل وعمليات السداد للخطة')}</p>
@@ -313,7 +313,7 @@ export default function InstallmentDetailPage() {
                                                                         paymentType:  'cash',
                                                                         treasuryName: '',
                                                                         instNo:       String(inst.installmentNo),
-                                                                        planCode:     `PLAN-${String(plan?.planNumber || 1).padStart(4, '0')}`,
+                                                                        planCode:     `PLAN-${String(plan?.planNumber || 1).padStart(5, '0')}`,
                                                                         notes:        '',
                                                                     });
                                                                     window.open(`/print/installment-receipt?${p.toString()}`, '_blank');
@@ -707,7 +707,7 @@ export default function InstallmentDetailPage() {
                 >
                     <div style={{ marginBottom: '24px' }}>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textSecondary }}>
-                            {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span> — {t('للعميل:')} {plan.customer?.name}
+                            {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>PLAN-{String(plan.planNumber || 1).padStart(5, '0')}</span> — {t('للعميل:')} {plan.customer?.name}
                         </p>
                     </div>
 

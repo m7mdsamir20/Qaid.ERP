@@ -25,7 +25,7 @@ export default function PrintInstallmentPage() {
             .then(([plan, settings]) => {
                 if (plan?.error) { setError(plan.error); setLoading(false); return; }
                 const generated = generateInstallmentPlanHTML(plan, settings.company || {}, { noAutoPrint: true });
-                setPlanCode(`PLAN-${String(plan.planNumber || 1).padStart(4, '0')}`);
+                setPlanCode(`PLAN-${String(plan.planNumber || 1).padStart(5, '0')}`);
                 setHtml(generated);
                 setLoading(false);
             })

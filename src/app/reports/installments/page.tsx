@@ -186,7 +186,7 @@ export default function InstallmentReportsPage() {
             type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
-                    #{row.plan?.planNumber}
+                    PLAN-{String(row.plan?.planNumber || 0).padStart(5, '0')}
                 </span>
             )
         },
@@ -215,7 +215,7 @@ export default function InstallmentReportsPage() {
             type: 'number' as const,
             cell: (row: InstallmentRow) => (
                 <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
-                    #{row.plan?.planNumber}
+                    PLAN-{String(row.plan?.planNumber || 0).padStart(5, '0')}
                 </span>
             )
         },
@@ -540,7 +540,7 @@ export default function InstallmentReportsPage() {
                                             <div key={plan.id} style={{ ...SC, padding: 0, overflow: 'hidden' }}>
                                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                        <div style={{ fontSize: '15px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>#{plan.planNumber}</div>
+                                                        <div style={{ fontSize: '15px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(5, '0')}</div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                                             <Package size={14} /> {plan.productName || t('غير محدد')}
                                                         </div>

@@ -82,7 +82,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={`${t('تفاصيل فاتورة مشتريات')} #${invoice.invoiceNumber}`}
+                    title={`${t('تفاصيل فاتورة مشتريات')} PUR-${String(invoice.invoiceNumber).padStart(5, '0')}`}
                     subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB')} — ${t('سجل الحالة المالية والتوريد')}`}
                     icon={Receipt}
                     backUrl="/purchases"

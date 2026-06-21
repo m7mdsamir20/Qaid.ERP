@@ -86,7 +86,7 @@ export default function OverdueReportPage() {
             type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                    PLAN-{String(row.plan?.planNumber || 1).padStart(4, '0')}
+                    PLAN-{String(row.plan?.planNumber || 1).padStart(5, '0')}
                 </span>
             )
         },

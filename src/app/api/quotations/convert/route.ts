@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -128,7 +129,7 @@ export const POST = withProtection(async (request, session, body) => {
                             itemId:    line.itemId,
                             warehouseId,
                             quantity:  -line.quantity,
-                            reference: `SAL-${invoiceNumber}`,
+                            reference: getInvoiceRef(invoiceNumber, 'sale', (session.user as any).businessType),
                             notes:     `فاتورة محولة من عرض سعر رقم ${quotation.quotationNumber}`,
                             companyId,
                             invoiceId: invoice.id,

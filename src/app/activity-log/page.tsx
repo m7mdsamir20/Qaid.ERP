@@ -502,50 +502,53 @@ export default function ActivityLogPage() {
                         />
                     </div>
 
-                    {/* Date From */}
-                    <div style={{ position: 'relative' }}>
-                        <Calendar
-                            size={14}
-                            style={{
-                                position: 'absolute', insetInlineStart: '11px', top: '50%',
-                                transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none',
-                            }}
-                        />
-                        <input
-                            type="date"
-                            value={dateFrom}
-                            onChange={e => setDateFrom(e.target.value)}
-                            style={{
-                                ...IS, width: '150px', height: '42px',
-                                paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
-                            }}
-                            onFocus={focusIn}
-                            onBlur={focusOut}
-                            title="من تاريخ"
-                        />
-                    </div>
+                    {/* Date range — grouped with explicit gap from adjacent filters */}
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginInlineStart: '6px' }}>
+                        {/* Date From */}
+                        <div style={{ position: 'relative' }}>
+                            <Calendar
+                                size={14}
+                                style={{
+                                    position: 'absolute', insetInlineStart: '11px', top: '50%',
+                                    transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none',
+                                }}
+                            />
+                            <input
+                                type="date"
+                                value={dateFrom}
+                                onChange={e => setDateFrom(e.target.value)}
+                                style={{
+                                    ...IS, width: '150px', height: '42px',
+                                    paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
+                                }}
+                                onFocus={focusIn}
+                                onBlur={focusOut}
+                                title="من تاريخ"
+                            />
+                        </div>
 
-                    {/* Date To */}
-                    <div style={{ position: 'relative' }}>
-                        <Calendar
-                            size={14}
-                            style={{
-                                position: 'absolute', insetInlineStart: '11px', top: '50%',
-                                transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none',
-                            }}
-                        />
-                        <input
-                            type="date"
-                            value={dateTo}
-                            onChange={e => setDateTo(e.target.value)}
-                            style={{
-                                ...IS, width: '150px', height: '42px',
-                                paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
-                            }}
-                            onFocus={focusIn}
-                            onBlur={focusOut}
-                            title="إلى تاريخ"
-                        />
+                        {/* Date To */}
+                        <div style={{ position: 'relative' }}>
+                            <Calendar
+                                size={14}
+                                style={{
+                                    position: 'absolute', insetInlineStart: '11px', top: '50%',
+                                    transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none',
+                                }}
+                            />
+                            <input
+                                type="date"
+                                value={dateTo}
+                                onChange={e => setDateTo(e.target.value)}
+                                style={{
+                                    ...IS, width: '150px', height: '42px',
+                                    paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
+                                }}
+                                onFocus={focusIn}
+                                onBlur={focusOut}
+                                title="إلى تاريخ"
+                            />
+                        </div>
                     </div>
 
                     {/* Clear filters */}

@@ -52,7 +52,7 @@ export default function NewTransferPage() {
             let maxNum = 0;
             transfers.forEach((t: any) => { if (t.transferNumber > maxNum) maxNum = t.transferNumber; });
 
-            setForm(f => ({ ...f, code: `TRF-${String(maxNum + 1).padStart(4, '0')}` }));
+            setForm(f => ({ ...f, code: `TRF-${String(maxNum + 1).padStart(5, '0')}` }));
             const whs = await whRes.json();
             setWarehouses(whs);
             const itsData = await itemsRes.json();

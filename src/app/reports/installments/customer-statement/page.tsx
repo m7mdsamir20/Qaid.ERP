@@ -247,7 +247,7 @@ function CustomerStatementReportContent() {
                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
                                     <div>
                                         <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
-                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(5, '0')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
                                     <div style={{ flex: 1 }}>

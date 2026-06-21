@@ -45,7 +45,7 @@ export default function WarehouseTransfersPage() {
             header: t('رقم التحويل'),
             cell: (row: Transfer) => (
                 <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
-                    {row.code || `TRF-${row.transferNumber}`}
+                    {row.code || `TRF-${String(row.transferNumber).padStart(5, '0')}`}
                 </div>
             ),
             style: { width: '120px' }

@@ -1002,7 +1002,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
     };
 
     const date = new Date(plan.startDate || new Date()).toLocaleDateString('en-GB');
-    const planNum = String(plan.planNumber || 1).padStart(4, '0');
+    const planNum = String(plan.planNumber || 1).padStart(5, '0');
 
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
