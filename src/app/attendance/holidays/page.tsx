@@ -110,7 +110,7 @@ export default function HolidaysPage() {
                                 <h3 style={{ fontFamily: CAIRO, fontSize: '15px', fontWeight: 700, color: C.textSecondary, marginBottom: '10px', paddingBottom: '8px', borderBottom: `1px solid ${C.border}` }}>{month}</h3>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {items.map(h => (
-                                        <div key={h.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.surface, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '14px 18px' }}>
+                                        <div key={h.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: C.card, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '14px 18px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <div style={{ width: '44px', height: '44px', borderRadius: '10px', background: 'rgba(99,102,241,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#818cf8', fontFamily: CAIRO, fontWeight: 700, fontSize: '16px' }}>
                                                     {new Date(h.date).getDate()}
