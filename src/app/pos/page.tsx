@@ -1248,12 +1248,12 @@ export default function POSPage() {
     };
 
     if (status === 'loading') {
-        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
     }
 
     if (status === 'unauthenticated' || (!isRestaurants && !isRetail) || !hasPosPerm) {
         return (
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, gap: '16px', fontFamily: CAIRO }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
                     <Shield size={40} />
                 </div>
