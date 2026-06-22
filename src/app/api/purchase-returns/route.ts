@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -274,6 +275,18 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             return invoice;
+        });
+
+        const retCode = `PRET-${String(result.invoiceNumber).padStart(5, '0')}`;
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'create',
+            module: 'purchase-returns',
+            entityType: 'Invoice',
+            entityId: result.id,
+            entityRef: retCode,
+            description: `أنشأ مرتجع مشتريات رقم ${retCode}${(result as any).supplier?.name ? ` من المورد ${(result as any).supplier.name}` : ''}`,
+            newData: { invoiceNumber: result.invoiceNumber, total: result.total },
         });
 
         return NextResponse.json(result, { status: 201 });

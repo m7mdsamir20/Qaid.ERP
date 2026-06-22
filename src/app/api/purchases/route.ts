@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -367,6 +368,18 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             return invoice;
+        });
+
+        const purCode = `PUR-${String(result.invoiceNumber).padStart(5, '0')}`;
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'create',
+            module: 'purchases',
+            entityType: 'Invoice',
+            entityId: result.id,
+            entityRef: purCode,
+            description: `أنشأ فاتورة مشتريات رقم ${purCode}${(result as any).supplier?.name ? ` من المورد ${(result as any).supplier.name}` : ''}`,
+            newData: { invoiceNumber: result.invoiceNumber, total: result.total },
         });
 
         return NextResponse.json(result, { status: 201 });

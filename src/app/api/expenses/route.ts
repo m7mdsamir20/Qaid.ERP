@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -174,6 +175,17 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             });
             return newEntry;
+        });
+
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'create',
+            module: 'expenses',
+            entityType: 'JournalEntry',
+            entityId: entry.id,
+            entityRef: `EXP-${String(entry.entryNumber).padStart(5, '0')}`,
+            description: `سجّل مصروف بمبلغ ${amount} — ${notes || 'مصروفات أخرى'}`,
+            newData: { amount, accountId, notes },
         });
 
         return NextResponse.json(entry, { status: 201 });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -310,6 +311,18 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             return invoice;
+        });
+
+        const retCode = `SRET-${String(result.invoiceNumber).padStart(5, '0')}`;
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'create',
+            module: 'sale-returns',
+            entityType: 'Invoice',
+            entityId: result.id,
+            entityRef: retCode,
+            description: `أنشأ مرتجع مبيعات رقم ${retCode}${(result as any).customer?.name ? ` للعميل ${(result as any).customer.name}` : ''}`,
+            newData: { invoiceNumber: result.invoiceNumber, total: result.total },
         });
 
         return NextResponse.json(result, { status: 201 });

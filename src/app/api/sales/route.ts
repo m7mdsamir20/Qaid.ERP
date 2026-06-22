@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -509,6 +510,19 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             return invoice;
+        });
+
+        const prefix = isServices ? 'SRV' : 'SAL';
+        const invCode = `${prefix}-${String(result.invoiceNumber).padStart(5, '0')}`;
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'create',
+            module: 'sales',
+            entityType: 'Invoice',
+            entityId: result.id,
+            entityRef: invCode,
+            description: `أنشأ فاتورة مبيعات رقم ${invCode}${(result as any).customer?.name ? ` للعميل ${(result as any).customer.name}` : ''}`,
+            newData: { invoiceNumber: result.invoiceNumber, total: result.total, status: result.status },
         });
 
         return NextResponse.json(result, { status: 201 });
