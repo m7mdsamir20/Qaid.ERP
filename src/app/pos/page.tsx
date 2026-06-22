@@ -7,7 +7,7 @@ import { useSession } from 'next-auth/react';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield, Barcode, ShoppingBag
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Power, Home, Phone, MapPin, Receipt, ChefHat, Wallet, Store, Tag, Utensils, CreditCard, Banknote, Monitor, CheckCircle2, XCircle, Shield, Barcode, ShoppingBag, History, RotateCcw, Eye
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV } from '@/lib/printInvoices';
@@ -146,6 +146,15 @@ export default function POSPage() {
     const [shiftNotes, setShiftNotes] = useState('');
     const [shiftLoading, setShiftLoading] = useState(false);
 
+    // Today's Orders (retail)
+    const [showTodayOrders, setShowTodayOrders] = useState(false);
+    const [todayOrders, setTodayOrders] = useState<any[]>([]);
+    const [todayOrdersLoading, setTodayOrdersLoading] = useState(false);
+    const [selectedOrderDetail, setSelectedOrderDetail] = useState<any>(null);
+    // Return flow
+    const [returnOrder, setReturnOrder] = useState<any>(null);
+    const [returnTreasury, setReturnTreasury] = useState('');
+    const [returnLoading, setReturnLoading] = useState(false);
 
     const searchRef = useRef<HTMLInputElement>(null);
 
@@ -621,6 +630,7 @@ export default function POSPage() {
             </head>
             <body>
                 <div class="header text-center">
+                    ${orderData.company?.name ? `<h2 style="margin: 0 0 6px; font-size: 18px; font-weight: bold; letter-spacing: 1px;">${orderData.company.name}</h2>` : ''}
                     ${orderData.company?.logo ? `
                     <div style="text-align: center; margin: 0; padding: 0;">
                         <img src="${orderData.company.logo}" alt="Logo" style="max-width: 140px; max-height: 140px; object-fit: contain; display: block; margin: 0 auto;"/>
@@ -647,7 +657,7 @@ export default function POSPage() {
                     ` : ''}
                     `}
                     <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
-                    ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
+                    ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || orderData.cashierName || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && (orderData.deliveryName || orderData.customer) ? `
                 <div class="dashed-line"></div>
@@ -954,6 +964,52 @@ export default function POSPage() {
         return () => clearInterval(interval);
     }, [fetchOpenOrders]);
 
+    const fetchTodayOrders = useCallback(async () => {
+        setTodayOrdersLoading(true);
+        try {
+            const res = await fetch('/api/restaurant/orders?limit=500');
+            if (res.ok) {
+                const data = await res.json();
+                const all = Array.isArray(data) ? data : [];
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                setTodayOrders(all.filter((o: any) => new Date(o.createdAt) >= today));
+            }
+        } catch {} finally { setTodayOrdersLoading(false); }
+    }, []);
+
+    const handleReturnConfirm = async () => {
+        if (!returnOrder || !returnTreasury) return;
+        setReturnLoading(true);
+        setErrorMsg('');
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: returnOrder.id,
+                    action: 'refund',
+                    treasuryId: returnTreasury,
+                    refundAmount: returnOrder.total,
+                })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setReturnOrder(null);
+                setReturnTreasury('');
+                setSuccessMsg(t('✅ تم إرجاع الطلب وعكس جميع الحركات بنجاح'));
+                setTimeout(() => setSuccessMsg(''), 4000);
+                fetchTodayOrders();
+            } else {
+                setErrorMsg(data.error || t('فشل في إرجاع الطلب'));
+                setTimeout(() => setErrorMsg(''), 4000);
+            }
+        } catch {
+            setErrorMsg(t('حدث خطأ أثناء الإرجاع'));
+        } finally {
+            setReturnLoading(false);
+        }
+    };
+
     const acceptPendingOrder = async (orderId: string) => {
         try {
             const res = await fetch('/api/restaurant/orders', {
@@ -1114,10 +1170,10 @@ export default function POSPage() {
             
             if (!isPostPay || orderType === 'delivery') {
                 // Print Receipt only if paid (pre-pay or other types) AND always for delivery
-                printReceipt(savedOrder, cart, total, discount);
+                printReceipt({ ...savedOrder, cashierName: (session?.user as any)?.name }, cart, total, discount);
             }
             
-            if (restaurantSettings.autoSendToKitchen !== false) {
+            if (!isRetail && restaurantSettings.autoSendToKitchen !== false) {
                 setTimeout(() => {
                     printKitchenTicket(savedOrder, cart);
                 }, 1000); // Wait 1s after receipt to avoid print dialog overlap
@@ -1274,10 +1330,16 @@ export default function POSPage() {
                             </button>
                         )}
 
-                        {/* Drawer Ops */}
-                        <button onClick={() => setShowDrawerModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('درج الكاشير')}>
-                            <Wallet size={16} color={'#f59e0b'} />
-                        </button>
+                        {/* Today's Orders (retail) / Drawer (restaurant) */}
+                        {isRetail ? (
+                            <button onClick={() => { setShowTodayOrders(true); fetchTodayOrders(); }} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('سجل الطلبات')}>
+                                <History size={16} color={'#10b981'} />
+                            </button>
+                        ) : (
+                            <button onClick={() => setShowDrawerModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('درج الكاشير')}>
+                                <Wallet size={16} color={'#f59e0b'} />
+                            </button>
+                        )}
                         
                         {/* Branch Selector Icon */}
                         <button onClick={() => setShowBranchModal(true)} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('الفرع')}>
@@ -1333,8 +1395,8 @@ export default function POSPage() {
                                             )}
                                             <div style={{ fontSize: '36px', marginBottom: '10px', display: 'flex', justifyContent: 'center', width: '100%' }}>
                                                 {item.imageUrl ? (
-                                                    <img src={item.imageUrl} onError={(e) => { e.currentTarget.style.display = 'none'; if(e.currentTarget.parentElement) { const fallback = document.createElement('span'); fallback.innerText = '🍽️'; e.currentTarget.parentElement.appendChild(fallback); } }} style={{ width: '100%', height: 80, borderRadius: '12px', objectFit: 'cover' }} />
-                                                ) : '🍽️'}
+                                                    <img src={item.imageUrl} onError={(e) => { e.currentTarget.style.display = 'none'; if(e.currentTarget.parentElement) { const fallback = document.createElement('span'); fallback.innerText = isRetail ? '📦' : '🍽️'; e.currentTarget.parentElement.appendChild(fallback); } }} style={{ width: '100%', height: 80, borderRadius: '12px', objectFit: 'cover' }} />
+                                                ) : (isRetail ? '📦' : '🍽️')}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
                                             <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX((item.sellPrice ?? item.price ?? 0) * (1 + currentMarkup / 100))}</p>
@@ -2114,6 +2176,266 @@ export default function POSPage() {
                                 <div style={{ padding: '20px', textAlign: 'center', color: C.textSecondary, fontSize: '14px' }}>{t('لا توجد فروع متاحة')}</div>
                             )}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Return Confirmation Modal */}
+            {returnOrder && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.dangerBorder}`, borderRadius: '20px', width: '100%', maxWidth: '440px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {/* Header */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <RotateCcw size={18} /> {t('تأكيد مرتجع الطلب')}
+                            </h2>
+                            <button onClick={() => setReturnOrder(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+
+                        {/* Order Summary */}
+                        <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '12px', padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('رقم الطلب')}</span>
+                                <span style={{ fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>#{returnOrder.orderNumber?.toString().padStart(4, '0')}</span>
+                            </div>
+                            {returnOrder.customer?.name && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('العميل')}</span>
+                                    <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{returnOrder.customer.name}</span>
+                                </div>
+                            )}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '15px', borderTop: `1px dashed ${C.dangerBorder}`, paddingTop: '8px', marginTop: '4px' }}>
+                                <span style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('المبلغ المُسترد')}</span>
+                                <span style={{ fontWeight: 800, color: C.danger, fontFamily: OUTFIT }}>{Number(returnOrder.total).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+
+                        {/* Items list */}
+                        {returnOrder.lines?.length > 0 && (
+                            <div style={{ background: C.bg, borderRadius: '10px', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '140px', overflowY: 'auto' }}>
+                                {returnOrder.lines.map((l: any, i: number) => {
+                                    const itm = items.find((x: any) => x.id === l.itemId);
+                                    return (
+                                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                                            <span style={{ color: C.textPrimary, fontFamily: CAIRO }}>{itm?.name || l.itemName || t('صنف')}</span>
+                                            <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{l.quantity} × {Number(l.unitPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* Treasury selector */}
+                        <div>
+                            <label style={{ fontSize: '13px', color: C.textSecondary, marginBottom: '6px', display: 'block', fontWeight: 600, fontFamily: CAIRO }}>
+                                {t('الخزينة التي سيُصرف منها المبلغ')} <span style={{ color: C.danger }}>*</span>
+                            </label>
+                            <CustomSelect
+                                value={returnTreasury}
+                                onChange={(v: string) => setReturnTreasury(v)}
+                                options={treasuries.map((tr: any) => ({ value: tr.id, label: tr.name }))}
+                                placeholder={t('— اختر الخزينة —')}
+                            />
+                        </div>
+
+                        {/* Warning */}
+                        <div style={{ background: `${C.warning || '#f59e0b'}10`, border: `1px solid ${C.warning || '#f59e0b'}30`, borderRadius: '10px', padding: '10px 12px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>
+                            ⚠️ {t('سيتم عكس: المخزون — الخزينة — القيد المحاسبي — وإنشاء فاتورة مرتجع. لا يمكن التراجع.')}
+                        </div>
+
+                        {/* Buttons */}
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button onClick={() => setReturnOrder(null)} style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '14px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
+                                {t('إلغاء')}
+                            </button>
+                            <button
+                                onClick={handleReturnConfirm}
+                                disabled={!returnTreasury || returnLoading}
+                                style={{ flex: 2, height: '44px', borderRadius: '12px', border: 'none', background: (!returnTreasury || returnLoading) ? `${C.danger}50` : C.danger, color: '#fff', fontSize: '14px', fontWeight: 700, cursor: (!returnTreasury || returnLoading) ? 'not-allowed' : 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.2s' }}
+                            >
+                                {returnLoading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الإرجاع...')}</> : <><RotateCcw size={16} /> {t('تأكيد الإرجاع الكامل')}</>}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Today's Orders Modal — Retail */}
+            {showTodayOrders && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', width: '100%', maxWidth: '680px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+
+                        {/* Header */}
+                        <div style={{ padding: '18px 24px 14px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                            <div>
+                                <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل طلبات اليوم')}</h2>
+                                <p style={{ margin: '3px 0 0', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
+                                    {todayOrders.filter((o: any) => o.status !== 'cancelled').length} {t('طلب')}
+                                    {' — '}
+                                    {t('المبيعات')}: <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>{todayOrders.filter((o: any) => o.status !== 'cancelled').reduce((s: number, o: any) => s + Number(o.total), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <button onClick={() => fetchTodayOrders()} style={{ width: 36, height: 36, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('تحديث')}>
+                                    <RefreshCw size={15} />
+                                </button>
+                                <button onClick={() => { setShowTodayOrders(false); setSelectedOrderDetail(null); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            </div>
+                        </div>
+
+                        {/* Orders List */}
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {todayOrdersLoading ? (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px', color: C.textMuted }}>
+                                    <Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} />
+                                </div>
+                            ) : todayOrders.length === 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', color: C.textMuted, gap: '10px' }}>
+                                    <Receipt size={40} style={{ opacity: 0.3 }} />
+                                    <p style={{ margin: 0, fontFamily: CAIRO, fontSize: '14px' }}>{t('لا توجد طلبات اليوم')}</p>
+                                </div>
+                            ) : todayOrders.map((order: any) => {
+                                const isExpanded = selectedOrderDetail?.id === order.id;
+                                const isCancelled = order.status === 'cancelled';
+                                const isPaid = Number(order.paidAmount) >= Number(order.total) && !isCancelled;
+                                const statusLabel = isCancelled ? t('ملغي') : isPaid ? t('مكتمل') : t('جزئي');
+                                const statusColor = isCancelled ? C.danger : isPaid ? (C.success || '#22c55e') : '#f59e0b';
+                                const payLabel = order.paymentMethod === 'cash' ? t('نقدي') : order.paymentMethod === 'card' ? t('شبكة') : order.paymentMethod === 'mixed' ? t('مختلط') : '';
+
+                                return (
+                                    <div key={order.id} style={{ border: `1px solid ${isCancelled ? C.dangerBorder : C.border}`, borderRadius: '12px', padding: '12px 14px', background: isCancelled ? C.dangerBg : C.bg, opacity: isCancelled ? 0.75 : 1 }}>
+
+                                        {/* Order summary row */}
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                                    <span style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                        #{order.orderNumber?.toString().padStart(4, '0')}
+                                                    </span>
+                                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>
+                                                        {order.customer?.name || t('بيع مباشر')}
+                                                    </span>
+                                                    <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '10px', fontWeight: 700, fontFamily: CAIRO, background: `${statusColor}20`, color: statusColor }}>
+                                                        {statusLabel}
+                                                    </span>
+                                                </div>
+                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '6px' }}>
+                                                    <span>{new Date(order.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                                                    {order.lines?.length > 0 && <><span>—</span><span>{order.lines.length} {t('صنف')}</span></>}
+                                                    {payLabel && <><span>—</span><span>{payLabel}</span></>}
+                                                </div>
+                                            </div>
+                                            <span style={{ fontWeight: 700, fontSize: '15px', color: C.primary, fontFamily: OUTFIT, flexShrink: 0 }}>
+                                                {Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            </span>
+                                        </div>
+
+                                        {/* Action Buttons */}
+                                        <div style={{ display: 'flex', gap: '6px', marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed ${C.border}` }}>
+                                            {/* Details */}
+                                            <button
+                                                onClick={() => setSelectedOrderDetail(isExpanded ? null : order)}
+                                                style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${isExpanded ? C.primary : C.border}`, background: isExpanded ? `${C.primary}15` : 'transparent', color: isExpanded ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
+                                            >
+                                                <Eye size={13} /> {t('تفاصيل')}
+                                            </button>
+
+                                            {/* Print */}
+                                            <button
+                                                onClick={() => {
+                                                    const linesForPrint = order.lines?.map((l: any) => {
+                                                        const itm = items.find((i: any) => i.id === l.itemId);
+                                                        let parsedMods = null;
+                                                        if (l.modifiers) { try { parsedMods = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers; } catch(e){} }
+                                                        return { itemName: itm?.name || t('صنف'), quantity: l.quantity, unitPrice: l.unitPrice, total: l.total, modifiers: parsedMods ? { main: parsedMods } : undefined };
+                                                    }) || [];
+                                                    printReceipt({ ...order, cashierName: (session?.user as any)?.name }, linesForPrint, Number(order.total), Number(order.discount) || 0);
+                                                }}
+                                                style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
+                                            >
+                                                <Printer size={13} /> {t('طباعة')}
+                                            </button>
+
+                                            {/* Return */}
+                                            {!isCancelled && order.status !== 'returned' && (
+                                                <button
+                                                    onClick={() => { setReturnOrder(order); setReturnTreasury(''); }}
+                                                    style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
+                                                >
+                                                    <RotateCcw size={13} /> {t('مرتجع')}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {/* Expanded Order Lines */}
+                                        {isExpanded && (
+                                            <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed ${C.border}`, display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                                                {order.lines?.map((l: any, idx: number) => {
+                                                    const itm = items.find((i: any) => i.id === l.itemId);
+                                                    return (
+                                                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', padding: '3px 0' }}>
+                                                            <span style={{ color: C.textPrimary, fontFamily: CAIRO, flex: 1 }}>{itm?.name || l.itemName || t('صنف')}</span>
+                                                            <span style={{ color: C.textSecondary, fontFamily: OUTFIT, marginInlineEnd: '12px' }}>{l.quantity} × {Number(l.unitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                            <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT, minWidth: '60px', textAlign: 'end' }}>{Number(l.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                        </div>
+                                                    );
+                                                })}
+
+                                                {(Number(order.discount) > 0 || Number(order.taxAmount) > 0 || Number(order.serviceAmount) > 0) && (
+                                                    <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                        {Number(order.discount) > 0 && (
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.danger }}>
+                                                                <span style={{ fontFamily: CAIRO }}>{t('خصم')}</span>
+                                                                <span style={{ fontFamily: OUTFIT }}>- {Number(order.discount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                            </div>
+                                                        )}
+                                                        {Number(order.taxAmount) > 0 && (
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
+                                                                <span style={{ fontFamily: CAIRO }}>{t('ضريبة')}</span>
+                                                                <span style={{ fontFamily: OUTFIT }}>+ {Number(order.taxAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                            </div>
+                                                        )}
+                                                        {Number(order.serviceAmount) > 0 && (
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#3b82f6' }}>
+                                                                <span style={{ fontFamily: CAIRO }}>{t('رسوم خدمة')}</span>
+                                                                <span style={{ fontFamily: OUTFIT }}>+ {Number(order.serviceAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '13px', borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
+                                                    <span style={{ fontFamily: CAIRO, color: C.textPrimary }}>{t('الإجمالي')}</span>
+                                                    <span style={{ fontFamily: OUTFIT, color: C.primary }}>{Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Footer KPIs */}
+                        {!todayOrdersLoading && todayOrders.length > 0 && (
+                            <div style={{ padding: '12px 24px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: '0', justifyContent: 'space-around', flexShrink: 0, background: `${C.primary}05`, borderRadius: '0 0 20px 20px' }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{todayOrders.filter((o: any) => o.status !== 'cancelled' && Number(o.paidAmount) >= Number(o.total)).length}</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('مكتملة')}</div>
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
+                                        {todayOrders.filter((o: any) => o.status !== 'cancelled').reduce((s: number, o: any) => s + Number(o.total), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('إجمالي المبيعات')}</div>
+                                </div>
+                                {todayOrders.some((o: any) => o.status === 'cancelled') && (
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '18px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }}>{todayOrders.filter((o: any) => o.status === 'cancelled').length}</div>
+                                        <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('ملغي')}</div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

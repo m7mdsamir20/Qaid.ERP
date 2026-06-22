@@ -627,6 +627,199 @@ export const PUT = withProtection(async (request, session, body) => {
             return NextResponse.json({ success: true, message: 'تم الدفع وإخلاء الطاولة' });
         }
 
+        // ════════════════════════════════════════════════════
+        // REFUND ACTION: Full reversal (inventory + treasury + accounting)
+        // ════════════════════════════════════════════════════
+        if (body.action === 'refund') {
+            const order = await prisma.posOrder.findUnique({
+                where: { id: body.id, companyId },
+                include: {
+                    lines: {
+                        include: {
+                            item: { include: { recipe: { include: { items: true } } } }
+                        }
+                    },
+                    invoice: { select: { id: true } },
+                    payments: { select: { amount: true, treasuryId: true } }
+                }
+            });
+            if (!order) return NextResponse.json({ error: 'الطلب غير موجود' }, { status: 404 });
+            if (order.status === 'returned') return NextResponse.json({ error: 'هذا الطلب تم إرجاعه بالفعل' }, { status: 400 });
+
+            const refundAmount = Number(body.refundAmount ?? order.total);
+            const treasuryId: string | undefined = body.treasuryId;
+
+            await prisma.$transaction(async (tx: any) => {
+                // 1. Update POS order status
+                await tx.posOrder.update({
+                    where: { id: order.id },
+                    data: {
+                        status: 'returned',
+                        notes: `${order.notes || ''}\n[مرتجع: ${new Date().toLocaleDateString('ar-EG')}]`
+                    }
+                });
+
+                // 2. Deduct from treasury (refund cash to customer)
+                if (treasuryId && refundAmount > 0) {
+                    await tx.treasury.update({
+                        where: { id: treasuryId },
+                        data: { balance: { decrement: refundAmount } }
+                    });
+                }
+
+                // 3. Restore inventory
+                const defaultWarehouse = await tx.warehouse.findFirst({
+                    where: { companyId }, orderBy: { createdAt: 'asc' }
+                });
+
+                if (defaultWarehouse) {
+                    for (const line of order.lines as any[]) {
+                        const item = line.item;
+                        if (!item) continue;
+
+                        if (item.recipe && item.recipe.items.length > 0) {
+                            // Restore recipe ingredients
+                            for (const ri of item.recipe.items) {
+                                const qty = ri.quantity * line.quantity;
+                                await tx.stock.upsert({
+                                    where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } },
+                                    create: { itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: qty },
+                                    update: { quantity: { increment: qty } }
+                                });
+                                await tx.stockMovement.create({
+                                    data: {
+                                        type: 'return_in', date: new Date(),
+                                        itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: qty,
+                                        reference: `SRET-POS-${order.orderNumber}`,
+                                        notes: `مرتجع مكونات - مرتجع كاشير #${order.orderNumber}`, companyId
+                                    }
+                                });
+                            }
+                        } else if (item.type !== 'service' && isRetail) {
+                            // Restore retail item stock
+                            await tx.stock.upsert({
+                                where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
+                                create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: line.quantity },
+                                update: { quantity: { increment: line.quantity } }
+                            });
+                            await tx.stockMovement.create({
+                                data: {
+                                    type: 'return_in', date: new Date(),
+                                    itemId: item.id, warehouseId: defaultWarehouse.id, quantity: line.quantity,
+                                    reference: `SRET-POS-${order.orderNumber}`,
+                                    notes: `مرتجع مبيعات كاشير تجزئة #${order.orderNumber}`, companyId
+                                }
+                            });
+                        }
+                    }
+                }
+
+                // 4. Create sale_return Invoice linked to original
+                if (order.invoice?.id) {
+                    const lastReturn = await tx.invoice.findFirst({
+                        where: { companyId, type: 'sale_return' },
+                        orderBy: { invoiceNumber: 'desc' },
+                        select: { invoiceNumber: true }
+                    });
+                    const retNumber = (lastReturn?.invoiceNumber || 0) + 1;
+
+                    await tx.invoice.create({
+                        data: {
+                            invoiceNumber: retNumber,
+                            type: 'sale_return',
+                            date: new Date(),
+                            originalInvoiceId: order.invoice.id,
+                            customerId: order.customerId || null,
+                            subtotal: Number(order.subtotal),
+                            discount: Number(order.discount),
+                            taxEnabled: Number(order.taxAmount) > 0,
+                            taxAmount: Number(order.taxAmount),
+                            total: refundAmount,
+                            paidAmount: refundAmount,
+                            remaining: 0,
+                            paymentMethod: order.paymentMethod || 'cash',
+                            companyId,
+                            notes: `مرتجع مبيعات كاشير - طلب #${order.orderNumber}`,
+                            warehouseId: defaultWarehouse?.id ?? null,
+                            lines: {
+                                create: (order.lines as any[]).map((l: any) => ({
+                                    itemId: l.itemId,
+                                    quantity: l.quantity,
+                                    price: Number(l.unitPrice),
+                                    discount: Number(l.discount) || 0,
+                                    total: Number(l.total),
+                                }))
+                            }
+                        }
+                    });
+
+                    // Mark original invoice remaining as settled
+                    await tx.invoice.update({
+                        where: { id: order.invoice.id },
+                        data: { remaining: 0 }
+                    });
+                }
+
+                // 5. Reversal journal entry
+                const activeYear = await tx.financialYear.findFirst({ where: { companyId, isOpen: true } });
+                if (activeYear && refundAmount > 0) {
+                    const lastEntry = await tx.journalEntry.findFirst({
+                        where: { companyId }, orderBy: { entryNumber: 'desc' }, select: { entryNumber: true }
+                    });
+                    const entryNumber = (lastEntry?.entryNumber || 0) + 1;
+
+                    const revenueAccount = await tx.account.findFirst({
+                        where: { companyId, OR: [{ code: '4101' }, { code: '4100' }, { name: { contains: 'إيرادات' } }, { name: { contains: 'مبيعات' } }] }
+                    });
+
+                    // Use treasury's linked account, fallback to generic cash account
+                    let cashAccountId: string | null = null;
+                    if (treasuryId) {
+                        const treas = await tx.treasury.findUnique({ where: { id: treasuryId }, select: { accountId: true } });
+                        cashAccountId = treas?.accountId || null;
+                    }
+                    if (!cashAccountId) {
+                        const fallback = await tx.account.findFirst({
+                            where: { companyId, OR: [{ code: '1201' }, { code: '1200' }, { name: { contains: 'نقدية' } }, { name: { contains: 'خزنة' } }] }
+                        });
+                        cashAccountId = fallback?.id || null;
+                    }
+
+                    if (revenueAccount && cashAccountId) {
+                        const netRevenue = refundAmount - Number(order.taxAmount);
+                        const journalLines: any[] = [
+                            { accountId: revenueAccount.id, debit: netRevenue, credit: 0, description: `عكس إيراد - مرتجع كاشير #${order.orderNumber}` },
+                            { accountId: cashAccountId, debit: 0, credit: refundAmount, description: `رد نقدي للعميل - مرتجع كاشير #${order.orderNumber}` },
+                        ];
+
+                        if (Number(order.taxAmount) > 0) {
+                            const taxAccount = await tx.account.findFirst({
+                                where: { companyId, OR: [{ code: '2201' }, { code: '2114' }, { name: { contains: 'ضريبة' } }] }
+                            });
+                            if (taxAccount) {
+                                journalLines.push({ accountId: taxAccount.id, debit: Number(order.taxAmount), credit: 0, description: `عكس ضريبة - مرتجع كاشير #${order.orderNumber}` });
+                            }
+                        }
+
+                        await tx.journalEntry.create({
+                            data: {
+                                entryNumber, date: new Date(),
+                                description: `قيد مرتجع مبيعات كاشير - طلب #${order.orderNumber}`,
+                                reference: `SRET-POS-${order.orderNumber}`,
+                                referenceType: 'pos_order',
+                                referenceId: order.id,
+                                financialYearId: activeYear.id,
+                                companyId, isPosted: true,
+                                lines: { create: journalLines }
+                            }
+                        });
+                    }
+                }
+            });
+
+            return NextResponse.json({ success: true, message: 'تم إرجاع الطلب وعكس جميع الحركات المحاسبية والمخزنية بنجاح' });
+        }
+
         await prisma.posOrder.updateMany({
             where: { id: body.id, companyId },
             data: {

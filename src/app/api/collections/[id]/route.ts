@@ -95,23 +95,53 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
                 },
             });
 
-            // Update invoice remaining if linked
+            // Settle invoices
+            const settlements: { invoiceNumber: number; settled: number }[] = [];
+
             if (collection.invoiceId) {
+                // Linked to specific invoice → settle it directly
                 const invoice = await (tx as any).invoice.findUnique({
                     where: { id: collection.invoiceId },
-                    select: { remaining: true },
+                    select: { remaining: true, invoiceNumber: true },
                 });
                 if (invoice) {
-                    const newRemaining = Math.max(0, (invoice.remaining || 0) - collection.amount);
+                    const settle = Math.min(Number(collection.amount), Number(invoice.remaining));
                     await (tx as any).invoice.update({
                         where: { id: collection.invoiceId },
-                        data: { remaining: newRemaining },
+                        data: { remaining: { decrement: settle } },
                     });
+                    settlements.push({ invoiceNumber: invoice.invoiceNumber, settled: settle });
+                }
+            } else if (collection.customerId) {
+                // No specific invoice → FIFO: settle oldest unpaid invoices first
+                const unpaid = await (tx as any).invoice.findMany({
+                    where: {
+                        customerId: collection.customerId,
+                        companyId,
+                        remaining: { gt: 0 },
+                        total: { gt: 0 },
+                    },
+                    orderBy: { date: 'asc' },
+                    select: { id: true, remaining: true, invoiceNumber: true },
+                });
+
+                let toSettle = Number(collection.amount);
+                for (const inv of unpaid) {
+                    if (toSettle <= 0) break;
+                    const settle = Math.min(toSettle, Number(inv.remaining));
+                    await (tx as any).invoice.update({
+                        where: { id: inv.id },
+                        data: { remaining: { decrement: settle } },
+                    });
+                    settlements.push({ invoiceNumber: inv.invoiceNumber, settled: settle });
+                    toSettle -= settle;
                 }
             }
 
-            return updatedCollection;
+            return { updatedCollection, settlements };
         });
+
+        const { updatedCollection, settlements } = updated as any;
 
         const ctx = extractLogContext(session, request);
         await logActivity({
@@ -120,11 +150,15 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
             module: 'collections',
             entityType: 'Collection',
             entityId: id,
-            description: `أودع تحصيلاً بمبلغ ${collection.amount} في الخزينة`,
-            newData: { status: 'deposited', treasuryId },
+            description: `اعتمد تحصيلاً بمبلغ ${collection.amount}${settlements.length ? ` — سدّد ${settlements.length} فاتورة` : ''}`,
+            newData: {
+                'المبلغ المُعتمَد': collection.amount,
+                'فواتير مُسدَّدة': settlements.length,
+                ...Object.fromEntries(settlements.map((s: any) => [`فاتورة #${s.invoiceNumber}`, s.settled])),
+            },
         });
 
-        return NextResponse.json(updated);
+        return NextResponse.json(updatedCollection);
     }
 
     if (action === 'return') {
@@ -145,17 +179,51 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
                 data: { status: 'returned' },
             });
 
-            // Restore invoice remaining if it was deposited and linked
-            if (wasDeposited && collection.invoiceId) {
-                const invoice = await (tx as any).invoice.findUnique({
-                    where: { id: collection.invoiceId },
-                    select: { remaining: true, total: true },
-                });
-                if (invoice) {
-                    await (tx as any).invoice.update({
+            // Reverse invoice settlement
+            if (wasDeposited) {
+                if (collection.invoiceId) {
+                    // Was linked to specific invoice → restore it
+                    const invoice = await (tx as any).invoice.findUnique({
                         where: { id: collection.invoiceId },
-                        data: { remaining: (invoice.remaining || 0) + collection.amount },
+                        select: { remaining: true, total: true },
                     });
+                    if (invoice) {
+                        const restored = Math.min(
+                            Number(collection.amount),
+                            Number(invoice.total) - Number(invoice.remaining)
+                        );
+                        await (tx as any).invoice.update({
+                            where: { id: collection.invoiceId },
+                            data: { remaining: { increment: restored } },
+                        });
+                    }
+                } else if (collection.customerId) {
+                    // Was FIFO-settled → reverse in same order (oldest first, restore what was taken)
+                    const allInvoices = await (tx as any).invoice.findMany({
+                        where: {
+                            customerId: collection.customerId,
+                            companyId,
+                            total: { gt: 0 },
+                        },
+                        orderBy: { date: 'asc' },
+                        select: { id: true, remaining: true, total: true },
+                    });
+                    // Filter in JS: only invoices that have been partially/fully paid
+                    const settledInvoices = allInvoices.filter(
+                        (inv: any) => Number(inv.remaining) < Number(inv.total)
+                    );
+
+                    let toReverse = Number(collection.amount);
+                    for (const inv of settledInvoices) {
+                        if (toReverse <= 0) break;
+                        const maxRestorable = Number(inv.total) - Number(inv.remaining);
+                        const restore = Math.min(toReverse, maxRestorable);
+                        await (tx as any).invoice.update({
+                            where: { id: inv.id },
+                            data: { remaining: { increment: restore } },
+                        });
+                        toReverse -= restore;
+                    }
                 }
             }
 

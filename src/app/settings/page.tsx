@@ -155,7 +155,7 @@ function SettingsContent() {
             ], ['reports-financial', 'reports-treasury-bank']);
         } else if (role === 'sales') {
             // مندوب مبيعات / خدمات: مبيعات + عملاء
-            const salesPages = isServices ? ['/', '/sales-orders', '/sales', '/customers', '/receipts'] : ['/', '/sales-orders', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
+            const salesPages = isServices ? ['/', '/sales', '/customers', '/receipts'] : ['/', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
             grant(salesPages, ['reports-sales-purchases']);
         } else if (role === 'procurement') {
             // مسؤول مشتريات: مشتريات + موردين
@@ -536,7 +536,7 @@ function SettingsContent() {
         } else if (roleId === 'accountant') {
             grant(['/', '/accounts', '/opening-balances', '/journal-entries', '/cost-centers', '/closing-entries', '/treasuries', '/other-income', '/expenses', '/partners', '/partner-accounts', '/profit-distribution', '/capital']);
         } else if (roleId === 'sales') {
-            grant(['/', '/sales-orders', '/sales', '/sale-returns', '/receipts', '/customers', '/settlements', '/installments', '/due-installments', '/overdue-installments'], { view: true, create: true, editDelete: false });
+            grant(['/', '/sales', '/sale-returns', '/receipts', '/customers', '/settlements', '/installments', '/due-installments', '/overdue-installments'], { view: true, create: true, editDelete: false });
         } else if (roleId === 'procurement') {
             grant(['/', '/purchase-orders', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers'], { view: true, create: true, editDelete: false });
         } else if (roleId === 'storekeeper') {
