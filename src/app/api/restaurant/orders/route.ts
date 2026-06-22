@@ -634,11 +634,7 @@ export const PUT = withProtection(async (request, session, body) => {
             const order = await prisma.posOrder.findUnique({
                 where: { id: body.id, companyId },
                 include: {
-                    lines: {
-                        include: {
-                            item: { include: { recipe: { include: { items: true } } } }
-                        }
-                    },
+                    lines: true,
                     invoice: { select: { id: true } },
                     payments: { select: { amount: true, treasuryId: true } }
                 }
@@ -674,7 +670,11 @@ export const PUT = withProtection(async (request, session, body) => {
 
                 if (defaultWarehouse) {
                     for (const line of order.lines as any[]) {
-                        const item = line.item;
+                        // Fetch item with recipe separately (PosOrderLine has no item relation)
+                        const item = await tx.item.findUnique({
+                            where: { id: line.itemId },
+                            include: { recipe: { include: { items: true } } }
+                        });
                         if (!item) continue;
 
                         if (item.recipe && item.recipe.items.length > 0) {
