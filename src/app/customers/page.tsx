@@ -12,6 +12,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
@@ -301,30 +302,19 @@ export default function CustomersPage() {
                     }}
                 />
 
-                {/* KPI Stats Summary */}
-                <div style={{ display: 'grid', gridTemplateColumns: businessType === 'RESTAURANTS' ? '1fr' : 'repeat(3, 1fr)', gap: '14px', marginBottom: '16px' }}>
+                {/* KPI Stats Summary — يستخدم StatCard الموحّد */}
+                <StatCardGrid cols={businessType === 'RESTAURANTS' ? 1 : 3}>
                     {stats.map((s, i) => (
-                        <div key={i} style={{
-                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            transition: 'all 0.2s', position: 'relative'
-                        }}
-                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
-                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
-                        >
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{s.suffix}</span>
-                                </div>
-                            </div>
-                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                {s.icon}
-                            </div>
-                        </div>
+                        <StatCard
+                            key={i}
+                            label={s.label}
+                            value={fmt(s.value)}
+                            suffix={s.suffix}
+                            icon={s.icon}
+                            color={s.color}
+                        />
                     ))}
-                </div>
+                </StatCardGrid>
 
                 {/* Toolbar - Search & Status Filters */}
                 <div className="customers-toolbar" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>

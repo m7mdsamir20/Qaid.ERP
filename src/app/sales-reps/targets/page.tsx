@@ -6,12 +6,13 @@ import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { useTranslation } from '@/lib/i18n';
 import {
-    Target, Plus, Loader2, Edit2, AlertCircle, Copy, TrendingUp
+    Target, Plus, Loader2, Edit2, AlertCircle, Copy, TrendingUp, Users
 } from 'lucide-react';
 import {
     C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut,
-    PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, KPI_STYLE, KPI_ICON
+    PAGE_BASE, BTN_PRIMARY, TABLE_STYLE
 } from '@/constants/theme';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface SalesRep { id: string; name: string; code?: string; }
 interface SalesTarget {
@@ -157,10 +158,10 @@ export default function TargetsPage() {
         finally { setIsCopying(false); }
     };
 
-    const toArDigits = (n: number) => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
     const yearOptions = Array.from({ length: 5 }, (_, i) => {
         const y = now.getFullYear() - 2 + i;
-        return { value: String(y), label: toArDigits(y) };
+        const ys = String(y);
+        return { value: ys, label: ys[0] + '⁠' + ys.slice(1) };
     });
 
     // Reps with no target for current period
@@ -181,37 +182,29 @@ export default function TargetsPage() {
                     }}
                 />
 
-                {/* KPI */}
+                {/* KPI — يستخدم StatCard الموحّد */}
                 {!loading && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
-                        {[
-                            {
-                                label: 'إجمالي الأهداف',
-                                value: targets.reduce((s, t) => s + Number(t.targetAmount), 0),
-                                color: C.primary, icon: Target
-                            },
-                            {
-                                label: 'إجمالي المحقق',
-                                value: targets.reduce((s, t) => s + Number(t.achievedAmount || 0), 0),
-                                color: C.success, icon: TrendingUp
-                            },
-                            {
-                                label: 'مناديب بأهداف محددة',
-                                value: targets.length,
-                                color: C.warning, icon: Target, isCount: true
-                            }
-                        ].map((card, i) => (
-                            <div key={i} style={KPI_STYLE(card.color)}>
-                                <div style={KPI_ICON(card.color)}><card.icon size={18} /></div>
-                                <div>
-                                    <p style={{ fontSize: '10px', fontWeight: 700, color: C.textSecondary, margin: '0 0 2px', fontFamily: CAIRO }}>{card.label}</p>
-                                    <p style={{ fontSize: '18px', fontWeight: 800, color: card.color, margin: 0, fontFamily: OUTFIT }}>
-                                        {(card as any).isCount ? card.value : Number(card.value).toLocaleString('ar-SA')}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <StatCardGrid cols={3}>
+                        <StatCard
+                            label="إجمالي الأهداف"
+                            value={targets.reduce((s, t) => s + Number(t.targetAmount), 0).toLocaleString('ar-SA')}
+                            icon={<Target size={18} />}
+                            color={C.primary}
+                        />
+                        <StatCard
+                            label="إجمالي المحقق"
+                            value={targets.reduce((s, t) => s + Number(t.achievedAmount || 0), 0).toLocaleString('ar-SA')}
+                            icon={<TrendingUp size={18} />}
+                            color={C.success}
+                        />
+                        <StatCard
+                            label="مناديب بأهداف محددة"
+                            value={targets.length}
+                            suffix="مندوب"
+                            icon={<Users size={18} />}
+                            color={C.warning}
+                        />
+                    </StatCardGrid>
                 )}
 
                 {/* Filters */}
@@ -229,12 +222,18 @@ export default function TargetsPage() {
                         onClick={handleCopyPrevMonth}
                         disabled={isCopying}
                         style={{
-                            height: '42px', padding: '0 16px', borderRadius: '10px',
-                            background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}`,
-                            color: C.textPrimary, cursor: isCopying ? 'not-allowed' : 'pointer',
+                            height: '42px', padding: '0 18px', borderRadius: '10px',
+                            background: `${C.teal}12`,
+                            border: `1px solid ${C.teal}40`,
+                            color: C.teal,
+                            cursor: isCopying ? 'not-allowed' : 'pointer',
                             display: 'flex', alignItems: 'center', gap: '8px',
-                            fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                            fontSize: '13px', fontWeight: 700, fontFamily: CAIRO,
+                            transition: 'all 0.2s',
+                            opacity: isCopying ? 0.6 : 1,
                         }}
+                        onMouseEnter={e => { if (!isCopying) e.currentTarget.style.background = `${C.teal}22`; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = `${C.teal}12`; }}
                     >
                         {isCopying ? <Loader2 size={14} style={{ animation: 'spin 1.2s linear infinite' }} /> : <Copy size={14} />}
                         نسخ من الشهر السابق
@@ -250,50 +249,80 @@ export default function TargetsPage() {
                     <div>
                         {/* Reps with targets */}
                         {targets.length > 0 && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px', marginBottom: '24px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px', marginBottom: '24px' }}>
                                 {targets.map((target) => {
                                     const achieved = Number(target.achievedAmount || 0);
                                     const goal = Number(target.targetAmount);
                                     const pct = goal > 0 ? Math.round((achieved / goal) * 100) : 0;
-                                    const color = pct >= 100 ? C.success : pct >= 70 ? C.warning : C.danger;
+                                    const cardColor = pct >= 100 ? C.success : pct >= 70 ? C.warning : C.danger;
 
                                     return (
                                         <div key={target.id} style={{
-                                            background: C.card, border: `1px solid ${C.border}`,
-                                            borderRadius: '16px', padding: '20px',
-                                            transition: 'all 0.2s'
-                                        }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                                <div>
-                                                    <p style={{ margin: 0, fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>{target.salesRep?.name || '—'}</p>
-                                                    {target.salesRep?.code && <p style={{ margin: '2px 0 0', fontSize: '11px', color: C.primary, fontFamily: OUTFIT }}>{target.salesRep.code}</p>}
+                                            background: `${cardColor}08`,
+                                            border: `1px solid ${cardColor}33`,
+                                            borderRadius: '10px',
+                                            padding: '18px',
+                                            transition: 'all 0.2s',
+                                        }}
+                                            onMouseEnter={e => { e.currentTarget.style.background = `${cardColor}14`; }}
+                                            onMouseLeave={e => { e.currentTarget.style.background = `${cardColor}08`; }}
+                                        >
+                                            {/* Header: اسم المندوب + زر تعديل */}
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                    {/* Avatar */}
+                                                    <div style={{
+                                                        width: '34px', height: '34px', borderRadius: '8px', flexShrink: 0,
+                                                        background: `${cardColor}20`, border: `1px solid ${cardColor}40`,
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: cardColor, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT,
+                                                    }}>
+                                                        {(target.salesRep?.name || '?').charAt(0)}
+                                                    </div>
+                                                    <div>
+                                                        <p style={{ margin: 0, fontWeight: 700, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{target.salesRep?.name || '—'}</p>
+                                                        {target.salesRep?.code && <p style={{ margin: '2px 0 0', fontSize: '11px', color: cardColor, fontFamily: OUTFIT }}>{target.salesRep.code}</p>}
+                                                    </div>
                                                 </div>
-                                                <button onClick={() => openEdit(target)} style={{ ...TABLE_STYLE.actionBtn(C.textSecondary) }}>
+                                                <button onClick={() => openEdit(target)} style={{ ...TABLE_STYLE.actionBtn(cardColor), flexShrink: 0 }}>
                                                     <Edit2 size={13} />
                                                 </button>
                                             </div>
 
-                                            {/* Progress */}
-                                            <div style={{ marginBottom: '12px' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                            {/* Progress bar */}
+                                            <div style={{ marginBottom: '14px', borderTop: `1px solid ${cardColor}20`, paddingTop: '12px' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                                                     <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>الإنجاز</span>
-                                                    <span style={{ fontSize: '16px', fontWeight: 800, color, fontFamily: OUTFIT }}>{pct}%</span>
+                                                    <span style={{ fontSize: '18px', fontWeight: 800, color: cardColor, fontFamily: OUTFIT }}>{pct}%</span>
                                                 </div>
-                                                <ProgressBar percent={pct} />
+                                                <div style={{ width: '100%', height: '6px', borderRadius: '4px', background: `${cardColor}20`, overflow: 'hidden' }}>
+                                                    <div style={{
+                                                        height: '100%', borderRadius: '4px', background: cardColor,
+                                                        width: `${Math.min(pct, 100)}%`, transition: 'width 0.4s ease'
+                                                    }} />
+                                                </div>
                                             </div>
 
+                                            {/* الهدف vs المحقق */}
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                                                <div style={{ padding: '8px', background: 'rgba(255,255,255,0.04)', borderRadius: '8px' }}>
-                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>الهدف</p>
-                                                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{goal.toLocaleString('ar-SA')}</p>
+                                                <div style={{
+                                                    padding: '8px 10px', background: `${cardColor}06`,
+                                                    borderRadius: '8px', border: `1px solid ${cardColor}20`,
+                                                }}>
+                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginBottom: '3px' }}>الهدف</p>
+                                                    <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{goal.toLocaleString('ar-SA')}</p>
                                                 </div>
-                                                <div style={{ padding: '8px', background: `${color}10`, borderRadius: '8px', border: `1px solid ${color}30` }}>
-                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>المحقق</p>
-                                                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color, fontFamily: OUTFIT }}>{achieved.toLocaleString('ar-SA')}</p>
+                                                <div style={{
+                                                    padding: '8px 10px', background: `${cardColor}12`,
+                                                    borderRadius: '8px', border: `1px solid ${cardColor}30`,
+                                                }}>
+                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginBottom: '3px' }}>المحقق</p>
+                                                    <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: cardColor, fontFamily: OUTFIT }}>{achieved.toLocaleString('ar-SA')}</p>
                                                 </div>
                                             </div>
+
                                             {target.notes && (
-                                                <p style={{ margin: '10px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{target.notes}</p>
+                                                <p style={{ margin: '10px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, borderTop: `1px solid ${cardColor}15`, paddingTop: '8px' }}>{target.notes}</p>
                                             )}
                                         </div>
                                     );

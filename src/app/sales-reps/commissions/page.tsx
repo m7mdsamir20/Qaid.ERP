@@ -13,8 +13,9 @@ import {
 } from 'lucide-react';
 import {
     C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut,
-    PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, KPI_STYLE, KPI_ICON
+    PAGE_BASE, BTN_PRIMARY, TABLE_STYLE
 } from '@/constants/theme';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface Commission {
     id: string;
@@ -217,10 +218,10 @@ export default function CommissionsPage() {
         }
     ];
 
-    const toArDigits = (n: number) => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
     const yearOptions = Array.from({ length: 5 }, (_, i) => {
         const y = now.getFullYear() - 2 + i;
-        return { value: String(y), label: toArDigits(y) };
+        const ys = String(y);
+        return { value: ys, label: ys[0] + '⁠' + ys.slice(1) };
     });
 
     return (
@@ -232,25 +233,29 @@ export default function CommissionsPage() {
                     icon={Calculator}
                 />
 
-                {/* KPI */}
+                {/* KPI — يستخدم StatCard الموحّد */}
                 {!loading && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
-                        {[
-                            { label: 'إجمالي المبيعات', value: totalSalesBase, color: C.primary, icon: TrendingUp },
-                            { label: 'إجمالي العمولات', value: totalCommissions, color: C.success, icon: DollarSign },
-                            { label: 'عدد المناديب', value: commissions.length, color: C.warning, icon: BadgeCheck, isCount: true }
-                        ].map((card, i) => (
-                            <div key={i} style={KPI_STYLE(card.color)}>
-                                <div style={KPI_ICON(card.color)}><card.icon size={18} /></div>
-                                <div>
-                                    <p style={{ fontSize: '10px', fontWeight: 700, color: C.textSecondary, margin: '0 0 2px', fontFamily: CAIRO }}>{card.label}</p>
-                                    <p style={{ fontSize: '18px', fontWeight: 800, color: card.color, margin: 0, fontFamily: OUTFIT }}>
-                                        {(card as any).isCount ? card.value : Number(card.value).toLocaleString('ar-SA')}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <StatCardGrid cols={3}>
+                        <StatCard
+                            label="إجمالي المبيعات"
+                            value={totalSalesBase.toLocaleString('ar-SA')}
+                            icon={<TrendingUp size={18} />}
+                            color={C.primary}
+                        />
+                        <StatCard
+                            label="إجمالي العمولات"
+                            value={totalCommissions.toLocaleString('ar-SA')}
+                            icon={<DollarSign size={18} />}
+                            color={C.success}
+                        />
+                        <StatCard
+                            label="عدد المناديب"
+                            value={commissions.length}
+                            suffix="مندوب"
+                            icon={<BadgeCheck size={18} />}
+                            color={C.warning}
+                        />
+                    </StatCardGrid>
                 )}
 
                 {/* Filters + Calculate */}

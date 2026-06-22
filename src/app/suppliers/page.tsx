@@ -10,6 +10,7 @@ import { Truck, Plus, Phone, MapPin, X, Edit3, Trash2, Search, Loader2, Trending
 import { useSession } from 'next-auth/react';
 
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
@@ -260,30 +261,19 @@ export default function SuppliersPage() {
                     }}
                 />
 
-                {/* KPI Stats Summary */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '16px' }}>
+                {/* KPI Stats Summary — يستخدم StatCard الموحّد */}
+                <StatCardGrid cols={3}>
                     {stats.map((s, i) => (
-                        <div key={i} style={{
-                            background: `${s.iconColor}08`, border: `1px solid ${s.iconColor}33`, borderRadius: '10px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            transition: 'all 0.2s', position: 'relative'
-                        }}
-                            onMouseEnter={e => e.currentTarget.style.background = `${s.iconColor}15`}
-                            onMouseLeave={e => e.currentTarget.style.background = `${s.iconColor}08`}
-                        >
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value as number)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{s.suffix}</span>
-                                </div>
-                            </div>
-                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.iconColor}15`, border: `1px solid ${s.iconColor}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.iconColor }}>
-                                {s.icon}
-                            </div>
-                        </div>
+                        <StatCard
+                            key={i}
+                            label={s.label}
+                            value={fmt(s.value as number)}
+                            suffix={s.suffix}
+                            icon={s.icon}
+                            color={s.iconColor}
+                        />
                     ))}
-                </div>
+                </StatCardGrid>
 
                 {/* Toolbar - Search */}
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>

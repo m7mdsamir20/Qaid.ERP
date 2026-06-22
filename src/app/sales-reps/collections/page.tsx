@@ -14,8 +14,9 @@ import {
 } from 'lucide-react';
 import {
     C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut,
-    PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, KPI_STYLE, KPI_ICON
+    PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE
 } from '@/constants/theme';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface Collection {
     id: string;
@@ -283,21 +284,34 @@ export default function CollectionsPage() {
                     }}
                 />
 
-                {/* KPI */}
+                {/* KPI — يستخدم StatCard الموحّد */}
                 {!loading && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
-                        {kpiCards.map((card, i) => (
-                            <div key={i} style={KPI_STYLE(card.color)}>
-                                <div style={KPI_ICON(card.color)}><card.icon size={18} /></div>
-                                <div>
-                                    <p style={{ fontSize: '10px', fontWeight: 700, color: C.textSecondary, margin: '0 0 2px', fontFamily: CAIRO }}>{card.label}</p>
-                                    <p style={{ fontSize: '16px', fontWeight: 800, color: card.color, margin: 0, fontFamily: OUTFIT }}>
-                                        {card.value.toLocaleString('ar-SA')}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                    <StatCardGrid cols={4}>
+                        <StatCard
+                            label="إجمالي الشهر"
+                            value={totalAmount.toLocaleString('ar-SA')}
+                            icon={<Wallet size={18} />}
+                            color={C.primary}
+                        />
+                        <StatCard
+                            label="نقدي"
+                            value={cashTotal.toLocaleString('ar-SA')}
+                            icon={<Banknote size={18} />}
+                            color={C.success}
+                        />
+                        <StatCard
+                            label="شيكات"
+                            value={checkTotal.toLocaleString('ar-SA')}
+                            icon={<CreditCard size={18} />}
+                            color={C.warning}
+                        />
+                        <StatCard
+                            label="مودَع"
+                            value={depositedTotal.toLocaleString('ar-SA')}
+                            icon={<ArrowDownToLine size={18} />}
+                            color={C.teal}
+                        />
+                    </StatCardGrid>
                 )}
 
                 {/* Filters */}

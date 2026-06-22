@@ -262,6 +262,61 @@ export const KPI_ICON = (color: string): React.CSSProperties => ({
 });
 
 /* ══════════════════════════════════════════════════════════════
+   STAT CARD — التصميم المعتمد للكروت الإحصائية (KPI Cards)
+   هذا هو التصميم الموحّد المرجعي المستخرج من صفحة العملاء.
+   استخدمه في أي صفحة جديدة تحتاج كروت إحصائيات.
+   ══════════════════════════════════════════════════════════════ */
+
+/**
+ * STAT_CARD_STYLE — التصميم الأساسي لكارت الإحصائية
+ *
+ * الاستخدام:
+ *   <div style={STAT_CARD_STYLE(color, hovered)} onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)}>
+ *     <div style={STAT_CARD_TEXT}>
+ *       <p style={STAT_CARD_LABEL}>{label}</p>
+ *       <span style={STAT_CARD_VALUE}>{value}</span>
+ *     </div>
+ *     <div style={STAT_CARD_ICON_BOX(color)}><Icon size={18} /></div>
+ *   </div>
+ *
+ * أو استخدم مكوّن <StatCard> من src/components/StatCard.tsx مباشرةً للراحة.
+ */
+export const STAT_CARD_STYLE = (color: string, hovered = false): React.CSSProperties => ({
+    background: hovered ? `${color}15` : `${color}08`,
+    border: `1px solid ${color}33`,
+    borderRadius: '10px',
+    padding: '16px 18px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    transition: 'all 0.2s',
+    position: 'relative',
+    cursor: 'default',
+});
+
+/** أيقونة الكارت الإحصائي — المربع الملوّن يمين/يسار الكارت */
+export const STAT_CARD_ICON_BOX = (color: string): React.CSSProperties => ({
+    width: '38px',
+    height: '38px',
+    borderRadius: '10px',
+    background: `${color}15`,
+    border: `1px solid ${color}30`,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: color,
+    flexShrink: 0,
+});
+
+/** شبكة كروت الإحصائيات — تقسيم عمودي تلقائي */
+export const STAT_CARD_GRID = (cols: number = 3): React.CSSProperties => ({
+    display: 'grid',
+    gridTemplateColumns: `repeat(${cols}, 1fr)`,
+    gap: '14px',
+    marginBottom: '20px',
+});
+
+/* ══════════════════════════════════════════════════════════════
    MOBILE-RESPONSIVE HELPERS — استخدمها في أي صفحة جديدة لضمان
    التوافق مع الموبايل تلقائياً بدون CSS إضافي
    ══════════════════════════════════════════════════════════════ */

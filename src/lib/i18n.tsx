@@ -4878,6 +4878,27 @@ export const dictionaries = {
         "الكمية للتسليم": "Quantity for delivery",
         "تم تسليم جميع الأصناف بالكامل": "All items were fully delivered",
         "سيتم حذف أمر البيع نهائياً ولا يمكن التراجع عن هذا الإجراء": "The sell order will be permanently deleted and this action cannot be undone",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "أداء المناديب": "Performance of delegates",
+        "مقارنة مبيعات وتحصيلات كل مندوب مقابل هدفه خلال فترة زمنية محددة": "Compare each representative's sales and collections against their target during a specific period of time",
+        "تفاصيل الشيكات والنقدية والتحويلات المودعة والمعلقة لكل مندوب": "Details of deposited and pending checks, cash and transfers for each delegate",
+        "تقرير العمولات": "Commissions report",
+        "احتساب وعرض عمولات المناديب حسب المبيعات أو التحصيل مع إمكانية الاعتماد والصرف": "Calculating and displaying representatives’ commissions according to sales or collection, with the possibility of approval and disbursement",
+        "تقرير الأهداف": "Objectives report",
+        "نسبة إنجاز كل مندوب مقابل الهدف الشهري مع مؤشرات الأداء بصرياً": "The percentage of each delegate’s achievement against the monthly goal with visual performance indicators",
+        "تقارير المناديب": "Reports of delegates",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "الفواتير": "Invoices",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "مناديب نشطون": "Active delegates",
+        "إجمالي مبيعات الشهر": "Total sales for the month",
+        "عمولات مستحقة": "Commissions payable",
 }
 };
 
