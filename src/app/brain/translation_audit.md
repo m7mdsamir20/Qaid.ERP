@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-22T06:02:41.716Z
+Generated on: 2026-06-22T07:01:00.901Z
 
 ## Summary
 
@@ -932,10 +932,10 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 71: `لا يمكن حذف المشروع لوجود عمليات مرتبطة به`
 
 ### [app/api/purchase-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/route.ts)
-- Line 76: `يرجى تحديد المورد`
-- Line 77: `يرجى إضافة بند واحد على الأقل`
-- Line 142: `أنشأ أمر شراء رقم`
-- Line 142: `للمورد`
+- Line 81: `يرجى تحديد المورد`
+- Line 82: `يرجى إضافة بند واحد على الأقل`
+- Line 147: `أنشأ أمر شراء رقم`
+- Line 147: `للمورد`
 
 ### [app/api/purchase-orders/[id]/receive/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/[id]/receive/route.ts)
 - Line 13: `يرجى تحديد الكميات المستلمة`
@@ -1347,10 +1347,10 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 98: `فشل في حذف الفاتورة`
 
 ### [app/api/sales-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-orders/route.ts)
-- Line 92: `عميل نقدي`
-- Line 151: `أنشأ أمر بيع رقم`
-- Line 151: `للعميل`
-- Line 158: `فشل في إنشاء أمر البيع`
+- Line 97: `عميل نقدي`
+- Line 156: `أنشأ أمر بيع رقم`
+- Line 156: `للعميل`
+- Line 163: `فشل في إنشاء أمر البيع`
 
 ### [app/api/sales-orders/[id]/deliver/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-orders/[id]/deliver/route.ts)
 - Line 22: `أمر البيع غير موجود`
@@ -2925,13 +2925,13 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 565: `خزينة`
 
 ### [app/sales-orders/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/new/page.tsx)
-- Line 459: `الصنف`
-- Line 459: `الوصف`
-- Line 459: `الكمية`
-- Line 459: `الوحدة`
-- Line 459: `السعر`
-- Line 459: `الخصم`
-- Line 459: `الإجمالي`
+- Line 470: `الصنف`
+- Line 470: `الوصف`
+- Line 470: `الكمية`
+- Line 470: `الوحدة`
+- Line 470: `السعر`
+- Line 470: `الخصم`
+- Line 470: `الإجمالي`
 
 ### [app/sales-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/page.tsx)
 - Line 30: `مسودة`

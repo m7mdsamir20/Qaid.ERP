@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
@@ -187,7 +187,7 @@ export default function NewReceiptPage() {
                                             letterSpacing: '1px',
                                             boxSizing: 'border-box'
                                         }}>
-                                            RCP-{String(nextNum).padStart(5, '0')}
+                                            {`RCP-${String(nextNum).padStart(5, '0')}`}
                                         </div>
                                     </div>
                                     <div>

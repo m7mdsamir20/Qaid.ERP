@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -597,7 +597,7 @@ function NewSalePageInner() {
                         <CheckCircle size={20} style={{ color: '#4ade80', flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
                             <div style={{ fontSize: '13px', fontWeight: 700, color: '#4ade80', marginBottom: '2px' }}>
-                                {t('تحويل عرض السعر')} QUO-{String(fromQuotation.quotationNumber).padStart(5, '0')} {t('إلى فاتورة مبيعات')}
+                                {t('تحويل عرض السعر')} {`QUO-${String(fromQuotation.quotationNumber).padStart(5, '0')}`} {t('إلى فاتورة مبيعات')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
                                 {t('تم تحميل بيانات العرض تلقائياً — اختر طريقة الدفع واضغط حفظ')}
@@ -629,7 +629,7 @@ function NewSalePageInner() {
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
                                     }}>
-                                        {isServices ? 'SRV' : 'SAL'}-{String(nextNum).padStart(5, '0')}
+                                        {`${isServices ? 'SRV' : 'SAL'}-${String(nextNum).padStart(5, '0')}`}
                                     </div>
                                 </div>
                                 <div>

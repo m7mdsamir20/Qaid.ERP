@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -119,7 +119,7 @@ export default function MaterialRequestsPage() {
                             header: 'رقم الطلب', type: 'text',
                             cell: (row) => (
                                 <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>
-                                    MR-{String(row.requestNumber).padStart(5, '0')}
+                                    {`MR-${String(row.requestNumber).padStart(5, '0')}`}
                                 </span>
                             )
                         },
@@ -128,7 +128,7 @@ export default function MaterialRequestsPage() {
                             cell: (row) => row.project ? (
                                 <div>
                                     <div style={{ fontWeight: 600 }}>{row.project.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textSecondary }}>PRJ-{String(row.project.projectNumber).padStart(5, '0')}</div>
+                                    <div style={{ fontSize: '11px', color: C.textSecondary }}>{`PRJ-${String(row.project.projectNumber).padStart(5, '0')}`}</div>
                                 </div>
                             ) : '—'
                         },

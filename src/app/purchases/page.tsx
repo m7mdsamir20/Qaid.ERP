@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
@@ -83,7 +83,7 @@ export default function PurchasesListPage() {
             type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                    PUR-{String(inv.invoiceNumber).padStart(5, '0')}
+                    {`PUR-${String(inv.invoiceNumber).padStart(5, '0')}`}
                 </span>
             ),
             style: { width: '120px' }

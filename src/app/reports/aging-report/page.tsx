@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
@@ -155,7 +155,7 @@ export default function AgingReportPage() {
             type: 'number' as const,
             cell: (row: AgingInvoice) => (
                 <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
-                    SAL-{String(row.invoiceNumber).padStart(5, '0')}
+                    {`SAL-${String(row.invoiceNumber).padStart(5, '0')}`}
                 </span>
             )
         },

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -353,7 +353,7 @@ export default function NewQuotationPage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
                                     <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
-                                        QUO-{String(nextNum).padStart(5, '0')}
+                                        {`QUO-${String(nextNum).padStart(5, '0')}`}
                                     </div>
                                 </div>
                                 <div>

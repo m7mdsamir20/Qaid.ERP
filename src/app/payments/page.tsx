@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -134,7 +134,7 @@ export default function PaymentVouchersPage() {
 
                 <DataTable
                     columns={[
-                        { header: t("رقم السند"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>PMT-{String(row.voucherNumber).padStart(5, '0')}</span> },
+                        { header: t("رقم السند"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{`PMT-${String(row.voucherNumber).padStart(5, '0')}`}</span> },
                         { header: t("التاريخ"), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
                         { header: t("المورد"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.supplier?.name || '—'}</span> },
                         { header: t("طريقة الدفع"), type: 'status', cell: (row) => (

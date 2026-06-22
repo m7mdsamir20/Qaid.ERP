@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -157,7 +157,7 @@ export default function QuotationsPage() {
 
                 <DataTable
                     columns={[
-                        { header: t("رقم العرض"), type: 'number', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>QUO-{row.quotationNumber.toString().padStart(5, '0')}</span> },
+                        { header: t("رقم العرض"), type: 'number', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{`QUO-${row.quotationNumber.toString().padStart(5, '0')}`}</span> },
                         { header: t("العميل"), type: 'text', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.customer?.name || t('عميل نقدي')}</span> },
                         { header: t("التاريخ"), type: 'date', cell: (row) => <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
                         { header: t("الإجمالي"), type: 'number', cell: (row) => fMoneyJSX(row.total) },

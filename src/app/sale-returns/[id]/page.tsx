@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { C } from '@/constants/theme';
 
@@ -121,7 +121,7 @@ export default function SaleReturnDetailsPage() {
                 <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '12px 20px', marginBottom: '8px', display: 'flex', gap: '24px', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <span style={{ fontWeight: 600 }}>{t('رقم المرتجع:')}</span>
-                        <span style={{ color: '#256af4', fontWeight: 600, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
+                        <span style={{ color: '#256af4', fontWeight: 600, fontFamily: 'monospace' }}>{`RET-${String(ret.invoiceNumber).padStart(5, '0')}`}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <Calendar size={14} style={{ color: C.primary }} />
@@ -132,7 +132,7 @@ export default function SaleReturnDetailsPage() {
                         <div onClick={() => router.push('/sales/' + ret.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#256af4', cursor: 'pointer', background: 'rgba(37, 106, 244,0.05)', padding: '2px 10px', borderRadius: '6px' }}>
                             <ShoppingBag size={14} />
                             <span style={{ fontWeight: 600 }}>{isServices ? t("مرجع فاتورة الخدمة:") : t("مرجع فاتورة البيع:")}</span>
-                            <span style={{ fontWeight: 600 }}>SRV-{String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}</span>
+                            <span style={{ fontWeight: 600 }}>{`SRV-${String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}`}</span>
                         </div>
                     )}
                 </div>

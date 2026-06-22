@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -440,7 +440,7 @@ export default function NewPurchasePage() {
                                         display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
                                         fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
                                     }}>
-                                        PUR-{String(nextNum).padStart(5, '0')}
+                                        {`PUR-${String(nextNum).padStart(5, '0')}`}
                                     </div>
                                 </div>
                                 <div>

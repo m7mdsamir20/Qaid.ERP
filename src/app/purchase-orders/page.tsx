@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
@@ -98,7 +98,7 @@ export default function PurchaseOrdersPage() {
             type: 'number',
             cell: (row: PurchaseOrder) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.85, fontFamily: OUTFIT }}>
-                    PO-{String(row.orderNumber).padStart(5, '0')}
+                    {`PO-${String(row.orderNumber).padStart(5, '0')}`}
                 </span>
             ),
             style: { width: '110px' },

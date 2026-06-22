@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -368,7 +368,7 @@ export default function NewPurchaseReturnPage() {
                                             fontSize: '13px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                         }}>
-                                            RTN-{String(nextNum).padStart(5, '0')}
+                                            {`RTN-${String(nextNum).padStart(5, '0')}`}
                                         </div>
                                     </div>
                                     <div>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
@@ -85,7 +85,7 @@ export default function CollectionReportPage() {
             type: 'number' as const,
             cell: (row: CollectionInstallment) => (
                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                    PLAN-{String(row.plan?.planNumber || 0).padStart(5, '0')}
+                    {`PLAN-${String(row.plan?.planNumber || 0).padStart(5, '0')}`}
                 </span>
             )
         },

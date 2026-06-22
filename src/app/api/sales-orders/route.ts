@@ -10,6 +10,11 @@ export const GET = withProtection(async (request, session) => {
         const branchFilter = getBranchFilter(session);
         const { searchParams } = new URL(request.url);
 
+        if (searchParams.get('nextNum')) {
+            const last = await prisma.salesOrder.findFirst({ where: { companyId }, orderBy: { orderNumber: 'desc' }, select: { orderNumber: true } });
+            return NextResponse.json({ nextNum: (last?.orderNumber || 0) + 1 });
+        }
+
         const page = parseInt(searchParams.get('page') || '1');
         const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
         const skip = (page - 1) * limit;

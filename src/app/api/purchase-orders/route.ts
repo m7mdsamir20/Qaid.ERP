@@ -8,6 +8,11 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
     const companyId = (session.user as any).companyId;
     const url = new URL(request.url);
 
+    if (url.searchParams.get('nextNum')) {
+        const last = await prisma.purchaseOrder.findFirst({ where: { companyId }, orderBy: { orderNumber: 'desc' }, select: { orderNumber: true } });
+        return NextResponse.json({ nextNum: (last?.orderNumber || 0) + 1 });
+    }
+
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
     const skip = (page - 1) * limit;

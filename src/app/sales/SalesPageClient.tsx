@@ -106,7 +106,7 @@ export default function SalesPage() {
             type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                    {isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
+                    {`${isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-${String(inv.invoiceNumber).padStart(5, '0')}`}
                 </span>
             ),
             style: { width: '120px' }

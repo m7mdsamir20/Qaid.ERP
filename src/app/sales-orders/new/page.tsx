@@ -52,6 +52,7 @@ export default function NewSalesOrderPage() {
     const [salesReps, setSalesReps] = useState<SalesRep[]>([]);
     const [projects, setProjects] = useState<Project[]>([]);
 
+    const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -90,12 +91,15 @@ export default function NewSalesOrderPage() {
 
     const loadData = useCallback(async () => {
         try {
-            const [custR, whR, itemR, repR] = await Promise.all([
+            const [custR, whR, itemR, repR, nextR] = await Promise.all([
                 fetch('/api/customers'),
                 fetch('/api/warehouses'),
                 fetch('/api/items?all=true'),
                 fetch('/api/sales-reps'),
+                fetch('/api/sales-orders?nextNum=1'),
             ]);
+            const nextData = await nextR.json();
+            setNextNum(nextData.nextNum || 1);
             const custData = await custR.json();
             setCustomers(Array.isArray(custData) ? custData : []);
 
@@ -272,6 +276,13 @@ export default function NewSalesOrderPage() {
                         <div style={SC}>
                             <div style={{ ...STitle, color: C.primary }}><Info size={12} /> {t('معلومات الأمر')}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                                {/* Order Number Badge */}
+                                <div className="mobile-hide">
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('رقم الأمر')}</label>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px' }}>
+                                        {`SO-${String(nextNum).padStart(5, '0')}`}
+                                    </div>
+                                </div>
                                 {/* Customer */}
                                 <div>
                                     <label style={LS}>{t('العميل')}</label>

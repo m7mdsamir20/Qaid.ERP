@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -497,7 +497,7 @@ export default function ProjectDetailsPage() {
                                             const isDone = contract.status === 'completed';
                                             return (
                                                 <tr key={contract.id} style={TABLE_STYLE.row(idx === project.subContracts.length - 1)}>
-                                                    <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>CNT-{String(contract.contractNumber).padStart(5, '0')}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>{`CNT-${String(contract.contractNumber).padStart(5, '0')}`}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600 }}>{contract.subcontractor?.name}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', color: C.textSecondary }}>{contract.subcontractor?.specialty || contract.description || '—'}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center' }}>{fMoney(contract.contractValue)}</td>
@@ -564,7 +564,7 @@ export default function ProjectDetailsPage() {
                                             const status = billStatusLabels[bill.status] || { label: bill.status, color: C.textSecondary, bg: C.border };
                                             return (
                                                 <tr key={bill.id} style={TABLE_STYLE.row(idx === project.progressBills.length - 1)}>
-                                                    <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>BIL-{String(bill.billNumber).padStart(5, '0')}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontWeight: 700 }}>{`BIL-${String(bill.billNumber).padStart(5, '0')}`}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{new Date(bill.date).toLocaleDateString()}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center' }}>{fMoney(bill.subtotal)}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, textAlign: 'center', fontWeight: 600 }}>{fMoney(bill.netAmount)}</td>

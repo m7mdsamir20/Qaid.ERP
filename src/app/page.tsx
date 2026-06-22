@@ -774,7 +774,7 @@ export default function DashboardPage() {
                               <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '3px 10px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO, whiteSpace: 'nowrap', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(s.label)}</span>
                             </td>
                             <td style={{ padding: '12px 8px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }}>
-                              {inv._isPosOrder ? 'POS-' : getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
+                              {`${inv._isPosOrder ? 'POS-' : getInvoicePrefix(inv.type)}${String(inv.invoiceNumber).padStart(5, '0')}`}
                             </td>
                           </tr>
                         );

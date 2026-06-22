@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -268,7 +268,7 @@ export default function ProgressBillsPage() {
                             type: 'text',
                             cell: (row) => (
                                 <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>
-                                    BIL-{String(row.billNumber).padStart(5, '0')}
+                                    {`BIL-${String(row.billNumber).padStart(5, '0')}`}
                                 </span>
                             )
                         },

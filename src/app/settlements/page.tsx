@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -330,7 +330,7 @@ export default function ComprehensiveSettlementPage() {
 
                         <DataTable
                             columns={[
-                                { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>JV-{String(row.entryNumber || '').replace(/\D/g, '').padStart(5, '0')}</span> },
+                                { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>{`JV-${String(row.entryNumber || '').replace(/\D/g, '').padStart(5, '0')}`}</span> },
                                 { header: t('من حساب'), type: 'text', cell: (row) => (
                                     <>
                                         <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{row.fromConfig?.name || '-'}</div>

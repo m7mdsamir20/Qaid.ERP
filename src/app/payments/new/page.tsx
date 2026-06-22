@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -147,7 +147,7 @@ export default function NewPaymentPage() {
                     backButton={{ label: t("رجوع للسجل"), onClick: () => router.push('/payments') }}
                 >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.2)', padding: '4px 12px', borderRadius: '8px', color: '#f43f5e', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px' }}>
-                        <Receipt size={14} /> PMT-{String(nextNum).padStart(5, '0')}
+                        <Receipt size={14} /> {`PMT-${String(nextNum).padStart(5, '0')}`}
                     </div>
                 </PageHeader>
 
@@ -171,7 +171,7 @@ export default function NewPaymentPage() {
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
                                     }}>
-                                        PMT-{String(nextNum).padStart(5, '0')}
+                                        {`PMT-${String(nextNum).padStart(5, '0')}`}
                                     </div>
                                 </div>
                                 <div>

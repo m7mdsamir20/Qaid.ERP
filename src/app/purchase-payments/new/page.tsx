@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -144,7 +144,7 @@ export default function NewPurchasePaymentPage() {
                                             letterSpacing: '1px',
                                             boxSizing: 'border-box'
                                         }}>
-                                            PMT-{String(nextNum).padStart(5, '0')}
+                                            {`PMT-${String(nextNum).padStart(5, '0')}`}
                                         </div>
                                     </div>
                                     <div>

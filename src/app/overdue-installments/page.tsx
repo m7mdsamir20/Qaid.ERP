@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -147,7 +147,7 @@ export default function OverduePage() {
                                 type: 'number',
                                 cell: (row) => (
                                     <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT, display: 'inline-block', direction: 'ltr' }}>
-                                        PLAN-{String(row.plan?.planNumber || 1).padStart(5, '0')}
+                                        {`PLAN-${String(row.plan?.planNumber || 1).padStart(5, '0')}`}
                                     </span>
                                 )
                             },

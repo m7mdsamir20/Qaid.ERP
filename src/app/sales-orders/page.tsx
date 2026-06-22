@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
@@ -109,7 +109,7 @@ export default function SalesOrdersPage() {
             type: 'number',
             cell: (order: SalesOrder) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.75, fontFamily: OUTFIT }}>
-                    SO-{String(order.orderNumber).padStart(5, '0')}
+                    {`SO-${String(order.orderNumber).padStart(5, '0')}`}
                 </span>
             ),
             style: { width: '110px' },

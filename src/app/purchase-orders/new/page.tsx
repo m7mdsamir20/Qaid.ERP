@@ -43,6 +43,7 @@ export default function NewPurchaseOrderPage() {
 
     const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
 
+    const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -77,13 +78,15 @@ export default function NewPurchaseOrderPage() {
 
     const loadData = useCallback(async () => {
         try {
-            const [supR, whR, projR, itemR] = await Promise.all([
+            const [supR, whR, projR, itemR, nextR] = await Promise.all([
                 fetch('/api/suppliers'),
                 fetch('/api/warehouses'),
                 fetch('/api/projects'),
                 fetch('/api/items?all=true'),
+                fetch('/api/purchase-orders?nextNum=1'),
             ]);
-            const [sups, whs, projs, its] = await Promise.all([supR.json(), whR.json(), projR.json(), itemR.json()]);
+            const [sups, whs, projs, its, nextData] = await Promise.all([supR.json(), whR.json(), projR.json(), itemR.json(), nextR.json()]);
+            setNextNum(nextData.nextNum || 1);
             setSuppliers(Array.isArray(sups) ? sups : []);
             setWarehouses(Array.isArray(whs) ? whs : []);
             setProjects(Array.isArray(projs) ? projs : (projs.projects || []));
@@ -286,6 +289,12 @@ export default function NewPurchaseOrderPage() {
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#256af4' }}><ShoppingBag size={12} /> {t('بيانات أمر الشراء')}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                <div className="mobile-hide">
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('رقم الأمر')}</label>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px' }}>
+                                        {`PO-${String(nextNum).padStart(5, '0')}`}
+                                    </div>
+                                </div>
                                 <div>
                                     <label style={LS}>{t('المورد')} <span style={{ color: C.danger }}>*</span></label>
                                     <div style={{ position: 'relative' }}>

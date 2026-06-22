@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { formatNumber } from '@/lib/currency';
@@ -345,7 +345,7 @@ export default function InstallmentsPage() {
                                 type: 'number',
                                 cell: (row, idx) => (
                                     <span style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px', display: 'inline-block', direction: 'ltr' }}>
-                                        PLAN-{String(row.planNumber || idx + 1).padStart(5, '0')}
+                                        {`PLAN-${String(row.planNumber || idx + 1).padStart(5, '0')}`}
                                     </span>
                                 )
                             },

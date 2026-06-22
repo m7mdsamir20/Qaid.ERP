@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -188,7 +188,7 @@ export default function SalesRepresentativesReportPage() {
             cell: (row: InvoiceDetail) => (
                 <a href={`/sales/${row.id}`} style={{ textDecoration: 'none' }}>
                     <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                        SAL-{String(row.invoiceNumber).padStart(5, '0')}
+                        {`SAL-${String(row.invoiceNumber).padStart(5, '0')}`}
                     </span>
                 </a>
             )

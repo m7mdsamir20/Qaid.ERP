@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
@@ -86,7 +86,7 @@ export default function OverdueReportPage() {
             type: 'number' as const,
             cell: (row: OverdueInstallment) => (
                 <span style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                    PLAN-{String(row.plan?.planNumber || 1).padStart(5, '0')}
+                    {`PLAN-${String(row.plan?.planNumber || 1).padStart(5, '0')}`}
                 </span>
             )
         },

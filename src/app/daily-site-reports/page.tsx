@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -188,7 +188,7 @@ export default function DailySiteReportsPage() {
                             type: 'text',
                             cell: (row: DailySiteReport) => (
                                 <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>
-                                    DSR-{String(row.reportNumber).padStart(5, '0')}
+                                    {`DSR-${String(row.reportNumber).padStart(5, '0')}`}
                                 </span>
                             ),
                         },

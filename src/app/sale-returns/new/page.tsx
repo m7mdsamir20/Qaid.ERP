@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
@@ -386,7 +386,7 @@ export default function NewReturnPage() {
                                             fontSize: '13px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                         }}>
-                                            RET-{String(nextNum).padStart(5, '0')}
+                                            {`RET-${String(nextNum).padStart(5, '0')}`}
                                         </div>
                                     </div>
                                     <div>

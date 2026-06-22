@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
@@ -317,7 +317,7 @@ export default function WorkOrderDetailPage() {
                                 >
                                     <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontWeight: 700 }}>رقم العقد</div>
                                     <div style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                                        SC-{String(order.contract.contractNumber).padStart(5, '0')}
+                                        {`SC-${String(order.contract.contractNumber).padStart(5, '0')}`}
                                     </div>
                                     <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px' }}>
                                         {TYPE_LABELS[order.contract.type] || order.contract.type}

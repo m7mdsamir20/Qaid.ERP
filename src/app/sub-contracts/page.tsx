@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -216,7 +216,7 @@ export default function SubContractsPage() {
                             type: 'text',
                             cell: (row) => (
                                 <span style={{ fontFamily: OUTFIT, fontWeight: 700 }}>
-                                    CNT-{String(row.contractNumber).padStart(5, '0')}
+                                    {`CNT-${String(row.contractNumber).padStart(5, '0')}`}
                                 </span>
                             )
                         },

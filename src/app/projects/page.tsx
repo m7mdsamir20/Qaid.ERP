@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -221,7 +221,7 @@ export default function ProjectsPage() {
                             type: 'text',
                             cell: (row) => (
                                 <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>
-                                    PRJ-{String(row.projectNumber).padStart(5, '0')}
+                                    {`PRJ-${String(row.projectNumber).padStart(5, '0')}`}
                                 </span>
                             )
                         },
