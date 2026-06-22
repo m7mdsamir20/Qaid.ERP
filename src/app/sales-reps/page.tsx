@@ -219,7 +219,6 @@ export default function SalesRepsPage() {
                     </div>
                 ) : filtered.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textSecondary, fontFamily: CAIRO }}>
-                        <Users size={48} style={{ opacity: 0.3, marginBottom: '16px', display: 'block', margin: '0 auto 16px' }} />
                         <p style={{ fontSize: '15px', margin: 0 }}>{searchTerm ? 'لا توجد نتائج مطابقة' : 'لا يوجد مناديب مسجلون بعد'}</p>
                     </div>
                 ) : (

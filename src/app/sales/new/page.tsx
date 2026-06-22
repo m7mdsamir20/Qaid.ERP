@@ -54,6 +54,7 @@ function NewSalePageInner() {
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showAddCust, setShowAddCust] = useState(false);
+    const [quickAddRepId, setQuickAddRepId] = useState('');
     const searchParams = useSearchParams();
     const quotationId = searchParams.get('quotationId');
     const [fromQuotation, setFromQuotation] = useState<any>(null);
@@ -730,11 +731,8 @@ function NewSalePageInner() {
                                             value={form.salesRepresentativeId}
                                             onChange={v => setForm((f: any) => ({ ...f, salesRepresentativeId: v }))}
                                             disabled={salesReps.some(r => r.userId === session?.user?.id)}
-                                            placeholder={t('اختر مندوب المبيعات...')}
-                                            options={[
-                                                { value: '', label: t('لا يوجد مندوب (بيع مباشر)') },
-                                                ...salesReps.map(r => ({ value: r.id, label: r.name }))
-                                            ]}
+                                            placeholder={t('بدون مندوب (بيع مباشر)')}
+                                            options={salesReps.map(r => ({ value: r.id, label: r.name }))}
                                             minWidth="100%"
                                         />
                                     </div>
@@ -1273,22 +1271,20 @@ function NewSalePageInner() {
                     if (!name) return;
                     setSubmitting(true);
                     try {
-                        const targetApi = '/api/customers';
-                        const res = await fetch(targetApi, {
+                        const res = await fetch('/api/customers', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ name, phone }),
+                            body: JSON.stringify({ name, phone, salesRepresentativeId: quickAddRepId || undefined }),
                         });
                         if (res.ok) {
                             const newP = await res.json();
                             setCustomers(prev => [...prev, newP]);
-
                             setForm((f: any) => ({ ...f, customerId: newP.id }));
                             setShowAddCust(false);
+                            setQuickAddRepId('');
                         } else alert(t('فشل في الإضافة'));
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
-
 
                     <div style={{ marginBottom: '16px' }}>
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
@@ -1298,13 +1294,26 @@ function NewSalePageInner() {
                         </div>
                     </div>
 
-                    <div style={{ marginBottom: '24px' }}>
+                    <div style={{ marginBottom: salesReps.length > 0 ? '16px' : '24px' }}>
                         <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
-                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
+                            <Phone size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textSecondary }} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingLeft: '40px', paddingRight: '12px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
+
+                    {salesReps.length > 0 && (
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={LS}>{t('مندوب المبيعات')}</label>
+                            <CustomSelect
+                                value={quickAddRepId}
+                                onChange={setQuickAddRepId}
+                                placeholder={t('بدون مندوب (اختياري)')}
+                                options={salesReps.map(r => ({ value: r.id, label: r.name }))}
+                                style={{ background: C.card }}
+                            />
+                        </div>
+                    )}
 
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button type="submit" disabled={submitting} style={{
@@ -1312,7 +1321,7 @@ function NewSalePageInner() {
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>
-                        <button type="button" onClick={() => setShowAddCust(false)} style={{
+                        <button type="button" onClick={() => { setShowAddCust(false); setQuickAddRepId(''); }} style={{
                             flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
                         }}>{t('إلغاء')}</button>

@@ -1,17 +1,22 @@
 'use client';
 import React, { useState, useEffect, use } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
-import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n';
 import {
-    Users, Phone, Mail, BadgeCheck, AlertCircle, Loader2,
-    FileText, UsersIcon, Wallet, Edit2, Save, ArrowRight, TrendingUp, Target
+    Users, Phone, Mail, BadgeCheck, Loader2,
+    FileText, UsersIcon, Wallet, Edit2, ArrowRight, TrendingUp
 } from 'lucide-react';
 import {
-    C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut,
-    PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, KPI_STYLE, KPI_ICON, SC
+    C, CAIRO, OUTFIT, LS,
+    PAGE_BASE, TABLE_STYLE, KPI_STYLE, KPI_ICON, SC
 } from '@/constants/theme';
+
+const READ_FIELD: React.CSSProperties = {
+    margin: '6px 0 0', padding: '10px 14px', borderRadius: '8px',
+    background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`,
+    fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, lineHeight: 1.5
+};
 
 interface SalesRep {
     id: string;
@@ -87,11 +92,6 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
     const [collections, setCollections] = useState<Collection[]>([]);
     const [tabLoading, setTabLoading] = useState(false);
 
-    // Edit form
-    const [editForm, setEditForm] = useState<any>({});
-    const [isSaving, setIsSaving] = useState(false);
-    const [saveError, setSaveError] = useState('');
-    const [saveSuccess, setSaveSuccess] = useState(false);
 
     // Fetch rep
     const fetchRep = async () => {
@@ -101,15 +101,6 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
             if (res.ok) {
                 const data = await res.json();
                 setRep(data);
-                setEditForm({
-                    name: data.name || '',
-                    code: data.code || '',
-                    phone: data.phone || '',
-                    email: data.email || '',
-                    commissionRate: String(data.commissionRate ?? 0),
-                    commissionType: data.commissionType || 'invoice_total',
-                    isActive: data.isActive
-                });
             }
         } catch { } finally { setLoading(false); }
     };
@@ -128,21 +119,6 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
         fetcher.finally(() => setTabLoading(false));
     }, [activeTab, id]);
 
-    const handleSave = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSaving(true); setSaveError(''); setSaveSuccess(false);
-        try {
-            const res = await fetch(`/api/sales-reps/${id}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...editForm, commissionRate: parseFloat(editForm.commissionRate) || 0 })
-            });
-            if (res.ok) { setSaveSuccess(true); fetchRep(); setTimeout(() => setSaveSuccess(false), 3000); }
-            else { const d = await res.json(); setSaveError(d.error || 'فشل الحفظ'); }
-        } catch { setSaveError('فشل في الاتصال'); }
-        finally { setIsSaving(false); }
-    };
-
     const monthSales = invoices
         .filter(inv => {
             const d = new Date(inv.date);
@@ -150,6 +126,12 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
             return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
         })
         .reduce((s, inv) => s + Number(inv.total), 0);
+
+    const visibleTabs = TABS.filter(tab => {
+        if (tab.key === 'invoices') return (rep?._count?.invoices ?? 0) > 0;
+        if (tab.key === 'customers') return (rep?._count?.customers ?? 0) > 0;
+        return true;
+    });
 
     if (loading) return (
         <DashboardLayout>
@@ -242,7 +224,7 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
 
                 {/* Tabs */}
                 <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'rgba(255,255,255,0.04)', borderRadius: '12px', padding: '4px', width: 'fit-content' }}>
-                    {TABS.map(tab => (
+                    {visibleTabs.map(tab => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key)}
@@ -265,78 +247,50 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
                 {activeTab === 'data' && (
                     <div style={SC}>
                         <p style={{ fontSize: '13px', fontWeight: 700, color: C.primary, marginBottom: '20px', fontFamily: CAIRO }}>
-                            تعديل بيانات المندوب
+                            بيانات المندوب
                         </p>
-                        <form onSubmit={handleSave}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={LS}>الاسم <span style={{ color: C.danger }}>*</span></label>
-                                    <input style={IS} value={editForm.name || ''} onChange={e => setEditForm({ ...editForm, name: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
-                                <div>
-                                    <label style={LS}>الكود</label>
-                                    <input style={IS} value={editForm.code || ''} onChange={e => setEditForm({ ...editForm, code: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div>
+                                <label style={LS}>الاسم</label>
+                                <p style={READ_FIELD}>{rep.name}</p>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={LS}>الهاتف</label>
-                                    <input style={IS} value={editForm.phone || ''} onChange={e => setEditForm({ ...editForm, phone: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
-                                <div>
-                                    <label style={LS}>البريد الإلكتروني</label>
-                                    <input style={IS} type="email" value={editForm.email || ''} onChange={e => setEditForm({ ...editForm, email: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
+                            <div>
+                                <label style={LS}>الكود</label>
+                                <p style={READ_FIELD}>{rep.code || '—'}</p>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={LS}>نسبة العمولة (%)</label>
-                                    <input type="number" min="0" max="100" step="0.01" style={{ ...IS, fontFamily: OUTFIT }} value={editForm.commissionRate || '0'} onChange={e => setEditForm({ ...editForm, commissionRate: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
-                                <div>
-                                    <label style={LS}>أساس العمولة</label>
-                                    <CustomSelect
-                                        value={editForm.commissionType || 'invoice_total'}
-                                        onChange={v => setEditForm({ ...editForm, commissionType: v })}
-                                        style={{ background: C.card }}
-                                        options={[
-                                            { value: 'invoice_total', label: 'على الفاتورة' },
-                                            { value: 'collected_amount', label: 'على التحصيل' }
-                                        ]}
-                                    />
-                                </div>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div>
+                                <label style={LS}>الهاتف</label>
+                                <p style={{ ...READ_FIELD, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'right' }}>{rep.phone || '—'}</p>
                             </div>
-                            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <label style={{ ...LS, margin: 0 }}>الحالة:</label>
-                                <button
-                                    type="button"
-                                    onClick={() => setEditForm({ ...editForm, isActive: !editForm.isActive })}
-                                    style={{
-                                        padding: '6px 16px', borderRadius: '20px', border: 'none', cursor: 'pointer',
-                                        fontWeight: 700, fontSize: '12px', fontFamily: CAIRO,
-                                        background: editForm.isActive ? 'rgba(74,222,128,0.15)' : 'rgba(239,68,68,0.15)',
-                                        color: editForm.isActive ? C.success : C.danger
-                                    }}
-                                >
-                                    {editForm.isActive ? 'نشط' : 'موقوف'}
-                                </button>
+                            <div>
+                                <label style={LS}>البريد الإلكتروني</label>
+                                <p style={{ ...READ_FIELD, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'right' }}>{rep.email || '—'}</p>
                             </div>
-
-                            {saveError && (
-                                <div style={{ padding: '10px', borderRadius: '8px', background: 'rgba(239,68,68,0.1)', color: C.danger, fontSize: '13px', fontFamily: CAIRO, marginBottom: '16px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <AlertCircle size={14} /> {saveError}
-                                </div>
-                            )}
-                            {saveSuccess && (
-                                <div style={{ padding: '10px', borderRadius: '8px', background: 'rgba(74,222,128,0.1)', color: C.success, fontSize: '13px', fontFamily: CAIRO, marginBottom: '16px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <BadgeCheck size={14} /> تم الحفظ بنجاح
-                                </div>
-                            )}
-
-                            <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), maxWidth: '220px', height: '44px' }}>
-                                {isSaving ? <Loader2 size={16} style={{ animation: 'spin 1.2s linear infinite' }} /> : <><Save size={15} /> حفظ التعديلات</>}
-                            </button>
-                        </form>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div>
+                                <label style={LS}>نسبة العمولة</label>
+                                <p style={{ ...READ_FIELD, fontFamily: OUTFIT }}>{rep.commissionRate ?? 0}%</p>
+                            </div>
+                            <div>
+                                <label style={LS}>أساس العمولة</label>
+                                <p style={READ_FIELD}>{rep.commissionType === 'collected_amount' ? 'على التحصيل' : 'على الفاتورة'}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label style={LS}>الحالة</label>
+                            <div style={{ marginTop: '6px' }}>
+                                <span style={{
+                                    display: 'inline-block', padding: '5px 16px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO,
+                                    background: rep.isActive ? 'rgba(74,222,128,0.12)' : 'rgba(239,68,68,0.12)',
+                                    color: rep.isActive ? C.success : C.danger
+                                }}>
+                                    {rep.isActive ? 'نشط' : 'موقوف'}
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 )}
 

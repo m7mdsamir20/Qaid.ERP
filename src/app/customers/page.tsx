@@ -474,43 +474,42 @@ export default function CustomersPage() {
                                         </div>
                                     )}
 
-                                    {/* هاتف + المسؤول */}
+                                    {/* هاتف + الحد الائتماني */}
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                         <div>
                                             <label style={LS}>{t('رقم الهاتف')}</label>
                                             <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
                                         </div>
-                                        {form.type === 'company' && (
-                                            <div>
-                                                <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
-                                                <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
+                                        <div>
+                                            <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>
+                                            <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+                                                {!form.creditLimit && (
+                                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                        0.00
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="text"
+                                                    inputMode="decimal"
+                                                    value={formatWithCommas(form.creditLimit)}
+                                                    onChange={e => {
+                                                        const v = e.target.value.replace(/[^0-9.]/g, '');
+                                                        if ((v.match(/\./g) || []).length > 1) return;
+                                                        setForm({ ...form, creditLimit: v });
+                                                    }}
+                                                    style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
+                                                    onFocus={focusIn} onBlur={focusOut}
+                                                />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                             </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>
-                                        <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                                            {/* Digital Zero Watermark */}
-                                            {!form.creditLimit && (
-                                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                                    0.00
-                                                </div>
-                                            )}
-                                            <input
-                                                type="text"
-                                                inputMode="decimal"
-                                                value={formatWithCommas(form.creditLimit)}
-                                                onChange={e => {
-                                                    const v = e.target.value.replace(/[^0-9.]/g, '');
-                                                    if ((v.match(/\./g) || []).length > 1) return;
-                                                    setForm({ ...form, creditLimit: v });
-                                                }}
-                                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
-                                                onFocus={focusIn} onBlur={focusOut}
-                                            />
-                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                         </div>
                                     </div>
+                                    {form.type === 'company' && (
+                                        <div>
+                                            <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
+                                            <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
+                                        </div>
+                                    )}
                                     {salesReps.length > 0 && (
                                         <div>
                                             <label style={LS}>{t('مندوب المبيعات الافتراضي')}</label>

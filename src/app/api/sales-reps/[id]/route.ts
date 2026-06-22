@@ -2,6 +2,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
+export const GET = withProtection(async (request, session, _body, context) => {
+    try {
+        const { id } = await context.params;
+        const companyId = (session.user as any).companyId;
+
+        const salesRep = await prisma.salesRepresentative.findFirst({
+            where: { id, companyId },
+            include: {
+                _count: { select: { invoices: true, customers: true } }
+            }
+        });
+
+        if (!salesRep) {
+            return NextResponse.json({ error: 'المندوب غير موجود' }, { status: 404 });
+        }
+
+        return NextResponse.json(salesRep);
+    } catch (error) {
+        console.error('Error fetching sales rep:', error);
+        return NextResponse.json({ error: 'فشل في جلب بيانات المندوب' }, { status: 500 });
+    }
+});
+
 export const PATCH = withProtection(async (request, session, body, context) => {
     try {
         const { id } = await context.params;

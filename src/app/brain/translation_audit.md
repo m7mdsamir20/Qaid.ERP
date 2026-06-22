@@ -1,14 +1,22 @@
 # Translation Audit Report
 
-Generated on: 2026-06-22T11:35:40.582Z
+Generated on: 2026-06-22T12:01:34.270Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4705
-- **Total t() Keys in Code**: 4169
-- **Missing Keys (Auto-merged)**: 0
+- **Total Keys in `i18n.tsx`**: 4706
+- **Total t() Keys in Code**: 4171
+- **Missing Keys (Auto-merged)**: 1
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3032
+- **Unwrapped Arabic Text Instances**: 3030
+
+## Missing Keys (Auto-merged)
+
+These keys were found in `t()` calls in the code but were missing from `i18n.tsx`. They have been automatically added to `i18n.tsx`'s `dictionaries.en` so they can be translated.
+
+| Arabic Key | Auto-translated / Placeholder |
+| --- | --- |
+| `بدون مندوب (بيع مباشر)` | `*بدون مندوب (بيع مباشر)*` |
 
 ## Unwrapped Arabic Text
 
@@ -1467,11 +1475,13 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 79: `فشل في إنشاء مندوب المبيعات`
 
 ### [app/api/sales-reps/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-reps/[id]/route.ts)
-- Line 12: `اسم المندوب مطلوب`
-- Line 25: `رمز المندوب مستخدم بالفعل`
-- Line 47: `فشل في تحديث بيانات مندوب المبيعات`
-- Line 65: `لا يمكن حذف مندوب المبيعات لوجود فواتير أو عملاء أو عروض أسعار مرتبطة به`
-- Line 76: `فشل في حذف مندوب المبيعات`
+- Line 18: `المندوب غير موجود`
+- Line 24: `فشل في جلب بيانات المندوب`
+- Line 35: `اسم المندوب مطلوب`
+- Line 48: `رمز المندوب مستخدم بالفعل`
+- Line 70: `فشل في تحديث بيانات مندوب المبيعات`
+- Line 88: `لا يمكن حذف مندوب المبيعات لوجود فواتير أو عملاء أو عروض أسعار مرتبطة به`
+- Line 99: `فشل في حذف مندوب المبيعات`
 
 ### [app/api/sales-targets/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-targets/route.ts)
 - Line 68: `يرجى تحديد المندوب`
@@ -2379,37 +2389,37 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 160: `متابعة مناديب المبيعات وعمولاتهم وأهدافهم`
 - Line 163: `مندوب جديد`
 - Line 206: `ابحث باسم المندوب أو الكود أو الهاتف`
-- Line 223: `لا توجد نتائج مطابقة`
-- Line 223: `لا يوجد مناديب مسجلون بعد`
-- Line 259: `نشط`
-- Line 259: `موقوف`
-- Line 286: `عمولة`
-- Line 294: `على التحصيل`
-- Line 294: `على الفاتورة`
-- Line 307: `عميل`
-- Line 312: `فاتورة`
-- Line 331: `عرض البروفايل`
-- Line 360: `تعديل بيانات المندوب`
-- Line 360: `إضافة مندوب جديد`
-- Line 369: `الكود`
-- Line 386: `الاسم`
-- Line 387: `اسم المندوب`
-- Line 394: `الهاتف`
-- Line 398: `البريد الإلكتروني`
-- Line 406: `نسبة العمولة`
-- Line 410: `أساس العمولة`
-- Line 416: `على الفاتورة`
-- Line 417: `على التحصيل`
-- Line 426: `المستخدم المرتبط`
-- Line 431: `اختر مستخدماً`
-- Line 436: `الموظف المرتبط`
-- Line 441: `اختر موظفاً`
-- Line 449: `الحالة`
-- Line 460: `نشط`
-- Line 460: `موقوف`
-- Line 472: `حفظ التعديلات`
-- Line 472: `إضافة المندوب`
-- Line 475: `إلغاء`
+- Line 222: `لا توجد نتائج مطابقة`
+- Line 222: `لا يوجد مناديب مسجلون بعد`
+- Line 258: `نشط`
+- Line 258: `موقوف`
+- Line 285: `عمولة`
+- Line 293: `على التحصيل`
+- Line 293: `على الفاتورة`
+- Line 306: `عميل`
+- Line 311: `فاتورة`
+- Line 330: `عرض البروفايل`
+- Line 359: `تعديل بيانات المندوب`
+- Line 359: `إضافة مندوب جديد`
+- Line 368: `الكود`
+- Line 385: `الاسم`
+- Line 386: `اسم المندوب`
+- Line 393: `الهاتف`
+- Line 397: `البريد الإلكتروني`
+- Line 405: `نسبة العمولة`
+- Line 409: `أساس العمولة`
+- Line 415: `على الفاتورة`
+- Line 416: `على التحصيل`
+- Line 425: `المستخدم المرتبط`
+- Line 430: `اختر مستخدماً`
+- Line 435: `الموظف المرتبط`
+- Line 440: `اختر موظفاً`
+- Line 448: `الحالة`
+- Line 459: `نشط`
+- Line 459: `موقوف`
+- Line 471: `حفظ التعديلات`
+- Line 471: `إضافة المندوب`
+- Line 474: `إلغاء`
 
 ### [app/sales-reps/targets/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-reps/targets/page.tsx)
 - Line 32: `يناير`
@@ -2454,60 +2464,56 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 429: `إلغاء`
 
 ### [app/sales-reps/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-reps/[id]/page.tsx)
-- Line 57: `البيانات`
-- Line 58: `فواتيره`
-- Line 59: `عملاؤه`
-- Line 60: `تحصيلاته`
-- Line 66: `معلق`
-- Line 67: `مودَع`
-- Line 68: `مرتجع`
-- Line 72: `نقدي`
-- Line 72: `شيك`
-- Line 72: `تحويل`
-- Line 141: `فشل الحفظ`
-- Line 142: `فشل في الاتصال`
-- Line 166: `لم يُعثر على المندوب`
-- Line 168: `عودة للقائمة`
-- Line 181: `إدارة المناديب`
-- Line 205: `نشط`
-- Line 205: `موقوف`
-- Line 226: `عملاء`
-- Line 227: `مبيعات الشهر`
-- Line 228: `العمولة`
-- Line 229: `إجمالي الفواتير`
-- Line 268: `تعديل بيانات المندوب`
-- Line 273: `الاسم`
-- Line 277: `الكود`
-- Line 283: `الهاتف`
-- Line 287: `البريد الإلكتروني`
-- Line 293: `نسبة العمولة`
-- Line 297: `أساس العمولة`
-- Line 303: `على الفاتورة`
-- Line 304: `على التحصيل`
-- Line 310: `الحالة`
-- Line 321: `نشط`
-- Line 321: `موقوف`
-- Line 332: `تم الحفظ بنجاح`
-- Line 337: `حفظ التعديلات`
-- Line 352: `لا توجد فواتير`
-- Line 360: `رقم الفاتورة`
-- Line 360: `التاريخ`
-- Line 360: `العميل`
-- Line 360: `الإجمالي`
-- Line 360: `المتبقي`
-- Line 360: `الحالة`
-- Line 395: `مسدد`
-- Line 395: `جزئي`
-- Line 417: `لا يوجد عملاء`
-- Line 425: `اسم العميل`
-- Line 425: `الهاتف`
-- Line 425: `الرصيد`
-- Line 466: `لا توجد تحصيلات`
-- Line 474: `التاريخ`
-- Line 474: `العميل`
-- Line 474: `المبلغ`
-- Line 474: `الطريقة`
-- Line 474: `الحالة`
+- Line 62: `البيانات`
+- Line 63: `فواتيره`
+- Line 64: `عملاؤه`
+- Line 65: `تحصيلاته`
+- Line 71: `معلق`
+- Line 72: `مودَع`
+- Line 73: `مرتجع`
+- Line 77: `نقدي`
+- Line 77: `شيك`
+- Line 77: `تحويل`
+- Line 148: `لم يُعثر على المندوب`
+- Line 150: `عودة للقائمة`
+- Line 163: `إدارة المناديب`
+- Line 187: `نشط`
+- Line 187: `موقوف`
+- Line 208: `عملاء`
+- Line 209: `مبيعات الشهر`
+- Line 210: `العمولة`
+- Line 211: `إجمالي الفواتير`
+- Line 250: `بيانات المندوب`
+- Line 254: `الاسم`
+- Line 258: `الكود`
+- Line 264: `الهاتف`
+- Line 268: `البريد الإلكتروني`
+- Line 274: `نسبة العمولة`
+- Line 278: `أساس العمولة`
+- Line 279: `على التحصيل`
+- Line 279: `على الفاتورة`
+- Line 283: `الحالة`
+- Line 290: `نشط`
+- Line 290: `موقوف`
+- Line 306: `لا توجد فواتير`
+- Line 314: `رقم الفاتورة`
+- Line 314: `التاريخ`
+- Line 314: `العميل`
+- Line 314: `الإجمالي`
+- Line 314: `المتبقي`
+- Line 314: `الحالة`
+- Line 349: `مسدد`
+- Line 349: `جزئي`
+- Line 371: `لا يوجد عملاء`
+- Line 379: `اسم العميل`
+- Line 379: `الهاتف`
+- Line 379: `الرصيد`
+- Line 420: `لا توجد تحصيلات`
+- Line 428: `التاريخ`
+- Line 428: `العميل`
+- Line 428: `المبلغ`
+- Line 428: `الطريقة`
+- Line 428: `الحالة`
 
 ### [app/serial-numbers/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/serial-numbers/new/page.tsx)
 - Line 87: `يجب اختيار الصنف`

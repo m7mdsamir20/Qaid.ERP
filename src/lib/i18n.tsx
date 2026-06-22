@@ -4899,6 +4899,14 @@ export const dictionaries = {
         "مناديب نشطون": "Active delegates",
         "إجمالي مبيعات الشهر": "Total sales for the month",
         "عمولات مستحقة": "Commissions payable",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "بدون مندوب (اختياري)": "Without delegate (optional)",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "بدون مندوب (بيع مباشر)": "Without a representative (direct sales)",
 }
 };
 
