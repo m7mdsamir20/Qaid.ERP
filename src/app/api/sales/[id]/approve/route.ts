@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const POST = withProtection(async (request, session, body, context) => {
     try {
@@ -11,16 +12,17 @@ export const POST = withProtection(async (request, session, body, context) => {
         // Fetch user permissions
         const user = session.user as any;
         if (!user.isSuperAdmin && user.role !== 'admin') {
-            let perms: any = {};
+            let hasApprove = false;
             try {
                 const dbUser = await prisma.user.findUnique({
                     where: { id: user.id },
                     select: { customRole: { select: { permissions: true } } }
                 });
-                if (dbUser?.customRole?.permissions) perms = JSON.parse(dbUser.customRole.permissions);
-            } catch {}
-            if (Object.keys(perms).length > 0 && !perms['/sales']?.create) {
-                return NextResponse.json({ error: 'ليس لديك صلاحية اعتماد فواتير مبيعات' }, { status: 403 });
+                const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                hasApprove = perms['/sales']?.approve === true;
+            } catch { hasApprove = false; }
+            if (!hasApprove) {
+                return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
             }
         }
 
@@ -329,6 +331,20 @@ export const POST = withProtection(async (request, session, body, context) => {
             }
 
             return updatedInv;
+        });
+
+        const prefix = (session.user as any).businessType?.toUpperCase() === 'SERVICES' ? 'SRV' : 'SAL';
+        const invCode = `${prefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+        await logActivity({
+            ...extractLogContext(session, request),
+            action: 'approve',
+            module: 'sales',
+            entityType: 'Invoice',
+            entityId: id,
+            entityRef: invCode,
+            description: `اعتمد فاتورة مبيعات رقم ${invCode}`,
+            oldData: { status: 'pending' },
+            newData: { status: 'approved' },
         });
 
         return NextResponse.json(approvedInvoice);

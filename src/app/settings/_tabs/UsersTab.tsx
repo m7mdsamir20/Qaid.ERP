@@ -2,7 +2,7 @@
 import { useTranslation } from '@/lib/i18n';
 import { useState } from 'react';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
-import { Shield, Users, User, Loader2, Eye, Check, X, ChevronDown, Plus, Trash2, Pencil, RefreshCw, UserPlus, Store } from 'lucide-react';
+import { Shield, Users, User, Loader2, Eye, Check, X, ChevronDown, Plus, Trash2, Pencil, RefreshCw, UserPlus, Store, CheckCheck } from 'lucide-react';
 import { TabHeader } from './shared';
 
 interface UsersTabProps {
@@ -273,9 +273,9 @@ export default function UsersTab({
                         <div style={{ display: 'flex', gap: '6px' }}>
                             <button type="button"
                                 onClick={() => {
-                                    const all: Record<string, { view: boolean; create: boolean; editDelete: boolean }> = {};
+                                    const all: Record<string, { view: boolean; create: boolean; editDelete: boolean; approve?: boolean }> = {};
                                     permissionHierarchy.forEach(s => {
-                                        s.links.forEach((l: any) => { all[l.id] = { view: true, create: true, editDelete: true }; });
+                                        s.links.forEach((l: any) => { all[l.id] = { view: true, create: true, editDelete: true, ...(l.hasApprove ? { approve: true } : {}) }; });
                                     });
                                     setNewUserForm((p: any) => ({ ...p, roleId: 'custom', customPermissions: all }));
                                 }}
@@ -303,8 +303,8 @@ export default function UsersTab({
                                 const sp = newUserForm.customPermissions;
                                 const isAccessOnlySection = section.title === t("التقارير الإحصائية") || section.title === t("إعدادات النظام") || section.title === 'Statistical Reports' || section.title === 'System Settings';
 
-                                const allSel = section.links.length > 0 && section.links.every((l: any) => sp[l.id]?.view && (isAccessOnlySection || (sp[l.id]?.create && sp[l.id]?.editDelete)));
-                                const someSel = !allSel && section.links.some((l: any) => sp[l.id]?.view || sp[l.id]?.create || sp[l.id]?.editDelete);
+                                const allSel = section.links.length > 0 && section.links.every((l: any) => sp[l.id]?.view && (isAccessOnlySection || (sp[l.id]?.create && sp[l.id]?.editDelete && (!l.hasApprove || sp[l.id]?.approve))));
+                                const someSel = !allSel && section.links.some((l: any) => sp[l.id]?.view || sp[l.id]?.create || sp[l.id]?.editDelete || sp[l.id]?.approve);
 
                                 const activeCount = section.links.filter((l: any) => sp[l.id]?.view).length;
 
@@ -312,7 +312,7 @@ export default function UsersTab({
                                     setNewUserForm((prev: any) => {
                                         const up = { ...prev.customPermissions };
                                         section.links.forEach((l: any) => {
-                                            up[l.id] = { view: val, create: val, editDelete: val };
+                                            up[l.id] = { view: val, create: val, editDelete: val, ...(l.hasApprove ? { approve: val } : {}) };
                                         });
                                         return { ...prev, roleId: 'custom', customPermissions: up };
                                     });
@@ -349,26 +349,27 @@ export default function UsersTab({
 
                                         {/* Pages */}
                                         {isExp && section.links.map((page: any) => {
-                                            const perms = sp[page.id] || { view: false, create: false, editDelete: false };
-                                            const setP = (field: 'view' | 'create' | 'editDelete', val: boolean) => {
+                                            const perms = sp[page.id] || { view: false, create: false, editDelete: false, approve: undefined };
+                                            const setP = (field: 'view' | 'create' | 'editDelete' | 'approve', val: boolean) => {
                                                 setNewUserForm((prev: any) => {
                                                     const up = { ...prev.customPermissions };
                                                     const current = up[page.id] || { view: false, create: false, editDelete: false };
                                                     up[page.id] = { ...current, [field]: val };
 
-                                                    if (val && (field === 'create' || field === 'editDelete')) {
+                                                    if (val && (field === 'create' || field === 'editDelete' || field === 'approve')) {
                                                         up[page.id].view = true;
                                                     }
                                                     if (!val && field === 'view') {
                                                         up[page.id].create = false;
                                                         up[page.id].editDelete = false;
+                                                        up[page.id].approve = false;
                                                     }
                                                     return { ...prev, roleId: 'custom', customPermissions: up };
                                                 });
                                             };
 
                                             return (
-                                                <div key={page.id} className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: isAccessOnlySection ? '1fr 280px' : '1fr 280px', padding: '10px 20px 10px 50px', borderTop: `1px solid ${C.border}`, alignItems: 'center', transition: 'background 0.1s' }}
+                                                <div key={page.id} className="mobile-setting-grid" style={{ display: 'grid', gridTemplateColumns: isAccessOnlySection ? '1fr 280px' : (page.hasApprove ? '1fr 380px' : '1fr 280px'), padding: '10px 20px 10px 50px', borderTop: `1px solid ${C.border}`, alignItems: 'center', transition: 'background 0.1s' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
@@ -411,6 +412,13 @@ export default function UsersTab({
                                                                 {perms.editDelete ? <Check size={13} /> : <Trash2 size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('تعديل')}
                                                             </button>
+                                                            {page.hasApprove && (
+                                                                <button type="button" onClick={() => setP('approve', !perms.approve)}
+                                                                    style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.approve ? 'rgba(239,68,68,0.4)' : C.border}`, background: perms.approve ? 'rgba(239,68,68,0.15)' : C.inputBg, color: perms.approve ? '#ef4444' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 600 }}>
+                                                                    {perms.approve ? <Check size={13} /> : <CheckCheck size={12} style={{ opacity: 0.5 }} />}
+                                                                    {t('اعتماد')}
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>

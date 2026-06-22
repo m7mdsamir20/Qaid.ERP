@@ -60,6 +60,20 @@ export const PUT = withProtection(async (request, session, body, context) => {
                 if (existing.status !== 'draft') {
                     return NextResponse.json({ error: 'لا يمكن اعتماد هذا الأمر في حالته الحالية' }, { status: 400 });
                 }
+                // Permission check
+                if (!(session.user as any).isSuperAdmin && (session.user as any).role !== 'admin') {
+                    let hasApprove = false;
+                    try {
+                        const dbUser = await prisma.user.findUnique({
+                            where: { id: userId },
+                            select: { customRole: { select: { permissions: true } } }
+                        });
+                        const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                        hasApprove = perms['/sales-orders']?.approve === true;
+                    } catch { hasApprove = false; }
+                    if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+                }
+                // Creator should not approve their own (if createdBy is tracked in future)
                 newStatus = 'approved';
                 extraData = { approvedBy: userId, approvedAt: new Date() };
             } else if (body.action === 'cancel') {

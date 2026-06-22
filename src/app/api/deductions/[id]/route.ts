@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -27,6 +28,7 @@ export const PATCH = withProtection(async (request, session, body, context) => {
     try {
         const { id } = await context.params;
         const companyId = (session.user as any).companyId;
+        const userId = (session.user as any).id;
         const { status } = body;
 
         const deduction = await prisma.deduction.findUnique({
@@ -40,6 +42,23 @@ export const PATCH = withProtection(async (request, session, body, context) => {
 
         // ── عند اعتماد الخصم: أنشئ قيد محاسبي ──
         if (status === 'deducted' && deduction.status === 'pending') {
+            // Permission check for approve
+            if (!(session.user as any).isSuperAdmin && (session.user as any).role !== 'admin') {
+                let hasApprove = false;
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: userId },
+                        select: { customRole: { select: { permissions: true } } }
+                    });
+                    const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                    hasApprove = perms['/deductions']?.approve === true;
+                } catch { hasApprove = false; }
+                if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+            }
+            // Creator should not approve their own
+            if ((deduction as any).createdBy && (deduction as any).createdBy === userId) {
+                return NextResponse.json({ error: 'لا يمكنك اعتماد طلبك الخاص' }, { status: 403 });
+            }
             const activeYear = await prisma.financialYear.findFirst({
                 where: { companyId, isOpen: true },
                 orderBy: { startDate: 'desc' }
@@ -124,6 +143,16 @@ export const PATCH = withProtection(async (request, session, body, context) => {
                     ...(journalEntryId ? { journalEntryId } : {})
                 },
                 include: { employee: true }
+            });
+            await logActivity({
+                ...extractLogContext(session, request),
+                action: 'approve',
+                module: 'deductions',
+                entityType: 'Deduction',
+                entityId: id,
+                description: `اعتمد خصم الموظف ${deduction.employee.name}`,
+                oldData: { status: 'pending' },
+                newData: { status: 'deducted' },
             });
             return NextResponse.json(updated);
         }

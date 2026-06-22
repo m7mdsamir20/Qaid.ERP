@@ -242,11 +242,14 @@ export default function Sidebar({
             // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
             const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
             const posFeatures = ['pos', 'barcode'];
-            const contractingFeatures = ['projects', 'subcontractors'];
+            const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
             if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
             if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
             if (section.featureKey === 'barcode' && businessType === 'RETAIL') return null;
             if (contractingFeatures.includes(section.featureKey || '') && businessType !== 'CONTRACTING') return null;
+            if (section.featureKey === 'sales_reps' && businessType === 'RESTAURANTS') return null;
+            if (section.featureKey === 'services' && businessType !== 'SERVICES') return null;
+            if (section.featureKey === 'loyalty' && businessType !== 'RETAIL') return null;
 
 
             const SectionIcon = section.icon;

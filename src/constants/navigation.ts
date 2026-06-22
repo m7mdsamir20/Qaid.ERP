@@ -45,6 +45,10 @@ import {
     Hash,
     ClipboardCheck,
     CalendarDays,
+    UserCheck,
+    HandCoins,
+    Target,
+    BadgePercent,
 } from 'lucide-react';
 
 export const navSections = [
@@ -116,7 +120,7 @@ export const navSections = [
         links: [
             { id: '/projects', href: '/projects', label: 'قائمة المشاريع' },
             { id: '/projects/new', href: '/projects/new', label: 'مشروع جديد', hideFromSidebar: true },
-            { id: '/progress-bills', href: '/progress-bills', label: 'المستخلصات' },
+            { id: '/progress-bills', href: '/progress-bills', label: 'المستخلصات', hasApprove: true },
         ],
     },
     {
@@ -133,7 +137,7 @@ export const navSections = [
         icon: ClipboardCheck,
         featureKey: 'site_management',
         links: [
-            { id: '/material-requests', href: '/material-requests', label: 'طلبات المواد' },
+            { id: '/material-requests', href: '/material-requests', label: 'طلبات المواد', hasApprove: true },
             { id: '/daily-site-reports', href: '/daily-site-reports', label: 'التقارير اليومية' },
         ],
     },
@@ -167,13 +171,26 @@ export const navSections = [
         featureKey: 'sales',
         links: [
             { id: '/quotations', href: '/quotations', label: 'عروض الأسعار' },
-            { id: '/sales-orders', href: '/sales-orders', label: 'أوامر البيع' },
-            { id: '/sales', href: '/sales', label: 'فواتير المبيعات' },
+            { id: '/sales-orders', href: '/sales-orders', label: 'أوامر البيع', hasApprove: true },
+            { id: '/sales', href: '/sales', label: 'فواتير المبيعات', hasApprove: true },
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },
             { id: '/customers', href: '/customers', label: 'العملاء' },
-            { id: '/sales/representatives', href: '/sales/representatives', label: 'مناديب المبيعات' },
             { id: '/coupons', href: '/coupons', label: 'كوبونات الخصم' },
+        ],
+    },
+    // ═══════════════════════════════════════════════════════
+    // 👥  مناديب المبيعات (جملة)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'مناديب المبيعات',
+        icon: UserCheck,
+        featureKey: 'sales_reps',
+        links: [
+            { id: '/sales-reps', href: '/sales-reps', label: 'إدارة المناديب' },
+            { id: '/sales-reps/collections', href: '/sales-reps/collections', label: 'التحصيلات' },
+            { id: '/sales-reps/commissions', href: '/sales-reps/commissions', label: 'العمولات' },
+            { id: '/sales-reps/targets', href: '/sales-reps/targets', label: 'الأهداف' },
         ],
     },
     {
@@ -191,7 +208,7 @@ export const navSections = [
         icon: ShoppingCart,
         featureKey: 'purchases',
         links: [
-            { id: '/purchase-orders', href: '/purchase-orders', label: 'أوامر الشراء' },
+            { id: '/purchase-orders', href: '/purchase-orders', label: 'أوامر الشراء', hasApprove: true },
             { id: '/purchases', href: '/purchases', label: 'فواتير المشتريات' },
             { id: '/purchase-returns', href: '/purchase-returns', label: 'مرتجع مشتريات' },
             { id: '/purchase-payments', href: '/purchase-payments', label: 'سندات الصرف' },
@@ -207,8 +224,8 @@ export const navSections = [
             { id: '/categories', href: '/categories', label: 'التصنيفات' },
             { id: '/items', href: '/items', label: 'الأصناف' },
             { id: '/warehouses', href: '/warehouses', label: 'المخازن' },
-            { id: '/stocktakings', href: '/stocktakings', label: 'جرد المخازن' },
-            { id: '/warehouse-transfers', href: '/warehouse-transfers', label: 'التحويل بين المخازن' },
+            { id: '/stocktakings', href: '/stocktakings', label: 'جرد المخازن', hasApprove: true },
+            { id: '/warehouse-transfers', href: '/warehouse-transfers', label: 'التحويل بين المخازن', hasApprove: true },
         ],
     },
     {
@@ -250,12 +267,12 @@ export const navSections = [
             { id: '/employees', href: '/employees', label: 'الموظفين' },
             { id: '/attendance', href: '/attendance', label: 'الحضور والانصراف' },
             { id: '/attendance/monthly', href: '/attendance/monthly', label: 'كشف الحضور الشهري' },
-            { id: '/attendance/leaves', href: '/attendance/leaves', label: 'إدارة الإجازات' },
+            { id: '/attendance/leaves', href: '/attendance/leaves', label: 'إدارة الإجازات', hasApprove: true },
             { id: '/attendance/schedules', href: '/attendance/schedules', label: 'جداول مواعيد العمل' },
             { id: '/attendance/holidays', href: '/attendance/holidays', label: 'العطلات الرسمية' },
-            { id: '/payrolls', href: '/payrolls', label: 'مسير الرواتب' },
-            { id: '/advances', href: '/advances', label: 'السلف' },
-            { id: '/deductions', href: '/deductions', label: 'الخصومات والجزاءات' },
+            { id: '/payrolls', href: '/payrolls', label: 'مسير الرواتب', hasApprove: true },
+            { id: '/advances', href: '/advances', label: 'السلف', hasApprove: true },
+            { id: '/deductions', href: '/deductions', label: 'الخصومات والجزاءات', hasApprove: true },
             { id: '/departments', href: '/departments', label: 'الأقسام والوظائف' },
         ],
     },

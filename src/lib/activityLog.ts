@@ -3,6 +3,7 @@ import { prisma } from './prisma';
 interface LogParams {
     userId?: string;
     userName?: string;
+    isSuperAdmin?: boolean;
     action: 'create' | 'update' | 'delete' | 'login' | 'logout' | 'approve' | 'reject' | 'print' | 'export' | 'receive';
     module: string;
     entityType?: string;
@@ -23,6 +24,7 @@ export async function logActivity(params: LogParams) {
             data: {
                 userId: params.userId,
                 userName: params.userName,
+                isSuperAdmin: params.isSuperAdmin ?? false,
                 action: params.action,
                 module: params.module,
                 entityType: params.entityType,
@@ -47,6 +49,7 @@ export function extractLogContext(session: any, request?: Request) {
     return {
         userId: user?.id,
         userName: user?.name,
+        isSuperAdmin: !!user?.isSuperAdmin,
         companyId: user?.companyId,
         branchId: user?.activeBranchId !== 'all' ? user?.activeBranchId : undefined,
         ipAddress: request ? (request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined) : undefined,

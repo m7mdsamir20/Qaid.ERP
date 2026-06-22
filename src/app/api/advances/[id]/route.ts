@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, body, { params }) => {
     try {
@@ -27,6 +28,7 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
     try {
         const { id } = await params;
         const companyId = (session.user as any).companyId;
+        const userId = (session.user as any).id;
         const { status } = body;
 
         const advance = await prisma.advance.findUnique({
@@ -40,6 +42,23 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
 
         // لو بيعتمد — اعمل القيد وانقص الخزينة
         if (status === 'deducted' && advance.status === 'pending') {
+            // Permission check for approve
+            if (!(session.user as any).isSuperAdmin && (session.user as any).role !== 'admin') {
+                let hasApprove = false;
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: userId },
+                        select: { customRole: { select: { permissions: true } } }
+                    });
+                    const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                    hasApprove = perms['/advances']?.approve === true;
+                } catch { hasApprove = false; }
+                if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+            }
+            // Creator should not approve their own
+            if ((advance as any).createdBy && (advance as any).createdBy === userId) {
+                return NextResponse.json({ error: 'لا يمكنك اعتماد طلبك الخاص' }, { status: 403 });
+            }
             await prisma.$transaction(async (tx) => {
                 // جيب الخزينة
                 const treasury = await tx.treasury.findFirst({
@@ -132,6 +151,16 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
             const updated = await prisma.advance.findUnique({
                 where: { id },
                 include: { employee: true }
+            });
+            await logActivity({
+                ...extractLogContext(session, request),
+                action: 'approve',
+                module: 'advances',
+                entityType: 'Advance',
+                entityId: id,
+                description: `اعتمد سلفة الموظف ${advance.employee?.name}`,
+                oldData: { status: 'pending' },
+                newData: { status: 'deducted' },
             });
             return NextResponse.json(updated);
         }

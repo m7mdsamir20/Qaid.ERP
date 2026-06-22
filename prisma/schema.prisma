@@ -114,6 +114,10 @@ model Company {
   pointsTransactions      PointsTransaction[]
   // 🔢 Serial Numbers
   serialNumbers           SerialNumber[]
+  // 👥 Sales Representatives
+  collections             Collection[]
+  salesTargets            SalesTarget[]
+  commissionPayments      CommissionPayment[]
 }
 
 model ApiKey {
@@ -552,6 +556,9 @@ model WarehouseTransfer {
   date            DateTime
   fromWarehouseId String
   toWarehouseId   String
+  status          String                  @default("pending") // pending | approved | cancelled
+  approvedBy      String?
+  approvedAt      DateTime?
   notes           String?
   companyId       String
   createdAt       DateTime                @default(now())
@@ -626,6 +633,7 @@ model Customer {
   workOrders       WorkOrder[]
   customerPoints   CustomerPoints[]
   pointsTransactions PointsTransaction[]
+  collections      Collection[]
 }
 
 model Supplier {
@@ -660,12 +668,14 @@ model Treasury {
   companyId     String
   branchId      String?
   createdAt     DateTime     @default(now())
-  advances      Advance[]
-  account       Account?     @relation(fields: [accountId], references: [id])
-  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch        Branch?      @relation(fields: [branchId], references: [id])
-  vouchers      Voucher[]
-  PosPayment    PosPayment[]
+  advances          Advance[]
+  account           Account?          @relation(fields: [accountId], references: [id])
+  company           Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch            Branch?           @relation(fields: [branchId], references: [id])
+  vouchers          Voucher[]
+  PosPayment        PosPayment[]
+  collections       Collection[]
+  commissionPayments CommissionPayment[]
 }
 
 model ReconciliationSnapshot {
@@ -740,6 +750,7 @@ model Invoice {
   // 🔧 Services
   workOrderId         String?
   workOrder           WorkOrder?      @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  collections         Collection[]
 
   @@index([companyId, type, date])
   @@index([companyId, date])
@@ -1376,12 +1387,15 @@ model SalesRepresentative {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
-  company        Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  employee       Employee?   @relation(fields: [employeeId], references: [id], onDelete: SetNull)
-  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  company        Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  employee       Employee?          @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  user           User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   invoices       Invoice[]
   quotations     Quotation[]
   customers      Customer[]
+  collections    Collection[]
+  targets        SalesTarget[]
+  commissions    CommissionPayment[]
 
   @@unique([code, companyId])
 }
@@ -1601,22 +1615,23 @@ model OfficialHoliday {
 // ═══════════════════════════════════════════════════════
 
 model ActivityLog {
-  id          String   @id @default(cuid())
-  userId      String?
-  userName    String?
-  action      String
-  module      String
-  entityType  String?
-  entityId    String?
-  entityRef   String?
-  description String
-  oldData     Json?
-  newData     Json?
-  ipAddress   String?
-  userAgent   String?
-  companyId   String?
-  branchId    String?
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  userId       String?
+  userName     String?
+  isSuperAdmin Boolean  @default(false)
+  action       String
+  module       String
+  entityType   String?
+  entityId     String?
+  entityRef    String?
+  description  String
+  oldData      Json?
+  newData      Json?
+  ipAddress    String?
+  userAgent    String?
+  companyId    String?
+  branchId     String?
+  createdAt    DateTime @default(now())
 
   company     Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
@@ -1839,5 +1854,99 @@ model SerialNumber {
   @@unique([serial, companyId])
   @@index([companyId, itemId])
   @@index([companyId, status])
+}
+
+// ═══════════════════════════════════════════════════════
+// 👥  مناديب المبيعات — التحصيلات والأهداف والعمولات
+// ═══════════════════════════════════════════════════════
+
+model Collection {
+  id             String    @id @default(cuid())
+  date           DateTime
+  amount         Float
+  method         String    // cash | check | transfer
+  status         String    @default("pending") // pending | deposited | returned
+
+  salesRepId     String
+  customerId     String
+  invoiceId      String?
+
+  // بيانات الشيك
+  checkNumber    String?
+  bankName       String?
+  checkDueDate   DateTime?
+
+  // الإيداع
+  treasuryId     String?
+  depositedAt    DateTime?
+  depositedBy    String?
+
+  notes          String?
+  companyId      String
+  branchId       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  salesRep       SalesRepresentative @relation(fields: [salesRepId], references: [id], onDelete: Cascade)
+  customer       Customer            @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  invoice        Invoice?            @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  treasury       Treasury?           @relation(fields: [treasuryId], references: [id], onDelete: SetNull)
+  company        Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, date])
+  @@index([salesRepId, status])
+  @@index([customerId])
+}
+
+model SalesTarget {
+  id           String    @id @default(cuid())
+  salesRepId   String
+  year         Int
+  month        Int       // 1-12
+  targetAmount Float
+  targetCount  Int?
+  notes        String?
+  companyId    String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  salesRep     SalesRepresentative @relation(fields: [salesRepId], references: [id], onDelete: Cascade)
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([salesRepId, year, month])
+  @@index([companyId, year, month])
+}
+
+model CommissionPayment {
+  id               String    @id @default(cuid())
+  salesRepId       String
+  year             Int
+  month            Int
+
+  totalSales       Float     @default(0)
+  totalCollected   Float     @default(0)
+  commissionBase   Float     @default(0)
+  commissionRate   Float     @default(0)
+  commissionAmount Float     @default(0)
+
+  status           String    @default("calculated") // calculated | approved | paid
+  approvedBy       String?
+  approvedAt       DateTime?
+  paidBy           String?
+  paidAt           DateTime?
+  treasuryId       String?
+
+  notes            String?
+  companyId        String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  salesRep         SalesRepresentative @relation(fields: [salesRepId], references: [id], onDelete: Cascade)
+  treasury         Treasury?           @relation(fields: [treasuryId], references: [id], onDelete: SetNull)
+  company          Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([salesRepId, year, month])
+  @@index([companyId, year, month])
+  @@index([status])
 }
 

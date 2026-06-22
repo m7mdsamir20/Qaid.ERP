@@ -127,6 +127,20 @@ export const POST = withProtection(async (request, session, body, context) => {
         }
 
         if (action === 'approve') {
+            // Permission check
+            const userId = (session.user as any).id;
+            if (!(session.user as any).isSuperAdmin && (session.user as any).role !== 'admin') {
+                let hasApprove = false;
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: userId },
+                        select: { customRole: { select: { permissions: true } } }
+                    });
+                    const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                    hasApprove = perms['/payrolls']?.approve === true;
+                } catch { hasApprove = false; }
+                if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+            }
             const { treasuryId } = body;
             if (!treasuryId) return NextResponse.json({ 
                 error: "اختر خزينة الصرف" 

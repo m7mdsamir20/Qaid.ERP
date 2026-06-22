@@ -114,6 +114,22 @@ export const PUT = withProtection(async (request, session, body) => {
 
     const user = session.user as any;
 
+    // Permission check for approve
+    if (status === 'approved') {
+        if (!user.isSuperAdmin && user.role !== 'admin') {
+            let hasApprove = false;
+            try {
+                const dbUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { customRole: { select: { permissions: true } } }
+                });
+                const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                hasApprove = perms['/attendance/leaves']?.approve === true;
+            } catch { hasApprove = false; }
+            if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+        }
+    }
+
     // Find the existing leave request
     const leave = await prisma.leaveRequest.findFirst({
         where: { id, companyId },

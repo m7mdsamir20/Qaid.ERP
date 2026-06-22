@@ -121,7 +121,7 @@ function SettingsContent() {
         avatar: string;
         branchId: string;
         allowedBranches: string[]; // [] = all branches
-        customPermissions: Record<string, { view: boolean; create: boolean; editDelete: boolean }>;
+        customPermissions: Record<string, { view: boolean; create: boolean; editDelete: boolean; approve?: boolean }>;
     }
 
     const [newUserForm, setNewUserForm] = useState<NewUserForm>({
@@ -136,7 +136,10 @@ function SettingsContent() {
     const getRoleDefaults = (role: string) => {
         const perms: any = {};
         const grant = (pageIds: string[], readOnly?: string[]) => {
-            pageIds.forEach(id => { perms[id] = { view: true, create: true, editDelete: true }; });
+            pageIds.forEach(id => {
+                const link = navSections.flatMap(s => s.links).find((l: any) => l.id === id);
+                perms[id] = { view: true, create: true, editDelete: true, ...(link && (link as any).hasApprove ? { approve: true } : {}) };
+            });
             (readOnly || []).forEach(id => { perms[id] = { view: true, create: false, editDelete: false }; });
         };
 
@@ -504,24 +507,27 @@ function SettingsContent() {
             return {
                 title: section.title,
                 featureKey: section.featureKey,
-                links: filteredLinks.map((link: any) => ({ id: link.id, label: link.label }))
+                links: filteredLinks.map((link: any) => ({ id: link.id, label: link.label, ...(link.hasApprove ? { hasApprove: true } : {}) }))
             };
         })
         .filter(section => section.links.length > 0); // Remove empty sections
 
     const handleRoleChange = (roleId: string) => {
-        let perms: Record<string, { view: boolean; create: boolean; editDelete: boolean }> = {};
+        let perms: Record<string, { view: boolean; create: boolean; editDelete: boolean; approve?: boolean }> = {};
 
         // Build the perms based on the filtered permissionHierarchy
         permissionHierarchy.forEach(s => {
-            s.links.forEach(l => {
+            s.links.forEach((l: any) => {
                 perms[l.id] = { view: false, create: false, editDelete: false };
             });
         });
 
         const grant = (pageIds: string[], actions = { view: true, create: true, editDelete: true }) => {
             pageIds.forEach(id => {
-                if (perms[id]) perms[id] = { ...actions };
+                if (perms[id] !== undefined) {
+                    const link = navSections.flatMap(s => s.links).find((l: any) => l.id === id);
+                    perms[id] = { ...actions, ...(link && (link as any).hasApprove && actions.view ? { approve: true } : {}) };
+                }
             });
         };
 

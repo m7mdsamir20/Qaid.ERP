@@ -24,9 +24,12 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
         // Build where clause
         const where: any = {};
 
-        // Super admins see all companies; regular users see only their company
-        if (!isSuperAdmin) {
+        if (isSuperAdmin) {
+            // Super admins see all entries across all companies (including other super admin entries)
+        } else {
+            // Regular users: see only their company's entries, never super admin entries
             where.companyId = companyId;
+            where.isSuperAdmin = false;
         }
 
         if (userId)     where.userId     = userId;
@@ -50,7 +53,7 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
         }
 
         const [logs, total] = await Promise.all([
-            (prisma as any).activityLog.findMany({
+            prisma.activityLog.findMany({
                 where,
                 orderBy: { createdAt: 'desc' },
                 skip,
@@ -59,6 +62,7 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
                     id: true,
                     userId: true,
                     userName: true,
+                    isSuperAdmin: true,
                     action: true,
                     module: true,
                     entityType: true,
@@ -74,7 +78,7 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
                     createdAt: true,
                 },
             }),
-            (prisma as any).activityLog.count({ where }),
+            prisma.activityLog.count({ where }),
         ]);
 
         return NextResponse.json({ logs, total, page, limit });

@@ -51,6 +51,20 @@ export const PUT = withProtection(async (request: NextRequest, session: any, bod
             if (existing.status !== 'draft') {
                 return NextResponse.json({ error: 'لا يمكن اعتماد أمر الشراء في حالته الحالية' }, { status: 400 });
             }
+            // Permission check
+            if (!(session.user as any).isSuperAdmin && (session.user as any).role !== 'admin') {
+                let hasApprove = false;
+                try {
+                    const dbUser = await prisma.user.findUnique({
+                        where: { id: userId },
+                        select: { customRole: { select: { permissions: true } } }
+                    });
+                    const perms = dbUser?.customRole?.permissions ? JSON.parse(dbUser.customRole.permissions) : {};
+                    hasApprove = perms['/purchase-orders']?.approve === true;
+                } catch { hasApprove = false; }
+                if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
+            }
+            // Creator should not approve their own (if createdBy is tracked in future)
             const updated = await prisma.purchaseOrder.update({
                 where: { id },
                 data: {
