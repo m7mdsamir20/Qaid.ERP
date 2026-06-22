@@ -1570,7 +1570,7 @@ export default function POSPage() {
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>
                                 {isRetail ? t('الفواتير المعلقة') : t('الطلبات المفتوحة (طاولات مشغولة / قيد التجهيز)')}
                             </h2>
-                            <button onClick={() => setShowOpenOrders(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowOpenOrders(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {(isRetail ? suspendedOrders : openOrders).length === 0 ? (
@@ -1582,7 +1582,12 @@ export default function POSPage() {
                                 <div key={o.id} style={{ border: `1px solid ${o.status === 'pending' ? '#f59e0b50' : C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: o.status === 'pending' ? 'rgba(245, 158, 11, 0.05)' : C.bg, flexShrink: 0 }}>
                                     <div>
                                         <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            {o.table?.name ? `${t('طاولة')}: ${o.table.name}` : `${t('طلب')} #${o.orderNumber}`} ({allOrderTypes.find(t=>t.value===o.type)?.label || o.type})
+                                            {o.status === 'suspended' && isRetail
+                                                ? `${t('فاتورة معلقة')} — ${o.cart?.length || 0} ${t('صنف')}`
+                                                : o.table?.name
+                                                    ? `${t('طاولة')}: ${o.table.name}`
+                                                    : `${t('طلب')} #${o.orderNumber}${o.type && o.type !== 'retail_suspended' ? ` (${allOrderTypes.find(tp => tp.value === o.type)?.label || ''})` : ''}`
+                                            }
                                             {o.status === 'pending' && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: '#f59e0b20', color: '#f59e0b', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>{t('طلب خارجي (بانتظار الموافقة)')}</span>}
                                         </div>
                                         <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
@@ -1629,7 +1634,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('دفع وإخلاء الطاولة')}</h2>
-                            <button onClick={() => { setPayingOrder(null); setCashPaid(''); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => { setPayingOrder(null); setCashPaid(''); }} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         
                         <div style={{ textAlign: 'center', padding: '16px', background: `${C.primary}10`, borderRadius: '16px', border: `1px dashed ${C.primary}40` }}>
@@ -1701,7 +1706,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('اختر المقاس / النوع')} - {activeVariantItem.name}</h2>
-                            <button onClick={() => setActiveVariantItem(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setActiveVariantItem(null)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {activeVariantItem.variants.map((v: any) => (
@@ -1730,7 +1735,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '460px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإضافات والتعديلات')}</h2>
-                            <button onClick={() => setActiveModifierCartIndex(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setActiveModifierCartIndex(null)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', paddingRight: '10px' }}>
                             {modifiers.map(mod => (
@@ -1768,7 +1773,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الدفع وتأكيد الطلب')}</h2>
-                            <button onClick={() => setShowPaymentModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowPaymentModal(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={{ background: `${C.primary}10`, padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
@@ -1793,14 +1798,14 @@ export default function POSPage() {
                             {paymentMethod === 'mixed' && (
                                 <>
                                     <div>
-                                        <label style={LS}>{t('المبلغ المدفوع (نقدي)')} 💵</label>
+                                        <label style={LS}>{t('المبلغ المدفوع (نقدي)')}</label>
                                         <input type="number" min="0" value={splitAmounts.cash || ''} 
                                             onChange={e => setSplitAmounts({ cash: Number(e.target.value), card: total - Number(e.target.value) })}
                                             style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
                                         />
                                     </div>
                                     <div>
-                                        <label style={LS}>{t('المبلغ المدفوع (شبكة)')} 💳</label>
+                                        <label style={LS}>{t('المبلغ المدفوع (شبكة)')}</label>
                                         <input type="number" min="0" value={splitAmounts.card || ''} 
                                             onChange={e => setSplitAmounts({ card: Number(e.target.value), cash: total - Number(e.target.value) })}
                                             style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
@@ -1845,7 +1850,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('تحديد نوع الطلب')}</h2>
-                            <button onClick={() => setShowOrderTypeModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowOrderTypeModal(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px' }}>
                             {allOrderTypes.map((ot: any) => {
@@ -1955,7 +1960,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('البحث عن عميل')}</h2>
-                            <button onClick={() => { setShowCustomerModal(false); setShowNewCustomerForm(false); setSearchedCustomerObj(null); setCustomerSearchQuery(''); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => { setShowCustomerModal(false); setShowNewCustomerForm(false); setSearchedCustomerObj(null); setCustomerSearchQuery(''); }} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <input value={customerSearchQuery} onChange={e => setCustomerSearchQuery(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { const found = customers.find((c: any) => (c.phone && c.phone === customerSearchQuery) || c.name.includes(customerSearchQuery)); if (found) { setSearchedCustomerObj(found); setShowNewCustomerForm(false); } else { setSearchedCustomerObj(null); setShowNewCustomerForm(true); } } }} placeholder={t('رقم الهاتف أو الاسم')} style={{ ...IS, height: '42px', flex: 1 }} autoFocus />
@@ -2020,7 +2025,7 @@ export default function POSPage() {
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('العروض والخصومات')}</h2>
-                            <button onClick={() => setShowOffersModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowOffersModal(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -2123,7 +2128,7 @@ export default function POSPage() {
                             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <LogOut size={20} /> {t('إنهاء الوردية')}
                             </h2>
-                            <button onClick={() => setShowEndShift(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowEndShift(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div>
@@ -2159,7 +2164,7 @@ export default function POSPage() {
                                 <Store size={20} color={C.primary} />
                                 {t('الفروع')}
                             </h3>
-                            <button onClick={() => setShowBranchModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
+                            <button onClick={() => setShowBranchModal(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -2189,7 +2194,7 @@ export default function POSPage() {
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <RotateCcw size={18} /> {t('تأكيد مرتجع الطلب')}
                             </h2>
-                            <button onClick={() => setReturnOrder(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setReturnOrder(null)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
 
                         {/* Order Summary */}
@@ -2279,140 +2284,152 @@ export default function POSPage() {
                                 <button onClick={() => fetchTodayOrders()} style={{ width: 36, height: 36, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title={t('تحديث')}>
                                     <RefreshCw size={15} />
                                 </button>
-                                <button onClick={() => { setShowTodayOrders(false); setSelectedOrderDetail(null); }} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                                <button onClick={() => { setShowTodayOrders(false); setSelectedOrderDetail(null); }} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                             </div>
                         </div>
 
-                        {/* Orders List */}
-                        <div style={{ flex: 1, overflowY: 'auto', padding: '10px 16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {/* Orders Table */}
+                        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
                             {todayOrdersLoading ? (
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '60px', color: C.textMuted }}>
                                     <Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} />
                                 </div>
                             ) : todayOrders.length === 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px', color: C.textMuted, gap: '10px' }}>
-                                    <Receipt size={40} style={{ opacity: 0.3 }} />
+                                    <History size={40} style={{ opacity: 0.25 }} />
                                     <p style={{ margin: 0, fontFamily: CAIRO, fontSize: '14px' }}>{t('لا توجد طلبات اليوم')}</p>
                                 </div>
-                            ) : todayOrders.map((order: any) => {
-                                const isExpanded = selectedOrderDetail?.id === order.id;
-                                const isCancelled = order.status === 'cancelled';
-                                const isPaid = Number(order.paidAmount) >= Number(order.total) && !isCancelled;
-                                const statusLabel = isCancelled ? t('ملغي') : isPaid ? t('مكتمل') : t('جزئي');
-                                const statusColor = isCancelled ? C.danger : isPaid ? (C.success || '#22c55e') : '#f59e0b';
-                                const payLabel = order.paymentMethod === 'cash' ? t('نقدي') : order.paymentMethod === 'card' ? t('شبكة') : order.paymentMethod === 'mixed' ? t('مختلط') : '';
+                            ) : (
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: CAIRO }}>
+                                    {/* Table Header */}
+                                    <thead>
+                                        <tr style={{ background: C.bg, borderBottom: `2px solid ${C.border}` }}>
+                                            <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 700, color: C.textSecondary, whiteSpace: 'nowrap' }}>#</th>
+                                            <th style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 700, color: C.textSecondary, whiteSpace: 'nowrap' }}>{t('الوقت')}</th>
+                                            <th style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 700, color: C.textSecondary }}>{t('نوع الطلب')}</th>
+                                            <th style={{ padding: '10px 8px', textAlign: 'right', fontWeight: 700, color: C.textSecondary, whiteSpace: 'nowrap' }}>{t('المبلغ')}</th>
+                                            <th style={{ padding: '10px 16px', textAlign: 'center', fontWeight: 700, color: C.textSecondary }}>{t('إجراء')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {todayOrders.map((order: any) => {
+                                            const isExpanded = selectedOrderDetail?.id === order.id;
+                                            const isCancelled = order.status === 'cancelled';
+                                            const isReturned = order.status === 'returned';
+                                            const isPaid = Number(order.paidAmount) >= Number(order.total) && !isCancelled && !isReturned;
+                                            const statusColor = isCancelled ? C.danger : isReturned ? '#8b5cf6' : isPaid ? (C.success || '#22c55e') : '#f59e0b';
+                                            const statusLabel = isCancelled ? t('ملغي') : isReturned ? t('مرتجع') : isPaid ? t('مكتمل') : t('جزئي');
+                                            const payLabel = order.paymentMethod === 'cash' ? t('نقدي') : order.paymentMethod === 'card' ? t('شبكة') : order.paymentMethod === 'mixed' ? t('مختلط') : '';
+                                            const rowBg = isExpanded ? `${C.primary}08` : isCancelled ? `${C.danger}05` : 'transparent';
 
-                                return (
-                                    <div key={order.id} style={{ border: `1px solid ${isCancelled ? C.dangerBorder : C.border}`, borderRadius: '12px', padding: '12px 14px', background: isCancelled ? C.dangerBg : C.bg, opacity: isCancelled ? 0.75 : 1 }}>
-
-                                        {/* Order summary row */}
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                                                    <span style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        #{order.orderNumber?.toString().padStart(4, '0')}
-                                                    </span>
-                                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>
-                                                        {order.customer?.name || t('بيع مباشر')}
-                                                    </span>
-                                                    <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '10px', fontWeight: 700, fontFamily: CAIRO, background: `${statusColor}20`, color: statusColor }}>
-                                                        {statusLabel}
-                                                    </span>
-                                                </div>
-                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '6px' }}>
-                                                    <span>{new Date(order.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-                                                    {order.lines?.length > 0 && <><span>—</span><span>{order.lines.length} {t('صنف')}</span></>}
-                                                    {payLabel && <><span>—</span><span>{payLabel}</span></>}
-                                                </div>
-                                            </div>
-                                            <span style={{ fontWeight: 700, fontSize: '15px', color: C.primary, fontFamily: OUTFIT, flexShrink: 0 }}>
-                                                {Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            </span>
-                                        </div>
-
-                                        {/* Action Buttons */}
-                                        <div style={{ display: 'flex', gap: '6px', marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed ${C.border}` }}>
-                                            {/* Details */}
-                                            <button
-                                                onClick={() => setSelectedOrderDetail(isExpanded ? null : order)}
-                                                style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${isExpanded ? C.primary : C.border}`, background: isExpanded ? `${C.primary}15` : 'transparent', color: isExpanded ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
-                                            >
-                                                <Eye size={13} /> {t('تفاصيل')}
-                                            </button>
-
-                                            {/* Print */}
-                                            <button
-                                                onClick={() => {
-                                                    const linesForPrint = order.lines?.map((l: any) => {
-                                                        const itm = items.find((i: any) => i.id === l.itemId);
-                                                        let parsedMods = null;
-                                                        if (l.modifiers) { try { parsedMods = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers; } catch(e){} }
-                                                        return { itemName: itm?.name || t('صنف'), quantity: l.quantity, unitPrice: l.unitPrice, total: l.total, modifiers: parsedMods ? { main: parsedMods } : undefined };
-                                                    }) || [];
-                                                    printReceipt({ ...order, cashierName: (session?.user as any)?.name }, linesForPrint, Number(order.total), Number(order.discount) || 0);
-                                                }}
-                                                style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
-                                            >
-                                                <Printer size={13} /> {t('طباعة')}
-                                            </button>
-
-                                            {/* Return */}
-                                            {!isCancelled && order.status !== 'returned' && (
-                                                <button
-                                                    onClick={() => { setReturnOrder(order); setReturnTreasury(''); }}
-                                                    style={{ flex: 1, height: '32px', borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.2s' }}
-                                                >
-                                                    <RotateCcw size={13} /> {t('مرتجع')}
-                                                </button>
-                                            )}
-                                        </div>
-
-                                        {/* Expanded Order Lines */}
-                                        {isExpanded && (
-                                            <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: `1px dashed ${C.border}`, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                                                {order.lines?.map((l: any, idx: number) => {
-                                                    const itm = items.find((i: any) => i.id === l.itemId);
-                                                    return (
-                                                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', padding: '3px 0' }}>
-                                                            <span style={{ color: C.textPrimary, fontFamily: CAIRO, flex: 1 }}>{itm?.name || l.itemName || t('صنف')}</span>
-                                                            <span style={{ color: C.textSecondary, fontFamily: OUTFIT, marginInlineEnd: '12px' }}>{l.quantity} × {Number(l.unitPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                                            <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT, minWidth: '60px', textAlign: 'end' }}>{Number(l.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                                        </div>
-                                                    );
-                                                })}
-
-                                                {(Number(order.discount) > 0 || Number(order.taxAmount) > 0 || Number(order.serviceAmount) > 0) && (
-                                                    <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                                        {Number(order.discount) > 0 && (
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.danger }}>
-                                                                <span style={{ fontFamily: CAIRO }}>{t('خصم')}</span>
-                                                                <span style={{ fontFamily: OUTFIT }}>- {Number(order.discount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                            return (
+                                                <>
+                                                    {/* Main Row */}
+                                                    <tr key={order.id} style={{ background: rowBg, borderBottom: `1px solid ${C.border}`, transition: 'background 0.15s' }}>
+                                                        {/* # رقم + حالة */}
+                                                        <td style={{ padding: '10px 16px', whiteSpace: 'nowrap' }}>
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                                                                <span style={{ fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                                    {order.orderNumber?.toString().padStart(4, '0')}
+                                                                </span>
+                                                                <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '8px', fontWeight: 700, background: `${statusColor}20`, color: statusColor, display: 'inline-block', width: 'fit-content' }}>
+                                                                    {statusLabel}
+                                                                </span>
                                                             </div>
-                                                        )}
-                                                        {Number(order.taxAmount) > 0 && (
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
-                                                                <span style={{ fontFamily: CAIRO }}>{t('ضريبة')}</span>
-                                                                <span style={{ fontFamily: OUTFIT }}>+ {Number(order.taxAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                                                            </div>
-                                                        )}
-                                                        {Number(order.serviceAmount) > 0 && (
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#3b82f6' }}>
-                                                                <span style={{ fontFamily: CAIRO }}>{t('رسوم خدمة')}</span>
-                                                                <span style={{ fontFamily: OUTFIT }}>+ {Number(order.serviceAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                        </td>
 
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '13px', borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
-                                                    <span style={{ fontFamily: CAIRO, color: C.textPrimary }}>{t('الإجمالي')}</span>
-                                                    <span style={{ fontFamily: OUTFIT, color: C.primary }}>{Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                                                        {/* الوقت */}
+                                                        <td style={{ padding: '10px 8px', color: C.textSecondary, whiteSpace: 'nowrap', fontFamily: OUTFIT }}>
+                                                            {new Date(order.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                        </td>
+
+                                                        {/* نوع الطلب */}
+                                                        <td style={{ padding: '10px 8px' }}>
+                                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                                                <span style={{ color: C.textPrimary, fontWeight: 600 }}>{order.customer?.name || t('مباشر')}</span>
+                                                                {payLabel && <span style={{ fontSize: '10px', color: C.textMuted }}>{payLabel}{order.lines?.length ? ` — ${order.lines.length} ${t('صنف')}` : ''}</span>}
+                                                            </div>
+                                                        </td>
+
+                                                        {/* المبلغ */}
+                                                        <td style={{ padding: '10px 8px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>
+                                                            {Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                        </td>
+
+                                                        {/* الإجراءات */}
+                                                        <td style={{ padding: '8px 16px' }}>
+                                                            <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                                                                <button
+                                                                    onClick={() => setSelectedOrderDetail(isExpanded ? null : order)}
+                                                                    title={t('تفاصيل')}
+                                                                    style={{ width: '30px', height: '28px', borderRadius: '7px', border: `1px solid ${isExpanded ? C.primary : C.border}`, background: isExpanded ? `${C.primary}15` : 'transparent', color: isExpanded ? C.primary : C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                                >
+                                                                    <Eye size={13} />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        const linesForPrint = order.lines?.map((l: any) => {
+                                                                            const itm = items.find((i: any) => i.id === l.itemId);
+                                                                            let parsedMods = null;
+                                                                            if (l.modifiers) { try { parsedMods = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers; } catch(e){} }
+                                                                            return { itemName: itm?.name || t('صنف'), quantity: l.quantity, unitPrice: l.unitPrice, total: l.total, modifiers: parsedMods ? { main: parsedMods } : undefined };
+                                                                        }) || [];
+                                                                        printReceipt({ ...order, cashierName: (session?.user as any)?.name }, linesForPrint, Number(order.total), Number(order.discount) || 0);
+                                                                    }}
+                                                                    title={t('طباعة')}
+                                                                    style={{ width: '30px', height: '28px', borderRadius: '7px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                                >
+                                                                    <Printer size={13} />
+                                                                </button>
+                                                                {!isCancelled && !isReturned && (
+                                                                    <button
+                                                                        onClick={() => { setReturnOrder(order); setReturnTreasury(''); }}
+                                                                        title={t('مرتجع')}
+                                                                        style={{ width: '30px', height: '28px', borderRadius: '7px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                                    >
+                                                                        <RotateCcw size={13} />
+                                                                    </button>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    {/* Expanded Details Row */}
+                                                    {isExpanded && (
+                                                        <tr key={`${order.id}-detail`} style={{ background: `${C.primary}05` }}>
+                                                            <td colSpan={5} style={{ padding: '0 16px 12px' }}>
+                                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '8px', borderTop: `1px dashed ${C.border}` }}>
+                                                                    {order.lines?.map((l: any, idx: number) => {
+                                                                        const itm = items.find((i: any) => i.id === l.itemId);
+                                                                        return (
+                                                                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', padding: '2px 0' }}>
+                                                                                <span style={{ color: C.textPrimary, fontFamily: CAIRO, flex: 1 }}>{itm?.name || l.itemName || t('صنف')}</span>
+                                                                                <span style={{ color: C.textSecondary, fontFamily: OUTFIT, marginInlineEnd: '16px' }}>{l.quantity} × {Number(l.unitPrice).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                                                <span style={{ color: C.primary, fontWeight: 700, fontFamily: OUTFIT, minWidth: '60px', textAlign: 'end' }}>{Number(l.total).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                                                            </div>
+                                                                        );
+                                                                    })}
+                                                                    {(Number(order.discount) > 0 || Number(order.taxAmount) > 0 || Number(order.serviceAmount) > 0) && (
+                                                                        <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: '4px', marginTop: '2px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                                                                            {Number(order.discount) > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: C.danger }}><span style={{ fontFamily: CAIRO }}>{t('خصم')}</span><span style={{ fontFamily: OUTFIT }}>- {Number(order.discount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>}
+                                                                            {Number(order.taxAmount) > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#f59e0b' }}><span style={{ fontFamily: CAIRO }}>{t('ضريبة')}</span><span style={{ fontFamily: OUTFIT }}>+ {Number(order.taxAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>}
+                                                                            {Number(order.serviceAmount) > 0 && <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#3b82f6' }}><span style={{ fontFamily: CAIRO }}>{t('رسوم خدمة')}</span><span style={{ fontFamily: OUTFIT }}>+ {Number(order.serviceAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>}
+                                                                        </div>
+                                                                    )}
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '4px', marginTop: '2px' }}>
+                                                                        <span style={{ fontFamily: CAIRO, color: C.textPrimary }}>{t('الإجمالي')}</span>
+                                                                        <span style={{ fontFamily: OUTFIT, color: C.primary }}>{Number(order.total).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                </>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            )}
                         </div>
 
                         {/* Footer KPIs */}
@@ -2448,7 +2465,7 @@ export default function POSPage() {
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>
                                 {t('إدارة الدرج النقدية')}
                             </h2>
-                            <button onClick={() => setShowDrawerModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowDrawerModal(false)} style={{ width: '30px', height: '30px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div style={{ display: 'flex', background: `${C.border}40`, borderRadius: '10px', padding: '4px', marginBottom: '20px' }}>
                             <button onClick={() => setDrawerType('in')} style={{ flex: 1, height: '34px', borderRadius: '8px', border: 'none', background: drawerType === 'in' ? C.success : 'transparent', color: drawerType === 'in' ? '#fff' : C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s' }}>{t('إيداع نقدي')}</button>
