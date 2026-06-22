@@ -629,7 +629,7 @@ function NewSalePageInner() {
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
                                     }}>
-                                        {isServices ? 'SRV' : 'SAL'}-{String(nextNum).padStart(5, '0')}
+                                        {isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
                                 <div>

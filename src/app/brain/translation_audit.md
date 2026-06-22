@@ -1,18 +1,77 @@
 # Translation Audit Report
 
-Generated on: 2026-06-05T19:43:17.444Z
+Generated on: 2026-06-22T05:49:43.775Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4556
-- **Total t() Keys in Code**: 4026
+- **Total Keys in `i18n.tsx`**: 4693
+- **Total t() Keys in Code**: 4161
 - **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 530
-- **Unwrapped Arabic Text Instances**: 2506
+- **Unused Keys in `i18n.tsx`**: 532
+- **Unwrapped Arabic Text Instances**: 3496
 
 ## Unwrapped Arabic Text
 
 These are raw Arabic strings found in code files that are NOT wrapped in a `t()` call. Developers should wrap these in `t()` to support localization.
+
+### [app/activity-log/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/activity-log/page.tsx)
+- Line 22: `فواتير المبيعات`
+- Line 23: `فواتير المشتريات`
+- Line 24: `أوامر الشراء`
+- Line 25: `أوامر البيع`
+- Line 26: `الموظفين`
+- Line 27: `الحضور والانصراف`
+- Line 28: `الإجازات`
+- Line 29: `مسير الرواتب`
+- Line 30: `العملاء`
+- Line 31: `الموردين`
+- Line 32: `الأصناف`
+- Line 33: `المخازن`
+- Line 34: `الحسابات`
+- Line 35: `القيود اليومية`
+- Line 36: `السندات`
+- Line 37: `عقود الخدمة`
+- Line 38: `أوامر العمل`
+- Line 39: `طلبات المواد`
+- Line 40: `المشاريع`
+- Line 41: `الإعدادات`
+- Line 42: `تسجيل الدخول`
+- Line 46: `إنشاء`
+- Line 47: `تعديل`
+- Line 48: `حذف`
+- Line 49: `دخول`
+- Line 50: `خروج`
+- Line 51: `اعتماد`
+- Line 52: `رفض`
+- Line 53: `طباعة`
+- Line 54: `تصدير`
+- Line 55: `استلام`
+- Line 131: `التفاصيل الكاملة`
+- Line 138: `عنوان`
+- Line 148: `النوع`
+- Line 154: `المرجع`
+- Line 192: `قبل التغيير`
+- Line 239: `بعد التغيير`
+- Line 342: `كل الموديولات`
+- Line 347: `كل العمليات`
+- Line 354: `التاريخ والوقت`
+- Line 362: `المستخدم`
+- Line 380: `العملية`
+- Line 400: `الموديول`
+- Line 413: `التفاصيل`
+- Line 424: `عرض`
+- Line 439: `إخفاء التفاصيل`
+- Line 439: `عرض التفاصيل`
+- Line 454: `سجل النشاط`
+- Line 455: `تتبع جميع العمليات والتغييرات في النظام`
+- Line 475: `بحث في التفاصيل`
+- Line 489: `كل الموديولات`
+- Line 500: `كل العمليات`
+- Line 526: `من تاريخ`
+- Line 549: `إلى تاريخ`
+- Line 572: `مسح الفلاتر`
+- Line 583: `إجمالي السجلات`
+- Line 599: `لا توجد سجلات مطابقة للبحث`
 
 ### [app/api/accounts/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/accounts/route.ts)
 - Line 83: `جميع الحقول مطلوبة`
@@ -120,6 +179,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 77: `تم حذف الحساب بنجاح`
 - Line 80: `فشل في حذف الحساب`
 
+### [app/api/activity-log/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/activity-log/route.ts)
+- Line 83: `حدث خطأ أثناء جلب سجل النشاط`
+
 ### [app/api/admin/fix-branches/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/admin/fix-branches/route.ts)
 - Line 22: `الفرع الرئيسي`
 
@@ -161,6 +223,43 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 63: `مفتاح غير موجود`
 - Line 82: `يرجى تحديد المفتاح`
 - Line 85: `مفتاح غير موجود`
+
+### [app/api/attendance/holidays/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/attendance/holidays/route.ts)
+- Line 22: `اسم العطلة والتاريخ مطلوبان`
+- Line 40: `إضافة عطلة رسمية`
+- Line 52: `معرف العطلة مطلوب`
+
+### [app/api/attendance/leaves/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/attendance/leaves/route.ts)
+- Line 48: `بيانات ناقصة: الموظف، النوع، تاريخ البداية والنهاية مطلوبة`
+- Line 57: `تاريخ النهاية يجب أن يكون بعد تاريخ البداية`
+- Line 71: `رصيد الإجازة غير كافٍ. المتاح`
+- Line 71: `يوم، المطلوب`
+- Line 71: `يوم`
+- Line 98: `طلب إجازة للموظف`
+- Line 98: `يوم`
+- Line 110: `معرف الطلب مطلوب`
+- Line 112: `الحالة يجب أن تكون`
+- Line 112: `أو`
+- Line 123: `الطلب غير موجود`
+- Line 125: `الطلب تمت معالجته مسبقاً`
+- Line 174: `إجازة`
+- Line 197: `اعتماد`
+- Line 197: `رفض`
+- Line 197: `إجازة الموظف`
+
+### [app/api/attendance/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/attendance/route.ts)
+- Line 64: `بيانات ناقصة: الموظف، التاريخ، والحالة مطلوبة`
+- Line 147: `تسجيل حضور للموظف`
+- Line 147: `بتاريخ`
+- Line 158: `مصفوفة السجلات مطلوبة`
+
+### [app/api/attendance/schedules/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/attendance/schedules/route.ts)
+- Line 23: `الاسم ووقت الحضور والانصراف مطلوبة`
+- Line 44: `إنشاء جدول عمل`
+- Line 55: `معرف الجدول مطلوب`
+- Line 79: `معرف الجدول مطلوب`
+- Line 85: `لا يمكن حذف الجدول،`
+- Line 85: `موظف مرتبط به`
 
 ### [app/api/auth/register/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/auth/register/route.ts)
 - Line 13: `جميع الحقول مطلوبة`
@@ -295,6 +394,18 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 114: `سند قبض رقم`
 - Line 124: `سند صرف رقم`
 - Line 181: `حدث خطأ أثناء جلب كشف الحساب`
+
+### [app/api/daily-site-reports/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/daily-site-reports/route.ts)
+- Line 38: `المشروع غير موجود`
+- Line 71: `أنشأ تقرير يومي رقم`
+- Line 71: `للمشروع`
+
+### [app/api/daily-site-reports/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/daily-site-reports/[id]/route.ts)
+- Line 13: `التقرير غير موجود`
+- Line 24: `التقرير غير موجود`
+- Line 48: `عدّل التقرير اليومي رقم`
+- Line 63: `التقرير غير موجود`
+- Line 74: `حذف التقرير اليومي رقم`
 
 ### [app/api/database/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/database/route.ts)
 - Line 56: `تم استرداد البيانات بنجاح. يرجى تحديث الصفحة`
@@ -622,6 +733,27 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 57: `لا توجد سنة مالية مفتوحة لهذا التاريخ`
 - Line 95: `فشل في إنشاء القيد اليومي`
 
+### [app/api/loyalty/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/loyalty/route.ts)
+- Line 19: `برنامج الولاء`
+- Line 41: `تعديل إعدادات برنامج الولاء`
+- Line 54: `إنشاء برنامج الولاء`
+
+### [app/api/material-requests/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/material-requests/route.ts)
+- Line 50: `المشروع غير موجود`
+- Line 81: `أنشأ طلب مواد رقم`
+- Line 81: `للمشروع`
+
+### [app/api/material-requests/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/material-requests/[id]/route.ts)
+- Line 16: `الطلب غير موجود`
+- Line 26: `الطلب غير موجود`
+- Line 52: `اعتمد`
+- Line 52: `رفض`
+- Line 52: `عدّل`
+- Line 52: `طلب المواد رقم`
+- Line 65: `الطلب غير موجود`
+- Line 67: `لا يمكن حذف طلب غير معلق`
+- Line 79: `حذف طلب المواد رقم`
+
 ### [app/api/notifications/generate/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/notifications/generate/route.ts)
 - Line 17: `الشركة غير موجودة`
 - Line 66: `نفد من المخزون`
@@ -799,6 +931,34 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 24: `المشروع غير موجود`
 - Line 71: `لا يمكن حذف المشروع لوجود عمليات مرتبطة به`
 
+### [app/api/purchase-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/route.ts)
+- Line 76: `يرجى تحديد المورد`
+- Line 77: `يرجى إضافة بند واحد على الأقل`
+- Line 142: `أنشأ أمر شراء رقم`
+- Line 142: `للمورد`
+
+### [app/api/purchase-orders/[id]/receive/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/[id]/receive/route.ts)
+- Line 13: `يرجى تحديد الكميات المستلمة`
+- Line 23: `أمر الشراء غير موجود`
+- Line 26: `لا يمكن تسجيل الاستلام إلا لأوامر الشراء المعتمدة أو المستلمة جزئياً`
+- Line 68: `استلام بضاعة`
+- Line 68: `أمر شراء رقم`
+- Line 102: `سجّل استلام بضاعة لأمر الشراء`
+
+### [app/api/purchase-orders/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/[id]/route.ts)
+- Line 26: `أمر الشراء غير موجود`
+- Line 41: `أمر الشراء غير موجود`
+- Line 52: `لا يمكن اعتماد أمر الشراء في حالته الحالية`
+- Line 69: `اعتمد أمر الشراء رقم`
+- Line 78: `لا يمكن إلغاء أمر الشراء في حالته الحالية`
+- Line 91: `ألغى أمر الشراء رقم`
+- Line 98: `حالة غير مدعومة`
+- Line 103: `لا يمكن تعديل أمر الشراء إلا عندما يكون في حالة مسودة`
+- Line 160: `عدّل أمر الشراء رقم`
+- Line 176: `أمر الشراء غير موجود`
+- Line 178: `لا يمكن حذف أمر الشراء إلا عندما يكون في حالة مسودة`
+- Line 192: `حذف أمر الشراء رقم`
+
 ### [app/api/purchase-payments/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-payments/route.ts)
 - Line 26: `المستفيد (المورد/العميل) والخزينة والمبلغ مطلوبون`
 - Line 31: `المبلغ غير صالح`
@@ -819,29 +979,29 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 145: `فشل في إنشاء سند الصرف`
 
 ### [app/api/purchase-returns/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-returns/route.ts)
-- Line 125: `مرتجع مشتريات رقم`
-- Line 163: `موردين`
-- Line 164: `دائنون`
-- Line 165: `ذمم دائنة`
-- Line 174: `عملاء`
-- Line 175: `مدينون`
-- Line 176: `ذمم مدينة`
-- Line 187: `مخزون`
-- Line 188: `بضاعة`
-- Line 189: `بضائع`
-- Line 190: `مشتريات`
-- Line 213: `تخفيض مستحقات`
-- Line 213: `مرتجع`
-- Line 219: `مرتجع مشتريات رقم`
-- Line 219: `صافي`
-- Line 230: `ضريبة القيمة المضافة المدفوعة`
-- Line 231: `ضريبة مدخلات`
-- Line 232: `ضريبة`
-- Line 243: `عكس ضريبة مدخلات مرتجع مشتريات`
-- Line 253: `استلام نقدي`
-- Line 253: `مرتجع مشتريات`
-- Line 263: `قيد مرتجع مشتريات رقم`
-- Line 281: `فشل في إنشاء مرتجع المشتريات`
+- Line 126: `مرتجع مشتريات رقم`
+- Line 164: `موردين`
+- Line 165: `دائنون`
+- Line 166: `ذمم دائنة`
+- Line 175: `عملاء`
+- Line 176: `مدينون`
+- Line 177: `ذمم مدينة`
+- Line 188: `مخزون`
+- Line 189: `بضاعة`
+- Line 190: `بضائع`
+- Line 191: `مشتريات`
+- Line 214: `تخفيض مستحقات`
+- Line 214: `مرتجع`
+- Line 220: `مرتجع مشتريات رقم`
+- Line 220: `صافي`
+- Line 231: `ضريبة القيمة المضافة المدفوعة`
+- Line 232: `ضريبة مدخلات`
+- Line 233: `ضريبة`
+- Line 244: `عكس ضريبة مدخلات مرتجع مشتريات`
+- Line 254: `استلام نقدي`
+- Line 254: `مرتجع مشتريات`
+- Line 264: `قيد مرتجع مشتريات رقم`
+- Line 282: `فشل في إنشاء مرتجع المشتريات`
 
 ### [app/api/purchases/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchases/route.ts)
 - Line 72: `النشاط الخدمي لا يدعم فواتير المشتريات`
@@ -870,34 +1030,34 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 375: `فشل في إنشاء فاتورة المشتريات`
 
 ### [app/api/quotations/convert/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/quotations/convert/route.ts)
-- Line 28: `عرض السعر غير موجود`
-- Line 29: `عرض السعر تم تحويله بالفعل`
-- Line 52: `الكمية المتاحة غير كافية للصنف`
-- Line 52: `المتاح`
-- Line 64: `لا توجد سنة مالية مفتوحة`
-- Line 132: `فاتورة محولة من عرض سعر رقم`
-- Line 162: `إيرادات الخدمات`
-- Line 163: `خدمات`
-- Line 166: `إيرادات المبيعات`
-- Line 167: `مبيعات`
-- Line 176: `ذمم`
-- Line 177: `عملاء`
-- Line 186: `ضريبة القيمة المضافة المحصلة`
-- Line 202: `ذمم عميل`
-- Line 202: `فاتورة محولة`
-- Line 208: `فاتورة محولة من عرض سعر رقم`
-- Line 217: `ضريبة القيمة المضافة`
-- Line 217: `فاتورة`
-- Line 229: `مخزون`
-- Line 230: `بضاعة`
-- Line 239: `تكلفة`
-- Line 240: `البضاعة المباعة`
-- Line 261: `تكلفة بضاعة مباعة`
-- Line 261: `فاتورة`
-- Line 267: `تكلفة بضاعة مباعة`
-- Line 267: `فاتورة`
-- Line 279: `قيد فاتورة محولة من عرض سعر رقم`
-- Line 304: `فشل تحويل عرض السعر إلى فاتورة`
+- Line 29: `عرض السعر غير موجود`
+- Line 30: `عرض السعر تم تحويله بالفعل`
+- Line 53: `الكمية المتاحة غير كافية للصنف`
+- Line 53: `المتاح`
+- Line 65: `لا توجد سنة مالية مفتوحة`
+- Line 133: `فاتورة محولة من عرض سعر رقم`
+- Line 163: `إيرادات الخدمات`
+- Line 164: `خدمات`
+- Line 167: `إيرادات المبيعات`
+- Line 168: `مبيعات`
+- Line 177: `ذمم`
+- Line 178: `عملاء`
+- Line 187: `ضريبة القيمة المضافة المحصلة`
+- Line 203: `ذمم عميل`
+- Line 203: `فاتورة محولة`
+- Line 209: `فاتورة محولة من عرض سعر رقم`
+- Line 218: `ضريبة القيمة المضافة`
+- Line 218: `فاتورة`
+- Line 230: `مخزون`
+- Line 231: `بضاعة`
+- Line 240: `تكلفة`
+- Line 241: `البضاعة المباعة`
+- Line 262: `تكلفة بضاعة مباعة`
+- Line 262: `فاتورة`
+- Line 268: `تكلفة بضاعة مباعة`
+- Line 268: `فاتورة`
+- Line 280: `قيد فاتورة محولة من عرض سعر رقم`
+- Line 305: `فشل تحويل عرض السعر إلى فاتورة`
 
 ### [app/api/quotations/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/quotations/route.ts)
 - Line 106: `ضريبة القيمة المضافة`
@@ -917,19 +1077,23 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 71: `فشل في جلب تقرير التدفق النقدي`
 
 ### [app/api/reports/customer-statement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/customer-statement/route.ts)
-- Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
-- Line 34: `العميل غير موجود`
-- Line 91: `فاتورة مبيعات`
-- Line 91: `مرتجع مبيعات`
-- Line 93: `بيع بضاعة فاتورة`
-- Line 93: `مرتجع بضاعة فاتورة`
-- Line 105: `سند قبض`
-- Line 105: `سند صرف`
-- Line 107: `سند قبض`
-- Line 107: `سند صرف`
-- Line 119: `خطة تقسيط`
-- Line 121: `فتح خطة تقسيط`
-- Line 141: `فشل في جلب كشف الحساب`
+- Line 19: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 35: `العميل غير موجود`
+- Line 95: `فاتورة خدمات`
+- Line 95: `فاتورة مبيعات`
+- Line 96: `مرتجع خدمات`
+- Line 96: `مرتجع مبيعات`
+- Line 99: `تقديم خدمة - فاتورة`
+- Line 99: `بيع بضاعة فاتورة`
+- Line 100: `مرتجع خدمة - فاتورة`
+- Line 100: `مرتجع بضاعة فاتورة`
+- Line 112: `سند قبض`
+- Line 112: `سند صرف`
+- Line 114: `سند قبض`
+- Line 114: `سند صرف`
+- Line 126: `خطة تقسيط`
+- Line 128: `فتح خطة تقسيط`
+- Line 148: `فشل في جلب كشف الحساب`
 
 ### [app/api/reports/expenses-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/expenses-report/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
@@ -984,17 +1148,17 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 105: `فشل في جلب تقرير المناديب`
 
 ### [app/api/reports/supplier-statement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/supplier-statement/route.ts)
-- Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
-- Line 33: `المورد غير موجود`
-- Line 86: `فاتورة مشتريات`
-- Line 86: `مرتجع مشتريات`
-- Line 88: `شراء بضاعة فاتورة`
-- Line 88: `مرتجع بضاعة فاتورة`
-- Line 101: `سند صرف`
-- Line 101: `سند قبض`
-- Line 103: `سند صرف`
-- Line 103: `سند قبض`
-- Line 123: `فشل في جلب كشف الحساب`
+- Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 34: `المورد غير موجود`
+- Line 87: `فاتورة مشتريات`
+- Line 87: `مرتجع مشتريات`
+- Line 89: `شراء بضاعة فاتورة`
+- Line 89: `مرتجع بضاعة فاتورة`
+- Line 102: `سند صرف`
+- Line 102: `سند قبض`
+- Line 104: `سند صرف`
+- Line 104: `سند قبض`
+- Line 124: `فشل في جلب كشف الحساب`
 
 ### [app/api/reports/top-selling-items/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/top-selling-items/route.ts)
 - Line 71: `فشل في جلب تقرير الأكثر مبيعاً`
@@ -1005,56 +1169,61 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 40: `الخزينة غير موجودة أو غير تابعة للشركة`
 
 ### [app/api/reports/trial-balance/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/trial-balance/route.ts)
-- Line 34: `لا توجد سنة مالية مفتوحة`
+- Line 70: `لا توجد سنة مالية مفتوحة`
 
 ### [app/api/restaurant/orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/restaurant/orders/route.ts)
-- Line 96: `المواد الخام غير كافية لعمل`
-- Line 96: `المتاح من`
-- Line 96: `هو`
-- Line 96: `فقط`
-- Line 146: `عميل توصيل`
-- Line 278: `فاتورة كاشير - طلب رقم`
-- Line 346: `نقدية`
-- Line 346: `خزنة`
-- Line 346: `صندوق`
-- Line 349: `إيرادات`
-- Line 349: `مبيعات`
-- Line 360: `إيرادات مبيعات - طلب`
-- Line 364: `تحصيل طلب كاشير`
-- Line 370: `ذمم`
-- Line 370: `عملاء`
-- Line 373: `ذمم (طاولة/عميل) - طلب`
-- Line 380: `ضريبة`
-- Line 384: `ضريبة قيمة مضافة - طلب`
-- Line 391: `رسوم خدمة`
-- Line 391: `خدمات`
-- Line 395: `رسوم خدمة - طلب`
-- Line 405: `قيد مبيعات كاشير - طلب`
-- Line 450: `استهلاك مكونات لوجبة`
-- Line 480: `استهلاك إضافة`
-- Line 480: `لطلب الكاشير`
-- Line 555: `نقدية`
-- Line 555: `خزنة`
-- Line 558: `ذمم`
-- Line 558: `عملاء`
-- Line 572: `تحصيل فاتورة آجل كاشير - طلب`
-- Line 577: `تحصيل نقدي`
-- Line 578: `إقفال ذمم`
-- Line 586: `تم الدفع وإخلاء الطاولة`
-- Line 604: `السبب`
-- Line 604: `السبب`
-- Line 630: `ملغي - رفض استلام العميل`
-- Line 644: `إيرادات`
-- Line 644: `مبيعات`
-- Line 647: `ذمم`
-- Line 647: `عملاء`
-- Line 657: `عكس قيد مبيعات - إلغاء طلب`
-- Line 657: `رفض استلام`
-- Line 667: `عكس إيراد - إلغاء طلب`
-- Line 669: `عكس ذمم - إلغاء طلب`
-- Line 734: `مرتجع استهلاك مكونات لإلغاء طلب`
-- Line 757: `مرتجع إضافة`
-- Line 757: `لإلغاء طلب`
+- Line 101: `المواد الخام غير كافية لعمل`
+- Line 101: `المتاح من`
+- Line 101: `هو`
+- Line 101: `فقط`
+- Line 113: `المخزون غير كافٍ للصنف`
+- Line 113: `المتاح في المستودع هو`
+- Line 113: `فقط`
+- Line 162: `عميل توصيل`
+- Line 294: `فاتورة كاشير - طلب رقم`
+- Line 362: `نقدية`
+- Line 362: `خزنة`
+- Line 362: `صندوق`
+- Line 365: `إيرادات`
+- Line 365: `مبيعات`
+- Line 376: `إيرادات مبيعات - طلب`
+- Line 380: `تحصيل طلب كاشير`
+- Line 386: `ذمم`
+- Line 386: `عملاء`
+- Line 389: `ذمم (طاولة/عميل) - طلب`
+- Line 396: `ضريبة`
+- Line 400: `ضريبة قيمة مضافة - طلب`
+- Line 407: `رسوم خدمة`
+- Line 407: `خدمات`
+- Line 411: `رسوم خدمة - طلب`
+- Line 421: `قيد مبيعات كاشير - طلب`
+- Line 466: `استهلاك مكونات لوجبة`
+- Line 489: `مبيعات كاشير تجزئة للصنف`
+- Line 516: `استهلاك إضافة`
+- Line 516: `لطلب الكاشير`
+- Line 596: `نقدية`
+- Line 596: `خزنة`
+- Line 599: `ذمم`
+- Line 599: `عملاء`
+- Line 613: `تحصيل فاتورة آجل كاشير - طلب`
+- Line 618: `تحصيل نقدي`
+- Line 619: `إقفال ذمم`
+- Line 627: `تم الدفع وإخلاء الطاولة`
+- Line 645: `السبب`
+- Line 645: `السبب`
+- Line 671: `ملغي - رفض استلام العميل`
+- Line 685: `إيرادات`
+- Line 685: `مبيعات`
+- Line 688: `ذمم`
+- Line 688: `عملاء`
+- Line 698: `عكس قيد مبيعات - إلغاء طلب`
+- Line 698: `رفض استلام`
+- Line 708: `عكس إيراد - إلغاء طلب`
+- Line 710: `عكس ذمم - إلغاء طلب`
+- Line 775: `مرتجع استهلاك مكونات لإلغاء طلب`
+- Line 792: `مرتجع مبيعات كاشير تجزئة لإلغاء طلب`
+- Line 813: `مرتجع إضافة`
+- Line 813: `لإلغاء طلب`
 
 ### [app/api/restaurant/shifts/drawer/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/restaurant/shifts/drawer/route.ts)
 - Line 11: `بيانات غير مكتملة`
@@ -1103,37 +1272,37 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 
 ### [app/api/sales/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales/route.ts)
 - Line 118: `ليس لديك صلاحية إنشاء فواتير مبيعات`
-- Line 165: `الكمية المتاحة غير كافية للصنف`
-- Line 165: `المتاح`
-- Line 187: `لا يمكن إصدار الفاتورة: السنة المالية الحالية مغلقة أو غير موجودة`
-- Line 300: `فاتورة مبيعات رقم`
-- Line 337: `إيرادات الخدمات`
-- Line 338: `خدمات`
-- Line 341: `إيرادات المبيعات`
-- Line 342: `مبيعات`
-- Line 352: `ذمم`
-- Line 353: `عملاء`
-- Line 354: `مدينون`
-- Line 364: `ضريبة القيمة المضافة المحصلة`
-- Line 365: `ضريبة`
-- Line 393: `مبلغ مقبوض`
-- Line 393: `فاتورة`
-- Line 403: `ذمم عميل`
-- Line 403: `فاتورة`
-- Line 412: `فاتورة مبيعات رقم`
-- Line 421: `ضريبة القيمة المضافة`
-- Line 421: `فاتورة`
-- Line 432: `مخزون`
-- Line 433: `بضاعة`
-- Line 434: `بضائع`
-- Line 444: `تكلفة`
-- Line 446: `البضاعة المباعة`
-- Line 466: `تكلفة بضاعة مباعة`
-- Line 466: `فاتورة`
-- Line 472: `تكلفة بضاعة مباعة`
-- Line 472: `فاتورة`
-- Line 485: `قيد فاتورة مبيعات رقم`
-- Line 515: `فشل في إنشاء فاتورة المبيعات`
+- Line 166: `الكمية المتاحة غير كافية للصنف`
+- Line 166: `المتاح`
+- Line 188: `لا يمكن إصدار الفاتورة: السنة المالية الحالية مغلقة أو غير موجودة`
+- Line 302: `فاتورة مبيعات رقم`
+- Line 339: `إيرادات الخدمات`
+- Line 340: `خدمات`
+- Line 343: `إيرادات المبيعات`
+- Line 344: `مبيعات`
+- Line 354: `ذمم`
+- Line 355: `عملاء`
+- Line 356: `مدينون`
+- Line 366: `ضريبة القيمة المضافة المحصلة`
+- Line 367: `ضريبة`
+- Line 395: `مبلغ مقبوض`
+- Line 395: `فاتورة`
+- Line 405: `ذمم عميل`
+- Line 405: `فاتورة`
+- Line 414: `فاتورة مبيعات رقم`
+- Line 423: `ضريبة القيمة المضافة`
+- Line 423: `فاتورة`
+- Line 434: `مخزون`
+- Line 435: `بضاعة`
+- Line 436: `بضائع`
+- Line 446: `تكلفة`
+- Line 448: `البضاعة المباعة`
+- Line 468: `تكلفة بضاعة مباعة`
+- Line 468: `فاتورة`
+- Line 474: `تكلفة بضاعة مباعة`
+- Line 474: `فاتورة`
+- Line 487: `قيد فاتورة مبيعات رقم`
+- Line 517: `فشل في إنشاء فاتورة المبيعات`
 
 ### [app/api/sales/[id]/approve/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales/[id]/approve/route.ts)
 - Line 23: `ليس لديك صلاحية اعتماد فواتير مبيعات`
@@ -1177,6 +1346,49 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 87: `لا يمكن حذف الفاتورة بعد اعتمادها`
 - Line 98: `فشل في حذف الفاتورة`
 
+### [app/api/sales-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-orders/route.ts)
+- Line 92: `عميل نقدي`
+- Line 151: `أنشأ أمر بيع رقم`
+- Line 151: `للعميل`
+- Line 158: `فشل في إنشاء أمر البيع`
+
+### [app/api/sales-orders/[id]/deliver/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-orders/[id]/deliver/route.ts)
+- Line 22: `أمر البيع غير موجود`
+- Line 25: `يجب أن يكون أمر البيع معتمداً لتسجيل التسليم`
+- Line 28: `يجب تحديد المخزن قبل تسجيل التسليم`
+- Line 37: `البند`
+- Line 37: `غير موجود في هذا الأمر`
+- Line 48: `الكمية المتاحة من`
+- Line 48: `في المخزن هي`
+- Line 48: `فقط`
+- Line 85: `تسليم من أمر البيع`
+- Line 114: `سجّل تسليم جزئي/كلي لأمر البيع`
+- Line 114: `للعميل`
+- Line 114: `عميل نقدي`
+- Line 129: `فشل في تسجيل التسليم`
+
+### [app/api/sales-orders/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-orders/[id]/route.ts)
+- Line 26: `أمر البيع غير موجود`
+- Line 49: `أمر البيع غير موجود`
+- Line 61: `لا يمكن اعتماد هذا الأمر في حالته الحالية`
+- Line 67: `لا يمكن إلغاء هذا الأمر في حالته الحالية`
+- Line 72: `يجب اعتماد الأمر أولاً`
+- Line 95: `اعتمد أمر البيع`
+- Line 95: `للعميل`
+- Line 95: `عميل نقدي`
+- Line 97: `ألغى أمر البيع`
+- Line 98: `غيّر حالة أمر البيع`
+- Line 98: `إلى`
+- Line 108: `لا يمكن تعديل الأمر بعد اعتماده`
+- Line 172: `عدّل بيانات أمر البيع`
+- Line 180: `فشل في تحديث أمر البيع`
+- Line 195: `أمر البيع غير موجود`
+- Line 198: `لا يمكن حذف إلا أوامر البيع في حالة المسودة`
+- Line 215: `حذف أمر البيع`
+- Line 215: `للعميل`
+- Line 215: `عميل نقدي`
+- Line 221: `فشل في حذف أمر البيع`
+
 ### [app/api/sales-reps/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales-reps/route.ts)
 - Line 48: `اسم المندوب مطلوب`
 - Line 57: `رمز المندوب مستخدم بالفعل`
@@ -1200,6 +1412,34 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 70: `مبيعات`
 - Line 70: `مشتريات`
 - Line 71: `ج.م`
+
+### [app/api/serial-numbers/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/serial-numbers/route.ts)
+- Line 71: `الصنف والرقم التسلسلي مطلوبان`
+- Line 81: `الأرقام التسلسلية التالية مسجلة مسبقاً`
+- Line 101: `إضافة`
+- Line 101: `رقم تسلسلي للصنف`
+
+### [app/api/serial-numbers/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/serial-numbers/[id]/route.ts)
+- Line 18: `الرقم التسلسلي غير موجود`
+- Line 43: `الرقم التسلسلي غير موجود`
+- Line 66: `تعديل الرقم التسلسلي`
+- Line 84: `الرقم التسلسلي غير موجود`
+- Line 88: `لا يمكن حذف الرقم التسلسلي إلا إذا كان بحالة في المخزن`
+- Line 99: `حذف الرقم التسلسلي`
+
+### [app/api/service-contracts/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/service-contracts/route.ts)
+- Line 38: `البيانات الأساسية مطلوبة (النوع، تاريخ البداية، قيمة العقد`
+- Line 75: `أنشأ عقد خدمة رقم`
+- Line 81: `فشل في إنشاء عقد الخدمة`
+
+### [app/api/service-contracts/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/service-contracts/[id]/route.ts)
+- Line 23: `عقد الخدمة غير موجود`
+- Line 40: `عقد الخدمة غير موجود`
+- Line 70: `حدّث عقد خدمة رقم`
+- Line 76: `فشل في تحديث عقد الخدمة`
+- Line 87: `عقد الخدمة غير موجود`
+- Line 91: `لا يمكن حذف إلا العقود في حالة مسودة`
+- Line 99: `فشل في حذف عقد الخدمة`
 
 ### [app/api/settings/backup/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/settings/backup/route.ts)
 - Line 64: `العملاء`
@@ -1326,16 +1566,8 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 176: `فشل في حذف المورد`
 
 ### [app/api/treasuries/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/treasuries/route.ts)
-- Line 82: `اسم الخزينة مطلوب`
-- Line 88: `حسابات بنكية`
-- Line 88: `الحسابات البنكية`
-- Line 88: `بنك`
-- Line 88: `بنوك`
-- Line 89: `الصندوق الرئيسي`
-- Line 89: `صندوق`
-- Line 89: `نقدية`
-- Line 89: `نقد`
-- Line 159: `فشل في إنشاء الخزينة`
+- Line 99: `اسم الخزينة مطلوب`
+- Line 193: `فشل في إنشاء الخزينة`
 
 ### [app/api/treasuries/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/treasuries/[id]/route.ts)
 - Line 15: `الخزينة غير موجودة`
@@ -1408,6 +1640,209 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 133: `بضاعة`
 - Line 134: `مخزن`
 - Line 173: `فشل في حذف المخزن. ربما يكون مرتبطاً بعمليات أخرى`
+
+### [app/api/work-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/work-orders/route.ts)
+- Line 53: `البيانات الأساسية مطلوبة (النوع، الوصف`
+- Line 104: `أنشأ أمر عمل رقم`
+- Line 110: `فشل في إنشاء أمر العمل`
+
+### [app/api/work-orders/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/work-orders/[id]/route.ts)
+- Line 22: `أمر العمل غير موجود`
+- Line 39: `أمر العمل غير موجود`
+- Line 102: `غيّر حالة أمر عمل رقم`
+- Line 102: `إلى`
+- Line 103: `حدّث أمر عمل رقم`
+- Line 109: `فشل في تحديث أمر العمل`
+- Line 120: `أمر العمل غير موجود`
+- Line 124: `لا يمكن حذف إلا أوامر العمل الجديدة`
+- Line 132: `فشل في حذف أمر العمل`
+
+### [app/attendance/holidays/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/holidays/page.tsx)
+- Line 44: `اسم العطلة والتاريخ مطلوبان`
+- Line 56: `فشل في الحفظ`
+- Line 58: `تم إضافة العطلة`
+- Line 63: `خطأ في الاتصال`
+- Line 68: `هل تريد حذف هذه العطلة؟`
+- Line 70: `تم الحذف`
+- Line 71: `فشل الحذف`
+- Line 84: `العطلات الرسمية`
+- Line 85: `إدارة العطلات والأعياد الرسمية`
+- Line 87: `إضافة عطلة`
+- Line 104: `لا توجد عطلات رسمية مضافة بعد`
+- Line 124: `سنوية`
+- Line 143: `إضافة عطلة رسمية`
+- Line 146: `اسم العطلة`
+- Line 147: `مثال: عيد الفطر المبارك`
+- Line 150: `تاريخ العطلة`
+- Line 155: `عطلة سنوية متكررة`
+- Line 158: `إلغاء`
+- Line 161: `إضافة العطلة`
+
+### [app/attendance/leaves/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/leaves/page.tsx)
+- Line 34: `سنوية`
+- Line 35: `مرضية`
+- Line 36: `طارئة`
+- Line 37: `بدون راتب`
+- Line 38: `أمومة`
+- Line 42: `معلقة`
+- Line 43: `معتمدة`
+- Line 44: `مرفوضة`
+- Line 54: `طلبات معلقة`
+- Line 55: `معتمدة`
+- Line 56: `مرفوضة`
+- Line 57: `جميع الطلبات`
+- Line 107: `فشلت العملية`
+- Line 118: `يرجى ملء جميع الحقول المطلوبة`
+- Line 134: `فشل في تقديم الطلب`
+- Line 142: `معلقة`
+- Line 143: `معتمدة`
+- Line 144: `مرفوضة`
+- Line 145: `إجمالي الطلبات`
+- Line 150: `الموظف`
+- Line 159: `نوع الإجازة`
+- Line 168: `من`
+- Line 175: `إلى`
+- Line 182: `عدد الأيام`
+- Line 190: `السبب`
+- Line 196: `الحالة`
+- Line 210: `إجراءات`
+- Line 220: `موافقة`
+- Line 228: `رفض`
+- Line 243: `إدارة الإجازات`
+- Line 244: `متابعة طلبات الإجازة والموافقة عليها`
+- Line 246: `طلب إجازة جديد`
+- Line 287: `لا توجد طلبات معلقة`
+- Line 287: `لا توجد طلبات`
+- Line 292: `جاري التحميل`
+- Line 298: `طلب إجازة جديد`
+- Line 301: `الموظف`
+- Line 306: `اختر الموظف`
+- Line 311: `نوع الإجازة`
+- Line 322: `من تاريخ`
+- Line 326: `إلى تاريخ`
+- Line 331: `السبب`
+- Line 335: `اذكر سبب الإجازة`
+- Line 348: `تقديم الطلب`
+- Line 351: `إلغاء`
+
+### [app/attendance/monthly/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/monthly/page.tsx)
+- Line 56: `حاضر`
+- Line 57: `متأخر`
+- Line 58: `غائب`
+- Line 59: `إجازة`
+- Line 60: `عطلة`
+- Line 63: `يناير`
+- Line 63: `فبراير`
+- Line 63: `مارس`
+- Line 63: `أبريل`
+- Line 63: `مايو`
+- Line 63: `يونيو`
+- Line 63: `يوليو`
+- Line 63: `أغسطس`
+- Line 63: `سبتمبر`
+- Line 63: `أكتوبر`
+- Line 63: `نوفمبر`
+- Line 63: `ديسمبر`
+- Line 136: `كشف الحضور الشهري`
+- Line 137: `عرض جدول الحضور والانصراف لكل موظف خلال الشهر`
+- Line 144: `الشهر`
+- Line 154: `السنة`
+- Line 165: `عرض`
+- Line 183: `جاري التحميل`
+- Line 191: `الموظف`
+- Line 204: `الملخص`
+- Line 221: `انقر للتسجيل`
+- Line 233: `ح`
+- Line 233: `ت`
+- Line 233: `غ`
+- Line 233: `إ`
+- Line 233: `ع`
+- Line 241: `ح`
+- Line 242: `غ`
+- Line 243: `ت`
+- Line 244: `إ`
+- Line 253: `إ.إض`
+- Line 254: `س`
+- Line 264: `الإجماليات`
+- Line 282: `اختر الشهر والسنة لعرض البيانات`
+- Line 291: `تعديل سجل الحضور`
+- Line 294: `الحالة`
+- Line 305: `وقت الحضور`
+- Line 309: `وقت الانصراف`
+- Line 315: `حفظ`
+- Line 318: `إلغاء`
+
+### [app/attendance/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/page.tsx)
+- Line 33: `حاضر`
+- Line 34: `متأخر`
+- Line 35: `غائب`
+- Line 36: `إجازة`
+- Line 37: `عطلة`
+- Line 136: `تم حفظ الحضور بنجاح`
+- Line 145: `حاضر`
+- Line 146: `متأخر`
+- Line 147: `غائب`
+- Line 148: `إجازة`
+- Line 155: `تسجيل الحضور والانصراف`
+- Line 156: `تسجيل يومي لحضور وانصراف الموظفين`
+- Line 159: `جاري الحفظ`
+- Line 159: `حفظ الكل`
+- Line 183: `اختر اليوم`
+- Line 198: `تحديد الكل حاضر`
+- Line 212: `جاري التحميل`
+- Line 220: `الموظف`
+- Line 220: `القسم`
+- Line 220: `وقت الحضور`
+- Line 220: `وقت الانصراف`
+- Line 220: `الحالة`
+- Line 220: `ساعات العمل`
+- Line 220: `التأخير (د`
+- Line 220: `العمل الإضافي`
+- Line 220: `ملاحظات`
+- Line 230: `لا يوجد موظفون نشطون`
+- Line 300: `ملاحظات`
+- Line 323: `جاري الحفظ`
+- Line 323: `حفظ جميع السجلات`
+
+### [app/attendance/schedules/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/schedules/page.tsx)
+- Line 21: `أحد`
+- Line 21: `اثنين`
+- Line 21: `ثلاثاء`
+- Line 21: `أربعاء`
+- Line 22: `خميس`
+- Line 22: `جمعة`
+- Line 22: `سبت`
+- Line 90: `الاسم ووقت الحضور والانصراف مطلوبة`
+- Line 104: `فشل في الحفظ`
+- Line 106: `تم تحديث الجدول`
+- Line 106: `تم إنشاء الجدول`
+- Line 110: `خطأ في الاتصال`
+- Line 115: `هل تريد حذف هذا الجدول؟`
+- Line 117: `تم الحذف`
+- Line 118: `فشل الحذف`
+- Line 124: `جداول مواعيد العمل`
+- Line 125: `إدارة جداول الحضور والانصراف`
+- Line 127: `جدول جديد`
+- Line 144: `لا توجد جداول عمل بعد`
+- Line 157: `موظف`
+- Line 167: `الحضور`
+- Line 171: `الانصراف`
+- Line 184: `تسامح التأخير`
+- Line 184: `د`
+- Line 185: `العمل الإضافي بعد`
+- Line 185: `د`
+- Line 196: `تعديل جدول العمل`
+- Line 196: `جدول عمل جديد`
+- Line 199: `اسم الجدول`
+- Line 200: `مثال: الدوام الرسمي`
+- Line 204: `وقت الحضور`
+- Line 208: `وقت الانصراف`
+- Line 213: `أيام العمل`
+- Line 224: `مدة التسامح في التأخير (دقيقة`
+- Line 228: `بداية العمل الإضافي بعد (دقيقة`
+- Line 233: `إلغاء`
+- Line 236: `حفظ التعديلات`
+- Line 236: `إنشاء الجدول`
 
 ### [app/brain/5ff4f69f-f8ad-415a-b2ab-d9d0a5f35627/scratch/final_fix.js](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/brain/5ff4f69f-f8ad-415a-b2ab-d9d0a5f35627/scratch/final_fix.js)
 - Line 26: `ط`
@@ -2235,7 +2670,476 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 79: `قطعة`
 
 ### [app/customers/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/customers/page.tsx)
-- Line 39: `،`
+- Line 40: `،`
+
+### [app/daily-site-reports/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/daily-site-reports/new/page.tsx)
+- Line 46: `يرجى اختيار المشروع`
+- Line 47: `يرجى إدخال وصف العمل المنجز`
+- Line 70: `فشل في حفظ التقرير`
+- Line 73: `حدث خطأ في الاتصال بالخادم`
+- Line 83: `تقرير يومي جديد`
+- Line 84: `توثيق أعمال الموقع ليومية العمل`
+- Line 92: `جاري تحميل البيانات`
+- Line 103: `بيانات التقرير الأساسية`
+- Line 106: `المشروع`
+- Line 110: `اختر المشروع`
+- Line 112: `اختر المشروع`
+- Line 118: `التاريخ`
+- Line 130: `الطقس`
+- Line 134: `اختر حالة الطقس`
+- Line 136: `اختر حالة الطقس`
+- Line 137: `مشمس`
+- Line 138: `غائم`
+- Line 139: `ممطر`
+- Line 140: `عاصف`
+- Line 141: `حار`
+- Line 147: `عدد العمال`
+- Line 160: `نسبة الإنجاز`
+- Line 166: `مثال`
+- Line 178: `تفاصيل الأعمال والملاحظات`
+- Line 181: `وصف العمل المنجز`
+- Line 185: `صف الأعمال التي تم إنجازها في الموقع اليوم`
+- Line 194: `المشكلات والعقبات`
+- Line 197: `سجّل أي مشكلات أو عقبات واجهتها في الموقع (اختياري`
+- Line 206: `حوادث السلامة`
+- Line 209: `سجّل أي حوادث أو ملاحظات تتعلق بالسلامة (اختياري`
+- Line 218: `ملاحظات`
+- Line 221: `أي ملاحظات إضافية (اختياري`
+- Line 237: `حفظ التقرير`
+- Line 249: `إلغاء`
+
+### [app/daily-site-reports/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/daily-site-reports/page.tsx)
+- Line 32: `مشمس`
+- Line 33: `غائم`
+- Line 34: `ممطر`
+- Line 35: `عاصف`
+- Line 36: `حار`
+
+### [app/daily-site-reports/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/daily-site-reports/[id]/page.tsx)
+- Line 13: `مشمس`
+- Line 14: `غائم`
+- Line 15: `ممطر`
+- Line 16: `عاصف`
+- Line 17: `حار`
+- Line 68: `وصف العمل المنجز مطلوب`
+- Line 90: `فشل في حفظ التعديلات`
+- Line 93: `حدث خطأ في الاتصال بالخادم`
+- Line 108: `فشل في حذف التقرير`
+- Line 111: `حدث خطأ في الاتصال بالخادم`
+- Line 121: `جاري التحميل`
+- Line 130: `التقرير غير موجود`
+- Line 160: `تفاصيل التقرير`
+- Line 167: `تعديل`
+- Line 175: `رقم التقرير`
+- Line 176: `المشروع`
+- Line 177: `التاريخ`
+- Line 178: `الطقس`
+- Line 179: `عدد العمال`
+- Line 180: `نسبة الإنجاز`
+- Line 181: `مقدم التقرير`
+- Line 197: `الطقس`
+- Line 201: `اختر حالة الطقس`
+- Line 204: `اختر حالة الطقس`
+- Line 205: `مشمس`
+- Line 206: `غائم`
+- Line 207: `ممطر`
+- Line 208: `عاصف`
+- Line 209: `حار`
+- Line 215: `عدد العمال`
+- Line 219: `نسبة الإنجاز`
+- Line 220: `مثال`
+- Line 228: `وصف العمل المنجز`
+- Line 238: `صف الأعمال التي تم إنجازها في الموقع اليوم`
+- Line 250: `المشكلات والسلامة`
+- Line 255: `المشكلات والعقبات`
+- Line 265: `حوادث السلامة`
+- Line 278: `المشكلات والسلامة والملاحظات`
+- Line 281: `المشكلات والعقبات`
+- Line 282: `سجّل أي مشكلات أو عقبات واجهتها في الموقع (اختياري`
+- Line 285: `حوادث السلامة`
+- Line 286: `سجّل أي حوادث أو ملاحظات تتعلق بالسلامة (اختياري`
+- Line 289: `ملاحظات`
+- Line 290: `أي ملاحظات إضافية (اختياري`
+- Line 298: `ملاحظات`
+- Line 308: `حفظ التعديلات`
+- Line 314: `إلغاء`
+- Line 322: `ملخص التقرير`
+- Line 326: `التاريخ`
+- Line 334: `العمال`
+- Line 344: `الإنجاز`
+- Line 358: `الطقس`
+- Line 367: `مقدم التقرير`
+- Line 375: `الإجراءات`
+- Line 382: `تعديل التقرير`
+- Line 389: `حذف التقرير`
+- Line 400: `تأكيد حذف التقرير`
+
+### [app/loyalty/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/loyalty/page.tsx)
+- Line 32: `إعدادات البرنامج`
+- Line 33: `رصيد العملاء`
+- Line 45: `برنامج الولاء`
+- Line 76: `برنامج الولاء`
+- Line 138: `تم حفظ إعدادات برنامج الولاء بنجاح`
+- Line 142: `فشل في الحفظ`
+- Line 145: `خطأ في الاتصال بالسيرفر`
+- Line 153: `العميل`
+- Line 165: `الرصيد الحالي`
+- Line 174: `إجمالي المكتسب`
+- Line 183: `إجمالي المستخدم`
+- Line 192: `آخر تحديث`
+- Line 206: `نقاط الولاء`
+- Line 207: `إدارة برنامج الولاء وأرصدة نقاط العملاء`
+- Line 263: `جاري التحميل`
+- Line 269: `إعدادات برنامج الولاء`
+- Line 275: `اسم البرنامج`
+- Line 283: `برنامج الولاء`
+- Line 287: `حالة البرنامج`
+- Line 302: `البرنامج مفعّل`
+- Line 302: `البرنامج معطّل`
+- Line 309: `نقاط لكل وحدة عملة`
+- Line 324: `قيمة النقطة (بالعملة`
+- Line 339: `الحد الأدنى للاستبدال (نقاط`
+- Line 356: `انتهاء النقاط (بالأشهر`
+- Line 356: `اختياري`
+- Line 365: `مثال: 12 (تنتهي بعد سنة`
+- Line 372: `ملخص الإعدادات الحالية`
+- Line 374: `كل`
+- Line 374: `نقطة لكل وحدة عملة،
+                                            قيمة النقطة`
+- Line 375: `وحدة،
+                                            أدنى استبدال`
+- Line 376: `نقطة`
+- Line 377: `تنتهي بعد`
+- Line 377: `شهر`
+- Line 377: `لا تنتهي النقاط`
+- Line 396: `جاري الحفظ`
+- Line 396: `حفظ الإعدادات`
+- Line 411: `ابحث باسم العميل أو رقم الهاتف`
+- Line 425: `لا توجد نتائج مطابقة`
+- Line 425: `لا يوجد عملاء لديهم نقاط حالياً`
+- Line 430: `جاري التحميل`
+
+### [app/material-requests/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/material-requests/new/page.tsx)
+- Line 69: `يرجى اختيار المشروع`
+- Line 71: `يرجى إضافة صنف واحد على الأقل بكمية صحيحة`
+- Line 84: `فشل في حفظ الطلب`
+- Line 86: `حدث خطأ في الاتصال`
+- Line 94: `طلب مواد جديد`
+- Line 95: `إنشاء طلب مواد لمشروع إنشائي`
+- Line 103: `جاري تحميل البيانات`
+- Line 115: `بيانات الطلب`
+- Line 118: `المشروع`
+- Line 122: `اختر المشروع`
+- Line 128: `المرحلة`
+- Line 132: `اختر المرحلة (اختياري`
+- Line 139: `تاريخ المطلوب`
+- Line 144: `ملاحظات`
+- Line 145: `أي ملاحظات على الطلب`
+- Line 152: `الأصناف المطلوبة`
+- Line 154: `إضافة صنف`
+- Line 160: `الصنف`
+- Line 160: `الكمية`
+- Line 160: `الوحدة`
+- Line 160: `ملاحظات`
+- Line 170: `اختر الصنف`
+- Line 175: `وحدة`
+- Line 176: `ملاحظة`
+- Line 187: `حفظ الطلب`
+- Line 190: `إلغاء`
+
+### [app/material-requests/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/material-requests/page.tsx)
+- Line 27: `معلق`
+- Line 28: `معتمد`
+- Line 29: `منفذ جزئياً`
+- Line 30: `منفذ`
+- Line 31: `مرفوض`
+- Line 77: `فشل الحذف`
+- Line 78: `حدث خطأ`
+- Line 86: `طلبات المواد`
+- Line 87: `إدارة طلبات مواد المشاريع الإنشائية`
+- Line 89: `طلب مواد جديد`
+- Line 97: `ابحث برقم الطلب أو اسم المشروع`
+- Line 106: `كل الحالات`
+- Line 109: `كل الحالات`
+- Line 119: `رقم الطلب`
+- Line 127: `المشروع`
+- Line 136: `المرحلة`
+- Line 140: `تاريخ الطلب`
+- Line 144: `تاريخ المطلوب`
+- Line 148: `الحالة`
+- Line 159: `إجراءات`
+- Line 176: `لا توجد طلبات مواد مسجلة حالياً`
+- Line 191: `تأكيد حذف الطلب`
+
+### [app/material-requests/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/material-requests/[id]/page.tsx)
+- Line 11: `معلق`
+- Line 12: `معتمد`
+- Line 13: `منفذ جزئياً`
+- Line 14: `منفذ`
+- Line 15: `مرفوض`
+- Line 45: `فشلت العملية`
+- Line 46: `حدث خطأ`
+- Line 54: `جاري التحميل`
+- Line 62: `الطلب غير موجود`
+- Line 72: `طلب مواد`
+- Line 89: `تفاصيل الطلب`
+- Line 92: `رقم الطلب`
+- Line 93: `المشروع`
+- Line 94: `المرحلة`
+- Line 95: `تاريخ الطلب`
+- Line 96: `تاريخ المطلوب`
+- Line 97: `طلب بواسطة`
+- Line 106: `ملاحظات`
+- Line 115: `الأصناف المطلوبة`
+- Line 120: `الصنف`
+- Line 120: `الكمية المطلوبة`
+- Line 120: `الكمية المنفذة`
+- Line 120: `الوحدة`
+- Line 120: `ملاحظات`
+- Line 144: `حالة الطلب`
+- Line 159: `اعتماد الطلب`
+- Line 167: `رفض الطلب`
+- Line 179: `تأكيد التنفيذ`
+- Line 186: `ملخص`
+- Line 189: `عدد الأصناف`
+- Line 193: `إجمالي الكميات`
+
+### [app/purchase-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/purchase-orders/page.tsx)
+- Line 32: `مسودة`
+- Line 33: `معتمد`
+- Line 34: `مستلم جزئياً`
+- Line 35: `مستلم`
+- Line 36: `مُفوتر`
+- Line 37: `ملغي`
+
+### [app/purchase-orders/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/purchase-orders/[id]/page.tsx)
+- Line 51: `مسودة`
+- Line 52: `معتمد`
+- Line 53: `مستلم جزئياً`
+- Line 54: `مستلم`
+- Line 55: `مُفوتر`
+- Line 56: `ملغي`
+
+### [app/sales/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales/[id]/page.tsx)
+- Line 565: `بنك`
+- Line 565: `خزينة`
+
+### [app/sales-orders/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/new/page.tsx)
+- Line 459: `الصنف`
+- Line 459: `الوصف`
+- Line 459: `الكمية`
+- Line 459: `الوحدة`
+- Line 459: `السعر`
+- Line 459: `الخصم`
+- Line 459: `الإجمالي`
+
+### [app/sales-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/page.tsx)
+- Line 30: `مسودة`
+- Line 31: `معتمد`
+- Line 32: `قيد التنفيذ`
+- Line 33: `تسليم جزئي`
+- Line 34: `مُسلَّم`
+- Line 35: `مُفوتَر`
+- Line 36: `ملغى`
+- Line 40: `كل الحالات`
+- Line 41: `مسودة`
+- Line 42: `معتمد`
+- Line 43: `قيد التنفيذ`
+- Line 44: `تسليم جزئي`
+- Line 45: `مُسلَّم`
+- Line 46: `مُفوتَر`
+- Line 47: `ملغى`
+
+### [app/sales-orders/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/[id]/page.tsx)
+- Line 55: `مسودة`
+- Line 56: `معتمد`
+- Line 57: `قيد التنفيذ`
+- Line 58: `تسليم جزئي`
+- Line 59: `مُسلَّم`
+- Line 60: `مُفوتَر`
+- Line 61: `ملغى`
+
+### [app/serial-numbers/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/serial-numbers/new/page.tsx)
+- Line 87: `يجب اختيار الصنف`
+- Line 91: `يجب إدخال رقم تسلسلي واحد على الأقل`
+- Line 113: `تم إضافة`
+- Line 113: `رقم تسلسلي بنجاح`
+- Line 117: `فشل في الإضافة`
+- Line 120: `خطأ في الاتصال بالسيرفر`
+- Line 128: `بدون مخزن (اختياري`
+- Line 138: `إضافة أرقام تسلسلية`
+- Line 139: `تسجيل رقم تسلسلي جديد أو مجموعة أرقام دفعة واحدة`
+- Line 161: `جاري تحميل البيانات`
+- Line 169: `بيانات الصنف والمخزن`
+- Line 174: `الصنف`
+- Line 179: `اختر الصنف`
+- Line 184: `المخزن`
+- Line 198: `الأرقام التسلسلية`
+- Line 217: `رقم واحد`
+- Line 230: `إضافة متعددة`
+- Line 236: `الرقم التسلسلي`
+- Line 244: `مثال`
+- Line 251: `الأرقام التسلسلية`
+- Line 253: `رقم واحد في كل سطر`
+- Line 274: `رقم تسلسلي سيتم إضافته`
+- Line 285: `بيانات إضافية`
+- Line 289: `تاريخ انتهاء الضمان (اختياري`
+- Line 301: `ملاحظات (اختياري`
+- Line 307: `ملاحظات إضافية`
+- Line 326: `جاري الحفظ`
+- Line 327: `حفظ`
+- Line 327: `أرقام`
+- Line 327: `الرقم التسلسلي`
+- Line 343: `إلغاء`
+
+### [app/serial-numbers/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/serial-numbers/page.tsx)
+- Line 30: `كل الحالات`
+- Line 31: `في المخزن`
+- Line 32: `مباع`
+- Line 33: `محجوز`
+- Line 34: `مرتجع`
+- Line 35: `تالف`
+- Line 39: `في المخزن`
+- Line 40: `مباع`
+- Line 41: `محجوز`
+- Line 42: `مرتجع`
+- Line 43: `تالف`
+- Line 99: `تم حذف الرقم التسلسلي بنجاح`
+- Line 103: `فشل في الحذف`
+- Line 106: `خطأ في الاتصال بالسيرفر`
+- Line 114: `الرقم التسلسلي`
+- Line 127: `الصنف`
+- Line 137: `المخزن`
+- Line 144: `الحالة`
+- Line 160: `العميل`
+- Line 167: `تاريخ البيع`
+- Line 176: `ضمان حتى`
+- Line 189: `الإجراءات`
+- Line 197: `حذف`
+- Line 211: `الأرقام التسلسلية`
+- Line 212: `تتبع وإدارة الأرقام التسلسلية للأصناف`
+- Line 215: `إضافة أرقام`
+- Line 240: `ابحث بالرقم التسلسلي`
+- Line 263: `لا توجد نتائج مطابقة`
+- Line 263: `لا توجد أرقام تسلسلية مسجلة حالياً`
+- Line 268: `جاري التحميل`
+- Line 285: `تأكيد حذف الرقم التسلسلي`
+
+### [app/service-contracts/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/new/page.tsx)
+- Line 13: `صيانة`
+- Line 14: `استشارات`
+- Line 15: `تطوير`
+- Line 16: `دعم فني`
+- Line 20: `شهري`
+- Line 21: `ربع سنوي`
+- Line 22: `نصف سنوي`
+- Line 23: `سنوي`
+- Line 59: `يرجى تعبئة الحقول المطلوبة: نوع العقد، تاريخ البداية، قيمة العقد`
+- Line 84: `فشل في حفظ العقد`
+- Line 87: `خطأ في الاتصال بالسيرفر`
+- Line 99: `عقد خدمة جديد`
+- Line 100: `إنشاء عقد خدمة جديد مع العميل`
+- Line 112: `بيانات العقد`
+- Line 117: `العميل`
+- Line 129: `ابحث عن عميل`
+- Line 136: `نوع العقد`
+- Line 148: `تاريخ البداية`
+- Line 154: `تاريخ الانتهاء`
+- Line 160: `قيمة العقد`
+- Line 177: `دورية الفوترة`
+- Line 202: `تجديد تلقائي`
+- Line 208: `الوصف والشروط`
+- Line 211: `وصف العقد`
+- Line 215: `وصف مختصر لنطاق الخدمة`
+- Line 222: `شروط العقد`
+- Line 226: `البنود والشروط التعاقدية`
+- Line 239: `حفظ العقد`
+- Line 247: `جاري الحفظ`
+- Line 247: `حفظ العقد`
+- Line 250: `إلغاء`
+
+### [app/service-contracts/ServiceContractsPageClient.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/ServiceContractsPageClient.tsx)
+- Line 24: `صيانة`
+- Line 25: `استشارات`
+- Line 26: `تطوير`
+- Line 27: `دعم فني`
+- Line 31: `شهري`
+- Line 32: `ربع سنوي`
+- Line 33: `نصف سنوي`
+- Line 34: `سنوي`
+- Line 38: `مسودة`
+- Line 39: `نشط`
+- Line 40: `منتهي`
+- Line 41: `ملغى`
+- Line 92: `عقود الخدمة`
+- Line 93: `إدارة عقود الخدمة والصيانة والدعم الفني`
+- Line 96: `عقد خدمة جديد`
+- Line 108: `ابحث برقم العقد أو اسم العميل`
+- Line 116: `الكل`
+- Line 117: `مسودة`
+- Line 118: `نشط`
+- Line 119: `منتهي`
+- Line 120: `ملغى`
+- Line 145: `رقم العقد`
+- Line 145: `العميل`
+- Line 145: `نوع الخدمة`
+- Line 145: `من`
+- Line 145: `إلى`
+- Line 145: `قيمة العقد`
+- Line 145: `دورية الفوترة`
+- Line 145: `الحالة`
+- Line 160: `لا توجد عقود خدمة مطابقة`
+
+### [app/service-contracts/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/[id]/page.tsx)
+- Line 36: `صيانة`
+- Line 36: `استشارات`
+- Line 36: `تطوير`
+- Line 36: `دعم فني`
+- Line 37: `شهري`
+- Line 37: `ربع سنوي`
+- Line 37: `نصف سنوي`
+- Line 37: `سنوي`
+- Line 39: `مسودة`
+- Line 40: `نشط`
+- Line 41: `منتهي`
+- Line 42: `ملغى`
+- Line 45: `جديد`
+- Line 46: `مُسنَد`
+- Line 47: `جاري`
+- Line 48: `مكتمل`
+- Line 49: `مُفوتر`
+- Line 50: `ملغى`
+- Line 77: `تعذر تحميل بيانات العقد`
+- Line 79: `خطأ في الاتصال بالسيرفر`
+- Line 116: `عقد الخدمة غير موجود`
+- Line 130: `عقد`
+- Line 130: `بدون عميل`
+- Line 133: `إنشاء أمر عمل`
+- Line 145: `تفاصيل العقد`
+- Line 148: `رقم العقد`
+- Line 149: `العميل`
+- Line 150: `نوع الخدمة`
+- Line 151: `دورية الفوترة`
+- Line 152: `تاريخ البداية`
+- Line 153: `تاريخ الانتهاء`
+- Line 154: `قيمة العقد`
+- Line 155: `تجديد تلقائي`
+- Line 155: `نعم`
+- Line 155: `لا`
+- Line 165: `الوصف`
+- Line 171: `الشروط والبنود`
+- Line 180: `أوامر العمل المرتبطة`
+- Line 185: `إنشاء أمر عمل`
+- Line 190: `لا توجد أوامر عمل مرتبطة بهذا العقد`
+- Line 197: `رقم الأمر`
+- Line 197: `النوع`
+- Line 197: `الموعد`
+- Line 197: `الحالة`
+- Line 239: `حالة العقد`
+- Line 254: `تفعيل العقد`
+- Line 264: `تحديد كمنتهي`
+- Line 271: `إلغاء العقد`
+- Line 281: `إعادة تفعيل`
 
 ### [app/settings/_tabs/ApiTab.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/settings/_tabs/ApiTab.tsx)
 - Line 386: `أحمد محمد`
@@ -2285,6 +3189,148 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 14: `مشغولة`
 - Line 15: `تنتظر الحساب`
 
+### [app/work-orders/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/work-orders/new/page.tsx)
+- Line 15: `صيانة`
+- Line 16: `تركيب`
+- Line 17: `إصلاح`
+- Line 18: `فحص وتفتيش`
+- Line 19: `استشارات`
+- Line 23: `منخفضة`
+- Line 24: `عادية`
+- Line 25: `عالية`
+- Line 26: `عاجلة`
+- Line 103: `يرجى تعبئة الحقول المطلوبة: نوع الأمر، الوصف`
+- Line 127: `فشل في حفظ أمر العمل`
+- Line 130: `خطأ في الاتصال بالسيرفر`
+- Line 140: `أمر عمل جديد`
+- Line 141: `إنشاء أمر عمل جديد`
+- Line 151: `بيانات أمر العمل`
+- Line 155: `نوع الأمر`
+- Line 165: `الأولوية`
+- Line 175: `العميل`
+- Line 180: `ابحث عن عميل`
+- Line 211: `عقد الخدمة`
+- Line 215: `بدون عقد`
+- Line 217: `بدون عقد`
+- Line 225: `رقم أمر الشراء`
+- Line 228: `اختياري`
+- Line 237: `الموظف المسؤول`
+- Line 241: `غير مُسنَد`
+- Line 243: `غير مُسنَد`
+- Line 250: `التاريخ المجدول`
+- Line 263: `الوصف والملاحظات`
+- Line 266: `الوصف`
+- Line 270: `وصف أمر العمل والمهام المطلوبة`
+- Line 278: `ملاحظات`
+- Line 282: `ملاحظات إضافية`
+- Line 294: `حفظ أمر العمل`
+- Line 302: `جاري الحفظ`
+- Line 302: `حفظ أمر العمل`
+- Line 309: `إلغاء`
+- Line 314: `معلومات`
+- Line 317: `الحالة الابتدائية`
+- Line 317: `جديد (سيتغير إلى مُسنَد عند تحديد موظف`
+- Line 318: `القسم`
+- Line 318: `الخدمات`
+
+### [app/work-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/work-orders/page.tsx)
+- Line 24: `صيانة`
+- Line 25: `تركيب`
+- Line 26: `إصلاح`
+- Line 27: `فحص وتفتيش`
+- Line 28: `استشارات`
+- Line 32: `منخفضة`
+- Line 33: `عادية`
+- Line 34: `عالية`
+- Line 35: `عاجلة`
+- Line 39: `جديد`
+- Line 40: `مُسنَد`
+- Line 41: `قيد التنفيذ`
+- Line 42: `مكتمل`
+- Line 43: `ملغى`
+- Line 93: `أوامر العمل`
+- Line 94: `إدارة أوامر العمل والصيانة والتركيب`
+- Line 97: `أمر عمل جديد`
+- Line 108: `ابحث برقم الأمر أو الوصف أو العميل`
+- Line 116: `الكل`
+- Line 117: `جديد`
+- Line 118: `مُسنَد`
+- Line 119: `قيد التنفيذ`
+- Line 120: `مكتمل`
+- Line 121: `ملغى`
+- Line 144: `كل الأولويات`
+- Line 145: `منخفضة`
+- Line 146: `عادية`
+- Line 147: `عالية`
+- Line 148: `عاجلة`
+- Line 158: `رقم الأمر`
+- Line 158: `نوع الأمر`
+- Line 158: `العميل`
+- Line 158: `المسؤول`
+- Line 158: `الأولوية`
+- Line 158: `الحالة`
+- Line 158: `التاريخ المجدول`
+- Line 158: `الإجراءات`
+- Line 173: `لا توجد أوامر عمل مطابقة`
+- Line 223: `عرض التفاصيل`
+
+### [app/work-orders/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/work-orders/[id]/page.tsx)
+- Line 39: `صيانة`
+- Line 40: `تركيب`
+- Line 41: `إصلاح`
+- Line 42: `فحص وتفتيش`
+- Line 43: `استشارات`
+- Line 47: `منخفضة`
+- Line 48: `عادية`
+- Line 49: `عالية`
+- Line 50: `عاجلة`
+- Line 54: `جديد`
+- Line 55: `مُسنَد`
+- Line 56: `قيد التنفيذ`
+- Line 57: `مكتمل`
+- Line 58: `ملغى`
+- Line 90: `تعذر تحميل بيانات أمر العمل`
+- Line 92: `خطأ في الاتصال بالسيرفر`
+- Line 129: `أمر العمل غير موجود`
+- Line 146: `بدون عميل`
+- Line 149: `تعديل أمر العمل`
+- Line 160: `تفاصيل أمر العمل`
+- Line 163: `رقم الأمر`
+- Line 164: `نوع الأمر`
+- Line 165: `العميل`
+- Line 166: `جهة الاتصال`
+- Line 167: `عقد الخدمة`
+- Line 168: `رقم أمر الشراء`
+- Line 169: `الموظف المسؤول`
+- Line 170: `المسمى الوظيفي`
+- Line 171: `التاريخ المجدول`
+- Line 172: `تاريخ الإنشاء`
+- Line 173: `بدأ التنفيذ`
+- Line 174: `تاريخ الإتمام`
+- Line 183: `الوصف`
+- Line 188: `الملاحظات`
+- Line 194: `الحل والإجراء المتخذ`
+- Line 202: `المواد المستخدمة`
+- Line 205: `الإجمالي`
+- Line 211: `لا توجد مواد مسجلة لهذا الأمر`
+- Line 218: `الصنف`
+- Line 218: `الكود`
+- Line 218: `الكمية`
+- Line 218: `الوحدة`
+- Line 218: `سعر الوحدة`
+- Line 218: `الإجمالي`
+- Line 261: `الحالة والأولوية`
+- Line 281: `بدء التنفيذ`
+- Line 290: `إتمام أمر العمل`
+- Line 299: `إلغاء أمر العمل`
+- Line 304: `تم إتمام أمر العمل بنجاح`
+- Line 304: `تم إلغاء أمر العمل`
+- Line 312: `عقد الخدمة المرتبط`
+- Line 318: `رقم العقد`
+- Line 330: `إجراءات`
+- Line 337: `تعديل بيانات الأمر`
+- Line 344: `العودة لقائمة أوامر العمل`
+
 ### [components/DataTable.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/DataTable.tsx)
 - Line 10: `رقم`
 - Line 11: `كود`
@@ -2304,100 +3350,118 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 88: `د.إد.كر.قد.بر.عد.أ`
 
 ### [constants/navigation.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/constants/navigation.ts)
-- Line 43: `الرئيسية`
-- Line 49: `لوحة التحكم`
-- Line 56: `نقطة البيع`
-- Line 60: `شاشة الكاشير`
-- Line 61: `سجل الطلبات`
-- Line 65: `الطاولات والصالة`
-- Line 69: `خريطة الطاولات`
-- Line 70: `الورديات`
-- Line 74: `المطبخ`
-- Line 78: `شاشة المطبخ`
-- Line 79: `الإضافات والتعديلات`
-- Line 83: `التوصيل`
-- Line 87: `طلبات التوصيل`
-- Line 88: `إدارة السائقين`
-- Line 89: `تطبيقات التوصيل`
-- Line 93: `باركود و`
-- Line 93: `الطاولات`
-- Line 97: `الطاولات`
-- Line 104: `المشاريع`
-- Line 108: `قائمة المشاريع`
-- Line 109: `مشروع جديد`
-- Line 110: `المستخلصات`
-- Line 114: `مقاولين الباطن`
-- Line 118: `مقاولين الباطن`
-- Line 119: `عقود الباطن`
-- Line 123: `المبيعات`
-- Line 127: `عروض الأسعار`
-- Line 128: `فواتير المبيعات`
-- Line 129: `مرتجع مبيعات`
-- Line 130: `سندات القبض`
-- Line 131: `العملاء`
-- Line 132: `مناديب المبيعات`
-- Line 133: `كوبونات الخصم`
-- Line 137: `الأقساط`
-- Line 141: `خطط التقسيط`
-- Line 142: `الأقساط المستحقة`
-- Line 143: `المتأخرات`
-- Line 147: `المشتريات`
-- Line 151: `فواتير المشتريات`
-- Line 152: `مرتجع مشتريات`
-- Line 153: `سندات الصرف`
-- Line 154: `الموردين`
-- Line 158: `إدارة المخزون`
-- Line 162: `الوحدات`
-- Line 163: `التصنيفات`
-- Line 164: `الأصناف`
-- Line 165: `المخازن`
-- Line 166: `جرد المخازن`
-- Line 167: `التحويل بين المخازن`
-- Line 171: `الحسابات العامة`
-- Line 175: `شجرة الحسابات`
-- Line 176: `الأرصدة الافتتاحية`
-- Line 177: `السنة المالية`
-- Line 181: `الخزن والبنوك`
-- Line 185: `الخزن والبنوك`
-- Line 186: `الإيرادات`
-- Line 187: `المصروفات`
-- Line 188: `تسوية ديون (حوالة`
-- Line 192: `القيود`
-- Line 196: `مراكز التكلفة`
-- Line 197: `القيود اليومية`
-- Line 198: `قيود الإقفال`
-- Line 202: `الموارد البشرية`
-- Line 206: `الموظفين`
-- Line 207: `مسير الرواتب`
-- Line 208: `السلف`
-- Line 209: `الخصومات والجزاءات`
-- Line 210: `الأقسام والوظائف`
-- Line 214: `الشركاء`
-- Line 218: `بيانات الشركاء`
-- Line 219: `حسابات الشركاء`
-- Line 220: `توزيع الأرباح`
-- Line 221: `رأس المال`
-- Line 225: `الأصول الثابتة`
-- Line 229: `إدارة الأصول`
-- Line 230: `الإهلاك`
-- Line 231: `مبيعات وخردة الأصول`
-- Line 235: `التقارير الإحصائية`
-- Line 241: `التقارير المالية`
-- Line 242: `المبيعات والمشتريات`
-- Line 243: `تقارير المخزون`
-- Line 244: `العملاء والموردين`
-- Line 245: `الخزن والبنوك`
-- Line 246: `تقارير الموظفين`
-- Line 247: `تقارير الأقساط`
-- Line 248: `تقارير المطعم`
-- Line 252: `إعدادات النظام`
-- Line 258: `بيانات الشركة`
-- Line 259: `الإعدادات العامة`
-- Line 260: `الإشعارات`
-- Line 261: `المستخدمين والصلاحيات`
-- Line 262: `الاشتراك والخطة`
-- Line 263: `الربط البرمجي`
-- Line 264: `قواعد البيانات`
+- Line 52: `الرئيسية`
+- Line 58: `لوحة التحكم`
+- Line 65: `نقطة البيع`
+- Line 69: `شاشة الكاشير`
+- Line 70: `سجل الطلبات`
+- Line 74: `الطاولات والصالة`
+- Line 78: `خريطة الطاولات`
+- Line 79: `الورديات`
+- Line 83: `المطبخ`
+- Line 87: `شاشة المطبخ`
+- Line 88: `الإضافات والتعديلات`
+- Line 92: `التوصيل`
+- Line 96: `طلبات التوصيل`
+- Line 97: `إدارة السائقين`
+- Line 98: `تطبيقات التوصيل`
+- Line 102: `باركود و`
+- Line 102: `الطاولات`
+- Line 106: `الطاولات`
+- Line 113: `المشاريع`
+- Line 117: `قائمة المشاريع`
+- Line 118: `مشروع جديد`
+- Line 119: `المستخلصات`
+- Line 123: `مقاولين الباطن`
+- Line 127: `مقاولين الباطن`
+- Line 128: `عقود الباطن`
+- Line 132: `إدارة الموقع`
+- Line 136: `طلبات المواد`
+- Line 137: `التقارير اليومية`
+- Line 144: `إدارة الخدمات`
+- Line 148: `عقود الخدمة`
+- Line 149: `أوامر العمل`
+- Line 156: `ولاء العملاء`
+- Line 160: `نقاط الولاء`
+- Line 161: `الأرقام التسلسلية`
+- Line 165: `المبيعات`
+- Line 169: `عروض الأسعار`
+- Line 170: `أوامر البيع`
+- Line 171: `فواتير المبيعات`
+- Line 172: `مرتجع مبيعات`
+- Line 173: `سندات القبض`
+- Line 174: `العملاء`
+- Line 175: `مناديب المبيعات`
+- Line 176: `كوبونات الخصم`
+- Line 180: `الأقساط`
+- Line 184: `خطط التقسيط`
+- Line 185: `الأقساط المستحقة`
+- Line 186: `المتأخرات`
+- Line 190: `المشتريات`
+- Line 194: `أوامر الشراء`
+- Line 195: `فواتير المشتريات`
+- Line 196: `مرتجع مشتريات`
+- Line 197: `سندات الصرف`
+- Line 198: `الموردين`
+- Line 202: `إدارة المخزون`
+- Line 206: `الوحدات`
+- Line 207: `التصنيفات`
+- Line 208: `الأصناف`
+- Line 209: `المخازن`
+- Line 210: `جرد المخازن`
+- Line 211: `التحويل بين المخازن`
+- Line 215: `الحسابات العامة`
+- Line 219: `شجرة الحسابات`
+- Line 220: `الأرصدة الافتتاحية`
+- Line 221: `السنة المالية`
+- Line 225: `الخزن والبنوك`
+- Line 229: `الخزن والبنوك`
+- Line 230: `الإيرادات`
+- Line 231: `المصروفات`
+- Line 232: `تسوية ديون (حوالة`
+- Line 236: `القيود`
+- Line 240: `مراكز التكلفة`
+- Line 241: `القيود اليومية`
+- Line 242: `قيود الإقفال`
+- Line 246: `الموارد البشرية`
+- Line 250: `الموظفين`
+- Line 251: `الحضور والانصراف`
+- Line 252: `كشف الحضور الشهري`
+- Line 253: `إدارة الإجازات`
+- Line 254: `جداول مواعيد العمل`
+- Line 255: `العطلات الرسمية`
+- Line 256: `مسير الرواتب`
+- Line 257: `السلف`
+- Line 258: `الخصومات والجزاءات`
+- Line 259: `الأقسام والوظائف`
+- Line 263: `الشركاء`
+- Line 267: `بيانات الشركاء`
+- Line 268: `حسابات الشركاء`
+- Line 269: `توزيع الأرباح`
+- Line 270: `رأس المال`
+- Line 274: `الأصول الثابتة`
+- Line 278: `إدارة الأصول`
+- Line 279: `الإهلاك`
+- Line 280: `مبيعات وخردة الأصول`
+- Line 284: `التقارير الإحصائية`
+- Line 290: `التقارير المالية`
+- Line 291: `المبيعات والمشتريات`
+- Line 292: `تقارير المخزون`
+- Line 293: `العملاء والموردين`
+- Line 294: `الخزن والبنوك`
+- Line 295: `تقارير الموظفين`
+- Line 296: `تقارير الأقساط`
+- Line 297: `تقارير المطعم`
+- Line 301: `سجل النشاط`
+- Line 307: `سجل النشاط`
+- Line 311: `إعدادات النظام`
+- Line 317: `بيانات الشركة`
+- Line 318: `الإعدادات العامة`
+- Line 319: `الإشعارات`
+- Line 320: `المستخدمين والصلاحيات`
+- Line 321: `الاشتراك والخطة`
+- Line 322: `الربط البرمجي`
+- Line 323: `قواعد البيانات`
 
 ### [lib/addressConfig.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/addressConfig.ts)
 - Line 17: `المحافظة`
@@ -2594,6 +3658,33 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 13: `د.ع`
 - Line 18: `ج.س`
 
+### [lib/excelFormat.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/excelFormat.ts)
+- Line 5: `رصيد`
+- Line 5: `مبلغ`
+- Line 5: `مدين`
+- Line 5: `دائن`
+- Line 5: `إيداع`
+- Line 5: `سحب`
+- Line 6: `وارد`
+- Line 6: `صادر`
+- Line 6: `متبقي`
+- Line 6: `فارق`
+- Line 6: `إجمالي`
+- Line 6: `خدمات`
+- Line 7: `مبيعات`
+- Line 7: `مشتريات`
+- Line 7: `راتب`
+- Line 7: `سلفة`
+- Line 7: `خصم`
+- Line 7: `استحق`
+- Line 8: `دفع`
+- Line 8: `تكلفة`
+- Line 8: `أرباح`
+- Line 8: `عمولة`
+- Line 8: `مسدد`
+- Line 8: `مستحق`
+- Line 29: `؀-ۿ`
+
 ### [lib/placeholders.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/placeholders.ts)
 - Line 9: `الرياض، حي العليا، شارع التحلية`
 - Line 16: `دبي، وسط المدينة، شارع الشيخ زايد`
@@ -2624,183 +3715,184 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 28: `فاتورة مشتريات`
 - Line 29: `مرتجع مبيعات`
 - Line 30: `مرتجع مشتريات`
-- Line 95: `المنطقة`
-- Line 95: `المنطقة`
-- Line 96: `المدينة`
-- Line 96: `المدينة`
-- Line 97: `الحي`
-- Line 97: `الحي`
-- Line 98: `الشارع`
-- Line 98: `الشارع`
-- Line 101: `اسم الشركة`
-- Line 130: `عميل نقدي`
-- Line 130: `مورد نقدي`
-- Line 131: `العميل`
-- Line 131: `المورد`
-- Line 276: `الهاتف`
-- Line 277: `رقم ضريبي`
-- Line 278: `سجل تجاري`
-- Line 283: `الهاتف`
-- Line 284: `رقم ضريبي`
-- Line 285: `سجل تجاري`
-- Line 291: `فاتورة خدمات`
-- Line 291: `فاتورة مشتريات خدمات`
-- Line 293: `فاتورة ضريبية مبسطة`
-- Line 306: `بيانات البائع`
-- Line 309: `من`
-- Line 311: `الشركة`
-- Line 314: `العنوان`
-- Line 314: `،`
-- Line 316: `الهاتف`
-- Line 317: `الرقم الضريبي`
-- Line 318: `السجل التجاري`
-- Line 323: `بيانات الطرف`
-- Line 325: `إلى`
-- Line 328: `الهاتف`
-- Line 332: `العنوان`
-- Line 332: `،`
-- Line 334: `المنطقة`
-- Line 335: `المدينة`
-- Line 336: `الحي`
-- Line 337: `الشارع`
-- Line 340: `الرقم الضريبي`
-- Line 341: `السجل التجاري`
-- Line 351: `م`
-- Line 352: `الخدمة / الوصف`
-- Line 352: `الصنف`
-- Line 353: `الوحدة`
-- Line 354: `الكمية`
-- Line 355: `السعر`
-- Line 356: `المبلغ الخاضع للضريبة`
-- Line 358: `نسبة الضريبة`
-- Line 361: `قيمة الضريبة`
-- Line 363: `الإجمالي`
-- Line 367: `لا توجد بنود في هذه الفاتورة`
-- Line 369: `صنف غير معروف`
-- Line 403: `تم التحويل من عرض سعر رقم`
-- Line 407: `ملاحظات`
-- Line 416: `الإجمالي غير شامل الضريبة`
-- Line 423: `مجموع الخصومات`
-- Line 430: `الإجمالي الخاضع للضريبة`
-- Line 441: `مجموع ضريبة القيمة المضافة`
-- Line 449: `إجمالي المبلغ المستحق`
-- Line 457: `المبلغ المدفوع`
-- Line 464: `المتبقي المستحق`
-- Line 492: `عليه`
-- Line 492: `له`
-- Line 492: `له`
-- Line 492: `لنا`
-- Line 503: `الإجمالي قبل الخصم والضريبة`
-- Line 506: `الخصم`
-- Line 507: `إجمالي الضريبة`
-- Line 508: `إجمالي الفاتورة`
-- Line 509: `المبلغ المدفوع`
-- Line 510: `المبلغ المتبقي`
-- Line 512: `الرصيد السابق لـ`
-- Line 513: `صافي تأثير الفاتورة`
-- Line 514: `إجمالي رصيد`
-- Line 514: `الحالي`
-- Line 527: `توقيع المستلم`
-- Line 528: `الاسم والتوقيع`
-- Line 531: `شكراً لتعاملكم معنا`
-- Line 534: `توقيع المسؤول`
-- Line 535: `الختم والتوقيع`
-- Line 575: `اسم الشركة`
-- Line 584: `سند قبض`
-- Line 584: `سند صرف`
-- Line 650: `الهاتف`
-- Line 651: `رقم ضريبي`
-- Line 664: `المبلغ`
-- Line 669: `استلمنا من السيد`
-- Line 669: `صرف بـأمر السيد`
-- Line 670: `طريقة الدفع`
-- Line 670: `تحويل بنكي`
-- Line 670: `نقداً`
-- Line 671: `وذلك عن / البيان`
-- Line 672: `الحساب المتأثر`
-- Line 678: `توقيع المقر بما فيه`
-- Line 679: `الاسم والتوقيع`
-- Line 682: `شكراً لتعاملكم معنا`
-- Line 685: `توقيع المحاسب`
-- Line 686: `الختم والتوقيع`
-- Line 722: `ج.م`
-- Line 723: `ج.م`
-- Line 742: `المنطقة`
-- Line 742: `المنطقة`
-- Line 743: `المدينة`
-- Line 743: `المدينة`
-- Line 744: `الحي`
-- Line 744: `الحي`
-- Line 745: `الشارع`
-- Line 745: `الشارع`
-- Line 748: `اسم الشركة`
-- Line 764: `عرض سعر`
-- Line 780: `عرض سعر`
-- Line 831: `الهاتف`
-- Line 832: `رقم ضريبي`
-- Line 833: `سجل تجاري`
-- Line 840: `الهاتف`
-- Line 841: `الرقم الضريبي`
-- Line 859: `بيانات العميل`
-- Line 861: `العميل`
-- Line 861: `عميل نقدي`
-- Line 862: `الهاتف`
-- Line 863: `الرقم الضريبي`
-- Line 867: `العنوان`
-- Line 867: `،`
-- Line 876: `م`
-- Line 877: `الخدمة`
-- Line 877: `الصنف`
-- Line 878: `الوحدة`
-- Line 879: `الكمية`
-- Line 880: `السعر`
-- Line 882: `نسبة الضريبة`
-- Line 883: `قيمة الضريبة`
-- Line 885: `الإجمالي`
-- Line 919: `المجموع الفرعي`
-- Line 924: `الخصم`
-- Line 929: `الضريبة`
-- Line 933: `الإجمالي النهائي`
-- Line 941: `ملاحظات وشروط إضافية`
-- Line 948: `توقيع المستلم`
-- Line 949: `الاسم والتوقيع`
-- Line 952: `شكراً لتعاملكم معنا`
-- Line 955: `توقيع المسؤول`
-- Line 956: `الختم والتوقيع`
-- Line 996: `اسم الشركة`
-- Line 1011: `مدفوع`
-- Line 1012: `جزئي`
-- Line 1013: `قادم`
-- Line 1014: `متأخر`
-- Line 1015: `ملغى`
-- Line 1025: `جدول أقساط`
-- Line 1092: `الهاتف`
-- Line 1093: `رقم ضريبي`
-- Line 1096: `جدول استحقاق الأقساط`
-- Line 1107: `بيانات العميل والعقد`
-- Line 1109: `العميل`
-- Line 1110: `المنتج`
-- Line 1111: `إجمالي المبلغ`
-- Line 1112: `مبلغ القسط`
-- Line 1120: `كود القسط`
-- Line 1121: `تاريخ الاستحقاق`
-- Line 1122: `مبلغ القسط`
-- Line 1123: `المدفوع`
-- Line 1124: `المتبقي`
-- Line 1125: `الحالة`
-- Line 1131: `متأخر`
-- Line 1151: `توقيع العميل`
-- Line 1152: `الاسم والتوقيع`
-- Line 1155: `شكراً لتعاملكم معنا`
-- Line 1158: `توقيع المسؤول`
-- Line 1159: `الختم والتوقيع`
-- Line 1209: `تاريخ الطباعة`
-- Line 1210: `الفترة`
-- Line 1211: `من`
-- Line 1212: `إلى`
-- Line 1213: `بواسطة`
-- Line 1214: `ملاحظة`
-- Line 1215: `طُبع بواسطة نظام`
+- Line 96: `المنطقة`
+- Line 96: `المنطقة`
+- Line 97: `المدينة`
+- Line 97: `المدينة`
+- Line 98: `الحي`
+- Line 98: `الحي`
+- Line 99: `الشارع`
+- Line 99: `الشارع`
+- Line 102: `اسم الشركة`
+- Line 131: `عميل نقدي`
+- Line 131: `مورد نقدي`
+- Line 132: `العميل`
+- Line 132: `المورد`
+- Line 277: `الهاتف`
+- Line 278: `رقم ضريبي`
+- Line 279: `سجل تجاري`
+- Line 284: `الهاتف`
+- Line 285: `رقم ضريبي`
+- Line 286: `سجل تجاري`
+- Line 292: `فاتورة خدمات`
+- Line 292: `فاتورة مشتريات خدمات`
+- Line 294: `فاتورة ضريبية مبسطة`
+- Line 297: `رقم الطلب`
+- Line 308: `بيانات البائع`
+- Line 311: `من`
+- Line 313: `الشركة`
+- Line 316: `العنوان`
+- Line 316: `،`
+- Line 318: `الهاتف`
+- Line 319: `الرقم الضريبي`
+- Line 320: `السجل التجاري`
+- Line 325: `بيانات الطرف`
+- Line 327: `إلى`
+- Line 330: `الهاتف`
+- Line 334: `العنوان`
+- Line 334: `،`
+- Line 336: `المنطقة`
+- Line 337: `المدينة`
+- Line 338: `الحي`
+- Line 339: `الشارع`
+- Line 342: `الرقم الضريبي`
+- Line 343: `السجل التجاري`
+- Line 353: `م`
+- Line 354: `الخدمة / الوصف`
+- Line 354: `الصنف`
+- Line 355: `الوحدة`
+- Line 356: `الكمية`
+- Line 357: `السعر`
+- Line 358: `المبلغ الخاضع للضريبة`
+- Line 360: `نسبة الضريبة`
+- Line 363: `قيمة الضريبة`
+- Line 365: `الإجمالي`
+- Line 369: `لا توجد بنود في هذه الفاتورة`
+- Line 371: `صنف غير معروف`
+- Line 405: `تم التحويل من عرض سعر رقم`
+- Line 409: `ملاحظات`
+- Line 418: `الإجمالي غير شامل الضريبة`
+- Line 425: `مجموع الخصومات`
+- Line 432: `الإجمالي الخاضع للضريبة`
+- Line 443: `مجموع ضريبة القيمة المضافة`
+- Line 451: `إجمالي المبلغ المستحق`
+- Line 459: `المبلغ المدفوع`
+- Line 466: `المتبقي المستحق`
+- Line 494: `عليه`
+- Line 494: `له`
+- Line 494: `له`
+- Line 494: `لنا`
+- Line 505: `الإجمالي قبل الخصم والضريبة`
+- Line 508: `الخصم`
+- Line 509: `إجمالي الضريبة`
+- Line 510: `إجمالي الفاتورة`
+- Line 511: `المبلغ المدفوع`
+- Line 512: `المبلغ المتبقي`
+- Line 514: `الرصيد السابق لـ`
+- Line 515: `صافي تأثير الفاتورة`
+- Line 516: `إجمالي رصيد`
+- Line 516: `الحالي`
+- Line 529: `توقيع المستلم`
+- Line 530: `الاسم والتوقيع`
+- Line 533: `شكراً لتعاملكم معنا`
+- Line 536: `توقيع المسؤول`
+- Line 537: `الختم والتوقيع`
+- Line 577: `اسم الشركة`
+- Line 586: `سند قبض`
+- Line 586: `سند صرف`
+- Line 652: `الهاتف`
+- Line 653: `رقم ضريبي`
+- Line 666: `المبلغ`
+- Line 671: `استلمنا من السيد`
+- Line 671: `صرف بـأمر السيد`
+- Line 672: `طريقة الدفع`
+- Line 672: `تحويل بنكي`
+- Line 672: `نقداً`
+- Line 673: `وذلك عن / البيان`
+- Line 674: `الحساب المتأثر`
+- Line 680: `توقيع المقر بما فيه`
+- Line 681: `الاسم والتوقيع`
+- Line 684: `شكراً لتعاملكم معنا`
+- Line 687: `توقيع المحاسب`
+- Line 688: `الختم والتوقيع`
+- Line 724: `ج.م`
+- Line 725: `ج.م`
+- Line 744: `المنطقة`
+- Line 744: `المنطقة`
+- Line 745: `المدينة`
+- Line 745: `المدينة`
+- Line 746: `الحي`
+- Line 746: `الحي`
+- Line 747: `الشارع`
+- Line 747: `الشارع`
+- Line 750: `اسم الشركة`
+- Line 766: `عرض سعر`
+- Line 782: `عرض سعر`
+- Line 833: `الهاتف`
+- Line 834: `رقم ضريبي`
+- Line 835: `سجل تجاري`
+- Line 842: `الهاتف`
+- Line 843: `الرقم الضريبي`
+- Line 861: `بيانات العميل`
+- Line 863: `العميل`
+- Line 863: `عميل نقدي`
+- Line 864: `الهاتف`
+- Line 865: `الرقم الضريبي`
+- Line 869: `العنوان`
+- Line 869: `،`
+- Line 878: `م`
+- Line 879: `الخدمة`
+- Line 879: `الصنف`
+- Line 880: `الوحدة`
+- Line 881: `الكمية`
+- Line 882: `السعر`
+- Line 884: `نسبة الضريبة`
+- Line 885: `قيمة الضريبة`
+- Line 887: `الإجمالي`
+- Line 921: `المجموع الفرعي`
+- Line 926: `الخصم`
+- Line 931: `الضريبة`
+- Line 935: `الإجمالي النهائي`
+- Line 943: `ملاحظات وشروط إضافية`
+- Line 950: `توقيع المستلم`
+- Line 951: `الاسم والتوقيع`
+- Line 954: `شكراً لتعاملكم معنا`
+- Line 957: `توقيع المسؤول`
+- Line 958: `الختم والتوقيع`
+- Line 998: `اسم الشركة`
+- Line 1013: `مدفوع`
+- Line 1014: `جزئي`
+- Line 1015: `قادم`
+- Line 1016: `متأخر`
+- Line 1017: `ملغى`
+- Line 1027: `جدول أقساط`
+- Line 1094: `الهاتف`
+- Line 1095: `رقم ضريبي`
+- Line 1098: `جدول استحقاق الأقساط`
+- Line 1109: `بيانات العميل والعقد`
+- Line 1111: `العميل`
+- Line 1112: `المنتج`
+- Line 1113: `إجمالي المبلغ`
+- Line 1114: `مبلغ القسط`
+- Line 1122: `كود القسط`
+- Line 1123: `تاريخ الاستحقاق`
+- Line 1124: `مبلغ القسط`
+- Line 1125: `المدفوع`
+- Line 1126: `المتبقي`
+- Line 1127: `الحالة`
+- Line 1133: `متأخر`
+- Line 1153: `توقيع العميل`
+- Line 1154: `الاسم والتوقيع`
+- Line 1157: `شكراً لتعاملكم معنا`
+- Line 1160: `توقيع المسؤول`
+- Line 1161: `الختم والتوقيع`
+- Line 1211: `تاريخ الطباعة`
+- Line 1212: `الفترة`
+- Line 1213: `من`
+- Line 1214: `إلى`
+- Line 1215: `بواسطة`
+- Line 1216: `ملاحظة`
+- Line 1217: `طُبع بواسطة نظام`
 
 ## Unused Keys in i18n.tsx
 
@@ -2984,7 +4076,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `إضافة طرف للقيد`
 - `الإجمالي المتزن`
 - `القيد متزن وجاهز للحفظ`
-- `حفظ كمسودة`
 - `ترحيل القيد الآن`
 - `— مركز التكلفة —`
 - `— بدون مركز —`
@@ -3280,7 +4371,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `جاري تحميل الدليل المحاسبي...`
 - `قيمة المخزون`
 - `تصنيف الخدمة`
-- `اختر التصنيف...`
 - `حالة الخدمة`
 - `قطعة، كرتونة...`
 - `وصف الخدمة`
@@ -3375,6 +4465,10 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `المبلغ المدفوع (نقدي) 💵`
 - `المبلغ المدفوع (شبكة) 💳`
 - `أدخل تفاصيل العملية...`
+- `البيانات المالية`
+- `الربح المتوقع التلقائي`
+- `التواريخ، الحالة، والإنجاز`
+- `اختر المهندس / المدير المسؤول...`
 - `
                                                               
 POST /api/restaurant/orders

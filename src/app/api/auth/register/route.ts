@@ -13,8 +13,8 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'جميع الحقول مطلوبة' }, { status: 400 });
 
         const MODULES_MAP: Record<string, string[]> = {
-            TRADING: ['sales', 'purchases', 'inventory', 'installments', 'financials', 'reports'],
-            RETAIL: ['sales', 'purchases', 'inventory', 'financials', 'reports', 'pos'],
+            TRADING: ['sales', 'purchases', 'inventory', 'treasury', 'reports'],
+            RETAIL: ['sales', 'purchases', 'inventory', 'treasury', 'reports', 'pos'],
             SERVICES: ['sales', 'inventory', 'accounting', 'treasury', 'reports'],
             RESTAURANTS: ['pos', 'tables', 'kitchen', 'sales', 'inventory', 'reports'], // Trial features (Delivery, Barcode, Purchases are locked)
             CONTRACTING: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports'],

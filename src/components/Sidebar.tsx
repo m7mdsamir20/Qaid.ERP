@@ -30,6 +30,7 @@ export default function Sidebar({
     const userRole = user?.role;
     const featuresRaw = user?.subscription?.features;
     const hasSubscription = !!user?.subscription;
+    const isTrial = user?.subscription?.plan === 'trial';
 
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
@@ -80,8 +81,8 @@ export default function Sidebar({
                 return hasGranularPerms ? !!userPerms[pageId]?.view : false;
             }
 
-            // 1. فحص الاشتراك (يطبق على الجميع بما فيهم السوبر أدمن لضمان عدم ظهور ميزات غير مشتراة)
-            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+            // 1. فحص الاشتراك — الفترة التجريبية تعرض كل الصفحات بدون قيود
+            if (!isTrial && hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
             }
@@ -96,7 +97,7 @@ export default function Sidebar({
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
         } catch { return true; }
-    }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, user]);
+    }, [isSuperAdmin, userRole, isTrial, hasSubscription, enabledFeatures, user]);
 
     // 3. دالة التحقق من القسم
     const hasFeature = useCallback((featureKey?: string): boolean => {

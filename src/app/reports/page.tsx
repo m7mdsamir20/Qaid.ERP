@@ -48,6 +48,7 @@ function ReportsHubPageInner() {
     const isSuperAdmin = session?.user?.isSuperAdmin;
     const featuresRaw = session?.user?.subscription?.features;
     const hasSubscription = !!session?.user?.subscription;
+    const isTrial = session?.user?.subscription?.plan === 'trial';
 
     const enabledFeatures: Record<string, string[]> = (() => {
         if (!featuresRaw) return {};
@@ -67,6 +68,8 @@ function ReportsHubPageInner() {
     })();
 
     const hasPageAccess = (pageId: string, featureKey?: string): boolean => {
+        // الفترة التجريبية: كل الصفحات متاحة
+        if (isTrial) return true;
         // 1. تحقق من الـ subscription (يطبق على الجميع بما فيهم السوبر أدمن)
         if (hasSubscription && featureKey) {
             const pagesInSub = enabledFeatures[featureKey] || [];
