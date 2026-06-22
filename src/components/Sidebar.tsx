@@ -205,7 +205,10 @@ export default function Sidebar({
 
             if (businessType === 'RESTAURANTS') {
                 if (section.featureKey === 'installments') return null;
-                
+                if (section.featureKey === 'treasury' && section.links) {
+                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
+                }
+
                 if (section.featureKey === 'sales') {
                     section.title = t("العملاء والتسويق");
                     section.links = section.links?.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
@@ -247,7 +250,7 @@ export default function Sidebar({
             if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
             if (section.featureKey === 'barcode' && businessType === 'RETAIL') return null;
             if (contractingFeatures.includes(section.featureKey || '') && businessType !== 'CONTRACTING') return null;
-            if (section.featureKey === 'sales_reps' && businessType === 'RESTAURANTS') return null;
+            if (section.featureKey === 'sales_reps' && businessType !== 'TRADING') return null;
             if (section.featureKey === 'services' && businessType !== 'SERVICES') return null;
             if (section.featureKey === 'loyalty' && businessType !== 'RETAIL') return null;
 

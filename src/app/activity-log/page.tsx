@@ -85,15 +85,14 @@ interface ApiResponse {
 
 /* ─── Helpers ─── */
 
-function formatDateTime(isoStr: string): string {
+function formatDate(isoStr: string): string {
     const d = new Date(isoStr);
-    const dd   = String(d.getDate()).padStart(2, '0');
-    const mm   = String(d.getMonth() + 1).padStart(2, '0');
-    const yyyy = d.getFullYear();
-    const hh   = String(d.getHours()).padStart(2, '0');
-    const min  = String(d.getMinutes()).padStart(2, '0');
-    const ss   = String(d.getSeconds()).padStart(2, '0');
-    return `${dd}/${mm}/${yyyy} ${hh}:${min}:${ss}`;
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+}
+
+function formatTime(isoStr: string): string {
+    const d = new Date(isoStr);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
 }
 
 function truncate(str: string, len: number): string {
@@ -103,60 +102,54 @@ function truncate(str: string, len: number): string {
 
 /* ─── Expandable Row Detail ─── */
 
+function MetaChip({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+    return (
+        <div style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '5px 12px', borderRadius: '8px',
+            background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.border}`,
+        }}>
+            <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{label}</span>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: mono ? OUTFIT : CAIRO }}>{value}</span>
+        </div>
+    );
+}
+
 function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
     return (
         <tr>
             <td
                 colSpan={6}
-                style={{
-                    padding: '0',
-                    borderBottom: `1px solid ${C.border}`,
-                }}
+                style={{ padding: '0', borderBottom: `1px solid ${C.border}` }}
             >
                 <div
                     style={{
-                        background: 'rgba(37,106,244,0.04)',
+                        background: 'rgba(37,106,244,0.03)',
                         borderTop: `1px solid ${C.border}`,
-                        padding: '16px 24px',
+                        padding: '14px 24px',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '12px',
+                        gap: '10px',
                         fontFamily: CAIRO,
                         fontSize: '12px',
                         color: C.textSecondary,
                     }}
                 >
                     {/* Full description */}
-                    <div>
-                        <span style={{ fontWeight: 700, color: C.textPrimary, marginInlineEnd: '8px' }}>التفاصيل الكاملة:</span>
-                        <span>{log.description}</span>
+                    <div style={{
+                        padding: '8px 14px', borderRadius: '8px',
+                        background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`,
+                        fontSize: '13px', color: C.textPrimary, fontWeight: 500,
+                    }}>
+                        {log.description}
                     </div>
 
-                    {/* IP address */}
-                    {log.ipAddress && (
-                        <div>
-                            <span style={{ fontWeight: 700, color: C.textPrimary, marginInlineEnd: '8px' }}>عنوان IP:</span>
-                            <span style={{ fontFamily: OUTFIT }}>{log.ipAddress}</span>
-                        </div>
-                    )}
-
-                    {/* Entity info */}
-                    {(log.entityType || log.entityRef) && (
-                        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-                            {log.entityType && (
-                                <div>
-                                    <span style={{ fontWeight: 700, color: C.textPrimary, marginInlineEnd: '8px' }}>النوع:</span>
-                                    <span>{log.entityType}</span>
-                                </div>
-                            )}
-                            {log.entityRef && (
-                                <div>
-                                    <span style={{ fontWeight: 700, color: C.textPrimary, marginInlineEnd: '8px' }}>المرجع:</span>
-                                    <span style={{ fontFamily: OUTFIT }}>{log.entityRef}</span>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {/* Meta chips row */}
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        {log.ipAddress && <MetaChip label="عنوان IP" value={log.ipAddress} mono />}
+                        {log.entityType && <MetaChip label="النوع" value={log.entityType} />}
+                        {log.entityRef && <MetaChip label="المرجع" value={log.entityRef} mono />}
+                    </div>
 
                     {/* Old / New data diff */}
                     {(log.oldData || log.newData) && (
@@ -352,9 +345,15 @@ export default function ActivityLogPage() {
     const columns: TableColumn[] = [
         {
             header: 'التاريخ والوقت',
+            style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
-                <div style={{ fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, whiteSpace: 'nowrap' }}>
-                    {formatDateTime(row.createdAt)}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                    <span style={{ fontFamily: OUTFIT, fontSize: '12px', fontWeight: 600, color: C.textPrimary, whiteSpace: 'nowrap' }}>
+                        {formatDate(row.createdAt)}
+                    </span>
+                    <span style={{ fontFamily: OUTFIT, fontSize: '11px', color: C.textMuted, whiteSpace: 'nowrap' }}>
+                        {formatTime(row.createdAt)}
+                    </span>
                 </div>
             ),
         },
@@ -422,24 +421,26 @@ export default function ActivityLogPage() {
         },
         {
             header: 'عرض',
-            style: { textAlign: 'center' } as React.CSSProperties,
+            style: { textAlign: 'center', width: '60px' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => {
                 const isExpanded = expandedRows.has(row.id);
                 return (
-                    <button
-                        onClick={(e) => { e.stopPropagation(); toggleRow(row.id); }}
-                        style={{
-                            width: '30px', height: '30px', borderRadius: '8px',
-                            border: `1px solid ${isExpanded ? C.primary + '60' : C.border}`,
-                            background: isExpanded ? `${C.primary}15` : 'rgba(255,255,255,0.02)',
-                            color: isExpanded ? C.primary : C.textSecondary,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            transition: 'all 0.15s',
-                        }}
-                        title={isExpanded ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
-                    >
-                        {isExpanded ? <EyeOff size={14} /> : <Eye size={14} />}
-                    </button>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); toggleRow(row.id); }}
+                            style={{
+                                width: '32px', height: '32px', borderRadius: '8px',
+                                border: `1px solid ${isExpanded ? C.primary + '60' : C.border}`,
+                                background: isExpanded ? `${C.primary}15` : 'rgba(255,255,255,0.02)',
+                                color: isExpanded ? C.primary : C.textSecondary,
+                                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                transition: 'all 0.15s',
+                            }}
+                            title={isExpanded ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
+                        >
+                            {isExpanded ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                    </div>
                 );
             },
         },

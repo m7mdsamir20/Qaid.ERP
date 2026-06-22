@@ -25,7 +25,7 @@ const BUSINESS_TYPES = [
     {
         value: "TRADING",
         label: t("نشاط تجارة الجملة"),
-        modules: ['sales', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
+        modules: ['sales', 'sales_reps', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
     },
     {
         value: "RETAIL",
@@ -241,18 +241,20 @@ export default function NewCompanyPage() {
             const isRetail = form.businessType === 'RETAIL';
             const isContracting = form.businessType === 'CONTRACTING';
             const isServices = form.businessType === 'SERVICES';
-            
+            const isTrading = form.businessType === 'TRADING';
+
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
             if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
             if (contractingFeatures.includes(s.featureKey) && !isContracting) return;
-            if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
-            if (isRetail && ['installments', 'barcode'].includes(s.featureKey)) return;
-            if (isContracting && ['installments', 'pos', 'barcode'].includes(s.featureKey)) return;
-            if (isServices && s.featureKey === 'installments') return;
+            if (s.featureKey === 'sales_reps' && !isTrading) return;
+            if (isRestaurants && ['installments', 'partners', 'sales_reps'].includes(s.featureKey)) return;
+            if (isRetail && ['installments', 'barcode', 'sales_reps'].includes(s.featureKey)) return;
+            if (isContracting && ['installments', 'pos', 'barcode', 'sales_reps'].includes(s.featureKey)) return;
+            if (isServices && ['installments', 'sales_reps'].includes(s.featureKey)) return;
 
             let section = { ...s };
 
-            if (isRetail && section.links) {
+            if ((isRetail || isRestaurants) && section.links) {
                 section.links = section.links.filter((l: any) => l.id !== '/settlements');
             }
 
