@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck } from 'lucide-react';
+import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck, UserCheck, HandCoins, Target } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 
@@ -110,7 +110,6 @@ function ReportsHubPageInner() {
         ],
         'sales-purchases': [
             { title: isContracting ? t('تقرير المبيعات وفواتير الأعمال') : isServices ? t('تقرير الخدمات') : t('تقرير المبيعات'), description: isContracting ? t('حركة المبيعات وفواتير بنود الأعمال خلال فترة زمنية') : isServices ? t('حركة طلب الخدمات خلال فترة زمنية') : t('حركة المبيعات خلال فترة زمنية'), href: '/reports/sales-report', icon: BarChart3, color: '#0ea5e9', status: 'ready', requiredPages: ['/sales'] },
-            { title: t('تقرير عمولات مناديب المبيعات'), description: t('تتبع أداء المبيعات والتحصيلات للمناديب واحتساب عمولاتهم المستحقة بدقة'), href: '/reports/sales-representatives', icon: Award, color: '#a78bfa', status: 'ready', requiredPages: ['/sales/representatives'] },
             { title: isContracting ? t('تقرير المشتريات ومواد البناء') : t('تقرير المشتريات'), description: isContracting ? t('إجمالي مشتريات مواد البناء وتكاليف الموردين وتفاصيل الفواتير') : t('إجمالي المشتريات وتفاصيل الفواتير'), href: '/reports/purchases-report', icon: ShoppingCart, color: '#fb923c', status: 'ready', requiredPages: ['/purchases'] },
             { title: isContracting ? t('البنود والمواد الأكثر استخداماً') : isServices ? t('أكثر الخدمات طلباً') : t('أكثر الأصناف مبيعاً'), description: isContracting ? t('المواد وبنود الأعمال الأعلى استخداماً في المشاريع') : isServices ? t('الخدمات الأعلى طلباً في المنشأة') : t('المنتجات الأعلى حركة طلباً ومبيعاً'), href: '/reports/top-selling-items', icon: TrendingUp, color: '#eab308', status: 'ready', requiredPages: ['/sales'] },
             { title: isContracting ? t('تقرير المرتجعات وإلغاء الأعمال') : isServices ? t('مرتجعات الخدمات') : t('تقرير المرتجعات'), description: isContracting ? t('تحليل مرتجعات المواد وإلغاء بنود الأعمال لمعرفة أسبابها') : isServices ? t('تحليل مرتجعات الخدمات لمعرفة الأسباب') : t('تحليل المرتجعات لمعرفة أسباب الخسارة'), href: '/reports/returns-report', icon: ArrowRightLeft, color: '#f43f5e', status: 'ready', requiredPages: ['/sale-returns'] },
@@ -183,6 +182,12 @@ function ReportsHubPageInner() {
             { title: t('تقرير الغيابات'), description: t('أيام الغياب غير المبررة وتأثيرها على الراتب'), href: '/reports/attendance-absence', icon: AlertTriangle, color: '#ef4444', status: 'new', requiredPages: ['/attendance'] },
             { title: t('تقرير العمل الإضافي'), description: t('ساعات العمل الإضافي لكل موظف وإجمالي الاستحقاقات'), href: '/reports/attendance-overtime', icon: TrendingUp, color: '#6366f1', status: 'new', requiredPages: ['/attendance'] },
             { title: t('تقرير رصيد الإجازات'), description: t('رصيد الإجازات المتبقي لكل موظف حسب نوع الإجازة'), href: '/reports/leave-balance', icon: Users, color: '#14b8a6', status: 'new', requiredPages: ['/attendance/leaves'] },
+        ],
+        'sales_reps': [
+            { title: t('أداء المناديب'), description: t('مقارنة مبيعات وتحصيلات كل مندوب مقابل هدفه خلال فترة زمنية محددة'), href: '/reports/sales-reps-performance', icon: TrendingUp, color: '#a78bfa', status: 'ready' as const, requiredPages: ['/sales-reps'] },
+            { title: t('تقرير التحصيلات'), description: t('تفاصيل الشيكات والنقدية والتحويلات المودعة والمعلقة لكل مندوب'), href: '/reports/sales-reps-collections', icon: HandCoins, color: '#22c55e', status: 'ready' as const, requiredPages: ['/sales-reps/collections'] },
+            { title: t('تقرير العمولات'), description: t('احتساب وعرض عمولات المناديب حسب المبيعات أو التحصيل مع إمكانية الاعتماد والصرف'), href: '/reports/sales-reps-commissions', icon: Award, color: '#f59e0b', status: 'ready' as const, requiredPages: ['/sales-reps/commissions'] },
+            { title: t('تقرير الأهداف'), description: t('نسبة إنجاز كل مندوب مقابل الهدف الشهري مع مؤشرات الأداء بصرياً'), href: '/reports/sales-reps-targets', icon: Target, color: '#0ea5e9', status: 'ready' as const, requiredPages: ['/sales-reps/targets'] },
         ],
         'installments': [
             { title: t('تقارير التحصيل'), description: t('متابعة المبالغ المحصلة من الأقساط خلال فترة زمنية محددة'), href: '/reports/installments/collection', icon: FileText, color: '#34d399', status: 'ready', requiredPages: ['/installments'] },
@@ -257,6 +262,13 @@ function ReportsHubPageInner() {
             icon: BookOpen,
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
+        }] : []),
+        ...(businessType === 'TRADING' ? [{
+            key: 'sales_reps',
+            label: t('تقارير المناديب'),
+            icon: UserCheck,
+            requiredFeatures: ['sales_reps'],
+            requiredPages: ['/sales-reps']
         }] : []),
     ];
 

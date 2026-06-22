@@ -331,9 +331,8 @@ export default function TargetsPage() {
                             </div>
                         )}
 
-                        {targets.length === 0 && reps.length === 0 && (
+                        {targets.length === 0 && repsWithoutTarget.length === 0 && (
                             <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                <Target size={48} style={{ opacity: 0.3, display: 'block', margin: '0 auto 16px' }} />
                                 <p style={{ margin: 0, fontSize: '15px' }}>لا توجد أهداف محددة لهذا الشهر</p>
                             </div>
                         )}
