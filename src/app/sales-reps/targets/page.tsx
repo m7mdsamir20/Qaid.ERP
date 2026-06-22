@@ -157,9 +157,10 @@ export default function TargetsPage() {
         finally { setIsCopying(false); }
     };
 
+    const toArDigits = (n: number) => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[+d]);
     const yearOptions = Array.from({ length: 5 }, (_, i) => {
         const y = now.getFullYear() - 2 + i;
-        return { value: String(y), label: String(y) };
+        return { value: String(y), label: toArDigits(y) };
     });
 
     // Reps with no target for current period

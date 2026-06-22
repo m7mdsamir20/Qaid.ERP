@@ -89,7 +89,10 @@ export default function CollectionsPage() {
             if (dateFrom) params.set('dateFrom', dateFrom);
             if (dateTo) params.set('dateTo', dateTo);
             const res = await fetch(`/api/collections?${params}`);
-            if (res.ok) setCollections(await res.json());
+            if (res.ok) {
+                const data = await res.json();
+                setCollections(Array.isArray(data) ? data : (data.collections || []));
+            }
         } catch { } finally { setLoading(false); }
     }, [filterRepId, filterStatus, filterMethod, dateFrom, dateTo]);
 
