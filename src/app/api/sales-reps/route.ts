@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -71,6 +72,18 @@ export const POST = withProtection(async (request, session, body) => {
                 isActive: isActive !== undefined ? isActive : true,
                 companyId
             }
+        });
+
+        const ctx = extractLogContext(session, request);
+        await logActivity({
+            ...ctx,
+            action: 'create',
+            module: 'sales_reps',
+            entityType: 'SalesRepresentative',
+            entityId: salesRep.id,
+            entityRef: salesRep.name,
+            description: `أضاف مندوب مبيعات جديد: ${salesRep.name}`,
+            newData: { name, code, phone, email, commissionRate, commissionType },
         });
 
         return NextResponse.json(salesRep, { status: 201 });

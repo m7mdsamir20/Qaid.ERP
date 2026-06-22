@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, _body, context) => {
     try {
@@ -64,6 +65,18 @@ export const PATCH = withProtection(async (request, session, body, context) => {
             }
         });
 
+        const ctx = extractLogContext(session, request);
+        await logActivity({
+            ...ctx,
+            action: 'update',
+            module: 'sales_reps',
+            entityType: 'SalesRepresentative',
+            entityId: id,
+            entityRef: salesRep.name,
+            description: `عدّل بيانات المندوب: ${salesRep.name}`,
+            newData: { name, code, phone, email, commissionRate, commissionType, isActive },
+        });
+
         return NextResponse.json(salesRep);
     } catch (error) {
         console.error('Error updating sales rep:', error);
@@ -89,8 +102,21 @@ export const DELETE = withProtection(async (request, session, body, context) => 
             }, { status: 400 });
         }
 
+        const repToDelete = await prisma.salesRepresentative.findUnique({ where: { id }, select: { name: true } });
+
         await prisma.salesRepresentative.delete({
             where: { id, companyId }
+        });
+
+        const ctx = extractLogContext(session, request);
+        await logActivity({
+            ...ctx,
+            action: 'delete',
+            module: 'sales_reps',
+            entityType: 'SalesRepresentative',
+            entityId: id,
+            entityRef: repToDelete?.name,
+            description: `حذف المندوب: ${repToDelete?.name}`,
         });
 
         return NextResponse.json({ success: true });

@@ -103,6 +103,7 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
         },
     });
 
+    const METHOD_AR: Record<string, string> = { cash: 'نقدي', check: 'شيك', transfer: 'تحويل بنكي' };
     const ctx = extractLogContext(session, request);
     await logActivity({
         ...ctx,
@@ -110,8 +111,14 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
         module: 'collections',
         entityType: 'Collection',
         entityId: collection.id,
-        description: `أنشأ تحصيلاً بمبلغ ${amount} للعميل`,
-        newData: { salesRepId, customerId, amount, method },
+        entityRef: collection.customer?.name,
+        description: `أنشأ تحصيلاً بمبلغ ${amount} للعميل ${collection.customer?.name || ''}`,
+        newData: {
+            العميل: collection.customer?.name,
+            المندوب: collection.salesRep?.name,
+            المبلغ: Number(amount),
+            'طريقة الدفع': METHOD_AR[method] || method,
+        },
     });
 
     return NextResponse.json(collection, { status: 201 });

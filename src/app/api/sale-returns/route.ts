@@ -322,7 +322,7 @@ export const POST = withProtection(async (request, session, body) => {
             entityId: result.id,
             entityRef: retCode,
             description: `أنشأ مرتجع مبيعات رقم ${retCode}${(result as any).customer?.name ? ` للعميل ${(result as any).customer.name}` : ''}`,
-            newData: { invoiceNumber: result.invoiceNumber, total: result.total },
+            newData: { 'رقم المرتجع': retCode, 'الإجمالي': result.total },
         });
 
         return NextResponse.json(result, { status: 201 });

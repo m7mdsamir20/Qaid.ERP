@@ -39,6 +39,36 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
         return NextResponse.json({ error: 'التحصيل غير موجود' }, { status: 404 });
     }
 
+    if (action === 'update') {
+        if (collection.status !== 'pending') {
+            return NextResponse.json({ error: 'لا يمكن تعديل تحصيل مُعتمد' }, { status: 400 });
+        }
+        const { amount, method, checkNumber, checkDueDate, bankName, notes, date } = body;
+        const updated = await (prisma as any).collection.update({
+            where: { id },
+            data: {
+                amount: amount !== undefined ? Number(amount) : undefined,
+                method: method || undefined,
+                checkNumber: checkNumber || null,
+                checkDueDate: checkDueDate || null,
+                bankName: bankName || null,
+                notes: notes || null,
+                date: date ? new Date(date) : undefined,
+            },
+        });
+        const ctx = extractLogContext(session, request);
+        await logActivity({
+            ...ctx,
+            action: 'update',
+            module: 'collections',
+            entityType: 'Collection',
+            entityId: id,
+            description: `عدّل بيانات تحصيل بمبلغ ${updated.amount}`,
+            newData: { amount, method, checkNumber, checkDueDate },
+        });
+        return NextResponse.json(updated);
+    }
+
     if (action === 'deposit') {
         if (collection.status !== 'pending') {
             return NextResponse.json({ error: 'يمكن إيداع التحصيلات بحالة "معلق" فقط' }, { status: 400 });
@@ -167,6 +197,17 @@ export const DELETE = withProtection(async (request: NextRequest, session: any, 
     }
 
     await (prisma as any).collection.delete({ where: { id } });
+
+    const ctx = extractLogContext(session, request);
+    await logActivity({
+        ...ctx,
+        action: 'delete',
+        module: 'collections',
+        entityType: 'Collection',
+        entityId: id,
+        description: `حذف تحصيل بمبلغ ${collection.amount}`,
+        oldData: { amount: collection.amount, method: collection.method },
+    });
 
     return NextResponse.json({ message: 'تم حذف التحصيل بنجاح' });
 });

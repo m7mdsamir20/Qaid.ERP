@@ -20,9 +20,12 @@ import { TableColumn } from '@/components/EmptyTableState';
 
 const MODULE_LABELS: Record<string, string> = {
     'invoices': 'فواتير المبيعات',
+    'sales': 'فواتير المبيعات',
     'purchases': 'فواتير المشتريات',
     'purchase-orders': 'أوامر الشراء',
     'sales-orders': 'أوامر البيع',
+    'sale-returns': 'مرتجعات المبيعات',
+    'purchase-returns': 'مرتجعات المشتريات',
     'employees': 'الموظفين',
     'attendance': 'الحضور والانصراف',
     'leaves': 'الإجازات',
@@ -31,15 +34,30 @@ const MODULE_LABELS: Record<string, string> = {
     'suppliers': 'الموردين',
     'items': 'الأصناف',
     'warehouses': 'المخازن',
+    'warehouse-transfers': 'تحويلات المخازن',
     'accounts': 'الحسابات',
     'journal-entries': 'القيود اليومية',
     'vouchers': 'السندات',
     'service-contracts': 'عقود الخدمة',
+    'service_contracts': 'عقود الخدمة',
     'work-orders': 'أوامر العمل',
+    'work_orders': 'أوامر العمل',
     'material-requests': 'طلبات المواد',
     'projects': 'المشاريع',
     'settings': 'الإعدادات',
     'auth': 'تسجيل الدخول',
+    'sales_reps': 'مناديب المبيعات',
+    'collections': 'التحصيلات',
+    'expenses': 'المصروفات',
+    'advances': 'السلف',
+    'deductions': 'الخصومات',
+    'commissions': 'العمولات',
+    'sales-targets': 'أهداف المبيعات',
+    'stocktakings': 'الجرد',
+    'serial-numbers': 'الأرقام التسلسلية',
+    'loyalty': 'برنامج الولاء',
+    'daily-site-reports': 'التقارير اليومية للموقع',
+    'progress-bills': 'فواتير الإنجاز',
 };
 
 const ACTION_LABELS: Record<string, { label: string; color: string }> = {
@@ -81,6 +99,60 @@ interface ApiResponse {
     total: number;
     page: number;
     limit: number;
+}
+
+/* ─── Field / Value translation maps ─── */
+
+const FIELD_LABELS: Record<string, string> = {
+    amount: 'المبلغ', method: 'طريقة الدفع', status: 'الحالة',
+    name: 'الاسم', phone: 'الهاتف', email: 'البريد الإلكتروني',
+    code: 'الكود', commissionRate: 'نسبة العمولة', commissionType: 'أساس العمولة',
+    isActive: 'الحالة', date: 'التاريخ', checkNumber: 'رقم الشيك',
+    checkDueDate: 'تاريخ الاستحقاق', notes: 'ملاحظات',
+    total: 'الإجمالي', invoiceNumber: 'رقم الفاتورة', remaining: 'المتبقي',
+    discount: 'الخصم', tax: 'الضريبة', subtotal: 'المجموع الفرعي',
+    customerName: 'العميل', supplierName: 'المورد', employeeName: 'الموظف',
+    quantity: 'الكمية', price: 'السعر', unit: 'الوحدة',
+    type: 'النوع', category: 'الفئة', description: 'الوصف',
+    balance: 'الرصيد', rate: 'المعدل', percentage: 'النسبة',
+    العميل: 'العميل', المندوب: 'المندوب', المبلغ: 'المبلغ', 'طريقة الدفع': 'طريقة الدفع',
+};
+
+const VALUE_LABELS: Record<string, string> = {
+    cash: 'نقدي', check: 'شيك', transfer: 'تحويل بنكي',
+    pending: 'معلق', deposited: 'مُعتمَد', returned: 'مرتجع',
+    invoice_total: 'على الفاتورة', collected_amount: 'على التحصيل',
+    'true': 'نعم', 'false': 'لا',
+    draft: 'مسودة', approved: 'مُعتمَد', rejected: 'مرفوض',
+    active: 'نشط', inactive: 'موقوف',
+};
+
+function isUUID(val: string) {
+    return typeof val === 'string' && val.length > 20 && /^[a-z0-9]+$/.test(val);
+}
+
+function renderDataFields(data: any, accentColor: string) {
+    if (!data || typeof data !== 'object') return null;
+    const entries = Object.entries(data).filter(([k, v]) => {
+        if (v === null || v === undefined || v === '') return false;
+        if ((k.endsWith('Id') || k === 'id') && isUUID(String(v))) return false;
+        return true;
+    });
+    if (entries.length === 0) return null;
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {entries.map(([key, value]) => (
+                <div key={key} style={{ display: 'flex', gap: '8px', alignItems: 'baseline', fontSize: '12px' }}>
+                    <span style={{ color: C.textMuted, minWidth: '110px', fontFamily: CAIRO, flexShrink: 0 }}>
+                        {FIELD_LABELS[key] || key}
+                    </span>
+                    <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>
+                        {VALUE_LABELS[String(value)] ?? (typeof value === 'number' ? value.toLocaleString('en-US') : String(value))}
+                    </span>
+                </div>
+            ))}
+        </div>
+    );
 }
 
 /* ─── Helpers ─── */
@@ -146,9 +218,9 @@ function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
 
                     {/* Meta chips row */}
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <MetaChip label="الصفحة" value={MODULE_LABELS[log.module] || log.module.replace(/-|_/g, ' ')} />
+                        {log.entityRef && <MetaChip label="المرجع" value={log.entityRef} />}
                         {log.ipAddress && <MetaChip label="عنوان IP" value={log.ipAddress} mono />}
-                        {log.entityType && <MetaChip label="النوع" value={log.entityType} />}
-                        {log.entityRef && <MetaChip label="المرجع" value={log.entityRef} mono />}
                     </div>
 
                     {/* Old / New data diff */}
@@ -163,95 +235,24 @@ function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
                         >
                             {log.oldData && (
                                 <div>
-                                    <div
-                                        style={{
-                                            fontSize: '11px',
-                                            fontWeight: 700,
-                                            color: '#ef4444',
-                                            marginBottom: '6px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                width: '8px',
-                                                height: '8px',
-                                                borderRadius: '50%',
-                                                background: '#ef4444',
-                                            }}
-                                        />
+                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
                                         قبل التغيير
                                     </div>
-                                    <pre
-                                        style={{
-                                            margin: 0,
-                                            padding: '10px 14px',
-                                            background: 'rgba(239,68,68,0.06)',
-                                            border: '1px solid rgba(239,68,68,0.2)',
-                                            borderRadius: '8px',
-                                            fontSize: '11px',
-                                            color: C.textSecondary,
-                                            fontFamily: OUTFIT,
-                                            overflowX: 'auto',
-                                            whiteSpace: 'pre-wrap',
-                                            wordBreak: 'break-word',
-                                            maxHeight: '200px',
-                                            overflowY: 'auto',
-                                            direction: 'ltr',
-                                            textAlign: 'left',
-                                        }}
-                                    >
-                                        {JSON.stringify(log.oldData, null, 2)}
-                                    </pre>
+                                    <div style={{ padding: '10px 14px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px' }}>
+                                        {renderDataFields(log.oldData, '#ef4444')}
+                                    </div>
                                 </div>
                             )}
-
                             {log.newData && (
                                 <div>
-                                    <div
-                                        style={{
-                                            fontSize: '11px',
-                                            fontWeight: 700,
-                                            color: '#22c55e',
-                                            marginBottom: '6px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                        }}
-                                    >
-                                        <div
-                                            style={{
-                                                width: '8px',
-                                                height: '8px',
-                                                borderRadius: '50%',
-                                                background: '#22c55e',
-                                            }}
-                                        />
+                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#22c55e', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }} />
                                         بعد التغيير
                                     </div>
-                                    <pre
-                                        style={{
-                                            margin: 0,
-                                            padding: '10px 14px',
-                                            background: 'rgba(34,197,94,0.06)',
-                                            border: '1px solid rgba(34,197,94,0.2)',
-                                            borderRadius: '8px',
-                                            fontSize: '11px',
-                                            color: C.textSecondary,
-                                            fontFamily: OUTFIT,
-                                            overflowX: 'auto',
-                                            whiteSpace: 'pre-wrap',
-                                            wordBreak: 'break-word',
-                                            maxHeight: '200px',
-                                            overflowY: 'auto',
-                                            direction: 'ltr',
-                                            textAlign: 'left',
-                                        }}
-                                    >
-                                        {JSON.stringify(log.newData, null, 2)}
-                                    </pre>
+                                    <div style={{ padding: '10px 14px', background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
+                                        {renderDataFields(log.newData, '#22c55e')}
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -396,7 +397,7 @@ export default function ActivityLogPage() {
             },
         },
         {
-            header: 'الموديول',
+            header: 'الصفحة',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <span style={{
