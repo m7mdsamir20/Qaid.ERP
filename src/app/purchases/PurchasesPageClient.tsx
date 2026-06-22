@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
@@ -221,7 +222,7 @@ export default function PurchasesListPage() {
                         }
                     />
                     {!loading && filteredAll.length > 0 && (
-                        <Pagination 
+                        <Pagination
                             total={filteredAll.length}
                             pageSize={pageSize}
                             currentPage={currentPage}

@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
@@ -35,10 +36,10 @@ const BILLING_LABELS: Record<string, string> = {
 };
 
 const STATUS_BADGE: Record<string, { label: string; bg: string; color: string; border: string }> = {
-    draft:     { label: 'مسودة',   bg: 'rgba(255,255,255,0.06)', color: '#94a3b8', border: 'rgba(255,255,255,0.15)' },
-    active:    { label: 'نشط',     bg: 'rgba(74,222,128,0.12)',  color: '#4ade80', border: 'rgba(74,222,128,0.22)'  },
-    expired:   { label: 'منتهي',   bg: 'rgba(239,68,68,0.12)',   color: '#ef4444', border: 'rgba(239,68,68,0.22)'   },
-    cancelled: { label: 'ملغى',    bg: 'rgba(255,255,255,0.06)', color: '#94a3b8', border: 'rgba(255,255,255,0.15)' },
+    draft: { label: 'مسودة', bg: 'rgba(255,255,255,0.06)', color: '#94a3b8', border: 'rgba(255,255,255,0.15)' },
+    active: { label: 'نشط', bg: 'rgba(74,222,128,0.12)', color: '#4ade80', border: 'rgba(74,222,128,0.22)' },
+    expired: { label: 'منتهي', bg: 'rgba(239,68,68,0.12)', color: '#ef4444', border: 'rgba(239,68,68,0.22)' },
+    cancelled: { label: 'ملغى', bg: 'rgba(255,255,255,0.06)', color: '#94a3b8', border: 'rgba(255,255,255,0.15)' },
 };
 
 function fmtDate(d: string | null) {

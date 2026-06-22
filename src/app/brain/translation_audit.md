@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-22T05:49:43.775Z
+Generated on: 2026-06-22T06:02:41.716Z
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated on: 2026-06-22T05:49:43.775Z
 - **Total t() Keys in Code**: 4161
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 532
-- **Unwrapped Arabic Text Instances**: 3496
+- **Unwrapped Arabic Text Instances**: 3526
 
 ## Unwrapped Arabic Text
 
@@ -3058,7 +3058,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 247: `حفظ العقد`
 - Line 250: `إلغاء`
 
-### [app/service-contracts/ServiceContractsPageClient.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/ServiceContractsPageClient.tsx)
+### [app/service-contracts/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/page.tsx)
 - Line 24: `صيانة`
 - Line 25: `استشارات`
 - Line 26: `تطوير`
@@ -3089,6 +3089,38 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 145: `دورية الفوترة`
 - Line 145: `الحالة`
 - Line 160: `لا توجد عقود خدمة مطابقة`
+
+### [app/service-contracts/ServiceContractsPageClient.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/ServiceContractsPageClient.tsx)
+- Line 25: `صيانة`
+- Line 26: `استشارات`
+- Line 27: `تطوير`
+- Line 28: `دعم فني`
+- Line 32: `شهري`
+- Line 33: `ربع سنوي`
+- Line 34: `نصف سنوي`
+- Line 35: `سنوي`
+- Line 39: `مسودة`
+- Line 40: `نشط`
+- Line 41: `منتهي`
+- Line 42: `ملغى`
+- Line 93: `عقود الخدمة`
+- Line 94: `إدارة عقود الخدمة والصيانة والدعم الفني`
+- Line 97: `عقد خدمة جديد`
+- Line 109: `ابحث برقم العقد أو اسم العميل`
+- Line 117: `الكل`
+- Line 118: `مسودة`
+- Line 119: `نشط`
+- Line 120: `منتهي`
+- Line 121: `ملغى`
+- Line 146: `رقم العقد`
+- Line 146: `العميل`
+- Line 146: `نوع الخدمة`
+- Line 146: `من`
+- Line 146: `إلى`
+- Line 146: `قيمة العقد`
+- Line 146: `دورية الفوترة`
+- Line 146: `الحالة`
+- Line 161: `لا توجد عقود خدمة مطابقة`
 
 ### [app/service-contracts/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/service-contracts/[id]/page.tsx)
 - Line 36: `صيانة`

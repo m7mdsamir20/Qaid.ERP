@@ -629,7 +629,7 @@ function NewSalePageInner() {
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
                                     }}>
-                                        {isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-{String(nextNum).padStart(5, '0')}
+                                        {isServices ? 'SRV' : 'SAL'}-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
                                 <div>
@@ -654,19 +654,19 @@ function NewSalePageInner() {
                                                     headers: { 'Content-Type': 'application/json' },
                                                     body: JSON.stringify({ name: val })
                                                 })
-                                                .then(res => {
-                                                    if (res.ok) return res.json();
-                                                    throw new Error();
-                                                })
-                                                .then(newCustomer => {
-                                                    if (newCustomer && newCustomer.id) {
-                                                        setCustomers(prev => [...prev, newCustomer]);
-                                                        setForm((f: any) => ({ ...f, customerId: newCustomer.id }));
-                                                        clearError('customerId');
-                                                    }
-                                                })
-                                                .catch(() => alert(t('فشل في إضافة العميل')))
-                                                .finally(() => setSubmitting(false));
+                                                    .then(res => {
+                                                        if (res.ok) return res.json();
+                                                        throw new Error();
+                                                    })
+                                                    .then(newCustomer => {
+                                                        if (newCustomer && newCustomer.id) {
+                                                            setCustomers(prev => [...prev, newCustomer]);
+                                                            setForm((f: any) => ({ ...f, customerId: newCustomer.id }));
+                                                            clearError('customerId');
+                                                        }
+                                                    })
+                                                    .catch(() => alert(t('فشل في إضافة العميل')))
+                                                    .finally(() => setSubmitting(false));
                                             }}
                                         />
                                         <InlineError field="customerId" />

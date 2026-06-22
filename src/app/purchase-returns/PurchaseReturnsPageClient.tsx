@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
@@ -91,7 +92,7 @@ export default function PurchaseReturnsListPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    
+
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -130,20 +131,24 @@ export default function PurchaseReturnsListPage() {
                         { header: t('الإجمالي'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={row.total} /></span> },
                         { header: t('المدفوع'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, color: C.success, fontFamily: OUTFIT }}><Currency amount={row.paidAmount} /></span> },
                         { header: t('المتبقي'), type: 'number', cell: (row) => <span style={{ fontWeight: 600, color: (row.remaining > 0) ? C.danger : C.textMuted, fontFamily: OUTFIT }}><Currency amount={row.remaining} /></span> },
-                        { header: t('الحالة'), type: 'status', cell: (row) => {
-                            const st = getStatusStyle(row.total, row.paidAmount);
-                            return (
-                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700, background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO }}>
-                                    {st.text} <st.icon size={12} />
+                        {
+                            header: t('الحالة'), type: 'status', cell: (row) => {
+                                const st = getStatusStyle(row.total, row.paidAmount);
+                                return (
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700, background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO }}>
+                                        {st.text} <st.icon size={12} />
+                                    </div>
+                                );
+                            }
+                        },
+                        {
+                            header: t('إجراءات'), type: 'action', cell: (row) => (
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                    <button onClick={() => handlePrint(row)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                    <button onClick={() => router.push(`/purchase-returns/${row.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
                                 </div>
-                            );
-                        }},
-                        { header: t('إجراءات'), type: 'action', cell: (row) => (
-                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                <button onClick={() => handlePrint(row)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
-                                <button onClick={() => router.push(`/purchase-returns/${row.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
-                            </div>
-                        )},
+                            )
+                        },
                     ]}
                     data={filtered}
                     emptyIcon={RotateCcw}
@@ -156,7 +161,7 @@ export default function PurchaseReturnsListPage() {
                     }
                 />
             </div>
-            
+
         </DashboardLayout>
     );
 }

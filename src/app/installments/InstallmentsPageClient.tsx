@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = 'force-dynamic';
 import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { formatNumber } from '@/lib/currency';
@@ -57,29 +58,29 @@ export default function InstallmentsPage() {
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
                 fetch('/api/items'),
-                
+
             ]);
-            
+
             if (pRes.ok) {
                 const data = await pRes.json();
                 setPlans(Array.isArray(data) ? data : []);
             }
-            
+
             if (cRes.ok) {
                 const data = await cRes.json();
                 setCustomers(Array.isArray(data) ? data : []);
             }
-            
+
             if (tRes.ok) {
                 const data = await tRes.json();
                 setTreasuries(Array.isArray(data) ? data : []);
             }
-            
+
             if (iRes.ok) {
                 const data = await iRes.json();
                 setItems(Array.isArray(data) ? data : (data.items || []));
             }
-            
+
         } catch (error) {
             console.error("Fetch Error:", error);
         } finally { setLoading(false); }
@@ -98,8 +99,8 @@ export default function InstallmentsPage() {
         } catch { }
     }, []);
 
-    useEffect(() => { 
-        fetchData(); 
+    useEffect(() => {
+        fetchData();
         fetchTaxSettings();
     }, [fetchData, fetchTaxSettings]);
 
@@ -148,20 +149,20 @@ export default function InstallmentsPage() {
 
     const basePriceForInterest = taxSettings?.isInclusive ? totalAmount - taxAmount : totalAmount;
     const priceWithTax = totalAmount + (taxSettings?.isInclusive ? 0 : taxAmount);
-    
+
     const remaining = priceWithTax - downPayment;
     const totalInterest = parseFloat((remaining * interestRate / 100).toFixed(2));
     const grandTotal = remaining + totalInterest;
     const installmentAmt = monthsCount > 0 ? parseFloat((grandTotal / monthsCount).toFixed(2)) : 0;
 
-    
+
     const handleAddToCart = () => {
         if (!selectedItem) return alert(t('اختر الصنف'));
         const item = items.find(i => i.id === selectedItem);
         if (!item) return;
         const q = parseFloat(cartQuantity) || 1;
         const p = parseFloat(cartPrice) || item.sellPrice || 0;
-        
+
         const inStock = (item.stocks || []).reduce((s: number, v: any) => s + v.quantity, 0);
         if (q > inStock) return alert(t('الكمية المطلوبة غير متوفرة. المتاح: ') + inStock);
 
@@ -265,10 +266,10 @@ export default function InstallmentsPage() {
     return (
         <DashboardLayout>
             <>
-                <div dir={isRtl ? 'rtl' : 'ltr'} style={{ 
-                    ...PAGE_BASE, 
-                    background: C.bg, 
-                    minHeight: '100%', 
+                <div dir={isRtl ? 'rtl' : 'ltr'} style={{
+                    ...PAGE_BASE,
+                    background: C.bg,
+                    minHeight: '100%',
                     fontFamily: CAIRO,
                     // Inject CSS Variables for components like CustomSelect
                     ['--surface-50' as any]: C.card,
@@ -281,189 +282,189 @@ export default function InstallmentsPage() {
                     ['--primary-500' as any]: C.primary,
                     ['--primary-light' as any]: 'var(--c-primary-bg, rgba(37,106,244,0.15))',
                 }}>
-                
-                {/* Header Section */}
-                <PageHeader 
-                    title={t("خطط التقسيط")} 
-                    subtitle={t("إدارة وتبقسيط المبيعات — تتبع دورات التحصيل وحالات السداد")} 
-                    icon={CreditCard} 
-                    primaryButton={{
-                        label: t('خطة تقسيط جديدة'),
-                        onClick: () => router.push("/installments/new"),
-                        icon: Plus
-                    }}
-                />
 
-                {/* KPIs Dashboard */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
-                    {kpiData.map((k, i) => (
-                        <div key={i} style={{
-                            background: `${k.color}08`, border: `1px solid ${k.color}33`, borderRadius: '10px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                            transition: 'all 0.2s', position: 'relative'
+                    {/* Header Section */}
+                    <PageHeader
+                        title={t("خطط التقسيط")}
+                        subtitle={t("إدارة وتبقسيط المبيعات — تتبع دورات التحصيل وحالات السداد")}
+                        icon={CreditCard}
+                        primaryButton={{
+                            label: t('خطة تقسيط جديدة'),
+                            onClick: () => router.push("/installments/new"),
+                            icon: Plus
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                        >
-                            <div style={{ textAlign: 'center' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    {typeof k.value === 'string' && k.suffix ? (
-                                        fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
-                                    ) : (
-                                        <>
-                                            <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
-                                        </>
-                                    )}
+                    />
+
+                    {/* KPIs Dashboard */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+                        {kpiData.map((k, i) => (
+                            <div key={i} style={{
+                                background: `${k.color}08`, border: `1px solid ${k.color}33`, borderRadius: '10px',
+                                padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                transition: 'all 0.2s', position: 'relative'
+                            }}
+                                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                            >
+                                <div style={{ textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textSecondary, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                        {typeof k.value === 'string' && k.suffix ? (
+                                            fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
+                                        ) : (
+                                            <>
+                                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
+                                                <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${k.color}15`, border: `1px solid ${k.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: k.color }}>
+                                    <k.icon size={20} />
                                 </div>
                             </div>
-                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${k.color}15`, border: `1px solid ${k.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: k.color }}>
-                                <k.icon size={20} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* ── Filters ── */}
-                <div style={{ display: 'flex', marginBottom: '16px' }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                        <input
-                            placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")}
-                            value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.inputBg }}
-                            onFocus={focusIn} onBlur={focusOut}
-                        />
+                        ))}
                     </div>
+
+                    {/* ── Filters ── */}
+                    <div style={{ display: 'flex', marginBottom: '16px' }}>
+                        <div style={{ flex: 1, position: 'relative' }}>
+                            <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                            <input
+                                placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")}
+                                value={search} onChange={e => setSearch(e.target.value)}
+                                style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.inputBg }}
+                                onFocus={focusIn} onBlur={focusOut}
+                            />
+                        </div>
+                    </div>
+
+                    <DataTable
+                        columns={[
+                            {
+                                header: t('الخطة'),
+                                type: 'number',
+                                cell: (row, idx) => (
+                                    <span style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px', display: 'inline-block', direction: 'ltr' }}>
+                                        PLAN-{String(row.planNumber || idx + 1).padStart(5, '0')}
+                                    </span>
+                                )
+                            },
+                            {
+                                header: t('المنتج'),
+                                type: 'text',
+                                cell: (row) => row.productName ? (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Package size={14} style={{ opacity: 0.5 }} />
+                                        <span style={{ fontWeight: 600 }}>{row.productName}</span>
+                                    </div>
+                                ) : <span style={{ color: C.textSecondary }}>—</span>
+                            },
+                            {
+                                header: t('الهاتف'),
+                                type: 'text',
+                                cell: (row) => (
+                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, display: 'inline-block', direction: 'ltr' }}>
+                                        {row.customer?.phone || '—'}
+                                    </span>
+                                )
+                            },
+                            {
+                                header: t('العميل'),
+                                type: 'text',
+                                cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary }}>{row.customer?.name}</span>
+                            },
+                            {
+                                header: t('إجمالي الخطة'),
+                                type: 'number',
+                                cell: (row) => fMoneyJSX(row.grandTotal)
+                            },
+                            {
+                                header: t('المقدم'),
+                                type: 'number',
+                                cell: (row) => <span style={{ color: '#10b981', fontWeight: 700 }}>{fMoneyJSX(row.downPayment)}</span>
+                            },
+                            {
+                                header: t('القسط'),
+                                type: 'number',
+                                cell: (row) => <span style={{ color: C.primary, fontWeight: 600 }}>{fMoneyJSX(row.installmentAmount)}</span>
+                            },
+                            {
+                                header: t('المدة'),
+                                type: 'number',
+                                cell: (row) => {
+                                    const paidCount = (row.installments || []).filter((i: any) => i.status === 'paid').length;
+                                    return (
+                                        <span style={{ color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
+                                            {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {row.monthsCount}
+                                            <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
+                                        </span>
+                                    );
+                                }
+                            },
+                            {
+                                header: t('الحالة'),
+                                type: 'number',
+                                cell: (row) => {
+                                    const overdueCount = (row.installments || []).filter((i: any) => i.status !== 'paid' && new Date(i.dueDate) < new Date()).length;
+                                    if (overdueCount > 0) {
+                                        return (
+                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
+                                                <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
+                                            </span>
+                                        );
+                                    }
+                                    if (row.status === 'cancelled') {
+                                        return (
+                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
+                                                <X size={10} /> {t('ملغاة')}
+                                            </span>
+                                        );
+                                    }
+                                    if (row.status === 'completed') {
+                                        return (
+                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
+                                                <Check size={10} /> {t('انتهت')}
+                                            </span>
+                                        );
+                                    }
+                                    return (
+                                        <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
+                                            <Clock size={10} /> {t('نشطة')}
+                                        </span>
+                                    );
+                                }
+                            },
+                            {
+                                header: t('إجراء'),
+                                type: 'number',
+                                cell: (row) => (
+                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                                        <button onClick={() => router.push(`/installments/${row.id}`)}
+                                            style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.color = C.primary}
+                                            onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
+                                            title={t("عرض التفاصيل")}
+                                        >
+                                            <Eye size={16} />
+                                        </button>
+                                    </div>
+                                )
+                            }
+                        ]}
+                        data={filtered}
+                        emptyIcon={CreditCard}
+                        emptyMessage={t('لا توجد خطط تقسيط مطابقة للبحث')}
+                        isLoading={loading}
+                        loadingSkeleton={<TableSkeleton />}
+                        onRowClick={(row) => router.push(`/installments/${row.id}`)}
+                    />
+
+                    {/* ── New Plan Modal (REDESIGNED PREMIUM) ── */}
+
                 </div>
 
-                <DataTable
-                    columns={[
-                        {
-                            header: t('الخطة'),
-                            type: 'number',
-                            cell: (row, idx) => (
-                                <span style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px', display: 'inline-block', direction: 'ltr' }}>
-                                    PLAN-{String(row.planNumber || idx + 1).padStart(5, '0')}
-                                </span>
-                            )
-                        },
-                        {
-                            header: t('المنتج'),
-                            type: 'text',
-                            cell: (row) => row.productName ? (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                    <Package size={14} style={{ opacity: 0.5 }} />
-                                    <span style={{ fontWeight: 600 }}>{row.productName}</span>
-                                </div>
-                            ) : <span style={{ color: C.textSecondary }}>—</span>
-                        },
-                        {
-                            header: t('الهاتف'),
-                            type: 'text',
-                            cell: (row) => (
-                                <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, display: 'inline-block', direction: 'ltr' }}>
-                                    {row.customer?.phone || '—'}
-                                </span>
-                            )
-                        },
-                        {
-                            header: t('العميل'),
-                            type: 'text',
-                            cell: (row) => <span style={{ fontWeight: 600, color: C.textPrimary }}>{row.customer?.name}</span>
-                        },
-                        {
-                            header: t('إجمالي الخطة'),
-                            type: 'number',
-                            cell: (row) => fMoneyJSX(row.grandTotal)
-                        },
-                        {
-                            header: t('المقدم'),
-                            type: 'number',
-                            cell: (row) => <span style={{ color: '#10b981', fontWeight: 700 }}>{fMoneyJSX(row.downPayment)}</span>
-                        },
-                        {
-                            header: t('القسط'),
-                            type: 'number',
-                            cell: (row) => <span style={{ color: C.primary, fontWeight: 600 }}>{fMoneyJSX(row.installmentAmount)}</span>
-                        },
-                        {
-                            header: t('المدة'),
-                            type: 'number',
-                            cell: (row) => {
-                                const paidCount = (row.installments || []).filter((i: any) => i.status === 'paid').length;
-                                return (
-                                    <span style={{ color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
-                                        {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {row.monthsCount}
-                                        <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
-                                    </span>
-                                );
-                            }
-                        },
-                        {
-                            header: t('الحالة'),
-                            type: 'number',
-                            cell: (row) => {
-                                const overdueCount = (row.installments || []).filter((i: any) => i.status !== 'paid' && new Date(i.dueDate) < new Date()).length;
-                                if (overdueCount > 0) {
-                                    return (
-                                        <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                            <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
-                                        </span>
-                                    );
-                                }
-                                if (row.status === 'cancelled') {
-                                    return (
-                                        <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                            <X size={10} /> {t('ملغاة')}
-                                        </span>
-                                    );
-                                }
-                                if (row.status === 'completed') {
-                                    return (
-                                        <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                            <Check size={10} /> {t('انتهت')}
-                                        </span>
-                                    );
-                                }
-                                return (
-                                    <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
-                                        <Clock size={10} /> {t('نشطة')}
-                                    </span>
-                                );
-                            }
-                        },
-                        {
-                            header: t('إجراء'),
-                            type: 'number',
-                            cell: (row) => (
-                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
-                                    <button onClick={() => router.push(`/installments/${row.id}`)}
-                                        style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}
-                                        onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                        onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                        title={t("عرض التفاصيل")}
-                                    >
-                                        <Eye size={16} />
-                                    </button>
-                                </div>
-                            )
-                        }
-                    ]}
-                    data={filtered}
-                    emptyIcon={CreditCard}
-                    emptyMessage={t('لا توجد خطط تقسيط مطابقة للبحث')}
-                    isLoading={loading}
-                    loadingSkeleton={<TableSkeleton />}
-                    onRowClick={(row) => router.push(`/installments/${row.id}`)}
-                />
-
-                {/* ── New Plan Modal (REDESIGNED PREMIUM) ── */}
-                
-            </div>
-            
-        </>
+            </>
         </DashboardLayout>
     );
 }
