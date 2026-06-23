@@ -28,7 +28,7 @@ const nextConfig: NextConfig = {
 
     experimental: {
         outputFileTracingIncludes: {
-            '/api/pdf/invoice/[id]': ['./node_modules/@sparticuz/chromium/bin/**/*'],
+            '**/*': ['./node_modules/@sparticuz/chromium/bin/**/*'],
         },
     } as any,
 
