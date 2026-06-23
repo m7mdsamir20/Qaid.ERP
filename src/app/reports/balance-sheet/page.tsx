@@ -75,8 +75,8 @@ export default function BalanceSheetPage() {
     const sym = t(getCurrencyName(currency));
     const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
 
-    const handlePrint = () => {
-        if (!data) return;
+    const buildBalanceSheetHTML = () => {
+        if (!data) return '';
         const dir = isRtl ? 'rtl' : 'ltr';
         const fAlign = isRtl ? 'right' : 'left';
         const bAlign = isRtl ? 'left' : 'right';
@@ -114,7 +114,7 @@ export default function BalanceSheetPage() {
                 </table>
             </div>`;
 
-        const html = `<!DOCTYPE html>
+        return `<!DOCTYPE html>
 <html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
 <head><meta charset="UTF-8"/>
 <title>${t('المركز المالي')}</title>
@@ -157,9 +157,20 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
   <span style="font-size:15px;font-weight:900">${fmt(data.totalLiabilitiesAndEquities)} <span style="font-family:Cairo,sans-serif;font-size:11px">${sym}</span></span>
 </div>
 </div></body></html>`;
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', t('المركز المالي'));
-        window.open('/print/report', '_blank');
+    };
+
+    const handlePrint = async () => {
+        const html = buildBalanceSheetHTML();
+        if (!html) return;
+        const { printReportDirectly } = await import('@/lib/printDirectly');
+        printReportDirectly(html, t('المركز المالي'));
+    };
+
+    const handleDownloadPDF = async () => {
+        const html = buildBalanceSheetHTML();
+        if (!html) return;
+        const { downloadReportPDF } = await import('@/lib/printDirectly');
+        await downloadReportPDF(html, t('المركز المالي'));
     };
 
     return (
@@ -170,6 +181,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                     subtitle={t("يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد.")}
                     backTab="financial"
                     onPrint={handlePrint}
+                    onExportPdf={handleDownloadPDF}
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (

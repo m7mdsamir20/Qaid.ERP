@@ -22,7 +22,7 @@ interface ReportHeaderProps {
   branchName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, accountName: manualAccountName, printLabel, branchName }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, onPrint, printTitle, printDate, accountName: manualAccountName, printLabel, branchName }: ReportHeaderProps) {
   const router = useRouter();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
@@ -199,6 +199,10 @@ ${includeHTML}
   };
 
   const handleDownloadPDF = async () => {
+    if (onExportPdf) {
+      onExportPdf();
+      return;
+    }
     const { html, reportTitle } = buildReportHTML();
     await downloadReportPDF(html, reportTitle);
   };

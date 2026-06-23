@@ -1,16 +1,17 @@
-﻿'use client';
+'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
-import { BarChart3, Printer, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package } from 'lucide-react';
-import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
+import { BarChart3, Printer, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package, FileDown } from 'lucide-react';
+import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, BTN_DANGER, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
 import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
+import { printReportDirectly, downloadReportPDF } from '@/lib/printDirectly';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 
@@ -115,9 +116,9 @@ export default function InstallmentReportsPage() {
         } catch { setError(t('خطأ في الاتصال بالخادم')); } finally { setLoading(false); }
     };
 
-    const handlePrint = () => {
+    const buildInstallmentsHTML = () => {
         const tables = Array.from(document.querySelectorAll('.report-content table'));
-        if (!tables.length) return;
+        if (!tables.length) return { html: '', title: '' };
 
         const tablesHTML = tables.map(t => {
             const clone = t.cloneNode(true) as HTMLTableElement;
@@ -141,12 +142,22 @@ export default function InstallmentReportsPage() {
             titleMap[activeTab],
             tablesHTML,
             companyInfo,
-            { subtitle, noAutoPrint: false }
+            { subtitle, noAutoPrint: true }
         );
 
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', titleMap[activeTab]);
-        window.open('/print/report', '_blank');
+        return { html, title: titleMap[activeTab] };
+    };
+
+    const handlePrint = () => {
+        const { html, title } = buildInstallmentsHTML();
+        if (!html) return;
+        printReportDirectly(html, title);
+    };
+
+    const handleDownloadPDF = async () => {
+        const { html, title } = buildInstallmentsHTML();
+        if (!html) return;
+        await downloadReportPDF(html, title);
     };
 
     const tabs: Array<{ id: InstallmentTab; label: string; icon: typeof CheckCircle2; sub: string }> = [
@@ -421,9 +432,14 @@ export default function InstallmentReportsPage() {
                                 {loading ? <span className="animate-spin">⌛</span> : <><Search size={18} style={{ color: C.primary }} /> {t('عرض النتائج')}</>}
                             </button>
                             {data && (
-                                <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
-                                    <Printer size={18} /> {t('طباعة')}
-                                </button>
+                                <>
+                                    <button onClick={handleDownloadPDF} style={{ ...BTN_DANGER(false, false), height: '42px', width: 'auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <FileDown size={18} /> {t('تحميل PDF')}
+                                    </button>
+                                    <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
+                                        <Printer size={18} /> {t('طباعة')}
+                                    </button>
+                                </>
                             )}
                         </div>
                     </div>

@@ -1,13 +1,13 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T11:00:55.539Z
+Generated on: 2026-06-23T11:05:54.181Z
 
 ## Summary
 
 - **Total Keys in `i18n.tsx`**: 4741
-- **Total t() Keys in Code**: 4174
+- **Total t() Keys in Code**: 4172
 - **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 567
+- **Unused Keys in `i18n.tsx`**: 569
 - **Unwrapped Arabic Text Instances**: 3284
 
 ## Unwrapped Arabic Text
@@ -4296,6 +4296,8 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `المبلغ المدفوع (نقدي) 💵`
 - `المبلغ المدفوع (شبكة) 💳`
 - `أدخل تفاصيل العملية...`
+- `لا يوجد تقرير للعرض`
+- `تقرير`
 - `البيانات المالية`
 - `الربح المتوقع التلقائي`
 - `التواريخ، الحالة، والإنجاز`

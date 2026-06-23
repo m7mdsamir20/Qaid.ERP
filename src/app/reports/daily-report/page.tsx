@@ -83,8 +83,8 @@ export default function DailyReportPage() {
     const fAlign = isRtl ? 'right' : 'left';
     const bAlign = isRtl ? 'left' : 'right';
 
-    const handlePrint = () => {
-        if (!data) return;
+    const buildDailyReportHTML = () => {
+        if (!data) return '';
         const logo = (company as any)?.logo || (company as any)?.companyLogo || '';
         const companyName = (company as any)?.companyName || (company as any)?.name || '';
         const now = new Date();
@@ -117,15 +117,15 @@ export default function DailyReportPage() {
                 <td style="padding:7px 8px;font-size:11px;font-weight:800;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${fmt(tr.balance)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`).join('');
 
-        const html = `<!DOCTYPE html>
+        return `<!DOCTYPE html>
 <html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
 <head>
 <meta charset="UTF-8"/>
 <title>${t('التقرير اليومي للمبيعات والتحصيلات')}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:1.5}
 .page{padding:8mm 12mm}
 .rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;direction:ltr}
 .rpt-logo img{max-height:60px;max-width:120px;object-fit:contain}
@@ -221,10 +221,20 @@ table{width:100%;border-collapse:collapse}
 </div>
 </body>
 </html>`;
+    };
 
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', t('التقرير اليومي للمبيعات والتحصيلات'));
-        window.open('/print/report', '_blank');
+    const handlePrint = async () => {
+        const html = buildDailyReportHTML();
+        if (!html) return;
+        const { printReportDirectly } = await import('@/lib/printDirectly');
+        printReportDirectly(html, t('التقرير اليومي للمبيعات والتحصيلات'));
+    };
+
+    const handleDownloadPDF = async () => {
+        const html = buildDailyReportHTML();
+        if (!html) return;
+        const { downloadReportPDF } = await import('@/lib/printDirectly');
+        await downloadReportPDF(html, t('التقرير اليومي للمبيعات والتحصيلات'));
     };
 
     return (
@@ -237,6 +247,7 @@ table{width:100%;border-collapse:collapse}
                     branchName={branchName}
                     printDate={printDate}
                     onPrint={handlePrint}
+                    onExportPdf={handleDownloadPDF}
                 />
 
                 <div className="no-print report-filter-bar" style={{ ...SEARCH_STYLE.container, marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
