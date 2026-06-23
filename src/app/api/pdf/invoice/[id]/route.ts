@@ -5,17 +5,15 @@ import { generateA4HTML } from '@/lib/printInvoices';
 
 async function getBrowser() {
     if (process.env.NODE_ENV === 'production') {
-        // Vercel serverless — use @sparticuz/chromium
         const chromium = (await import('@sparticuz/chromium')).default;
         const puppeteer = (await import('puppeteer-core')).default;
         return puppeteer.launch({
             args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
+            defaultViewport: { width: 1280, height: 900 },
             executablePath: await chromium.executablePath(),
             headless: true,
         });
     } else {
-        // Local development — use installed system Chrome
         const puppeteer = (await import('puppeteer-core')).default;
         const executablePath =
             process.platform === 'win32'
@@ -58,7 +56,7 @@ export const GET = withProtection(async (request: NextRequest, session: any, _bo
 
     if (!invoice) return NextResponse.json({ error: 'الفاتورة غير موجودة' }, { status: 404 });
 
-    const type = invoice.type || 'sale';
+    const type = (invoice.type || 'sale') as any;
     const html = generateA4HTML(invoice as any, type, company as any, {
         partyBalance: (invoice as any).customer?.balance ?? (invoice as any).supplier?.balance,
         noAutoPrint: true,
@@ -69,7 +67,7 @@ export const GET = withProtection(async (request: NextRequest, session: any, _bo
         browser = await getBrowser();
         const page = await browser.newPage();
 
-        await page.setContent(html, { waitUntil: 'networkidle0', timeout: 15000 });
+        await page.setContent(html, { waitUntil: 'load', timeout: 15000 });
 
         // Wait for Arabic fonts to render
         await page.evaluateHandle('document.fonts.ready');
