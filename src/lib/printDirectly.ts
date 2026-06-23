@@ -138,3 +138,84 @@ export async function printInstallmentReceiptDirectly(id: string) {
         injectPrintIframe(html);
     } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
 }
+
+export async function downloadInvoicePDF(id: string, filename?: string) {
+    const loader = document.getElementById('print-loader-overlay');
+    // Show custom PDF loader
+    showPrintLoader();
+    const loaderText = document.querySelector('#print-loader-overlay div:nth-child(2)') as HTMLElement;
+    if (loaderText) loaderText.textContent = 'جاري تحضير PDF...';
+
+    let iframe: HTMLIFrameElement | null = null;
+
+    try {
+        const res = await fetch(`/api/print/invoice/${id}`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+
+        const { generateA4HTML } = await import('@/lib/printInvoices');
+        const type = data.invoice?.type || 'sale';
+        const html = generateA4HTML(data.invoice, type, data.company, {
+            partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
+            noAutoPrint: true,
+        });
+
+        // Render in a hidden iframe so fonts + styles load correctly
+        iframe = document.createElement('iframe');
+        Object.assign(iframe.style, {
+            position: 'fixed', top: '-9999px', left: '-9999px',
+            width: '794px', height: '1123px', border: 'none', visibility: 'hidden',
+        });
+        document.body.appendChild(iframe);
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (!iframeDoc) throw new Error('iframe document unavailable');
+        iframeDoc.open(); iframeDoc.write(html); iframeDoc.close();
+
+        // Wait for fonts + images to load
+        await new Promise(r => setTimeout(r, 1200));
+
+        const html2canvas = (await import('html2canvas')).default;
+        const { default: jsPDF } = await import('jspdf');
+
+        const body = iframeDoc.body;
+        const canvas = await html2canvas(body, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: false,
+            scrollX: 0, scrollY: 0,
+            width: body.scrollWidth,
+            height: body.scrollHeight,
+            windowWidth: 794,
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.97);
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [794, 1123] });
+
+        const pageW = pdf.internal.pageSize.getWidth();
+        const pageH = pdf.internal.pageSize.getHeight();
+        const imgW = canvas.width;
+        const imgH = canvas.height;
+        const ratio = pageW / imgW;
+        const scaledH = imgH * ratio;
+
+        // Multi-page support
+        let yOffset = 0;
+        while (yOffset < scaledH) {
+            if (yOffset > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, scaledH);
+            yOffset += pageH;
+        }
+
+        const prefix = type === 'sale' ? 'SAL' : type === 'sale_return' ? 'SRET' : type === 'purchase' ? 'PUR' : 'INV';
+        const invNum = data.invoice?.invoiceNumber ? String(data.invoice.invoiceNumber).padStart(5, '0') : id.slice(-5);
+        pdf.save(filename || `${prefix}-${invNum}.pdf`);
+
+    } catch (e) {
+        console.error('[downloadInvoicePDF]', e);
+        alert('فشل تحميل PDF — ' + (e instanceof Error ? e.message : ''));
+    } finally {
+        if (iframe && document.body.contains(iframe)) document.body.removeChild(iframe);
+        hidePrintLoader();
+    }
+}

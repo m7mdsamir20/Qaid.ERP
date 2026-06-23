@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Receipt, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer } from 'lucide-react';
+import { Receipt, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, FileDown } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
@@ -10,7 +10,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
+import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 
@@ -165,6 +165,9 @@ export default function SalesPage() {
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                     <button onClick={(e) => { e.stopPropagation(); handlePrint(inv); }} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
                         <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button onClick={(e) => { e.stopPropagation(); downloadInvoicePDF(inv.id); }} style={TABLE_STYLE.actionBtn(C.primary)} title={t('تحميل PDF')}>
+                        <FileDown size={TABLE_STYLE.actionIconSize} />
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); router.push(`/sales/${inv.id}`); }} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
                         <Eye size={TABLE_STYLE.actionIconSize} />
