@@ -177,7 +177,7 @@ export default function SalesPage() {
                                 .finally(() => setDownloadingId(null));
                         }}
                         disabled={downloadingId === inv.id}
-                        style={{ ...TABLE_STYLE.actionBtn(C.primary), opacity: downloadingId === inv.id ? 0.5 : 1, cursor: downloadingId === inv.id ? 'not-allowed' : 'pointer' }}
+                        style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === inv.id ? 0.5 : 1, cursor: downloadingId === inv.id ? 'not-allowed' : 'pointer' }}
                         title={t('تحميل PDF')}
                     >
                         {downloadingId === inv.id

@@ -1,8 +1,8 @@
-﻿'use client';
+'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, Plus, Printer, Info, Loader2, Search, ChevronDown, Package, TrendingUp, Wallet, Clock, CheckCircle2, History, Filter, Calendar, Trash2, Receipt, Eye, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Plus, Printer, Info, Loader2, Search, ChevronDown, Package, TrendingUp, Wallet, Clock, CheckCircle2, History, Filter, Calendar, Trash2, Receipt, Eye, AlertCircle, FileDown } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
@@ -10,7 +10,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, TABLE_ST
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useTranslation } from '@/lib/i18n';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
+import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 
@@ -34,6 +34,7 @@ export default function PurchasesListPage() {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [activeYear, setActiveYear] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -143,6 +144,23 @@ export default function PurchasesListPage() {
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                     <button onClick={(e) => { e.stopPropagation(); handlePrint(inv); }} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
                         <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (downloadingId === inv.id) return;
+                            setDownloadingId(inv.id);
+                            downloadInvoicePDF(inv.id)
+                                .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                .finally(() => setDownloadingId(null));
+                        }}
+                        disabled={downloadingId === inv.id}
+                        style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === inv.id ? 0.5 : 1, cursor: downloadingId === inv.id ? 'not-allowed' : 'pointer' }}
+                        title={t('تحميل PDF')}
+                    >
+                        {downloadingId === inv.id
+                            ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                            : <FileDown size={TABLE_STYLE.actionIconSize} />}
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); router.push(`/purchases/${inv.id}`); }} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
                         <Eye size={TABLE_STYLE.actionIconSize} />

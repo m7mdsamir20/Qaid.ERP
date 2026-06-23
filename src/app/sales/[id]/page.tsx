@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { formatNumber } from '@/lib/currency';
 
@@ -6,13 +6,13 @@ import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw } from 'lucide-react';
+import { Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw, FileDown } from 'lucide-react';
 import { CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
+import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -64,6 +64,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const [invoice, setInvoice] = useState<SaleInvoice | null>(null);
     const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
 
     const userRole = (session?.user as any)?.role;
     const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
@@ -133,6 +134,18 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     useEffect(() => { fetchDetail(); }, [fetchDetail]);
 
+    const handleDownloadPDF = async () => {
+        if (!invoice) return;
+        setDownloading(true);
+        try {
+            await downloadInvoicePDF(invoice.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
+
     if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     if (!invoice) return (
@@ -167,6 +180,44 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العميل والتحصيل المالي')}`}
                     icon={Receipt}
                     backUrl="/sales"
+                    actions={[
+                        <button
+                            key="download-pdf"
+                            onClick={handleDownloadPDF}
+                            disabled={downloading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                height: '42px',
+                                padding: '0 20px',
+                                borderRadius: '12px',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                cursor: downloading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.15s',
+                                fontFamily: CAIRO,
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            {downloading ? (
+                                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                            ) : (
+                                <FileDown size={18} />
+                            )}
+                            {t('تحميل PDF')}
+                        </button>
+                    ]}
                     primaryButton={{
                         label: t('طباعة الفاتورة'),
                         onClick: () => {

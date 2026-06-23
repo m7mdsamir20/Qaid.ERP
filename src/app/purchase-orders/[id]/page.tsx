@@ -11,8 +11,9 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
 import {
     ShoppingBag, Package, CheckCircle2, AlertCircle, Clock, XCircle, FileText,
-    Loader2, Trash2, Edit, Truck, Receipt, Building2, User, Calendar, Wallet,
+    Loader2, Trash2, Edit, Truck, Receipt, Building2, User, Calendar, Wallet, Printer, FileDown
 } from 'lucide-react';
+import { printPurchaseOrderDirectly, downloadPurchaseOrderPDF } from '@/lib/printDirectly';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 
 interface POLine {
@@ -75,6 +76,24 @@ export default function PurchaseOrderDetailPage(props: { params: Promise<{ id: s
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+
+    const handlePrint = () => {
+        if (!order) return;
+        printPurchaseOrderDirectly(order.id);
+    };
+
+    const handleDownloadPDF = async () => {
+        if (!order) return;
+        setDownloading(true);
+        try {
+            await downloadPurchaseOrderPDF(order.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     const fetchOrder = useCallback(async () => {
         try {
@@ -177,6 +196,73 @@ export default function PurchaseOrderDetailPage(props: { params: Promise<{ id: s
     const canInvoice = order.status === 'received';
 
     const headerActions: React.ReactNode[] = [];
+
+    headerActions.push(
+        <button
+            key="download-pdf"
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                height: '38px',
+                padding: '0 14px',
+                borderRadius: '10px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                color: '#ef4444',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: downloading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.15s',
+                fontFamily: CAIRO,
+                whiteSpace: 'nowrap'
+            }}
+            onMouseEnter={e => {
+                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+            }}
+            onMouseLeave={e => {
+                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+            }}
+        >
+            {downloading ? (
+                <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} />
+            ) : (
+                <FileDown size={14} />
+            )}
+            {t('تحميل PDF')}
+        </button>
+    );
+
+    headerActions.push(
+        <button
+            key="print"
+            onClick={handlePrint}
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '0 14px',
+                height: '38px',
+                borderRadius: '10px',
+                background: C.primary,
+                color: '#fff',
+                border: 'none',
+                fontSize: '13px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.15s',
+                fontFamily: CAIRO,
+                whiteSpace: 'nowrap'
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
+            onMouseLeave={e => e.currentTarget.style.background = C.primary}
+        >
+            <Printer size={14} /> {t('طباعة أمر الشراء')}
+        </button>
+    );
 
     if (canEdit) {
         headerActions.push(

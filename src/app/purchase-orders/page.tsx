@@ -1,8 +1,9 @@
-﻿'use client';
+'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { ShoppingBag, Plus, Loader2, Search, Trash2, Eye, CheckCircle2, Clock, AlertCircle, XCircle, Package, FileText } from 'lucide-react';
+import { ShoppingBag, Plus, Loader2, Search, Trash2, Eye, CheckCircle2, Clock, AlertCircle, XCircle, Package, FileText, Printer, FileDown } from 'lucide-react';
+import { printPurchaseOrderDirectly, downloadPurchaseOrderPDF } from '@/lib/printDirectly';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, PAGE_BASE, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
@@ -47,6 +48,7 @@ export default function PurchaseOrdersPage() {
     const [orders, setOrders] = useState<PurchaseOrder[]>([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -168,9 +170,32 @@ export default function PurchaseOrdersPage() {
             header: t('إجراءات'),
             type: 'action',
             cell: (row: PurchaseOrder) => (
-                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
                     <button
-                        onClick={(e) => { e.stopPropagation(); router.push(`/purchase-orders/${row.id}`); }}
+                        onClick={() => printPurchaseOrderDirectly(row.id)}
+                        style={TABLE_STYLE.actionBtn()}
+                        title={t('طباعة')}
+                    >
+                        <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button
+                        onClick={() => {
+                            if (downloadingId === row.id) return;
+                            setDownloadingId(row.id);
+                            downloadPurchaseOrderPDF(row.id)
+                                .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                .finally(() => setDownloadingId(null));
+                        }}
+                        disabled={downloadingId === row.id}
+                        style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === row.id ? 0.5 : 1, cursor: downloadingId === row.id ? 'not-allowed' : 'pointer' }}
+                        title={t('تحميل PDF')}
+                    >
+                        {downloadingId === row.id
+                            ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                            : <FileDown size={TABLE_STYLE.actionIconSize} />}
+                    </button>
+                    <button
+                        onClick={() => router.push(`/purchase-orders/${row.id}`)}
                         style={TABLE_STYLE.actionBtn()}
                         title={t('عرض')}
                     >

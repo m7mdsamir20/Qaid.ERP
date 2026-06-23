@@ -6,19 +6,19 @@ import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { Receipt, Package, Printer, Loader2, User, Building2, CreditCard, Info, Clock, Wallet, FileDown, ArrowLeftRight, RotateCcw } from 'lucide-react';
+import { Receipt, Package, Printer, Loader2, User, Building2, CreditCard, Info, Clock, Wallet, FileDown } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 
-interface ReturnInvoice {
+interface PurchaseReturnInvoice {
     id: string;
     invoiceNumber: number;
     date: string;
-    customer: { name: string; phone?: string; balance: number } | null;
     supplier: { name: string; phone?: string; balance: number } | null;
+    customer: { name: string; phone?: string; balance: number } | null;
     warehouse: { name: string } | null;
     originalInvoiceId?: string;
     originalInvoice?: { invoiceNumber: number; date: string };
@@ -41,20 +41,20 @@ interface ReturnInvoice {
     }[];
 }
 
-export default function SaleReturnDetailPage(props: { params: Promise<{ id: string }> }) {
+export default function PurchaseReturnDetailPage(props: { params: Promise<{ id: string }> }) {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { data: session } = useSession();
-    const [invoice, setInvoice] = useState<ReturnInvoice | null>(null);
+    const [invoice, setInvoice] = useState<PurchaseReturnInvoice | null>(null);
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
 
     const fetchDetail = useCallback(async () => {
         try {
-            const invR = await fetch(`/api/sale-returns/${params.id}`);
+            const invR = await fetch(`/api/purchase-returns?id=${params.id}`);
             if (invR.ok) setInvoice(await invR.json());
         } catch (error) {
             console.error(error);
@@ -87,9 +87,8 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
 
     const fmt = (v: number) => formatNumber(v);
 
-    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
-    const invLabel = isServices ? t('إلغاء خدمة / مرتجع') : t('مرتجع مبيعات');
-    const invPrefix = isServices ? 'SRV-RET' : 'SRET';
+    const invLabel = t('مرتجع مشتريات');
+    const invPrefix = 'PRET';
     const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
 
     return (
@@ -100,7 +99,7 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                     title={`${t('تفاصيل')} ${invLabel}`}
                     subtitle={`${t('تاريخ المرتجع:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العمليات المرتجعة وتأثيرها المالي')}`}
                     icon={Receipt}
-                    backUrl="/sale-returns"
+                    backUrl="/purchase-returns"
                     actions={[
                         <button
                             key="download-pdf"
@@ -159,8 +158,8 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                                     <User size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('العميل / المستلم')}</p>
-                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('المورد / الشريك')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.supplier?.name || invoice.customer?.name || '—'}</p>
                                 </div>
                             </div>
 
@@ -175,46 +174,44 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                             </div>
 
                             {invoice.originalInvoice && (
-                                <div onClick={() => router.push('/sales/' + invoice.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
+                                <div onClick={() => router.push('/purchases/' + invoice.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}>
                                     <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(168,85,247,0.1)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <Package size={18} />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{isServices ? t("مرجع فاتورة الخدمة") : t("مرجع فاتورة البيع")}</p>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t("مرجع فاتورة الشراء")}</p>
                                         <p style={{ fontSize: '13px', fontWeight: 600, color: '#a855f7', margin: 0, fontFamily: OUTFIT }}>
-                                            {`${isServices ? 'SRV' : 'SAL'}-${String(invoice.originalInvoice.invoiceNumber).padStart(5, '0')}`}
+                                            {`PUR-${String(invoice.originalInvoice.invoiceNumber).padStart(5, '0')}`}
                                         </p>
                                     </div>
                                 </div>
                             )}
 
-                            {!isServices && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Building2 size={18} />
-                                    </div>
-                                    <div>
-                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('المستودع / المخزن')}</p>
-                                        <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
-                                    </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Building2 size={18} />
                                 </div>
-                            )}
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('المستودع / المخزن')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                </div>
+                            </div>
                         </div>
 
                         {/* ── Items Table ── */}
                         <div style={TABLE_STYLE.container}>
                             <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
-                                <div style={STitle}><Package size={14} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}</div>
+                                <div style={STitle}><Package size={14} /> {t("الأصناف المرتجعة")}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>
                             <div className="scroll-table">
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
-                                            <th style={TABLE_STYLE.th(false)}>{isServices ? t('الكمية الملغاة') : t('الكمية المرتجعة')}</th>
-                                            <th style={TABLE_STYLE.th(false, true)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                            <th style={TABLE_STYLE.th(true)}>{t('الصنف')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('الكمية المرتجعة')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('سعر التكلفة')}</th>
                                             <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
                                         </tr>
                                     </thead>
@@ -228,9 +225,7 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                                                         : <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, opacity: 0.5 }}>{l.item.code}</div>
                                                     }
                                                 </td>
-                                                {!isServices && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
-                                                )}
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 600, color: C.danger }}>{l.quantity}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.primary }}>{fmt(l.total)}</td>
@@ -256,7 +251,7 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>{isServices ? t('إجمالي الملغي') : t('إجمالي المرتجع')}</span>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي المرتجع')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.danger }}>{fMoneyJSX(invoice.subtotal)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
@@ -277,11 +272,11 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('نوع المرتجع')}</span>
                                     <span style={{ fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
-                                        {invoice.paymentMethod === 'cash' ? t('صرف نقدي') : invoice.paymentMethod === 'bank' ? t('رد بنكي') : t('تسوية مديونية')}
+                                        {invoice.paymentMethod === 'cash' ? t('استلام نقدي') : invoice.paymentMethod === 'bank' ? t('رد بنكي') : t('تسوية مديونية')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>{t('رد نقدي مباشر')}</span>
+                                    <span style={{ color: C.textSecondary }}>{t('المسترد نقداً')}</span>
                                     <span style={{ fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>

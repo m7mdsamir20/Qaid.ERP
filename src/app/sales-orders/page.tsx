@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
@@ -10,7 +10,8 @@ import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SEARCH_STYLE, TABLE_STYLE } from '@/constants/theme';
-import { ShoppingBag, Plus, Search, Trash2, Loader2, Eye, Filter } from 'lucide-react';
+import { ShoppingBag, Plus, Search, Trash2, Loader2, Eye, Filter, Printer, FileDown } from 'lucide-react';
+import { printSalesOrderDirectly, downloadSalesOrderPDF } from '@/lib/printDirectly';
 import { TableColumn } from '@/components/EmptyTableState';
 
 interface SalesOrder {
@@ -57,6 +58,7 @@ export default function SalesOrdersPage() {
     const [orders, setOrders] = useState<SalesOrder[]>([]);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -183,13 +185,38 @@ export default function SalesOrdersPage() {
             header: t('إجراءات'),
             type: 'action',
             cell: (order: SalesOrder) => (
-                <button
-                    onClick={(e) => { e.stopPropagation(); router.push(`/sales-orders/${order.id}`); }}
-                    style={TABLE_STYLE.actionBtn()}
-                    title={t('عرض')}
-                >
-                    <Eye size={TABLE_STYLE.actionIconSize} />
-                </button>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+                    <button
+                        onClick={() => printSalesOrderDirectly(order.id)}
+                        style={TABLE_STYLE.actionBtn()}
+                        title={t('طباعة')}
+                    >
+                        <Printer size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                    <button
+                        onClick={() => {
+                            if (downloadingId === order.id) return;
+                            setDownloadingId(order.id);
+                            downloadSalesOrderPDF(order.id)
+                                .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                .finally(() => setDownloadingId(null));
+                        }}
+                        disabled={downloadingId === order.id}
+                        style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === order.id ? 0.5 : 1, cursor: downloadingId === order.id ? 'not-allowed' : 'pointer' }}
+                        title={t('تحميل PDF')}
+                    >
+                        {downloadingId === order.id
+                            ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                            : <FileDown size={TABLE_STYLE.actionIconSize} />}
+                    </button>
+                    <button
+                        onClick={() => router.push(`/sales-orders/${order.id}`)}
+                        style={TABLE_STYLE.actionBtn()}
+                        title={t('عرض')}
+                    >
+                        <Eye size={TABLE_STYLE.actionIconSize} />
+                    </button>
+                </div>
             ),
         },
     ];

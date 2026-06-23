@@ -1,17 +1,17 @@
-﻿'use client';
+'use client';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, Trash2, TrendingUp, Eye } from 'lucide-react';
+import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, Trash2, TrendingUp, Eye, FileDown } from 'lucide-react';
 
 import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printVoucherDirectly } from '@/lib/printDirectly';
+import { printVoucherDirectly, downloadVoucherPDF } from '@/lib/printDirectly';
 import { DataTable } from '@/components/DataTable';
 
 
@@ -36,6 +36,7 @@ export default function ReceiptVouchersPage() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -152,6 +153,23 @@ export default function ReceiptVouchersPage() {
                         { header: t('إجراءات'), type: 'action', cell: (row) => (
                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                 <button onClick={(e) => { e.stopPropagation(); handlePrint(row); }} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (downloadingId === row.id) return;
+                                        setDownloadingId(row.id);
+                                        downloadVoucherPDF(row.id)
+                                            .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                            .finally(() => setDownloadingId(null));
+                                    }}
+                                    disabled={downloadingId === row.id}
+                                    style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === row.id ? 0.5 : 1, cursor: downloadingId === row.id ? 'not-allowed' : 'pointer' }}
+                                    title={t('تحميل PDF')}
+                                >
+                                    {downloadingId === row.id
+                                        ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                                        : <FileDown size={TABLE_STYLE.actionIconSize} />}
+                                </button>
                                 <button onClick={(e) => { e.stopPropagation(); router.push(`/receipts/${row.id}`); }} style={TABLE_STYLE.actionBtn()} title={t("عرض")}><Eye size={TABLE_STYLE.actionIconSize} /></button>
                             </div>
                         )},

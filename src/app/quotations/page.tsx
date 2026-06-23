@@ -1,10 +1,10 @@
-﻿'use client';
+'use client';
 import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { FileText, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, Send } from 'lucide-react';
+import { FileText, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, Send, FileDown } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { printQuotationDirectly } from '@/lib/printDirectly';
+import { printQuotationDirectly, downloadQuotationPDF } from '@/lib/printDirectly';
 
 
 interface Quotation {
@@ -37,6 +37,7 @@ export default function QuotationsPage() {
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [quotations, setQuotations] = useState<Quotation[]>([]);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -173,6 +174,23 @@ export default function QuotationsPage() {
                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                 <Link href={`/quotations/${row.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                 <button onClick={() => printQuotationDirectly(row.id)} title={t("طباعة")} style={TABLE_STYLE.actionBtn()}><Printer size={TABLE_STYLE.actionIconSize} /></button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (downloadingId === row.id) return;
+                                        setDownloadingId(row.id);
+                                        downloadQuotationPDF(row.id)
+                                            .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                            .finally(() => setDownloadingId(null));
+                                    }}
+                                    disabled={downloadingId === row.id}
+                                    style={{ ...TABLE_STYLE.actionBtn(C.danger), opacity: downloadingId === row.id ? 0.5 : 1, cursor: downloadingId === row.id ? 'not-allowed' : 'pointer' }}
+                                    title={t('تحميل PDF')}
+                                >
+                                    {downloadingId === row.id
+                                        ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                                        : <FileDown size={TABLE_STYLE.actionIconSize} />}
+                                </button>
                                 {row.status === 'pending' && (
                                     <Link href={`/sales/new?quotationId=${row.id}`} title={t("تحويل لفاتورة")} style={TABLE_STYLE.actionBtn(C.success)}><Send size={TABLE_STYLE.actionIconSize} /></Link>
                                 )}

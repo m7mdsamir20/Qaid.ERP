@@ -4925,6 +4925,34 @@ export const dictionaries = {
         "لا توجد طلبات اليوم": "There are no orders today",
         "الوقت": "time",
         "تحميل PDF": "Download PDF",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "نوع الشراء": "Purchase type",
+        "المدفوع فعلياً": "Actually paid",
+        "المتبقي (دائن)": "Remaining (credit)",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "إلغاء خدمة / مرتجع": "Service cancellation/return",
+        "سجل العمليات المرتجعة وتأثيرها المالي": "Record of returned transactions and their financial impact",
+        "مرجع فاتورة الخدمة": "Service invoice reference",
+        "مرجع فاتورة البيع": "Sales invoice reference",
+        "صافي التسوية": "net settlement",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "مرجع فاتورة الشراء": "Purchase invoice reference",
+        "استلام نقدي": "Cash receipt",
+        "المسترد نقداً": "Refundable in cash",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "طباعة أمر البيع": "Print sales order",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "طباعة أمر الشراء": "Print purchase order",
 }
 };
 

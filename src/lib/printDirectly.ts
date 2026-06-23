@@ -118,6 +118,80 @@ export async function printInstallmentReceiptDirectly(id: string) {
 
 const _downloading = new Set<string>();
 
+async function generatePdfFromHtmlText(
+    htmlText: string,
+    filename: string,
+    options: { width?: number; height?: number; pw?: number; ph?: number; orientation?: 'p' | 'l' } = {}
+) {
+    const isThermal = options.pw === 80;
+    const renderW = isThermal ? 380 : (options.width || 794);
+    const renderH = isThermal ? 800 : (options.height || 1123);
+    const pw = options.pw || 210;
+    const orientation = options.orientation || 'p';
+
+    const iframe = document.createElement('iframe');
+    Object.assign(iframe.style, {
+        position: 'fixed',
+        width: `${renderW}px`,
+        height: `${renderH}px`,
+        left: '-9999px',
+        top: '-9999px',
+        visibility: 'hidden',
+    });
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document || iframe.contentDocument;
+    if (!doc) throw new Error('Could not access iframe document');
+
+    doc.open();
+    doc.write(htmlText);
+    doc.close();
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import('html2canvas'),
+        import('jspdf'),
+    ]);
+
+    const canvas = await html2canvas(doc.body, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        windowWidth: renderW,
+        width: renderW,
+        height: doc.body.scrollHeight,
+        scrollX: 0,
+        scrollY: 0,
+    });
+
+    const ph = options.ph || (canvas.height * pw) / canvas.width;
+    const pdf = new jsPDF(orientation, 'mm', [pw, ph]);
+    const imgData = canvas.toDataURL('image/png');
+
+    if (imgH_fit(canvas.height, pw, canvas.width) <= ph) {
+        pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH_fit(canvas.height, pw, canvas.width));
+    } else {
+        let pos = 0, remaining = imgH_fit(canvas.height, pw, canvas.width);
+        pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH_fit(canvas.height, pw, canvas.width));
+        remaining -= ph;
+        while (remaining > 0) {
+            pos -= ph;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH_fit(canvas.height, pw, canvas.width));
+            remaining -= ph;
+        }
+    }
+
+    pdf.save(filename);
+    document.body.removeChild(iframe);
+}
+
+function imgH_fit(canvasHeight: number, pw: number, canvasWidth: number): number {
+    return (canvasHeight * pw) / canvasWidth;
+}
+
 export async function downloadInvoicePDF(id: string, _filename?: string): Promise<void> {
     if (_downloading.has(id)) return;
     _downloading.add(id);
@@ -158,3 +232,124 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
         _downloading.delete(id);
     }
 }
+
+export async function printSalesOrderDirectly(id: string) {
+    try {
+        showPrintLoader();
+        const [soRes, coRes] = await Promise.all([
+            fetch(`/api/sales-orders/${id}`),
+            fetch('/api/company')
+        ]);
+        const order = await soRes.json();
+        const company = await coRes.json();
+        if (order.error) throw new Error(order.error);
+        const { generateA4HTML } = await import('@/lib/printInvoices');
+        const html = generateA4HTML(order, 'sales-order' as any, company, { noAutoPrint: false });
+        injectPrintIframe(html);
+    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+}
+
+export async function printPurchaseOrderDirectly(id: string) {
+    try {
+        showPrintLoader();
+        const [poRes, coRes] = await Promise.all([
+            fetch(`/api/purchase-orders/${id}`),
+            fetch('/api/company')
+        ]);
+        const order = await poRes.json();
+        const company = await coRes.json();
+        if (order.error) throw new Error(order.error);
+        const { generateA4HTML } = await import('@/lib/printInvoices');
+        const html = generateA4HTML(order, 'purchase-order' as any, company, { noAutoPrint: false });
+        injectPrintIframe(html);
+    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+}
+
+export async function downloadSalesOrderPDF(id: string): Promise<void> {
+    try {
+        const [soRes, coRes] = await Promise.all([
+            fetch(`/api/sales-orders/${id}`),
+            fetch('/api/company')
+        ]);
+        const order = await soRes.json();
+        const company = await coRes.json();
+        if (order.error) throw new Error(order.error);
+        const { generateA4HTML } = await import('@/lib/printInvoices');
+        const html = generateA4HTML(order, 'sales-order' as any, company, { noAutoPrint: true });
+        const num = String(order.orderNumber || 1).padStart(5, '0');
+        await generatePdfFromHtmlText(html, `SO-${num}.pdf`);
+    } catch (e: any) {
+        console.error(e);
+        throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+
+export async function downloadPurchaseOrderPDF(id: string): Promise<void> {
+    try {
+        const [poRes, coRes] = await Promise.all([
+            fetch(`/api/purchase-orders/${id}`),
+            fetch('/api/company')
+        ]);
+        const order = await poRes.json();
+        const company = await coRes.json();
+        if (order.error) throw new Error(order.error);
+        const { generateA4HTML } = await import('@/lib/printInvoices');
+        const html = generateA4HTML(order, 'purchase-order' as any, company, { noAutoPrint: true });
+        const num = String(order.orderNumber || 1).padStart(5, '0');
+        await generatePdfFromHtmlText(html, `PO-${num}.pdf`);
+    } catch (e: any) {
+        console.error(e);
+        throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+
+export async function downloadVoucherPDF(id: string): Promise<void> {
+    try {
+        const res = await fetch(`/api/print/voucher/${id}`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        const { generateThermalVoucherHTML } = await import('@/lib/printInvoices');
+        const type = data.voucher?.type || 'receipt';
+        const html = generateThermalVoucherHTML(data.voucher, type, data.company, { noAutoPrint: true });
+        const num = String(data.voucher?.voucherNumber || id).padStart(5, '0');
+        await generatePdfFromHtmlText(html, `voucher-${num}.pdf`, { pw: 80 });
+    } catch (e: any) {
+        console.error(e);
+        throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+
+export async function downloadQuotationPDF(id: string): Promise<void> {
+    try {
+        const res = await fetch(`/api/print/quotation/${id}`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        const { generateQuotationHTML } = await import('@/lib/printInvoices');
+        const html = generateQuotationHTML(data.quotation, data.company, { noAutoPrint: true });
+        const num = String(data.quotation?.quotationNumber || id).padStart(5, '0');
+        await generatePdfFromHtmlText(html, `quotation-${num}.pdf`);
+    } catch (e: any) {
+        console.error(e);
+        throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+
+export async function downloadInstallmentPDF(id: string): Promise<void> {
+    try {
+        const [planRes, coRes] = await Promise.all([
+            fetch(`/api/installments/${id}`),
+            fetch('/api/company')
+        ]);
+        const plan = await planRes.json();
+        const company = await coRes.json();
+        if (plan.error) throw new Error(plan.error);
+        const { generateInstallmentPlanHTML } = await import('@/lib/printInvoices');
+        const html = generateInstallmentPlanHTML(plan, company, { noAutoPrint: true });
+        const planNum = String(plan.planNumber || 1).padStart(5, '0');
+        await generatePdfFromHtmlText(html, `installment-plan-${planNum}.pdf`);
+    } catch (e: any) {
+        console.error(e);
+        throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+

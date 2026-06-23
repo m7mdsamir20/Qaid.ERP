@@ -7,11 +7,11 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { FileText, Printer, CheckCircle, Loader2, X, Eye, Package, Info } from 'lucide-react';
+import { FileText, Printer, CheckCircle, Loader2, X, Eye, Package, Info, FileDown } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printQuotationDirectly } from '@/lib/printDirectly';
+import { printQuotationDirectly, downloadQuotationPDF } from '@/lib/printDirectly';
 
 
 export default function QuotationViewPage() {
@@ -24,6 +24,19 @@ export default function QuotationViewPage() {
     const [quotation, setQuotation] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [converting, setConverting] = useState(false);
+    const [downloading, setDownloading] = useState(false);
+
+    const handleDownloadPDF = async () => {
+        if (!quotation) return;
+        setDownloading(true);
+        try {
+            await downloadQuotationPDF(quotation.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
@@ -74,6 +87,44 @@ export default function QuotationViewPage() {
                     subtitle=""
                     icon={FileText}
                     backUrl="/quotations"
+                    actions={[
+                        <button
+                            key="download-pdf"
+                            onClick={handleDownloadPDF}
+                            disabled={downloading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                height: '42px',
+                                padding: '0 20px',
+                                borderRadius: '12px',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                cursor: downloading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.15s',
+                                fontFamily: CAIRO,
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            {downloading ? (
+                                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                            ) : (
+                                <FileDown size={18} />
+                            )}
+                            {t('تحميل PDF')}
+                        </button>
+                    ]}
                     primaryButton={{
                         label: t('طباعة العرض'),
                         onClick: () => printQuotationDirectly(quotation.id),

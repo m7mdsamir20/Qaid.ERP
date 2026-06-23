@@ -7,6 +7,15 @@ import { logActivity, extractLogContext } from '@/lib/activityLog';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+        if (id) {
+            const invoice = await prisma.invoice.findFirst({
+                where: { id, companyId, type: 'purchase_return' },
+                include: { supplier: true, customer: true, lines: { include: { item: { include: { unit: true } } } } },
+            });
+            return NextResponse.json(invoice);
+        }
         const invoices = await prisma.invoice.findMany({
             where: { companyId, type: 'purchase_return' },
             orderBy: { createdAt: 'desc' },

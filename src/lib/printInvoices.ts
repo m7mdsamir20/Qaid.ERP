@@ -20,7 +20,7 @@ export interface CompanyInfo {
     businessType?: string;
 }
 
-type InvoiceType = 'sale' | 'purchase' | 'sale-return' | 'purchase-return';
+type InvoiceType = 'sale' | 'purchase' | 'sale-return' | 'purchase-return' | 'sales-order' | 'purchase-order';
 type VoucherType = 'receipt' | 'payment';
 
 const TITLES: Record<InvoiceType, string> = {
@@ -28,6 +28,8 @@ const TITLES: Record<InvoiceType, string> = {
     'purchase': 'فاتورة مشتريات',
     'sale-return': 'مرتجع مبيعات',
     'purchase-return': 'مرتجع مشتريات',
+    'sales-order': 'أمر بيع',
+    'purchase-order': 'أمر شراء',
 };
 
 const TITLES_EN: Record<InvoiceType, string> = {
@@ -35,6 +37,8 @@ const TITLES_EN: Record<InvoiceType, string> = {
     'purchase': 'Purchase Invoice',
     'sale-return': 'Sales Return',
     'purchase-return': 'Purchase Return',
+    'sales-order': 'Sales Order',
+    'purchase-order': 'Purchase Order',
 };
 
 const PREFIXES: Record<InvoiceType, string> = {
@@ -42,6 +46,8 @@ const PREFIXES: Record<InvoiceType, string> = {
     'purchase': 'PUR',
     'sale-return': 'SLR',
     'purchase-return': 'PRR',
+    'sales-order': 'SO',
+    'purchase-order': 'PO',
 };
 
 // ═══════════════════════════════════════════════
@@ -120,7 +126,7 @@ export function generateA4HTML(
     const titleEn = TITLES_EN[type];
     const prefix = PREFIXES[type];
     const isReturn = type.includes('return');
-    const isSale = type === 'sale' || type === 'sale-return';
+    const isSale = type === 'sale' || type === 'sale-return' || type === 'sales-order';
     const isTrading = company.businessType?.toUpperCase() === 'TRADING';
 
     // Try all possible ways to find the party name and details
@@ -149,7 +155,7 @@ export function generateA4HTML(
     const dateEn = '';
     const dateISO = invoiceDate.toISOString();
 
-    const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
+    const invoiceNum = String(invoice.invoiceNumber || invoice.orderNumber || 1).padStart(5, '0');
 
     // تحديد ما إذا كان النشاط خدمياً
     const isServicesLine = isServicesCompany || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');

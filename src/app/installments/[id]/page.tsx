@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { formatNumber } from '@/lib/currency';
 
@@ -6,13 +6,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowRight, CreditCard, CheckCircle2, Clock, AlertTriangle, Loader2, X, Banknote, Printer, ChevronDown, Calendar, TrendingUp, Info, Wallet, DollarSign, Check, Package } from 'lucide-react';
+import { ArrowRight, CreditCard, CheckCircle2, Clock, AlertTriangle, Loader2, X, Banknote, Printer, ChevronDown, Calendar, TrendingUp, Info, Wallet, DollarSign, Check, Package, FileDown } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, BTN_DANGER, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
-import { printInstallmentDirectly } from '@/lib/printDirectly';
+import { printInstallmentDirectly, downloadInstallmentPDF } from '@/lib/printDirectly';
 
 
 
@@ -49,6 +49,19 @@ export default function InstallmentDetailPage() {
     const [showSettle,  setShowSettle]  = useState(false);
     const [settleForm,  setSettleForm]  = useState({ amount: '', treasuryId: '', notes: '', earlyFeeRate: '' });
     const [settling,    setSettling]    = useState(false);
+    const [downloading, setDownloading] = useState(false);
+
+    const handleDownloadPDF = async () => {
+        if (!plan) return;
+        setDownloading(true);
+        try {
+            await downloadInstallmentPDF(plan.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     const fetchData = useCallback(async () => {
         try {
@@ -199,6 +212,41 @@ export default function InstallmentDetailPage() {
                                 </button>
                             </>
                         )}
+                        <button
+                            onClick={handleDownloadPDF}
+                            disabled={downloading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                height: '42px',
+                                padding: '0 20px',
+                                borderRadius: '12px',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                fontSize: '13px',
+                                fontWeight: 700,
+                                cursor: downloading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.15s',
+                                fontFamily: CAIRO,
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            {downloading ? (
+                                <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                            ) : (
+                                <FileDown size={16} />
+                            )}
+                            {t('تحميل PDF')}
+                        </button>
                         <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px' }}>
                             <Printer size={16} /> {t('طباعة الجدول')}
                         </button>

@@ -14,8 +14,9 @@ import {
 } from '@/constants/theme';
 import {
     ShoppingBag, CheckCircle, X, Truck, Receipt, Trash2, Info, Package,
-    Loader2, FileText, Edit,
+    Loader2, FileText, Edit, Printer, FileDown
 } from 'lucide-react';
+import { printSalesOrderDirectly, downloadSalesOrderPDF } from '@/lib/printDirectly';
 
 interface SalesOrderLine {
     id: string;
@@ -73,6 +74,24 @@ export default function SalesOrderDetailPage() {
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [downloading, setDownloading] = useState(false);
+
+    const handlePrint = () => {
+        if (!order) return;
+        printSalesOrderDirectly(order.id);
+    };
+
+    const handleDownloadPDF = async () => {
+        if (!order) return;
+        setDownloading(true);
+        try {
+            await downloadSalesOrderPDF(order.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
 
     // Delivery modal
     const [showDeliveryModal, setShowDeliveryModal] = useState(false);
@@ -238,6 +257,49 @@ export default function SalesOrderDetailPage() {
                     subtitle={t('تفاصيل أمر البيع')}
                     icon={ShoppingBag}
                     backUrl="/sales-orders"
+                    actions={[
+                        <button
+                            key="download-pdf"
+                            onClick={handleDownloadPDF}
+                            disabled={downloading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                height: '42px',
+                                padding: '0 20px',
+                                borderRadius: '12px',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                cursor: downloading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.15s',
+                                fontFamily: CAIRO,
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            {downloading ? (
+                                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                            ) : (
+                                <FileDown size={18} />
+                            )}
+                            {t('تحميل PDF')}
+                        </button>
+                    ]}
+                    primaryButton={{
+                        label: t('طباعة أمر البيع'),
+                        onClick: handlePrint,
+                        icon: Printer
+                    }}
                 />
 
                 {/* Error */}
