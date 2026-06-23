@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
-import { BarChart3, Printer, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package, FileDown } from 'lucide-react';
+import { BarChart3, Printer, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package, FileDown, Loader2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, BTN_DANGER, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -80,6 +80,7 @@ export default function InstallmentReportsPage() {
     const [loading, setLoading] = useState(false);
     const [company, setCompany] = useState<CompanyInfo>({});
     const [error, setError] = useState('');
+    const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
     const [collectionForm, setCollectionForm] = useState({
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
@@ -157,7 +158,12 @@ export default function InstallmentReportsPage() {
     const handleDownloadPDF = async () => {
         const { html, title } = buildInstallmentsHTML();
         if (!html) return;
-        await downloadReportPDF(html, title);
+        setIsDownloadingPdf(true);
+        try {
+            await downloadReportPDF(html, title, { silent: true });
+        } finally {
+            setIsDownloadingPdf(false);
+        }
     };
 
     const tabs: Array<{ id: InstallmentTab; label: string; icon: typeof CheckCircle2; sub: string }> = [
@@ -433,8 +439,9 @@ export default function InstallmentReportsPage() {
                             </button>
                             {data && (
                                 <>
-                                    <button onClick={handleDownloadPDF} style={{ ...BTN_DANGER(false, false), height: '42px', width: 'auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <FileDown size={18} /> {t('تحميل PDF')}
+                                    <button onClick={handleDownloadPDF} disabled={isDownloadingPdf} style={{ ...BTN_DANGER(false, isDownloadingPdf), height: '42px', width: 'auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: '8px', cursor: isDownloadingPdf ? 'not-allowed' : 'pointer' }}>
+                                        {isDownloadingPdf ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <FileDown size={18} />}
+                                        {t('تحميل PDF')}
                                     </button>
                                     <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
                                         <Printer size={18} /> {t('طباعة')}

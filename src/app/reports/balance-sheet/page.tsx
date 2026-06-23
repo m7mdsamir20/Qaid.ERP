@@ -170,7 +170,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
         const html = buildBalanceSheetHTML();
         if (!html) return;
         const { downloadReportPDF } = await import('@/lib/printDirectly');
-        await downloadReportPDF(html, t('المركز المالي'));
+        await downloadReportPDF(html, t('المركز المالي'), { silent: true });
     };
 
     return (

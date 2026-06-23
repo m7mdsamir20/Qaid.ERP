@@ -234,7 +234,7 @@ table{width:100%;border-collapse:collapse}
         const html = buildDailyReportHTML();
         if (!html) return;
         const { downloadReportPDF } = await import('@/lib/printDirectly');
-        await downloadReportPDF(html, t('التقرير اليومي للمبيعات والتحصيلات'));
+        await downloadReportPDF(html, t('التقرير اليومي للمبيعات والتحصيلات'), { silent: true });
     };
 
     return (

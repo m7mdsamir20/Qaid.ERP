@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowLeft, Printer, FileSpreadsheet, FileDown } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Printer, FileSpreadsheet, FileDown, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n';
 import React from 'react';
@@ -11,7 +11,7 @@ interface ReportHeaderProps {
   subtitle: string;
   backTab?: string;
   onExportExcel?: () => void;
-  onExportPdf?: () => void;
+  onExportPdf?: () => void | Promise<void>;
   onPrint?: () => void;
   data?: any;
   printTitle?: string;
@@ -28,6 +28,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
   const isRtl = lang === 'ar';
   const { data: session } = useSession();
   const [co, setCo] = React.useState<any>((session?.user as any) || {});
+  const [isDownloadingPdf, setIsDownloadingPdf] = React.useState(false);
 
   React.useEffect(() => {
     fetch('/api/company')
@@ -199,12 +200,18 @@ ${includeHTML}
   };
 
   const handleDownloadPDF = async () => {
-    if (onExportPdf) {
-      onExportPdf();
-      return;
+    if (isDownloadingPdf) return;
+    setIsDownloadingPdf(true);
+    try {
+      if (onExportPdf) {
+        await onExportPdf();
+      } else {
+        const { html, reportTitle } = buildReportHTML();
+        await downloadReportPDF(html, reportTitle, { silent: true });
+      }
+    } finally {
+      setIsDownloadingPdf(false);
     }
-    const { html, reportTitle } = buildReportHTML();
-    await downloadReportPDF(html, reportTitle);
   };
 
   return (
@@ -248,16 +255,21 @@ ${includeHTML}
 
           <button
             onClick={handleDownloadPDF}
+            disabled={isDownloadingPdf}
             style={{
               display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-              borderRadius: '10px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
+              borderRadius: '10px', background: isDownloadingPdf ? 'rgba(239, 68, 68, 0.07)' : 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
               border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '12px', fontWeight: 700,
-              cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+              cursor: isDownloadingPdf ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+              opacity: isDownloadingPdf ? 0.75 : 1,
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.transform = 'none'; }}
+            onMouseEnter={e => { if (!isDownloadingPdf) { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+            onMouseLeave={e => { if (!isDownloadingPdf) { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.transform = 'none'; } }}
           >
-            <FileDown size={15} /> {t("تحميل PDF")}
+            {isDownloadingPdf
+              ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} />
+              : <FileDown size={15} />}
+            {t('تحميل PDF')}
           </button>
 
           <button
@@ -278,6 +290,7 @@ ${includeHTML}
         </div>
       </div>
       <style jsx global>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 768px) {
           .report-header-row {
             gap: 12px !important;

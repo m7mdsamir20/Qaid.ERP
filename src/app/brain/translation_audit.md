@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T11:09:15.374Z
+Generated on: 2026-06-23T11:20:20.498Z
 
 ## Summary
 
@@ -3072,10 +3072,10 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 21: `الرمز`
 
 ### [components/ReportHeader.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/ReportHeader.tsx)
-- Line 49: `٠-٩`
-- Line 89: `٠-٩`
-- Line 89: `ر.سج.م`
-- Line 89: `د.إد.كر.قد.بر.عد.أ`
+- Line 50: `٠-٩`
+- Line 90: `٠-٩`
+- Line 90: `ر.سج.م`
+- Line 90: `د.إد.كر.قد.بر.عد.أ`
 
 ### [constants/navigation.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/constants/navigation.ts)
 - Line 56: `الرئيسية`
@@ -3534,9 +3534,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 269: `فشل تحميل`
 - Line 284: `فشل تحميل`
 - Line 303: `فشل تحميل`
-- Line 317: `تقرير`
-- Line 318: `جاري تحضير ملف`
-- Line 329: `فشل تحميل`
+- Line 319: `تقرير`
+- Line 322: `جاري تحضير ملف`
+- Line 333: `فشل تحميل`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`

@@ -314,8 +314,12 @@ export function printReportDirectly(html: string, _title?: string) {
     setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-export async function downloadReportPDF(html: string, title: string = 'تقرير'): Promise<void> {
-    showPrintLoader('جاري تحضير ملف PDF...');
+export async function downloadReportPDF(
+    html: string,
+    title: string = 'تقرير',
+    options: { silent?: boolean } = {}
+): Promise<void> {
+    if (!options.silent) showPrintLoader('جاري تحضير ملف PDF...');
     try {
         await generatePdfFromHtmlText(html, `${title}.pdf`, {
             width: 1123,
@@ -328,7 +332,7 @@ export async function downloadReportPDF(html: string, title: string = 'تقري�
         console.error(e);
         alert('فشل تحميل PDF');
     } finally {
-        hidePrintLoader();
+        if (!options.silent) hidePrintLoader();
     }
 }
 
