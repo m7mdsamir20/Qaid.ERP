@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
@@ -151,7 +151,7 @@ export default function SalesReportPage() {
                 ) : (
                     <>
 
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
+                        <div data-print-stats style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
                             <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
                                 <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><BarChart3 size={20} /></div>
                                 <div>
@@ -284,6 +284,7 @@ export default function SalesReportPage() {
                             });
 
                             return (
+                                <div className="print-table-container">
                                 <DataTable
                                     columns={columns}
                                     data={filteredInvoices}
@@ -291,6 +292,7 @@ export default function SalesReportPage() {
                                     emptyMessage={t('لم يتم العثور على فواتير مطابقة للبحث')}
                                     footer={footer}
                                 />
+                                </div>
                             );
                         })()}
                     </>

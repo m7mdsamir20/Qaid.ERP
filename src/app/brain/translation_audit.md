@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T11:20:20.498Z
+Generated on: 2026-06-23T11:28:16.373Z
 
 ## Summary
 
@@ -3073,9 +3073,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 
 ### [components/ReportHeader.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/ReportHeader.tsx)
 - Line 50: `٠-٩`
-- Line 90: `٠-٩`
-- Line 90: `ر.سج.م`
-- Line 90: `د.إد.كر.قد.بر.عد.أ`
+- Line 91: `٠-٩`
+- Line 91: `ر.سج.م`
+- Line 91: `د.إد.كر.قد.بر.عد.أ`
 
 ### [constants/navigation.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/constants/navigation.ts)
 - Line 56: `الرئيسية`

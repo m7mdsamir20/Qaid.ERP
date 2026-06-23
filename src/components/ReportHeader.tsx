@@ -64,12 +64,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
       }
       return true;
     });
+
     const stripStyles = (html: string) => html
       .replace(/ style="[^"]*"/g, '')
       .replace(/<svg[\s\S]*?<\/svg>/g, '')
       .replace(/<button[\s\S]*?<\/button>/g, '');
 
-    // Rebuild [data-print-include] stat cards in daily-report KPI style
+    // Rebuild [data-print-include] / [data-print-stats] stat cards in KPI style
     const rebuildCards = (el: Element): string => {
       const cards = Array.from(el.children);
       const cardHTMLs = cards.map(card => {
@@ -101,8 +102,41 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
       return `<div style="display:flex;gap:8px;margin-bottom:14px">${cardHTMLs.join('')}</div>`;
     };
 
-    const includeHTML = topLevelPrintable.map(el => {
+    // ── Always collect tables not inside no-print zones ──
+    // This is additive: data-print-include cards + tables are combined
+    const isNotNoPrint = (el: Element): boolean => {
+      let p: Element | null = el;
+      while (p) {
+        if (p.classList.contains('no-print') || p.classList.contains('report-filter-bar') ||
+            p.classList.contains('modal') || p.getAttribute('role') === 'dialog') return false;
+        p = p.parentElement;
+      }
+      return true;
+    };
+
+    // Collect tables not already covered by topLevelPrintable
+    const tableElements: Element[] = [];
+    document.querySelectorAll('[data-print-stats]').forEach(el => {
+      if (isNotNoPrint(el) && !topLevelPrintable.includes(el)) tableElements.push(el);
+    });
+    document.querySelectorAll('table').forEach(tbl => {
+      if (isNotNoPrint(tbl)) {
+        const wrapper = tbl.closest('.print-table-container, [data-print-include]') || tbl.parentElement || tbl;
+        // Don't duplicate what's already in topLevelPrintable
+        if (!tableElements.includes(wrapper) && !topLevelPrintable.includes(wrapper)) {
+          tableElements.push(wrapper);
+        }
+      }
+    });
+
+    // Combine: explicit markers first, then any additional tables
+    const elementsToPrint = topLevelPrintable.length > 0
+      ? [...topLevelPrintable, ...tableElements]
+      : tableElements;
+
+    const includeHTML = elementsToPrint.map(el => {
       if (el.hasAttribute('data-print-include')) return rebuildCards(el);
+      if (el.hasAttribute('data-print-stats')) return rebuildCards(el);
       return stripStyles(el.outerHTML);
     }).join('');
 

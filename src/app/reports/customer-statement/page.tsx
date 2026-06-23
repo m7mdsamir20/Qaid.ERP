@@ -352,6 +352,7 @@ export default function CustomerStatementPage() {
                             ))}
                         </div>
 
+                        <div className="print-table-container">
                         <DataTable
                             columns={columns}
                             data={tableData}
@@ -359,6 +360,7 @@ export default function CustomerStatementPage() {
                             emptyMessage={t('لا توجد حركات في الحساب حالياً')}
                             footer={footerElement}
                         />
+                        </div>
                     </>
                 )}
             </div>
