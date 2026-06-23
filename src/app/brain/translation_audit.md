@@ -1,14 +1,14 @@
 # Translation Audit Report
 
-Generated on: 2026-06-22T12:28:46.699Z
+Generated on: 2026-06-23T06:50:03.091Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4707
-- **Total t() Keys in Code**: 4171
+- **Total Keys in `i18n.tsx`**: 4722
+- **Total t() Keys in Code**: 4186
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3138
+- **Unwrapped Arabic Text Instances**: 3162
 
 ## Unwrapped Arabic Text
 
@@ -449,14 +449,18 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 74: `معلق`
 - Line 74: `فقط`
 - Line 77: `يرجى تحديد الخزينة`
-- Line 123: `أودع تحصيلاً بمبلغ`
-- Line 123: `في الخزينة`
-- Line 172: `إرجاع تحصيل بمبلغ`
-- Line 180: `إجراء غير معروف`
-- Line 192: `التحصيل غير موجود`
-- Line 196: `لا يمكن حذف إلا التحصيلات المعلقة`
-- Line 208: `حذف تحصيل بمبلغ`
-- Line 212: `تم حذف التحصيل بنجاح`
+- Line 153: `اعتمد تحصيلاً بمبلغ`
+- Line 153: `سدّد`
+- Line 153: `فاتورة`
+- Line 155: `المبلغ المُعتمَد`
+- Line 156: `فواتير مُسدَّدة`
+- Line 157: `فاتورة`
+- Line 240: `إرجاع تحصيل بمبلغ`
+- Line 248: `إجراء غير معروف`
+- Line 260: `التحصيل غير موجود`
+- Line 264: `لا يمكن حذف إلا التحصيلات المعلقة`
+- Line 276: `حذف تحصيل بمبلغ`
+- Line 280: `تم حذف التحصيل بنجاح`
 
 ### [app/api/commissions/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/commissions/route.ts)
 - Line 41: `يرجى تحديد السنة`
@@ -1020,9 +1024,13 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 405: `استخدم الإلغاء`
 - Line 422: `فشل حذف المسير`
 
+### [app/api/pdf/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/pdf/invoice/[id]/route.ts)
+- Line 59: `الفاتورة غير موجودة`
+
 ### [app/api/print/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/invoice/[id]/route.ts)
-- Line 31: `الفاتورة غير موجودة`
-- Line 36: `فشل جلب البيانات`
+- Line 33: `الفاتورة غير موجودة`
+- Line 34: `الفاتورة غير موجودة`
+- Line 54: `فشل جلب البيانات`
 
 ### [app/api/print/quotation/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/quotation/[id]/route.ts)
 - Line 30: `عرض السعر غير موجود`
@@ -1358,21 +1366,37 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 618: `تحصيل نقدي`
 - Line 619: `إقفال ذمم`
 - Line 627: `تم الدفع وإخلاء الطاولة`
-- Line 645: `السبب`
-- Line 645: `السبب`
-- Line 671: `ملغي - رفض استلام العميل`
-- Line 685: `إيرادات`
-- Line 685: `مبيعات`
-- Line 688: `ذمم`
-- Line 688: `عملاء`
-- Line 698: `عكس قيد مبيعات - إلغاء طلب`
-- Line 698: `رفض استلام`
-- Line 708: `عكس إيراد - إلغاء طلب`
-- Line 710: `عكس ذمم - إلغاء طلب`
-- Line 775: `مرتجع استهلاك مكونات لإلغاء طلب`
-- Line 792: `مرتجع مبيعات كاشير تجزئة لإلغاء طلب`
-- Line 813: `مرتجع إضافة`
-- Line 813: `لإلغاء طلب`
+- Line 642: `الطلب غير موجود`
+- Line 643: `هذا الطلب تم إرجاعه بالفعل`
+- Line 654: `مرتجع`
+- Line 694: `مرتجع مكونات - مرتجع كاشير`
+- Line 710: `مرتجع مبيعات كاشير تجزئة`
+- Line 742: `مرتجع مبيعات كاشير - طلب`
+- Line 772: `إيرادات`
+- Line 772: `مبيعات`
+- Line 783: `نقدية`
+- Line 783: `خزنة`
+- Line 791: `عكس إيراد - مرتجع كاشير`
+- Line 792: `رد نقدي للعميل - مرتجع كاشير`
+- Line 797: `ضريبة`
+- Line 800: `عكس ضريبة - مرتجع كاشير`
+- Line 807: `قيد مرتجع مبيعات كاشير - طلب`
+- Line 820: `تم إرجاع الطلب وعكس جميع الحركات المحاسبية والمخزنية بنجاح`
+- Line 838: `السبب`
+- Line 838: `السبب`
+- Line 864: `ملغي - رفض استلام العميل`
+- Line 878: `إيرادات`
+- Line 878: `مبيعات`
+- Line 881: `ذمم`
+- Line 881: `عملاء`
+- Line 891: `عكس قيد مبيعات - إلغاء طلب`
+- Line 891: `رفض استلام`
+- Line 901: `عكس إيراد - إلغاء طلب`
+- Line 903: `عكس ذمم - إلغاء طلب`
+- Line 968: `مرتجع استهلاك مكونات لإلغاء طلب`
+- Line 985: `مرتجع مبيعات كاشير تجزئة لإلغاء طلب`
+- Line 1006: `مرتجع إضافة`
+- Line 1006: `لإلغاء طلب`
 
 ### [app/api/restaurant/shifts/drawer/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/restaurant/shifts/drawer/route.ts)
 - Line 11: `بيانات غير مكتملة`
@@ -1415,6 +1439,8 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 305: `رصيد الخزينة/البنك غير كافٍ لرد المبلغ نقداً`
 - Line 324: `أنشأ مرتجع مبيعات رقم`
 - Line 324: `للعميل`
+- Line 325: `رقم المرتجع`
+- Line 325: `الإجمالي`
 - Line 331: `فشل في إنشاء مرتجع المبيعات`
 
 ### [app/api/sale-returns/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sale-returns/[id]/route.ts)
@@ -2288,6 +2314,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 54: `مستلم`
 - Line 55: `مُفوتر`
 - Line 56: `ملغي`
+
+### [app/sales/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales/page.tsx)
+- Line 176: `فشل التحميل`
 
 ### [app/sales/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales/[id]/page.tsx)
 - Line 565: `بنك`
@@ -3362,13 +3391,12 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 55: `ج.م`
 
 ### [lib/printDirectly.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printDirectly.ts)
-- Line 30: `جاري تحضير الطباعة`
-- Line 31: `يرجى الانتظار لحظات لجمع البيانات والتنسيق`
-- Line 88: `فشل تجهيز الفاتورة للطباعة`
-- Line 103: `فشل الطباعة`
-- Line 115: `فشل الطباعة`
-- Line 127: `فشل الطباعة`
-- Line 139: `فشل الطباعة`
+- Line 1: `جاري تحضير الطباعة`
+- Line 30: `يرجى الانتظار لحظات لجمع البيانات والتنسيق`
+- Line 80: `فشل الطباعة`
+- Line 92: `فشل الطباعة`
+- Line 104: `فشل الطباعة`
+- Line 116: `فشل الطباعة`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`

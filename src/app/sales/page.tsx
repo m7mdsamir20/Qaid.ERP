@@ -45,6 +45,7 @@ export default function SalesPage() {
 
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
+    const [downloadingId, setDownloadingId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
@@ -166,8 +167,22 @@ export default function SalesPage() {
                     <button onClick={(e) => { e.stopPropagation(); handlePrint(inv); }} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
                         <Printer size={TABLE_STYLE.actionIconSize} />
                     </button>
-                    <button onClick={(e) => { e.stopPropagation(); downloadInvoicePDF(inv.id); }} style={TABLE_STYLE.actionBtn(C.primary)} title={t('تحميل PDF')}>
-                        <FileDown size={TABLE_STYLE.actionIconSize} />
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (downloadingId === inv.id) return;
+                            setDownloadingId(inv.id);
+                            downloadInvoicePDF(inv.id)
+                                .catch(err => alert('فشل التحميل: ' + (err?.message || '')))
+                                .finally(() => setDownloadingId(null));
+                        }}
+                        disabled={downloadingId === inv.id}
+                        style={{ ...TABLE_STYLE.actionBtn(C.primary), opacity: downloadingId === inv.id ? 0.5 : 1, cursor: downloadingId === inv.id ? 'not-allowed' : 'pointer' }}
+                        title={t('تحميل PDF')}
+                    >
+                        {downloadingId === inv.id
+                            ? <Loader2 size={TABLE_STYLE.actionIconSize} style={{ animation: 'spin 1s linear infinite' }} />
+                            : <FileDown size={TABLE_STYLE.actionIconSize} />}
                     </button>
                     <button onClick={(e) => { e.stopPropagation(); router.push(`/sales/${inv.id}`); }} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
                         <Eye size={TABLE_STYLE.actionIconSize} />

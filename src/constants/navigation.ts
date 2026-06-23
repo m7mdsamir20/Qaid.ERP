@@ -170,6 +170,8 @@ export const navSections = [
         icon: Receipt,
         featureKey: 'sales',
         links: [
+            { id: '/quotations', href: '/quotations', label: 'عروض الأسعار' },
+            { id: '/sales-orders', href: '/sales-orders', label: 'أوامر البيع', hasApprove: true },
             { id: '/sales', href: '/sales', label: 'فواتير المبيعات', hasApprove: true },
             { id: '/sale-returns', href: '/sale-returns', label: 'مرتجع مبيعات' },
             { id: '/receipts', href: '/receipts', label: 'سندات القبض' },

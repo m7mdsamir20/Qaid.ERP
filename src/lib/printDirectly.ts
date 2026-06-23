@@ -1,8 +1,6 @@
-import { generateA4HTML } from '@/lib/printInvoices';
-
-function showPrintLoader() {
+function showPrintLoader(message = 'جاري تحضير الطباعة...') {
     if (document.getElementById('print-loader-overlay')) return;
-    
+
     const loader = document.createElement('div');
     loader.id = 'print-loader-overlay';
     Object.assign(loader.style, {
@@ -18,19 +16,20 @@ function showPrintLoader() {
         color: '#fff',
         fontFamily: 'Cairo, sans-serif',
         opacity: '0',
-        transition: 'opacity 0.2s ease-in-out'
+        transition: 'opacity 0.2s ease-in-out',
+        gap: '0',
     });
-    
+
     loader.innerHTML = `
         <style>
             @keyframes print-spin { 100% { transform: rotate(360deg); } }
             @keyframes print-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         </style>
-        <div style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.15); border-top-color: #3b82f6; border-radius: 50%; margin-bottom: 20px; animation: print-spin 0.8s linear infinite;"></div>
-        <div style="font-size: 19px; font-weight: 700; margin-bottom: 8px; animation: print-pulse 1.5s ease-in-out infinite;">جاري تحضير الطباعة...</div>
-        <div style="font-size: 13.5px; color: rgba(255,255,255,0.7); font-weight: 500;">يرجى الانتظار لحظات لجمع البيانات والتنسيق</div>
+        <div id="print-loader-spinner" style="width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.15); border-top-color: #3b82f6; border-radius: 50%; margin-bottom: 20px; animation: print-spin 0.8s linear infinite; flex-shrink:0;"></div>
+        <div id="print-loader-text" style="font-size: 19px; font-weight: 700; margin-bottom: 8px; animation: print-pulse 1.5s ease-in-out infinite;">${message}</div>
+        <div id="print-loader-sub" style="font-size: 13.5px; color: rgba(255,255,255,0.7); font-weight: 500;">يرجى الانتظار لحظات لجمع البيانات والتنسيق</div>
     `;
-    
+
     document.body.appendChild(loader);
     requestAnimationFrame(() => { loader.style.opacity = '1'; });
 }
@@ -64,30 +63,8 @@ function injectPrintIframe(html: string) {
     }
 }
 
-export async function printInvoiceDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const res = await fetch(`/api/print/invoice/${id}`);
-        const data = await res.json();
-        
-        if (data.error) {
-            alert(data.error);
-            hidePrintLoader();
-            return;
-        }
-        
-        const type = data.invoice?.type || 'sale';
-        const html = generateA4HTML(data.invoice, type, data.company, {
-            partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
-            noAutoPrint: false
-        });
-
-        injectPrintIframe(html);
-    } catch (e) {
-        console.error(e);
-        alert('فشل تجهيز الفاتورة للطباعة');
-        hidePrintLoader();
-    }
+export function printInvoiceDirectly(id: string) {
+    window.open(`/api/print/invoice/${id}?html=1`, '_blank');
 }
 
 export async function printVoucherDirectly(id: string) {
@@ -139,111 +116,29 @@ export async function printInstallmentReceiptDirectly(id: string) {
     } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
 }
 
-export async function downloadInvoicePDF(id: string, filename?: string) {
-    showPrintLoader();
-    const loaderText = document.querySelector('#print-loader-overlay div:nth-child(2)') as HTMLElement;
-    if (loaderText) loaderText.textContent = 'جاري تحضير PDF...';
+const _downloading = new Set<string>();
 
-    let iframe: HTMLIFrameElement | null = null;
-
+export async function downloadInvoicePDF(id: string, _filename?: string): Promise<void> {
+    if (_downloading.has(id)) return;
+    _downloading.add(id);
     try {
-        const res = await fetch(`/api/print/invoice/${id}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
+        const res = await fetch(`/api/pdf/invoice/${id}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-        const { generateA4HTML } = await import('@/lib/printInvoices');
-        const type = data.invoice?.type || 'sale';
-        const html = generateA4HTML(data.invoice, type, data.company, {
-            partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
-            noAutoPrint: true,
-        });
+        const disposition = res.headers.get('Content-Disposition') || '';
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        const filename = match?.[1] || `invoice-${id}.pdf`;
 
-        // Hidden iframe — same size as A4 at 96 DPI (794 × 1123 px)
-        iframe = document.createElement('iframe');
-        Object.assign(iframe.style, {
-            position: 'fixed', top: '-9999px', left: '-9999px',
-            width: '794px', height: '1123px', border: 'none', visibility: 'hidden',
-        });
-        document.body.appendChild(iframe);
-
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (!iframeDoc) throw new Error('iframe document unavailable');
-        iframeDoc.open(); iframeDoc.write(html); iframeDoc.close();
-
-        // ── KEY FIX: convert @media print rules → @media all ──────
-        // The HTML template uses @media print for layout. html2canvas
-        // captures the screen view, so we promote print rules to apply
-        // on screen too, giving the correct invoice layout in the PDF.
-        await new Promise(r => setTimeout(r, 600)); // let stylesheets parse
-        try {
-            const sheets = iframeDoc.styleSheets;
-            for (let i = 0; i < sheets.length; i++) {
-                try {
-                    const rules = (sheets[i] as CSSStyleSheet).cssRules;
-                    for (let j = 0; j < rules.length; j++) {
-                        const rule = rules[j] as CSSMediaRule;
-                        if (rule.type === CSSRule.MEDIA_RULE && rule.media?.mediaText?.includes('print')) {
-                            rule.media.mediaText = 'all';
-                        }
-                    }
-                } catch { /* cross-origin sheet — skip */ }
-            }
-        } catch { /* ignore */ }
-
-        // Also inject a small override to reset screen-only styles
-        const override = iframeDoc.createElement('style');
-        override.textContent = `
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
-            @page { margin: 0; }
-        `;
-        iframeDoc.head.appendChild(override);
-
-        // Wait for fonts + images to fully render after style changes
-        await new Promise(r => setTimeout(r, 800));
-
-        const html2canvas = (await import('html2canvas')).default;
-        const { default: jsPDF } = await import('jspdf');
-
-        const body = iframeDoc.body;
-        const canvas = await html2canvas(body, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: false,
-            scrollX: 0,
-            scrollY: 0,
-            width: 794,
-            height: body.scrollHeight,
-            windowWidth: 794,
-            windowHeight: body.scrollHeight,
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 0.97);
-
-        // A4 in mm: 210 × 297
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const pageW = pdf.internal.pageSize.getWidth();   // 210 mm
-        const pageH = pdf.internal.pageSize.getHeight();  // 297 mm
-        const imgRatio = canvas.height / canvas.width;
-        const totalH = pageW * imgRatio;                  // total rendered height in mm
-
-        // Multi-page: slice canvas vertically per page
-        let yMM = 0;
-        while (yMM < totalH) {
-            if (yMM > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, -yMM, pageW, totalH);
-            yMM += pageH;
-        }
-
-        const prefix = type === 'sale' ? 'SAL' : type === 'sale_return' ? 'SRET' : type === 'purchase' ? 'PUR' : 'INV';
-        const invNum = data.invoice?.invoiceNumber ? String(data.invoice.invoiceNumber).padStart(5, '0') : id.slice(-5);
-        pdf.save(filename || `${prefix}-${invNum}.pdf`);
-
-    } catch (e) {
-        console.error('[downloadInvoicePDF]', e);
-        alert('فشل تحميل PDF — ' + (e instanceof Error ? e.message : ''));
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
     } finally {
-        if (iframe && document.body.contains(iframe)) document.body.removeChild(iframe);
-        hidePrintLoader();
+        _downloading.delete(id);
     }
 }

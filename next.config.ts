@@ -23,7 +23,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-    serverExternalPackages: ['@prisma/client', 'prisma'],
+    serverExternalPackages: ['@prisma/client', 'prisma', 'puppeteer-core', '@sparticuz/chromium'],
 
     // تسريع: ضغط الملفات
     compress: true,

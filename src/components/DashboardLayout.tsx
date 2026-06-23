@@ -115,6 +115,7 @@ export default function DashboardLayout({
             if (pageId === 'reports-restaurant' && businessType !== 'RESTAURANTS') return false;
             if (pageId === 'reports-installments' && businessType === 'CONTRACTING') return false;
             if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
+            if (['/quotations', '/sales-orders'].includes(pageId) && businessType === 'RETAIL') return false;
 
             // 1. Admin/SuperAdmin دايمًا لهم صلاحية — قبل فحص الاشتراك لأن الإعدادات لازم تكون متاحة دايمًا
             if (isSuperAdmin || userRole === 'admin') {

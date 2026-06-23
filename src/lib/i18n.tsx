@@ -4907,6 +4907,24 @@ export const dictionaries = {
 
         // --- Auto-synced Keys (Missing in Code) ---
         "بدون مندوب (بيع مباشر)": "Without a representative (direct sales)",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "✅ تم إرجاع الطلب وعكس جميع الحركات بنجاح": "✅ The order was returned and all transactions were successfully reversed",
+        "فشل في إرجاع الطلب": "Failed to return request",
+        "حدث خطأ أثناء الإرجاع": "An error occurred while returning",
+        "فاتورة معلقة": "Pending invoice",
+        "تأكيد مرتجع الطلب": "Confirm order return",
+        "المبلغ المُسترد": "Refund amount",
+        "الخزينة التي سيُصرف منها المبلغ": "The treasury from which the amount will be disbursed",
+        "— اختر الخزينة —": "— Select the safe —",
+        "سيتم عكس: المخزون — الخزينة — القيد المحاسبي — وإنشاء فاتورة مرتجع. لا يمكن التراجع.": "The inventory — the cash register — the accounting entry — will be reversed and a return invoice will be generated. It cannot be undone.",
+        "جاري الإرجاع...": "Returning...",
+        "تأكيد الإرجاع الكامل": "Full return confirmation",
+        "سجل طلبات اليوم": "Register your orders today",
+        "لا توجد طلبات اليوم": "There are no orders today",
+        "الوقت": "time",
+        "تحميل PDF": "Download PDF",
 }
 };
 
