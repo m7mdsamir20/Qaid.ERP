@@ -40,9 +40,9 @@ const LG = '#999';
 const s = StyleSheet.create({
     page: { fontFamily: 'Cairo', fontSize: 10, backgroundColor: '#fff', paddingHorizontal: 22, paddingVertical: 16 },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: 2, borderBottomColor: '#111', paddingBottom: 8, marginBottom: 6 },
-    hLeft: { flex: 1.2 },
+    hLogo: { flex: 1.2, alignItems: 'flex-start' },
     hCenter: { flex: 1, alignItems: 'center' },
-    hRight: { flex: 1.2, alignItems: 'flex-end' },
+    hCo: { flex: 1.2, alignItems: 'flex-end' },
     coName: { fontSize: 19, fontWeight: 900, color: '#111', textAlign: 'right' },
     coDetail: { fontSize: 8.5, color: '#444', marginTop: 1.5, textAlign: 'right' },
     titleBox: { fontSize: 13, fontWeight: 900, backgroundColor: '#f5f5f5', paddingHorizontal: 12, paddingVertical: 4, borderRadius: 4, borderWidth: 1, borderColor: '#ccc', textAlign: 'center' },
@@ -54,8 +54,8 @@ const s = StyleSheet.create({
     infoTitle: { backgroundColor: '#f5f5f5', paddingHorizontal: 8, paddingVertical: 3, fontWeight: 900, fontSize: 9, borderBottomWidth: 1, borderBottomColor: '#333', textAlign: 'right' },
     infoBody: { paddingHorizontal: 8, paddingVertical: 4 },
     infoRow: { flexDirection: 'row', marginBottom: 2.5 },
-    infoKey: { color: '#666', width: 70, fontSize: 8.5, textAlign: 'right' },
     infoVal: { color: '#111', fontWeight: 700, fontSize: 8.5, flex: 1, textAlign: 'right' },
+    infoKey: { color: '#666', width: 70, fontSize: 8.5, textAlign: 'right' },
     table: { borderWidth: 1, borderColor: LG },
     thead: { flexDirection: 'row', backgroundColor: '#f0f0f0', borderBottomWidth: 1, borderBottomColor: LG },
     th: { paddingVertical: 4, paddingHorizontal: 2, fontSize: 8.5, fontWeight: 900, textAlign: 'center', borderRightWidth: 1, borderRightColor: LG },
@@ -64,11 +64,11 @@ const s = StyleSheet.create({
     totalsWrap: { marginTop: 8, alignItems: 'flex-start' },
     totalsTable: { width: 285, borderWidth: 1, borderColor: LG },
     tRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: LG, minHeight: 27, alignItems: 'center' },
-    tLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 10.5, color: '#444', textAlign: 'right' },
     tVal: { width: 95, paddingHorizontal: 8, paddingVertical: 2, fontSize: 10.5, fontWeight: 700, textAlign: 'left' },
+    tLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 10.5, color: '#444', textAlign: 'right' },
     tMain: { flexDirection: 'row', backgroundColor: '#f2f2f2', borderBottomWidth: 1, borderBottomColor: LG, minHeight: 29, alignItems: 'center' },
-    tMainLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 11.5, fontWeight: 900, textAlign: 'right' },
     tMainVal: { width: 95, paddingHorizontal: 8, paddingVertical: 2, fontSize: 11.5, fontWeight: 900, textAlign: 'left' },
+    tMainLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 11.5, fontWeight: 900, textAlign: 'right' },
     footer: { paddingTop: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
     sigBox: { width: 185, alignItems: 'center' },
     sigLbl: { fontSize: 9, fontWeight: 900, marginBottom: 20, textAlign: 'center' },
@@ -104,49 +104,52 @@ function InvoicePDF({ invoice, company, type, partyBalance }: Props) {
     return (
         <Document>
             <Page size="A4" style={s.page}>
+                {/* Header: Logo(left) | Title(center) | Company(right) — matches RTL HTML */}
                 <View style={s.header}>
-                    <View style={s.hLeft}>
-                        <Text style={s.coName}>{company?.name || ''}</Text>
-                        {addrParts.length > 0 && <Text style={s.coDetail}>{addrParts.join(' - ')}</Text>}
-                        {company?.phone && <Text style={s.coDetail}>الهاتف: {company.phone}</Text>}
-                        {company?.taxNumber && <Text style={s.coDetail}>رقم ضريبي: {company.taxNumber}</Text>}
+                    <View style={s.hLogo}>
+                        {company?.logo ? <Image src={company.logo} style={s.logo} /> : <Text> </Text>}
                     </View>
                     <View style={s.hCenter}>
                         <Text style={s.titleBox}>{title}</Text>
                         <Text style={s.invNum}>{prefix}-{invoiceNum}</Text>
                         <Text style={s.invDate}>{date}</Text>
                     </View>
-                    <View style={s.hRight}>
-                        {company?.logo ? <Image src={company.logo} style={s.logo} /> : <Text> </Text>}
+                    <View style={s.hCo}>
+                        <Text style={s.coName}>{company?.name || ''}</Text>
+                        {addrParts.length > 0 && <Text style={s.coDetail}>{addrParts.join(' - ')}</Text>}
+                        {company?.phone && <Text style={s.coDetail}>الهاتف: {company.phone}</Text>}
+                        {company?.taxNumber && <Text style={s.coDetail}>رقم ضريبي: {company.taxNumber}</Text>}
                     </View>
                 </View>
 
+                {/* Info boxes: بيانات(left) | إلى(right) — matches RTL HTML order */}
                 <View style={s.infoWrap}>
-                    <View style={s.infoBox}>
-                        <Text style={s.infoTitle}>إلى</Text>
-                        <View style={s.infoBody}>
-                            <View style={s.infoRow}><Text style={s.infoKey}>{partyLabel}:</Text><Text style={s.infoVal}>{partyName}</Text></View>
-                            {party?.phone && <View style={s.infoRow}><Text style={s.infoKey}>الهاتف:</Text><Text style={s.infoVal}>{party.phone}</Text></View>}
-                        </View>
-                    </View>
                     <View style={s.infoBox}>
                         <Text style={s.infoTitle}>بيانات الفاتورة</Text>
                         <View style={s.infoBody}>
-                            <View style={s.infoRow}><Text style={s.infoKey}>رقم الفاتورة:</Text><Text style={s.infoVal}>{prefix}-{invoiceNum}</Text></View>
-                            <View style={s.infoRow}><Text style={s.infoKey}>التاريخ:</Text><Text style={s.infoVal}>{date}</Text></View>
-                            {invoice.notes && !/تم التحويل من عرض سعر/.test(invoice.notes) && <View style={s.infoRow}><Text style={s.infoKey}>ملاحظات:</Text><Text style={s.infoVal}>{invoice.notes}</Text></View>}
+                            <View style={s.infoRow}><Text style={s.infoVal}>{prefix}-{invoiceNum}</Text><Text style={s.infoKey}>رقم الفاتورة:</Text></View>
+                            <View style={s.infoRow}><Text style={s.infoVal}>{date}</Text><Text style={s.infoKey}>التاريخ:</Text></View>
+                            {invoice.notes && !/تم التحويل من عرض سعر/.test(invoice.notes) && <View style={s.infoRow}><Text style={s.infoVal}>{invoice.notes}</Text><Text style={s.infoKey}>ملاحظات:</Text></View>}
+                        </View>
+                    </View>
+                    <View style={s.infoBox}>
+                        <Text style={s.infoTitle}>إلى</Text>
+                        <View style={s.infoBody}>
+                            <View style={s.infoRow}><Text style={s.infoVal}>{partyName}</Text><Text style={s.infoKey}>{partyLabel}:</Text></View>
+                            {party?.phone && <View style={s.infoRow}><Text style={s.infoVal}>{party.phone}</Text><Text style={s.infoKey}>الهاتف:</Text></View>}
                         </View>
                     </View>
                 </View>
 
+                {/* Table columns reversed for RTL: الإجمالي→السعر→الكمية→[الوحدة]→الصنف→م */}
                 <View style={s.table}>
                     <View style={s.thead}>
-                        <Text style={[s.th, { width: wNum }]}>م</Text>
-                        <Text style={[s.th, { width: wName, textAlign: 'right' }]}>{isServices ? 'الخدمة' : 'الصنف'}</Text>
-                        {!isServices && <Text style={[s.th, { width: wUnit }]}>الوحدة</Text>}
-                        <Text style={[s.th, { width: wQty }]}>الكمية</Text>
+                        <Text style={[s.th, { width: wTotal }]}>الإجمالي</Text>
                         <Text style={[s.th, { width: wPrice }]}>السعر</Text>
-                        <Text style={[s.th, { width: wTotal, borderRightWidth: 0 }]}>الإجمالي</Text>
+                        <Text style={[s.th, { width: wQty }]}>الكمية</Text>
+                        {!isServices && <Text style={[s.th, { width: wUnit }]}>الوحدة</Text>}
+                        <Text style={[s.th, { width: wName, textAlign: 'right' }]}>{isServices ? 'الخدمة' : 'الصنف'}</Text>
+                        <Text style={[s.th, { width: wNum, borderRightWidth: 0 }]}>م</Text>
                     </View>
                     {lines.length === 0
                         ? <View style={{ padding: 15, alignItems: 'center' }}><Text style={{ color: '#999' }}>لا توجد بنود</Text></View>
@@ -158,41 +161,43 @@ function InvoicePDF({ invoice, company, type, partyBalance }: Props) {
                             const lineTotal = Number(l.total || qty * price);
                             return (
                                 <View key={i} style={s.trow}>
-                                    <Text style={[s.td, { width: wNum }]}>{i + 1}</Text>
+                                    <Text style={[s.td, { width: wTotal, fontWeight: 700 }]}>{n(lineTotal)} {sym}</Text>
+                                    <Text style={[s.td, { width: wPrice }]}>{n(price)} {sym}</Text>
+                                    <Text style={[s.td, { width: wQty, fontWeight: 700 }]}>{n(qty)}</Text>
+                                    {!isServices && <Text style={[s.td, { width: wUnit }]}>{unit}</Text>}
                                     <View style={[s.td, { width: wName, alignItems: 'flex-end' }]}>
                                         <Text style={{ fontWeight: 700, fontSize: 9, textAlign: 'right' }}>{name}</Text>
                                         {l.description ? <Text style={{ fontSize: 7.5, color: '#555' }}>{l.description}</Text> : null}
                                     </View>
-                                    {!isServices && <Text style={[s.td, { width: wUnit }]}>{unit}</Text>}
-                                    <Text style={[s.td, { width: wQty, fontWeight: 700 }]}>{n(qty)}</Text>
-                                    <Text style={[s.td, { width: wPrice }]}>{n(price)} {sym}</Text>
-                                    <Text style={[s.td, { width: wTotal, fontWeight: 700, borderRightWidth: 0 }]}>{n(lineTotal)} {sym}</Text>
+                                    <Text style={[s.td, { width: wNum, borderRightWidth: 0 }]}>{i + 1}</Text>
                                 </View>
                             );
                         })}
                 </View>
 
+                {/* Totals: value(left) | label(right) — matches RTL HTML */}
                 <View style={s.totalsWrap}>
                     <View style={s.totalsTable}>
-                        {discount > 0 && <View style={s.tRow}><Text style={s.tLbl}>الإجمالي قبل الخصم</Text><Text style={s.tVal}>{n(subtotal)} {sym}</Text></View>}
-                        {discount > 0 && <View style={s.tRow}><Text style={[s.tLbl, { color: '#d32f2f' }]}>الخصم</Text><Text style={[s.tVal, { color: '#d32f2f' }]}>- {n(discount)} {sym}</Text></View>}
-                        <View style={s.tMain}><Text style={s.tMainLbl}>إجمالي الفاتورة</Text><Text style={s.tMainVal}>{n(total)} {sym}</Text></View>
-                        <View style={s.tRow}><Text style={s.tLbl}>المبلغ المدفوع</Text><Text style={s.tVal}>{n(paid)} {sym}</Text></View>
-                        <View style={s.tRow}><Text style={s.tLbl}>المبلغ المتبقي</Text><Text style={s.tVal}>{n(remaining)} {sym}</Text></View>
+                        {discount > 0 && <View style={s.tRow}><Text style={s.tVal}>{n(subtotal)} {sym}</Text><Text style={s.tLbl}>الإجمالي قبل الخصم</Text></View>}
+                        {discount > 0 && <View style={s.tRow}><Text style={[s.tVal, { color: '#d32f2f' }]}>- {n(discount)} {sym}</Text><Text style={[s.tLbl, { color: '#d32f2f' }]}>الخصم</Text></View>}
+                        <View style={s.tMain}><Text style={s.tMainVal}>{n(total)} {sym}</Text><Text style={s.tMainLbl}>إجمالي الفاتورة</Text></View>
+                        <View style={s.tRow}><Text style={s.tVal}>{n(paid)} {sym}</Text><Text style={s.tLbl}>المبلغ المدفوع</Text></View>
+                        <View style={s.tRow}><Text style={s.tVal}>{n(remaining)} {sym}</Text><Text style={s.tLbl}>المبلغ المتبقي</Text></View>
                         {hasPrevBal && <>
-                            <View style={s.tRow}><Text style={s.tLbl}>الرصيد السابق لـ {partyLabel}</Text><Text style={s.tVal}>{fmtBal(prevBal, isSale, sym)}</Text></View>
-                            <View style={s.tRow}><Text style={s.tLbl}>صافي تأثير الفاتورة</Text><Text style={s.tVal}>{total - paid > 0 ? '+' : ''}{n(total - paid)} {sym}</Text></View>
-                            <View style={s.tMain}><Text style={s.tMainLbl}>إجمالي رصيد {partyLabel} الحالي</Text><Text style={s.tMainVal}>{fmtBal(finalBal, isSale, sym)}</Text></View>
+                            <View style={s.tRow}><Text style={s.tVal}>{fmtBal(prevBal, isSale, sym)}</Text><Text style={s.tLbl}>الرصيد السابق لـ {partyLabel}</Text></View>
+                            <View style={s.tRow}><Text style={s.tVal}>{total - paid > 0 ? '+' : ''}{n(total - paid)} {sym}</Text><Text style={s.tLbl}>صافي تأثير الفاتورة</Text></View>
+                            <View style={s.tMain}><Text style={s.tMainVal}>{fmtBal(finalBal, isSale, sym)}</Text><Text style={s.tMainLbl}>إجمالي رصيد {partyLabel} الحالي</Text></View>
                         </>}
                     </View>
                 </View>
 
                 <View style={{ flexGrow: 1 }} />
 
+                {/* Footer: المسؤول(left) | شكراً | المستلم(right) — matches RTL HTML */}
                 <View style={s.footer}>
-                    <View style={s.sigBox}><Text style={s.sigLbl}>توقيع المستلم</Text><Text style={s.sigLine}>الاسم والتوقيع</Text></View>
-                    <Text style={{ fontSize: 9, color: '#aaa', fontWeight: 600 }}>شكراً لتعاملكم معنا</Text>
                     <View style={s.sigBox}><Text style={s.sigLbl}>توقيع المسؤول</Text><Text style={s.sigLine}>الختم والتوقيع</Text></View>
+                    <Text style={{ fontSize: 9, color: '#aaa', fontWeight: 600 }}>شكراً لتعاملكم معنا</Text>
+                    <View style={s.sigBox}><Text style={s.sigLbl}>توقيع المستلم</Text><Text style={s.sigLine}>الاسم والتوقيع</Text></View>
                 </View>
             </Page>
         </Document>
