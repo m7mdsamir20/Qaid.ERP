@@ -5,11 +5,17 @@ import { generateA4HTML } from '@/lib/printInvoices';
 
 export const maxDuration = 60;
 
+let cachedBrowser: any = null;
+
 async function getBrowser() {
+    if (cachedBrowser && cachedBrowser.connected) {
+        return cachedBrowser;
+    }
+
     if (process.env.NODE_ENV === 'production') {
         const chromium = (await import('@sparticuz/chromium')).default;
         const puppeteer = (await import('puppeteer-core')).default;
-        return puppeteer.launch({
+        cachedBrowser = await puppeteer.launch({
             args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
             defaultViewport: { width: 1280, height: 900 },
             executablePath: await chromium.executablePath(),
@@ -23,12 +29,13 @@ async function getBrowser() {
                 : process.platform === 'darwin'
                 ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
                 : '/usr/bin/google-chrome';
-        return puppeteer.launch({
+        cachedBrowser = await puppeteer.launch({
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
             executablePath,
             headless: true,
         });
     }
+    return cachedBrowser;
 }
 
 export const GET = withProtection(async (_request, session, _body, context) => {
@@ -64,11 +71,11 @@ export const GET = withProtection(async (_request, session, _body, context) => {
         noAutoPrint: true,
     });
 
-    let browser;
+    let page: any = null;
     try {
-        browser = await getBrowser();
-        const page = await browser.newPage();
-        await page.setContent(html, { waitUntil: 'load', timeout: 20000 });
+        const browser = await getBrowser();
+        page = await browser.newPage();
+        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 20000 });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfBuffer = await page.pdf({
@@ -97,6 +104,12 @@ export const GET = withProtection(async (_request, session, _body, context) => {
         console.error('[PDF] Error:', err?.message);
         return NextResponse.json({ error: err?.message || 'فشل توليد PDF' }, { status: 500 });
     } finally {
-        if (browser) await browser.close();
+        if (page) {
+            try {
+                await page.close();
+            } catch (e) {
+                console.error('[PDF] Error closing page:', e);
+            }
+        }
     }
 });
