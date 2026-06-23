@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { generateA4HTML } from '@/lib/printInvoices';
+
+export const maxDuration = 60;
 
 async function getBrowser() {
     if (process.env.NODE_ENV === 'production') {
         const chromium = (await import('@sparticuz/chromium')).default;
         const puppeteer = (await import('puppeteer-core')).default;
         return puppeteer.launch({
-            args: chromium.args,
+            args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
             defaultViewport: { width: 1280, height: 900 },
             executablePath: await chromium.executablePath(),
-            headless: true,
+            headless: 'shell' as any,
         });
     } else {
         const puppeteer = (await import('puppeteer-core')).default;
@@ -29,7 +31,7 @@ async function getBrowser() {
     }
 }
 
-export const GET = withProtection(async (request: NextRequest, session: any, _body: any, context: any) => {
+export const GET = withProtection(async (_request, session, _body, context) => {
     const companyId = (session.user as any).companyId;
     const { id } = await context.params;
 
@@ -66,10 +68,7 @@ export const GET = withProtection(async (request: NextRequest, session: any, _bo
     try {
         browser = await getBrowser();
         const page = await browser.newPage();
-
-        await page.setContent(html, { waitUntil: 'load', timeout: 15000 });
-
-        // Wait for Arabic fonts to render
+        await page.setContent(html, { waitUntil: 'load', timeout: 20000 });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfBuffer = await page.pdf({
@@ -94,6 +93,9 @@ export const GET = withProtection(async (request: NextRequest, session: any, _bo
                 'Cache-Control': 'no-store',
             },
         });
+    } catch (err: any) {
+        console.error('[PDF] Error:', err?.message);
+        return NextResponse.json({ error: err?.message || 'فشل توليد PDF' }, { status: 500 });
     } finally {
         if (browser) await browser.close();
     }

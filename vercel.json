@@ -1,3 +1,9 @@
 {
-  "regions": ["dub1"]
+  "regions": ["dub1"],
+  "functions": {
+    "src/app/api/pdf/invoice/[id]/route.ts": {
+      "memory": 3008,
+      "maxDuration": 60
+    }
+  }
 }
