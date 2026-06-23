@@ -49,14 +49,14 @@ function injectPrintIframe(html: string) {
     iframe.style.height = '1px';
     iframe.style.left = '-9999px';
     document.body.appendChild(iframe);
-    
+
     const doc = iframe.contentWindow?.document || iframe.contentDocument;
     if (doc) {
         doc.open(); doc.write(html); doc.close();
-        
+
         // Hide loader after a reliable delay (covers the 550ms print timeout + render time)
         setTimeout(() => hidePrintLoader(), 1200);
-        
+
         setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 120000);
     } else {
         hidePrintLoader();
@@ -124,58 +124,66 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
 
     let iframe: HTMLIFrameElement | null = null;
     try {
-        // Fetch the exact same HTML used for printing (no auto-print)
         const res = await fetch(`/api/print/invoice/${id}?html=1&noPrint=1`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const html = await res.text();
 
-        // Render HTML in hidden off-screen iframe at A4 width
+        const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+        const filename = _filename || `${titleMatch?.[1]?.trim() || `invoice-${id}`}.pdf`;
+
+        // Use srcdoc so iframe loads cleanly (same-origin, no blob CSP issues)
         iframe = document.createElement('iframe');
         Object.assign(iframe.style, {
             position: 'fixed', left: '-9999px', top: '0',
-            width: '794px', height: '3000px', border: 'none', visibility: 'hidden',
+            width: '794px', height: '1200px', border: 'none', visibility: 'hidden',
         });
         document.body.appendChild(iframe);
+        (iframe as any).srcdoc = html;
 
-        const doc = iframe.contentDocument!;
-        doc.open(); doc.write(html); doc.close();
-
-        // Wait for Google Fonts + images to load
-        await new Promise(resolve => {
-            const win = iframe!.contentWindow!;
-            if (win.document.readyState === 'complete') { resolve(null); return; }
-            win.addEventListener('load', () => resolve(null));
-            setTimeout(resolve, 4000);
+        // Wait for iframe load event
+        await new Promise<void>(resolve => {
+            const tid = setTimeout(resolve, 5000);
+            iframe!.addEventListener('load', () => { clearTimeout(tid); resolve(); }, { once: true });
         });
-        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        // Capture with html2canvas
+        // Wait for Google Fonts to finish loading
+        try { await iframe.contentDocument!.fonts.ready; } catch {}
+        await new Promise(resolve => setTimeout(resolve, 600));
+
+        const iDoc = iframe.contentDocument!;
+        const pageEl = iDoc.querySelector('.page') as HTMLElement;
+        if (!pageEl) throw new Error('فشل إيجاد عنصر الصفحة');
+
+        // Resize iframe to match actual content so flex-grow spacer doesn't over-expand
+        const naturalH = pageEl.scrollHeight;
+        iframe.style.height = `${naturalH + 20}px`;
+        await new Promise(resolve => setTimeout(resolve, 150));
+
         const html2canvas = (await import('html2canvas')).default;
-        const pageEl = doc.querySelector('.page') as HTMLElement || doc.body;
         const canvas = await html2canvas(pageEl, {
             scale: 2,
             useCORS: true,
-            allowTaint: true,
+            allowTaint: false,
             backgroundColor: '#ffffff',
             width: 794,
+            height: naturalH,
             windowWidth: 794,
+            windowHeight: naturalH,
+            scrollX: 0,
+            scrollY: 0,
         });
 
-        // Create PDF — handle multi-page if content is taller than A4
         const { jsPDF } = await import('jspdf');
         const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const imgData = canvas.toDataURL('image/jpeg', 0.97);
-        const pageHeightPx = canvas.width * (297 / 210); // maintain A4 ratio
-        const totalPages = Math.ceil(canvas.height / pageHeightPx);
-        for (let page = 0; page < totalPages; page++) {
-            if (page > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, -(page * 297), 210, (canvas.height / canvas.width) * 210);
-        }
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
 
-        // Extract filename from HTML <title> tag (e.g. "SAL-00030")
-        const titleMatch = html.match(/<title>([^<]+)<\/title>/);
-        const titleText = titleMatch?.[1]?.trim() || `invoice-${id}`;
-        const filename = _filename || `${titleText}.pdf`;
+        // Calculate total height in mm (width = 210mm)
+        const totalHeightMM = (canvas.height / canvas.width) * 210;
+        const pages = Math.ceil(totalHeightMM / 297);
+        for (let i = 0; i < pages; i++) {
+            if (i > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, -(i * 297), 210, totalHeightMM);
+        }
 
         pdf.save(filename);
     } finally {

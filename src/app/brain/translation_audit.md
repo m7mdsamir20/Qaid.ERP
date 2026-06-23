@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T07:56:27.771Z
+Generated on: 2026-06-23T08:07:35.841Z
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated on: 2026-06-23T07:56:27.771Z
 - **Total t() Keys in Code**: 4186
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3207
+- **Unwrapped Arabic Text Instances**: 3208
 
 ## Unwrapped Arabic Text
 
@@ -3444,6 +3444,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 92: `فشل الطباعة`
 - Line 104: `فشل الطباعة`
 - Line 116: `فشل الطباعة`
+- Line 155: `فشل إيجاد عنصر الصفحة`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`
