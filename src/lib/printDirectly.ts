@@ -122,14 +122,28 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
     if (_downloading.has(id)) return;
     _downloading.add(id);
     try {
-        const res = await fetch(`/api/pdf/invoice/${id}`);
+        const res = await fetch(`/api/print/invoice/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
 
-        const disposition = res.headers.get('Content-Disposition') || '';
-        const match = disposition.match(/filename="?([^"]+)"?/);
-        const filename = match?.[1] || `invoice-${id}.pdf`;
+        const { generateInvoicePDFBlob } = await import('@/lib/InvoicePDF');
+        const invoice = data.invoice;
+        const company = data.company;
+        const type = invoice?.type || 'sale';
+        const partyBalance = invoice?.customer?.balance ?? invoice?.supplier?.balance ?? null;
 
-        const blob = await res.blob();
+        const blob = await generateInvoicePDFBlob(invoice, company, type, partyBalance);
+
+        const PREFIXES: Record<string, string> = {
+            sale: 'SAL', purchase: 'PUR',
+            sale_return: 'SLR', sale_return2: 'SLR',
+            purchase_return: 'PRR',
+        };
+        const prefix = PREFIXES[type] || 'INV';
+        const invNum = String(invoice?.invoiceNumber || '').padStart(5, '0');
+        const filename = _filename || `${prefix}-${invNum}.pdf`;
+
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

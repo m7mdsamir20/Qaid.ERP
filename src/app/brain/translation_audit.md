@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T06:50:03.091Z
+Generated on: 2026-06-23T07:12:15.698Z
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated on: 2026-06-23T06:50:03.091Z
 - **Total t() Keys in Code**: 4186
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3162
+- **Unwrapped Arabic Text Instances**: 3210
 
 ## Unwrapped Arabic Text
 
@@ -1026,6 +1026,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 
 ### [app/api/pdf/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/pdf/invoice/[id]/route.ts)
 - Line 59: `الفاتورة غير موجودة`
+- Line 98: `فشل توليد`
 
 ### [app/api/print/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/invoice/[id]/route.ts)
 - Line 33: `الفاتورة غير موجودة`
@@ -3373,6 +3374,55 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 8: `مسدد`
 - Line 8: `مستحق`
 - Line 29: `؀-ۿ`
+
+### [lib/InvoicePDF.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/InvoicePDF.tsx)
+- Line 22: `فاتورة مبيعات`
+- Line 22: `فاتورة مشتريات`
+- Line 23: `مرتجع مبيعات`
+- Line 23: `مرتجع مبيعات`
+- Line 24: `مرتجع مشتريات`
+- Line 24: `مرتجع مشتريات`
+- Line 35: `عليه`
+- Line 35: `له`
+- Line 35: `له`
+- Line 35: `لنا`
+- Line 84: `عميل نقدي`
+- Line 84: `مورد نقدي`
+- Line 85: `العميل`
+- Line 85: `المورد`
+- Line 94: `فاتورة`
+- Line 111: `الهاتف`
+- Line 112: `رقم ضريبي`
+- Line 126: `إلى`
+- Line 129: `الهاتف`
+- Line 133: `بيانات الفاتورة`
+- Line 135: `رقم الفاتورة`
+- Line 136: `التاريخ`
+- Line 137: `تم التحويل من عرض سعر`
+- Line 137: `ملاحظات`
+- Line 144: `م`
+- Line 145: `الخدمة`
+- Line 145: `الصنف`
+- Line 146: `الوحدة`
+- Line 147: `الكمية`
+- Line 148: `السعر`
+- Line 149: `الإجمالي`
+- Line 152: `لا توجد بنود`
+- Line 154: `صنف`
+- Line 177: `الإجمالي قبل الخصم`
+- Line 178: `الخصم`
+- Line 179: `إجمالي الفاتورة`
+- Line 180: `المبلغ المدفوع`
+- Line 181: `المبلغ المتبقي`
+- Line 183: `الرصيد السابق لـ`
+- Line 184: `صافي تأثير الفاتورة`
+- Line 185: `إجمالي رصيد`
+- Line 185: `الحالي`
+- Line 193: `توقيع المستلم`
+- Line 193: `الاسم والتوقيع`
+- Line 194: `شكراً لتعاملكم معنا`
+- Line 195: `توقيع المسؤول`
+- Line 195: `الختم والتوقيع`
 
 ### [lib/placeholders.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/placeholders.ts)
 - Line 9: `الرياض، حي العليا، شارع التحلية`
