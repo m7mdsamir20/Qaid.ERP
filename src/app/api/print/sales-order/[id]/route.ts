@@ -11,13 +11,10 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
         const noPrint = params.get('noPrint') === '1';
 
         // @ts-ignore
-        const [quotation, company] = await Promise.all([
-            (prisma as any).quotation.findFirst({
+        const [order, company] = await Promise.all([
+            (prisma as any).salesOrder.findFirst({
                 where: { id, companyId },
-                include: {
-                    customer: true,
-                    lines: { include: { item: { include: { unit: true } } } },
-                },
+                include: { customer: true, lines: { include: { item: { include: { unit: true } } } } },
             }),
             prisma.company.findUnique({
                 where: { id: companyId },
@@ -30,20 +27,20 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
             }),
         ]);
 
-        if (!quotation) {
-            if (wantsHtml) return new NextResponse('<h2>عرض السعر غير موجود</h2>', { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
-            return NextResponse.json({ error: 'عرض السعر غير موجود' }, { status: 404 });
+        if (!order) {
+            if (wantsHtml) return new NextResponse('<h2>أمر البيع غير موجود</h2>', { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+            return NextResponse.json({ error: 'أمر البيع غير موجود' }, { status: 404 });
         }
 
         if (wantsHtml) {
-            const { generateQuotationHTML } = await import('@/lib/printInvoices');
-            const html = generateQuotationHTML(quotation, company as any, { noAutoPrint: noPrint });
+            const { generateA4HTML } = await import('@/lib/printInvoices');
+            const html = generateA4HTML(order, 'sales-order' as any, company as any, { noAutoPrint: noPrint });
             return new NextResponse(html, {
                 headers: { 'Content-Type': 'text/html; charset=utf-8' },
             });
         }
 
-        return NextResponse.json({ quotation, company });
+        return NextResponse.json({ order, company });
     } catch (error: any) {
         if (request.url.includes('html=1')) return new NextResponse(`<h2>خطأ: ${error.message}</h2>`, { status: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
         return NextResponse.json({ error: 'فشل جلب البيانات', details: error.message }, { status: 500 });

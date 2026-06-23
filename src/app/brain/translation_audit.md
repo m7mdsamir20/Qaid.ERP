@@ -1,14 +1,14 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T10:26:40.855Z
+Generated on: 2026-06-23T11:00:55.539Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4735
+- **Total Keys in `i18n.tsx`**: 4741
 - **Total t() Keys in Code**: 4174
 - **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 561
-- **Unwrapped Arabic Text Instances**: 3270
+- **Unused Keys in `i18n.tsx`**: 567
+- **Unwrapped Arabic Text Instances**: 3284
 
 ## Unwrapped Arabic Text
 
@@ -1028,18 +1028,40 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 66: `الفاتورة غير موجودة`
 - Line 105: `فشل توليد`
 
+### [app/api/print/installment/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/installment/[id]/route.ts)
+- Line 30: `جدول الأقساط غير موجود`
+- Line 31: `جدول الأقساط غير موجود`
+- Line 44: `خطأ`
+- Line 45: `فشل جلب البيانات`
+
 ### [app/api/print/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/invoice/[id]/route.ts)
 - Line 35: `الفاتورة غير موجودة`
 - Line 36: `الفاتورة غير موجودة`
 - Line 56: `فشل جلب البيانات`
 
+### [app/api/print/purchase-order/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/purchase-order/[id]/route.ts)
+- Line 31: `أمر الشراء غير موجود`
+- Line 32: `أمر الشراء غير موجود`
+- Line 45: `خطأ`
+- Line 46: `فشل جلب البيانات`
+
 ### [app/api/print/quotation/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/quotation/[id]/route.ts)
-- Line 30: `عرض السعر غير موجود`
-- Line 34: `فشل جلب البيانات`
+- Line 34: `عرض السعر غير موجود`
+- Line 35: `عرض السعر غير موجود`
+- Line 48: `خطأ`
+- Line 49: `فشل جلب البيانات`
+
+### [app/api/print/sales-order/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/sales-order/[id]/route.ts)
+- Line 31: `أمر البيع غير موجود`
+- Line 32: `أمر البيع غير موجود`
+- Line 45: `خطأ`
+- Line 46: `فشل جلب البيانات`
 
 ### [app/api/print/voucher/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/voucher/[id]/route.ts)
-- Line 26: `السند غير موجود`
-- Line 30: `فشل جلب البيانات`
+- Line 30: `السند غير موجود`
+- Line 31: `السند غير موجود`
+- Line 45: `خطأ`
+- Line 46: `فشل جلب البيانات`
 
 ### [app/api/profile/change-password/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/profile/change-password/route.ts)
 - Line 16: `لا يمكن العثور على المستخدم`
@@ -3050,10 +3072,10 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 21: `الرمز`
 
 ### [components/ReportHeader.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/ReportHeader.tsx)
-- Line 48: `٠-٩`
-- Line 88: `٠-٩`
-- Line 88: `ر.سج.م`
-- Line 88: `د.إد.كر.قد.بر.عد.أ`
+- Line 49: `٠-٩`
+- Line 89: `٠-٩`
+- Line 89: `ر.سج.م`
+- Line 89: `د.إد.كر.قد.بر.عد.أ`
 
 ### [constants/navigation.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/constants/navigation.ts)
 - Line 56: `الرئيسية`
@@ -3506,17 +3528,15 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [lib/printDirectly.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printDirectly.ts)
 - Line 1: `جاري تحضير الطباعة`
 - Line 30: `يرجى الانتظار لحظات لجمع البيانات والتنسيق`
-- Line 80: `فشل الطباعة`
-- Line 92: `فشل الطباعة`
-- Line 104: `فشل الطباعة`
-- Line 116: `فشل الطباعة`
-- Line 249: `فشل الطباعة`
-- Line 265: `فشل الطباعة`
-- Line 283: `فشل تحميل`
-- Line 302: `فشل تحميل`
-- Line 318: `فشل تحميل`
-- Line 333: `فشل تحميل`
-- Line 352: `فشل تحميل`
+- Line 91: `فشل الطباعة`
+- Line 234: `فشل تحميل`
+- Line 253: `فشل تحميل`
+- Line 269: `فشل تحميل`
+- Line 284: `فشل تحميل`
+- Line 303: `فشل تحميل`
+- Line 317: `تقرير`
+- Line 318: `جاري تحضير ملف`
+- Line 323: `فشل تحميل`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`
@@ -4375,4 +4395,10 @@ Authorization: Bearer <YOUR_API_KEY>
 - `العملاء المرتبطين`
 - `الفواتير المنسوبة`
 - `رمز فريد (مثال: REP01)`
+- `فشل تحميل أمر البيع`
+- `جاري تحميل أمر البيع...`
+- `عارض أمر البيع`
+- `فشل تحميل أمر الشراء`
+- `جاري تحميل أمر الشراء...`
+- `عارض أمر الشراء`
 

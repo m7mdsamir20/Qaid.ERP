@@ -67,41 +67,16 @@ export function printInvoiceDirectly(id: string) {
     window.open(`/api/print/invoice/${id}?html=1`, '_blank');
 }
 
-export async function printVoucherDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const res = await fetch(`/api/print/voucher/${id}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        const { generateThermalVoucherHTML } = await import('@/lib/printInvoices');
-        const type = data.voucher?.type || 'receipt';
-        const html = generateThermalVoucherHTML(data.voucher, type, data.company, { noAutoPrint: false });
-        injectPrintIframe(html);
-    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+export function printVoucherDirectly(id: string) {
+    window.open(`/api/print/voucher/${id}?html=1`, '_blank');
 }
 
-export async function printQuotationDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const res = await fetch(`/api/print/quotation/${id}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        const { generateQuotationHTML } = await import('@/lib/printInvoices');
-        const html = generateQuotationHTML(data.quotation, data.company, { noAutoPrint: false });
-        injectPrintIframe(html);
-    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+export function printQuotationDirectly(id: string) {
+    window.open(`/api/print/quotation/${id}?html=1`, '_blank');
 }
 
-export async function printInstallmentDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const res = await fetch(`/api/print/installment/${id}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        const { generateInstallmentPlanHTML } = await import('@/lib/printInvoices');
-        const html = generateInstallmentPlanHTML(data.plan, data.company, { noAutoPrint: false });
-        injectPrintIframe(html);
-    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+export function printInstallmentDirectly(id: string) {
+    window.open(`/api/print/installment/${id}?html=1`, '_blank');
 }
 
 export async function printInstallmentReceiptDirectly(id: string) {
@@ -233,36 +208,12 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
     }
 }
 
-export async function printSalesOrderDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const [soRes, coRes] = await Promise.all([
-            fetch(`/api/sales-orders/${id}`),
-            fetch('/api/company')
-        ]);
-        const order = await soRes.json();
-        const company = await coRes.json();
-        if (order.error) throw new Error(order.error);
-        const { generateA4HTML } = await import('@/lib/printInvoices');
-        const html = generateA4HTML(order, 'sales-order' as any, company, { noAutoPrint: false });
-        injectPrintIframe(html);
-    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+export function printSalesOrderDirectly(id: string) {
+    window.open(`/api/print/sales-order/${id}?html=1`, '_blank');
 }
 
-export async function printPurchaseOrderDirectly(id: string) {
-    try {
-        showPrintLoader();
-        const [poRes, coRes] = await Promise.all([
-            fetch(`/api/purchase-orders/${id}`),
-            fetch('/api/company')
-        ]);
-        const order = await poRes.json();
-        const company = await coRes.json();
-        if (order.error) throw new Error(order.error);
-        const { generateA4HTML } = await import('@/lib/printInvoices');
-        const html = generateA4HTML(order, 'purchase-order' as any, company, { noAutoPrint: false });
-        injectPrintIframe(html);
-    } catch (e) { console.error(e); alert('فشل الطباعة'); hidePrintLoader(); }
+export function printPurchaseOrderDirectly(id: string) {
+    window.open(`/api/print/purchase-order/${id}?html=1`, '_blank');
 }
 
 export async function downloadSalesOrderPDF(id: string): Promise<void> {
@@ -350,6 +301,28 @@ export async function downloadInstallmentPDF(id: string): Promise<void> {
     } catch (e: any) {
         console.error(e);
         throw new Error(e.message || 'فشل تحميل PDF');
+    }
+}
+
+/* ── Reports ──────────────────────────────────────────────────── */
+
+export function printReportDirectly(html: string, _title?: string) {
+    const printHtml = html.replace('</body>', `<script>window.onload=()=>setTimeout(()=>window.print(),400);</script></body>`);
+    const blob = new Blob([printHtml], { type: 'text/html; charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+export async function downloadReportPDF(html: string, title: string = 'تقرير'): Promise<void> {
+    showPrintLoader('جاري تحضير ملف PDF...');
+    try {
+        await generatePdfFromHtmlText(html, `${title}.pdf`);
+    } catch (e: any) {
+        console.error(e);
+        alert('فشل تحميل PDF');
+    } finally {
+        hidePrintLoader();
     }
 }
 

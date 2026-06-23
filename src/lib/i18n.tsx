@@ -4953,6 +4953,18 @@ export const dictionaries = {
 
         // --- Auto-synced Keys (Missing in Code) ---
         "طباعة أمر الشراء": "Print purchase order",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "فشل تحميل أمر البيع": "Failed to load sales order",
+        "جاري تحميل أمر البيع...": "Loading sales order...",
+        "عارض أمر البيع": "Sales order viewer",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "فشل تحميل أمر الشراء": "Failed to load purchase order",
+        "جاري تحميل أمر الشراء...": "Loading purchase order...",
+        "عارض أمر الشراء": "Purchase order viewer",
 }
 };
 

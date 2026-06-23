@@ -1,9 +1,10 @@
-import { ArrowRight, ArrowLeft, Printer, FileSpreadsheet } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Printer, FileSpreadsheet, FileDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/i18n';
 import React from 'react';
 import { THEME, C, CAIRO } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
+import { printReportDirectly, downloadReportPDF } from '@/lib/printDirectly';
 
 interface ReportHeaderProps {
   title: string;
@@ -40,7 +41,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     else router.push('/reports');
   };
 
-  const openCleanPrintWindow = () => {
+  const buildReportHTML = () => {
     const companyName = co.companyName || co.name || '';
     const logo = co.logo || co.companyLogo || '';
     const reportTitle = printTitle || title;
@@ -189,9 +190,17 @@ ${includeHTML}
 </div>
 </body>
 </html>`;
-    sessionStorage.setItem('print_report_html', html);
-    sessionStorage.setItem('print_report_title', reportTitle);
-    window.open('/print/report', '_blank');
+    return { html, reportTitle };
+  };
+
+  const openCleanPrintWindow = () => {
+    const { html, reportTitle } = buildReportHTML();
+    printReportDirectly(html, reportTitle);
+  };
+
+  const handleDownloadPDF = async () => {
+    const { html, reportTitle } = buildReportHTML();
+    await downloadReportPDF(html, reportTitle);
   };
 
   return (
@@ -232,6 +241,20 @@ ${includeHTML}
               <FileSpreadsheet size={15} /> {t("تحميل Excel")}
             </button>
           )}
+
+          <button
+            onClick={handleDownloadPDF}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
+              borderRadius: '10px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
+              border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '12px', fontWeight: 700,
+              cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.transform = 'none'; }}
+          >
+            <FileDown size={15} /> {t("تحميل PDF")}
+          </button>
 
           <button
             className="report-header-print-btn"

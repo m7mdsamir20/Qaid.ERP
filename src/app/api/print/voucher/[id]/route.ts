@@ -1,11 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
-export const GET = withProtection(async (request, session, body, context) => {
+export const GET = withProtection(async (request: NextRequest, session, body, context) => {
     try {
         const companyId = (session.user as any).companyId;
         const { id } = await context.params;
+        const params = new URL(request.url).searchParams;
+        const wantsHtml = params.get('html') === '1';
+        const noPrint = params.get('noPrint') === '1';
 
         const [voucher, company] = await Promise.all([
             prisma.voucher.findFirst({
@@ -23,10 +26,23 @@ export const GET = withProtection(async (request, session, body, context) => {
             }),
         ]);
 
-        if (!voucher) return NextResponse.json({ error: 'السند غير موجود' }, { status: 404 });
+        if (!voucher) {
+            if (wantsHtml) return new NextResponse('<h2>السند غير موجود</h2>', { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+            return NextResponse.json({ error: 'السند غير موجود' }, { status: 404 });
+        }
+
+        if (wantsHtml) {
+            const { generateThermalVoucherHTML } = await import('@/lib/printInvoices');
+            const type = voucher.type || 'receipt';
+            const html = generateThermalVoucherHTML(voucher, type as any, company as any, { noAutoPrint: noPrint });
+            return new NextResponse(html, {
+                headers: { 'Content-Type': 'text/html; charset=utf-8' },
+            });
+        }
 
         return NextResponse.json({ voucher, company });
     } catch (error: any) {
+        if (request.url.includes('html=1')) return new NextResponse(`<h2>خطأ: ${error.message}</h2>`, { status: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
         return NextResponse.json({ error: 'فشل جلب البيانات', details: error.message }, { status: 500 });
     }
 });
