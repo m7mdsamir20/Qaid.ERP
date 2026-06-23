@@ -26,6 +26,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
     serverExternalPackages: ['@prisma/client', 'prisma', 'puppeteer-core', '@sparticuz/chromium'],
 
+    experimental: {
+        outputFileTracingIncludes: {
+            '/api/pdf/invoice/[id]': ['./node_modules/@sparticuz/chromium/bin/**/*'],
+        },
+    } as any,
+
     // تسريع: ضغط الملفات
     compress: true,
 
