@@ -140,8 +140,6 @@ export async function printInstallmentReceiptDirectly(id: string) {
 }
 
 export async function downloadInvoicePDF(id: string, filename?: string) {
-    const loader = document.getElementById('print-loader-overlay');
-    // Show custom PDF loader
     showPrintLoader();
     const loaderText = document.querySelector('#print-loader-overlay div:nth-child(2)') as HTMLElement;
     if (loaderText) loaderText.textContent = 'جاري تحضير PDF...';
@@ -160,7 +158,7 @@ export async function downloadInvoicePDF(id: string, filename?: string) {
             noAutoPrint: true,
         });
 
-        // Render in a hidden iframe so fonts + styles load correctly
+        // Hidden iframe — same size as A4 at 96 DPI (794 × 1123 px)
         iframe = document.createElement('iframe');
         Object.assign(iframe.style, {
             position: 'fixed', top: '-9999px', left: '-9999px',
@@ -172,8 +170,37 @@ export async function downloadInvoicePDF(id: string, filename?: string) {
         if (!iframeDoc) throw new Error('iframe document unavailable');
         iframeDoc.open(); iframeDoc.write(html); iframeDoc.close();
 
-        // Wait for fonts + images to load
-        await new Promise(r => setTimeout(r, 1200));
+        // ── KEY FIX: convert @media print rules → @media all ──────
+        // The HTML template uses @media print for layout. html2canvas
+        // captures the screen view, so we promote print rules to apply
+        // on screen too, giving the correct invoice layout in the PDF.
+        await new Promise(r => setTimeout(r, 600)); // let stylesheets parse
+        try {
+            const sheets = iframeDoc.styleSheets;
+            for (let i = 0; i < sheets.length; i++) {
+                try {
+                    const rules = (sheets[i] as CSSStyleSheet).cssRules;
+                    for (let j = 0; j < rules.length; j++) {
+                        const rule = rules[j] as CSSMediaRule;
+                        if (rule.type === CSSRule.MEDIA_RULE && rule.media?.mediaText?.includes('print')) {
+                            rule.media.mediaText = 'all';
+                        }
+                    }
+                } catch { /* cross-origin sheet — skip */ }
+            }
+        } catch { /* ignore */ }
+
+        // Also inject a small override to reset screen-only styles
+        const override = iframeDoc.createElement('style');
+        override.textContent = `
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+            @page { margin: 0; }
+        `;
+        iframeDoc.head.appendChild(override);
+
+        // Wait for fonts + images to fully render after style changes
+        await new Promise(r => setTimeout(r, 800));
 
         const html2canvas = (await import('html2canvas')).default;
         const { default: jsPDF } = await import('jspdf');
@@ -183,28 +210,29 @@ export async function downloadInvoicePDF(id: string, filename?: string) {
             scale: 2,
             useCORS: true,
             allowTaint: false,
-            scrollX: 0, scrollY: 0,
-            width: body.scrollWidth,
+            scrollX: 0,
+            scrollY: 0,
+            width: 794,
             height: body.scrollHeight,
             windowWidth: 794,
+            windowHeight: body.scrollHeight,
         });
 
         const imgData = canvas.toDataURL('image/jpeg', 0.97);
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [794, 1123] });
 
-        const pageW = pdf.internal.pageSize.getWidth();
-        const pageH = pdf.internal.pageSize.getHeight();
-        const imgW = canvas.width;
-        const imgH = canvas.height;
-        const ratio = pageW / imgW;
-        const scaledH = imgH * ratio;
+        // A4 in mm: 210 × 297
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const pageW = pdf.internal.pageSize.getWidth();   // 210 mm
+        const pageH = pdf.internal.pageSize.getHeight();  // 297 mm
+        const imgRatio = canvas.height / canvas.width;
+        const totalH = pageW * imgRatio;                  // total rendered height in mm
 
-        // Multi-page support
-        let yOffset = 0;
-        while (yOffset < scaledH) {
-            if (yOffset > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, -yOffset, pageW, scaledH);
-            yOffset += pageH;
+        // Multi-page: slice canvas vertically per page
+        let yMM = 0;
+        while (yMM < totalH) {
+            if (yMM > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, -yMM, pageW, totalH);
+            yMM += pageH;
         }
 
         const prefix = type === 'sale' ? 'SAL' : type === 'sale_return' ? 'SRET' : type === 'purchase' ? 'PUR' : 'INV';
