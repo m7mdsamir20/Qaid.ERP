@@ -166,7 +166,7 @@ tfoot td{font-weight:800;font-size:11.5px;border:1px solid #bbb;padding:8px 7px;
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
-  @page{size:A4;margin:6mm 10mm}
+  @page{size:A4 landscape;margin:6mm 10mm}
   .page{padding:0}
 }
 </style>

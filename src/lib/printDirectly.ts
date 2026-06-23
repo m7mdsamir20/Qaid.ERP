@@ -317,7 +317,13 @@ export function printReportDirectly(html: string, _title?: string) {
 export async function downloadReportPDF(html: string, title: string = 'تقرير'): Promise<void> {
     showPrintLoader('جاري تحضير ملف PDF...');
     try {
-        await generatePdfFromHtmlText(html, `${title}.pdf`);
+        await generatePdfFromHtmlText(html, `${title}.pdf`, {
+            width: 1123,
+            height: 794,
+            pw: 297,
+            ph: 210,
+            orientation: 'l'
+        });
     } catch (e: any) {
         console.error(e);
         alert('فشل تحميل PDF');

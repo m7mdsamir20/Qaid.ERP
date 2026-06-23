@@ -134,7 +134,7 @@ thead tr{background:#f0f0f0!important}
 thead tr *{background:#f0f0f0!important}
 tfoot tr,tr[style*="e8e8e8"]{background:#e8e8e8!important}
 tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
-@media print{@page{size:A4;margin:6mm 10mm}.page{padding:0}}
+@media print{@page{size:A4 landscape;margin:6mm 10mm}.page{padding:0}}
 </style></head>
 <body><div class="page">
 <div class="rpt-header">

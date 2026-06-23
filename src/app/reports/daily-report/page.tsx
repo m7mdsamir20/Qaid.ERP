@@ -145,7 +145,7 @@ table{width:100%;border-collapse:collapse}
 .summary-row td:last-child{font-size:14px;font-weight:900}
 .footer{margin-top:14px;padding-top:8px;border-top:1px solid #ccc;font-size:9.5px;color:#000;display:flex;justify-content:space-between}
 @media print{
-  @page{size:A4;margin:6mm 10mm}
+  @page{size:A4 landscape;margin:6mm 10mm}
   .page{padding:0}
   body{font-size:10.5px}
 }

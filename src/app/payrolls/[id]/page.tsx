@@ -274,7 +274,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;font-size:11px;line-height:1.5
 .rpt-title{font-size:17px;font-weight:900;margin-bottom:6px;text-align:center;direction:rtl}
 .rpt-meta{font-size:10.5px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;direction:rtl}
 .rpt-meta b{font-weight:800}
-@media print{@page{size:A4;margin:6mm 10mm}.page{padding:0}}
+@media print{@page{size:A4 landscape;margin:6mm 10mm}.page{padding:0}}
 </style></head><body><div class="page">
 <div class="rpt-header">
   <div>${logoHtml}</div>
@@ -285,9 +285,11 @@ ${cardsHtml}
 ${tableHtml}
 </div></body></html>`;
 
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', reportTitle);
-        window.open('/print/report', '_blank');
+        const triggerPrint = async () => {
+            const { printReportDirectly } = await import('@/lib/printDirectly');
+            printReportDirectly(html, reportTitle);
+        };
+        triggerPrint();
     };
 
     if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }

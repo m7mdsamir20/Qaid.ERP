@@ -1275,7 +1275,7 @@ tfoot td:first-child{text-align:${firstColAlign}}
 .footer{margin-top:14px;padding-top:8px;border-top:1px dotted #ccc;font-size:9px;color:#555;display:flex;justify-content:space-between}
 
 @media print{
-  @page{size:A4;margin:6mm 8mm}
+  @page{size:A4 landscape;margin:6mm 8mm}
   body{font-size:10px}
   .page{padding:0;max-width:none;min-height:0}
   thead{display:table-header-group}

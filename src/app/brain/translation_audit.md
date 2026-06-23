@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T11:05:54.181Z
+Generated on: 2026-06-23T11:09:15.374Z
 
 ## Summary
 
@@ -3536,7 +3536,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 303: `فشل تحميل`
 - Line 317: `تقرير`
 - Line 318: `جاري تحضير ملف`
-- Line 323: `فشل تحميل`
+- Line 329: `فشل تحميل`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`
