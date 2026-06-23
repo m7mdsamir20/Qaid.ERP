@@ -121,73 +121,28 @@ const _downloading = new Set<string>();
 export async function downloadInvoicePDF(id: string, _filename?: string): Promise<void> {
     if (_downloading.has(id)) return;
     _downloading.add(id);
-
-    let iframe: HTMLIFrameElement | null = null;
     try {
-        const res = await fetch(`/api/print/invoice/${id}?html=1&noPrint=1`);
+        const res = await fetch(`/api/print/invoice/${id}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const html = await res.text();
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
 
-        const titleMatch = html.match(/<title>([^<]+)<\/title>/);
-        const filename = _filename || `${titleMatch?.[1]?.trim() || `invoice-${id}`}.pdf`;
+        const { generateInvoicePDFBlob } = await import('@/lib/InvoicePDF');
+        const type = data.invoice?.type || 'sale';
+        const partyBalance = data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance ?? null;
 
-        // Use srcdoc so iframe loads cleanly (same-origin, no blob CSP issues)
-        iframe = document.createElement('iframe');
-        Object.assign(iframe.style, {
-            position: 'fixed', left: '-9999px', top: '0',
-            width: '794px', height: '1200px', border: 'none', visibility: 'hidden',
-        });
-        document.body.appendChild(iframe);
-        (iframe as any).srcdoc = html;
+        const blob = await generateInvoicePDFBlob(data.invoice, data.company, type, partyBalance);
 
-        // Wait for iframe load event
-        await new Promise<void>(resolve => {
-            const tid = setTimeout(resolve, 5000);
-            iframe!.addEventListener('load', () => { clearTimeout(tid); resolve(); }, { once: true });
-        });
+        const invoiceNum = String(data.invoice?.invoiceNumber || 1).padStart(5, '0');
+        const prefixes: Record<string, string> = { sale: 'SAL', purchase: 'PUR', sale_return: 'SLR', 'sale-return': 'SLR', purchase_return: 'PRR', 'purchase-return': 'PRR' };
+        const prefix = prefixes[type] || 'INV';
+        const filename = _filename || `${prefix}-${invoiceNum}.pdf`;
 
-        // Wait for Google Fonts to finish loading
-        try { await iframe.contentDocument!.fonts.ready; } catch {}
-        await new Promise(resolve => setTimeout(resolve, 600));
-
-        const iDoc = iframe.contentDocument!;
-        const pageEl = iDoc.querySelector('.page') as HTMLElement;
-        if (!pageEl) throw new Error('فشل إيجاد عنصر الصفحة');
-
-        // Resize iframe to match actual content so flex-grow spacer doesn't over-expand
-        const naturalH = pageEl.scrollHeight;
-        iframe.style.height = `${naturalH + 20}px`;
-        await new Promise(resolve => setTimeout(resolve, 150));
-
-        const html2canvas = (await import('html2canvas')).default;
-        const canvas = await html2canvas(pageEl, {
-            scale: 2,
-            useCORS: true,
-            allowTaint: false,
-            backgroundColor: '#ffffff',
-            width: 794,
-            height: naturalH,
-            windowWidth: 794,
-            windowHeight: naturalH,
-            scrollX: 0,
-            scrollY: 0,
-        });
-
-        const { jsPDF } = await import('jspdf');
-        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-        // Calculate total height in mm (width = 210mm)
-        const totalHeightMM = (canvas.height / canvas.width) * 210;
-        const pages = Math.ceil(totalHeightMM / 297);
-        for (let i = 0; i < pages; i++) {
-            if (i > 0) pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 0, -(i * 297), 210, totalHeightMM);
-        }
-
-        pdf.save(filename);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = filename; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
     } finally {
         _downloading.delete(id);
-        if (iframe && document.body.contains(iframe)) document.body.removeChild(iframe);
     }
 }

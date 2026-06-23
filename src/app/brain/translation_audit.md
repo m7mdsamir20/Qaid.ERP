@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T08:07:35.841Z
+Generated on: 2026-06-23T08:20:10.446Z
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated on: 2026-06-23T08:07:35.841Z
 - **Total t() Keys in Code**: 4186
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3208
+- **Unwrapped Arabic Text Instances**: 3209
 
 ## Unwrapped Arabic Text
 
@@ -3376,50 +3376,52 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 29: `؀-ۿ`
 
 ### [lib/InvoicePDF.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/InvoicePDF.tsx)
-- Line 22: `فاتورة مبيعات`
-- Line 22: `فاتورة مشتريات`
-- Line 23: `مرتجع مبيعات`
-- Line 23: `مرتجع مبيعات`
-- Line 24: `مرتجع مشتريات`
-- Line 24: `مرتجع مشتريات`
-- Line 35: `عليه`
-- Line 35: `له`
-- Line 35: `له`
-- Line 35: `لنا`
-- Line 84: `عميل نقدي`
-- Line 84: `مورد نقدي`
-- Line 85: `العميل`
-- Line 85: `المورد`
-- Line 94: `فاتورة`
-- Line 120: `الهاتف`
-- Line 121: `رقم ضريبي`
-- Line 128: `إلى`
-- Line 131: `الهاتف`
-- Line 132: `تم التحويل من عرض سعر`
-- Line 132: `ملاحظات`
-- Line 140: `الإجمالي`
-- Line 141: `السعر`
-- Line 142: `الكمية`
-- Line 143: `الوحدة`
-- Line 144: `الخدمة`
-- Line 144: `الصنف`
-- Line 145: `م`
-- Line 148: `لا توجد بنود`
-- Line 150: `صنف`
-- Line 174: `الإجمالي قبل الخصم والضريبة`
-- Line 175: `الخصم`
-- Line 176: `إجمالي الفاتورة`
-- Line 177: `المبلغ المدفوع`
-- Line 178: `المبلغ المتبقي`
-- Line 180: `الرصيد السابق لـ`
-- Line 181: `صافي تأثير الفاتورة`
-- Line 182: `إجمالي رصيد`
-- Line 182: `الحالي`
-- Line 191: `توقيع المسؤول`
-- Line 191: `الختم والتوقيع`
-- Line 192: `شكراً لتعاملكم معنا`
-- Line 193: `توقيع المستلم`
-- Line 193: `الاسم والتوقيع`
+- Line 24: `فاتورة مبيعات`
+- Line 24: `فاتورة مشتريات`
+- Line 25: `مرتجع مبيعات`
+- Line 25: `مرتجع مبيعات`
+- Line 26: `مرتجع مشتريات`
+- Line 26: `مرتجع مشتريات`
+- Line 39: `عليه`
+- Line 39: `له`
+- Line 40: `له`
+- Line 40: `لنا`
+- Line 151: `عميل نقدي`
+- Line 151: `مورد نقدي`
+- Line 152: `العميل`
+- Line 152: `المورد`
+- Line 167: `فاتورة`
+- Line 180: `الخدمة`
+- Line 180: `الصنف`
+- Line 218: `الهاتف`
+- Line 219: `رقم ضريبي`
+- Line 220: `سجل تجاري`
+- Line 226: `إلى`
+- Line 236: `الهاتف`
+- Line 239: `تم التحويل من عرض سعر`
+- Line 242: `ملاحظات`
+- Line 252: `الإجمالي`
+- Line 253: `السعر`
+- Line 254: `الكمية`
+- Line 255: `الوحدة`
+- Line 257: `م`
+- Line 262: `لا توجد بنود`
+- Line 265: `صنف`
+- Line 296: `الإجمالي قبل الخصم والضريبة`
+- Line 302: `الخصم`
+- Line 309: `إجمالي الضريبة`
+- Line 316: `إجمالي الفاتورة`
+- Line 321: `المبلغ المدفوع`
+- Line 326: `المبلغ المتبقي`
+- Line 332: `الرصيد السابق لـ`
+- Line 336: `صافي تأثير الفاتورة`
+- Line 340: `إجمالي رصيد`
+- Line 340: `الحالي`
+- Line 354: `توقيع المسؤول`
+- Line 355: `الختم والتوقيع`
+- Line 357: `شكراً لتعاملكم معنا`
+- Line 359: `توقيع المستلم`
+- Line 360: `الاسم والتوقيع`
 
 ### [lib/placeholders.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/placeholders.ts)
 - Line 9: `الرياض، حي العليا، شارع التحلية`
@@ -3444,7 +3446,6 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 92: `فشل الطباعة`
 - Line 104: `فشل الطباعة`
 - Line 116: `فشل الطباعة`
-- Line 155: `فشل إيجاد عنصر الصفحة`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`
