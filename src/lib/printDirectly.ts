@@ -122,25 +122,37 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
     if (_downloading.has(id)) return;
     _downloading.add(id);
     try {
-        const res = await fetch(`/api/print/invoice/${id}`);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
+        const res = await fetch(`/api/pdf/invoice/${id}`);
+        if (!res.ok) {
+            let errorText = `HTTP ${res.status}`;
+            try {
+                const errData = await res.json();
+                if (errData.error) errorText = errData.error;
+            } catch {}
+            throw new Error(errorText);
+        }
+        const blob = await res.blob();
 
-        const { generateInvoicePDFBlob } = await import('@/lib/InvoicePDF');
-        const type = data.invoice?.type || 'sale';
-        const partyBalance = data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance ?? null;
-
-        const blob = await generateInvoicePDFBlob(data.invoice, data.company, type, partyBalance);
-
-        const invoiceNum = String(data.invoice?.invoiceNumber || 1).padStart(5, '0');
-        const prefixes: Record<string, string> = { sale: 'SAL', purchase: 'PUR', sale_return: 'SLR', 'sale-return': 'SLR', purchase_return: 'PRR', 'purchase-return': 'PRR' };
-        const prefix = prefixes[type] || 'INV';
-        const filename = _filename || `${prefix}-${invoiceNum}.pdf`;
+        let filename = _filename;
+        if (!filename) {
+            const disposition = res.headers.get('content-disposition');
+            if (disposition && disposition.indexOf('attachment') !== -1) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+        }
+        if (!filename) {
+            filename = `INV-${id.substring(0, 8)}.pdf`;
+        }
 
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = filename; a.click();
+        a.href = url;
+        a.download = filename;
+        a.click();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
     } finally {
         _downloading.delete(id);
