@@ -6,7 +6,9 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
     try {
         const companyId = (session.user as any).companyId;
         const { id } = await context.params;
-        const wantsHtml = new URL(request.url).searchParams.get('html') === '1';
+        const params = new URL(request.url).searchParams;
+        const wantsHtml = params.get('html') === '1';
+        const noPrint = params.get('noPrint') === '1';
 
         const [invoice, company] = await Promise.all([
             prisma.invoice.findFirst({
@@ -42,7 +44,7 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
             const type = (invoice as any).type || 'sale';
             const html = generateA4HTML(invoice as any, type, companyWithBranch as any, {
                 partyBalance: (invoice as any).customer?.balance ?? (invoice as any).supplier?.balance,
-                noAutoPrint: false,
+                noAutoPrint: noPrint,
             });
             return new NextResponse(html, {
                 headers: { 'Content-Type': 'text/html; charset=utf-8' },

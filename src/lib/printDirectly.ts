@@ -121,38 +121,65 @@ const _downloading = new Set<string>();
 export async function downloadInvoicePDF(id: string, _filename?: string): Promise<void> {
     if (_downloading.has(id)) return;
     _downloading.add(id);
+
+    let iframe: HTMLIFrameElement | null = null;
     try {
-        const res = await fetch(`/api/print/invoice/${id}`);
+        // Fetch the exact same HTML used for printing (no auto-print)
+        const res = await fetch(`/api/print/invoice/${id}?html=1&noPrint=1`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
+        const html = await res.text();
 
-        const { generateInvoicePDFBlob } = await import('@/lib/InvoicePDF');
-        const invoice = data.invoice;
-        const company = data.company;
-        const type = invoice?.type || 'sale';
-        const partyBalance = invoice?.customer?.balance ?? invoice?.supplier?.balance ?? null;
+        // Render HTML in hidden off-screen iframe at A4 width
+        iframe = document.createElement('iframe');
+        Object.assign(iframe.style, {
+            position: 'fixed', left: '-9999px', top: '0',
+            width: '794px', height: '3000px', border: 'none', visibility: 'hidden',
+        });
+        document.body.appendChild(iframe);
 
-        const blob = await generateInvoicePDFBlob(invoice, company, type, partyBalance);
+        const doc = iframe.contentDocument!;
+        doc.open(); doc.write(html); doc.close();
 
-        const PREFIXES: Record<string, string> = {
-            sale: 'SAL', purchase: 'PUR',
-            sale_return: 'SLR', sale_return2: 'SLR',
-            purchase_return: 'PRR',
-        };
-        const prefix = PREFIXES[type] || 'INV';
-        const invNum = String(invoice?.invoiceNumber || '').padStart(5, '0');
-        const filename = _filename || `${prefix}-${invNum}.pdf`;
+        // Wait for Google Fonts + images to load
+        await new Promise(resolve => {
+            const win = iframe!.contentWindow!;
+            if (win.document.readyState === 'complete') { resolve(null); return; }
+            win.addEventListener('load', () => resolve(null));
+            setTimeout(resolve, 4000);
+        });
+        await new Promise(resolve => setTimeout(resolve, 1500));
 
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        // Capture with html2canvas
+        const html2canvas = (await import('html2canvas')).default;
+        const pageEl = doc.querySelector('.page') as HTMLElement || doc.body;
+        const canvas = await html2canvas(pageEl, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            width: 794,
+            windowWidth: 794,
+        });
+
+        // Create PDF — handle multi-page if content is taller than A4
+        const { jsPDF } = await import('jspdf');
+        const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const imgData = canvas.toDataURL('image/jpeg', 0.97);
+        const pageHeightPx = canvas.width * (297 / 210); // maintain A4 ratio
+        const totalPages = Math.ceil(canvas.height / pageHeightPx);
+        for (let page = 0; page < totalPages; page++) {
+            if (page > 0) pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, -(page * 297), 210, (canvas.height / canvas.width) * 210);
+        }
+
+        // Extract filename from HTML <title> tag (e.g. "SAL-00030")
+        const titleMatch = html.match(/<title>([^<]+)<\/title>/);
+        const titleText = titleMatch?.[1]?.trim() || `invoice-${id}`;
+        const filename = _filename || `${titleText}.pdf`;
+
+        pdf.save(filename);
     } finally {
         _downloading.delete(id);
+        if (iframe && document.body.contains(iframe)) document.body.removeChild(iframe);
     }
 }

@@ -62,13 +62,13 @@ const s = StyleSheet.create({
     trow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: '#e8e8e8' },
     td: { paddingVertical: 3, paddingHorizontal: 3, fontSize: 8.5, textAlign: 'center', borderRightWidth: 1, borderRightColor: '#ddd' },
     totalsWrap: { marginTop: 8, alignItems: 'flex-start' },
-    totalsTable: { width: 285, borderWidth: 1, borderColor: LG },
-    tRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: LG, minHeight: 27, alignItems: 'center' },
-    tVal: { width: 95, paddingHorizontal: 8, paddingVertical: 2, fontSize: 10.5, fontWeight: 700, textAlign: 'left' },
-    tLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 10.5, color: '#444', textAlign: 'right' },
-    tMain: { flexDirection: 'row', backgroundColor: '#f2f2f2', borderBottomWidth: 1, borderBottomColor: LG, minHeight: 29, alignItems: 'center' },
-    tMainVal: { width: 95, paddingHorizontal: 8, paddingVertical: 2, fontSize: 11.5, fontWeight: 900, textAlign: 'left' },
-    tMainLbl: { flex: 1, paddingHorizontal: 8, paddingVertical: 2, fontSize: 11.5, fontWeight: 900, textAlign: 'right' },
+    totalsTable: { width: 320, borderWidth: 1, borderColor: '#111' },
+    tRow: { flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: LG, minHeight: 28, alignItems: 'center' },
+    tVal: { width: 110, paddingHorizontal: 10, paddingVertical: 2, fontSize: 11, fontWeight: 700, textAlign: 'left', borderRightWidth: 1, borderRightColor: LG },
+    tLbl: { flex: 1, paddingHorizontal: 10, paddingVertical: 2, fontSize: 11, color: '#444', textAlign: 'right' },
+    tMain: { flexDirection: 'row', backgroundColor: '#f2f2f2', borderBottomWidth: 1, borderBottomColor: '#111', minHeight: 30, alignItems: 'center' },
+    tMainVal: { width: 110, paddingHorizontal: 10, paddingVertical: 2, fontSize: 12, fontWeight: 900, textAlign: 'left', borderRightWidth: 1, borderRightColor: '#111' },
+    tMainLbl: { flex: 1, paddingHorizontal: 10, paddingVertical: 2, fontSize: 12, fontWeight: 900, textAlign: 'right' },
     footer: { paddingTop: 25, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
     sigBox: { width: 185, alignItems: 'center' },
     sigLbl: { fontSize: 9, fontWeight: 900, marginBottom: 20, textAlign: 'center' },
@@ -122,21 +122,14 @@ function InvoicePDF({ invoice, company, type, partyBalance }: Props) {
                     </View>
                 </View>
 
-                {/* Info boxes: بيانات(left) | إلى(right) — matches RTL HTML order */}
+                {/* Single "إلى" box — matches print HTML exactly */}
                 <View style={s.infoWrap}>
-                    <View style={s.infoBox}>
-                        <Text style={s.infoTitle}>بيانات الفاتورة</Text>
-                        <View style={s.infoBody}>
-                            <View style={s.infoRow}><Text style={s.infoVal}>{prefix}-{invoiceNum}</Text><Text style={s.infoKey}>رقم الفاتورة:</Text></View>
-                            <View style={s.infoRow}><Text style={s.infoVal}>{date}</Text><Text style={s.infoKey}>التاريخ:</Text></View>
-                            {invoice.notes && !/تم التحويل من عرض سعر/.test(invoice.notes) && <View style={s.infoRow}><Text style={s.infoVal}>{invoice.notes}</Text><Text style={s.infoKey}>ملاحظات:</Text></View>}
-                        </View>
-                    </View>
                     <View style={s.infoBox}>
                         <Text style={s.infoTitle}>إلى</Text>
                         <View style={s.infoBody}>
                             <View style={s.infoRow}><Text style={s.infoVal}>{partyName}</Text><Text style={s.infoKey}>{partyLabel}:</Text></View>
                             {party?.phone && <View style={s.infoRow}><Text style={s.infoVal}>{party.phone}</Text><Text style={s.infoKey}>الهاتف:</Text></View>}
+                            {invoice.notes && !/تم التحويل من عرض سعر/.test(invoice.notes) && <View style={s.infoRow}><Text style={s.infoVal}>{invoice.notes}</Text><Text style={s.infoKey}>ملاحظات:</Text></View>}
                         </View>
                     </View>
                 </View>
@@ -178,7 +171,7 @@ function InvoicePDF({ invoice, company, type, partyBalance }: Props) {
                 {/* Totals: value(left) | label(right) — matches RTL HTML */}
                 <View style={s.totalsWrap}>
                     <View style={s.totalsTable}>
-                        {discount > 0 && <View style={s.tRow}><Text style={s.tVal}>{n(subtotal)} {sym}</Text><Text style={s.tLbl}>الإجمالي قبل الخصم</Text></View>}
+                        <View style={s.tRow}><Text style={s.tVal}>{n(subtotal)} {sym}</Text><Text style={s.tLbl}>الإجمالي قبل الخصم والضريبة</Text></View>
                         {discount > 0 && <View style={s.tRow}><Text style={[s.tVal, { color: '#d32f2f' }]}>- {n(discount)} {sym}</Text><Text style={[s.tLbl, { color: '#d32f2f' }]}>الخصم</Text></View>}
                         <View style={s.tMain}><Text style={s.tMainVal}>{n(total)} {sym}</Text><Text style={s.tMainLbl}>إجمالي الفاتورة</Text></View>
                         <View style={s.tRow}><Text style={s.tVal}>{n(paid)} {sym}</Text><Text style={s.tLbl}>المبلغ المدفوع</Text></View>

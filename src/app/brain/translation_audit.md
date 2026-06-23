@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-23T07:36:21.092Z
+Generated on: 2026-06-23T07:56:27.771Z
 
 ## Summary
 
@@ -8,7 +8,7 @@ Generated on: 2026-06-23T07:36:21.092Z
 - **Total t() Keys in Code**: 4186
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 536
-- **Unwrapped Arabic Text Instances**: 3210
+- **Unwrapped Arabic Text Instances**: 3207
 
 ## Unwrapped Arabic Text
 
@@ -1029,9 +1029,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 98: `فشل توليد`
 
 ### [app/api/print/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/invoice/[id]/route.ts)
-- Line 33: `الفاتورة غير موجودة`
-- Line 34: `الفاتورة غير موجودة`
-- Line 54: `فشل جلب البيانات`
+- Line 35: `الفاتورة غير موجودة`
+- Line 36: `الفاتورة غير موجودة`
+- Line 56: `فشل جلب البيانات`
 
 ### [app/api/print/quotation/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/print/quotation/[id]/route.ts)
 - Line 30: `عرض السعر غير موجود`
@@ -3393,36 +3393,33 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 94: `فاتورة`
 - Line 120: `الهاتف`
 - Line 121: `رقم ضريبي`
-- Line 128: `بيانات الفاتورة`
-- Line 130: `رقم الفاتورة`
-- Line 131: `التاريخ`
+- Line 128: `إلى`
+- Line 131: `الهاتف`
 - Line 132: `تم التحويل من عرض سعر`
 - Line 132: `ملاحظات`
-- Line 136: `إلى`
-- Line 139: `الهاتف`
-- Line 147: `الإجمالي`
-- Line 148: `السعر`
-- Line 149: `الكمية`
-- Line 150: `الوحدة`
-- Line 151: `الخدمة`
-- Line 151: `الصنف`
-- Line 152: `م`
-- Line 155: `لا توجد بنود`
-- Line 157: `صنف`
-- Line 181: `الإجمالي قبل الخصم`
-- Line 182: `الخصم`
-- Line 183: `إجمالي الفاتورة`
-- Line 184: `المبلغ المدفوع`
-- Line 185: `المبلغ المتبقي`
-- Line 187: `الرصيد السابق لـ`
-- Line 188: `صافي تأثير الفاتورة`
-- Line 189: `إجمالي رصيد`
-- Line 189: `الحالي`
-- Line 198: `توقيع المسؤول`
-- Line 198: `الختم والتوقيع`
-- Line 199: `شكراً لتعاملكم معنا`
-- Line 200: `توقيع المستلم`
-- Line 200: `الاسم والتوقيع`
+- Line 140: `الإجمالي`
+- Line 141: `السعر`
+- Line 142: `الكمية`
+- Line 143: `الوحدة`
+- Line 144: `الخدمة`
+- Line 144: `الصنف`
+- Line 145: `م`
+- Line 148: `لا توجد بنود`
+- Line 150: `صنف`
+- Line 174: `الإجمالي قبل الخصم والضريبة`
+- Line 175: `الخصم`
+- Line 176: `إجمالي الفاتورة`
+- Line 177: `المبلغ المدفوع`
+- Line 178: `المبلغ المتبقي`
+- Line 180: `الرصيد السابق لـ`
+- Line 181: `صافي تأثير الفاتورة`
+- Line 182: `إجمالي رصيد`
+- Line 182: `الحالي`
+- Line 191: `توقيع المسؤول`
+- Line 191: `الختم والتوقيع`
+- Line 192: `شكراً لتعاملكم معنا`
+- Line 193: `توقيع المستلم`
+- Line 193: `الاسم والتوقيع`
 
 ### [lib/placeholders.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/placeholders.ts)
 - Line 9: `الرياض، حي العليا، شارع التحلية`
