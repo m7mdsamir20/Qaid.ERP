@@ -75,7 +75,7 @@ export const GET = withProtection(async (_request, session, _body, context) => {
     try {
         const browser = await getBrowser();
         page = await browser.newPage();
-        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: 20000 });
+        await page.setContent(html, { waitUntil: 'load', timeout: 20000 });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfBuffer = await page.pdf({
