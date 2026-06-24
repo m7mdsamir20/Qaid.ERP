@@ -5,16 +5,28 @@ import { EmptyTableState, TableColumn } from './EmptyTableState';
 
 export const isCenteredColumn = (col: TableColumn): boolean => {
     if (col.type && col.type !== 'text') return true;
+    // Explicit style override
+    if (col.style && (col.style as React.CSSProperties).textAlign === 'center') return true;
     if (!col.header) return false;
     const h = col.header.toLowerCase();
-    return h.includes('رقم') || 
-           h.includes('كود') || 
-           h.includes('معرف') || 
-           h.includes('الرمز') || 
-           h.includes('no.') || 
-           h.includes('number') || 
-           h.includes('code') || 
-           h.includes('id') || 
+    return h.includes('رقم') ||
+           h.includes('كود') ||
+           h.includes('معرف') ||
+           h.includes('الرمز') ||
+           h.includes('الحالة') ||
+           h.includes('الإجراءات') ||
+           h.includes('إجراءات') ||
+           h.includes('actions') ||
+           h.includes('status') ||
+           h.includes('المنصب') ||
+           h.includes('الراتب') ||
+           h.includes('التاريخ') ||
+           h.includes('date') ||
+           h.includes('salary') ||
+           h.includes('no.') ||
+           h.includes('number') ||
+           h.includes('code') ||
+           h.includes('id') ||
            h.includes('serial');
 };
 
