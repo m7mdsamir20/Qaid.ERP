@@ -129,9 +129,9 @@ export const DELETE = withProtection(async (request, session) => {
                         isParent: false,
                         accountCategory: 'detail',
                         OR: [
-                            { name: { contains: 'مخزون' } } ,
-                            { name: { contains: 'بضاعة' } } ,
-                            { name: { contains: 'مخزن' } } ,
+                            { name: { contains: 'مخزون' } },
+                            { name: { contains: 'بضاعة' } },
+                            { name: { contains: 'مخزن' } },
                         ]
                     },
                     orderBy: { code: 'asc' }

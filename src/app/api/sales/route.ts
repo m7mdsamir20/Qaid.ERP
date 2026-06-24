@@ -41,7 +41,7 @@ export const GET = withProtection(async (request, session) => {
         const search = url.searchParams.get('search') || '';
 
         const where: any = { companyId, type: 'sale', ...branchFilter };
-        
+
         // Data isolation: sales reps only see their own invoices
         const userRep = await prisma.salesRepresentative.findFirst({
             where: { userId: user.id, companyId, isActive: true }
@@ -114,7 +114,7 @@ export const POST = withProtection(async (request, session, body) => {
                     select: { customRole: { select: { permissions: true } } }
                 });
                 if (dbUser?.customRole?.permissions) perms = JSON.parse(dbUser.customRole.permissions);
-            } catch {}
+            } catch { }
             if (Object.keys(perms).length > 0 && !perms['/sales']?.create) {
                 return NextResponse.json({ error: 'ليس لديك صلاحية إنشاء فواتير مبيعات' }, { status: 403 });
             }
@@ -200,7 +200,7 @@ export const POST = withProtection(async (request, session, body) => {
                 select: { invoiceNumber: true },
             });
             const invoiceNumber = (lastInvoice?.invoiceNumber || 0) + 1;
-            
+
             // Snapshot Balances
             let customerPrevBalance = 0;
             let customerNewBalance = 0;

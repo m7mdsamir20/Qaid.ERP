@@ -72,7 +72,7 @@ export const GET = withProtection(async (request, session) => {
                 const linesCredit = t.account.journalEntryLines.reduce((s, l) => s + l.credit, 0);
                 const openingDebit = t.account.openingBalances.reduce((s, b) => s + b.debit, 0);
                 const openingCredit = t.account.openingBalances.reduce((s, b) => s + b.credit, 0);
-                
+
                 // الرصيد = (الافتتاحي مدين + حركات مدين) - (الافتتاحي دائن + حركات دائن)
                 dynamicBalance = (openingDebit + linesDebit) - (openingCredit + linesCredit);
             }
