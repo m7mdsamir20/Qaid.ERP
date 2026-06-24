@@ -14,7 +14,6 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import PriceInput from '@/components/PriceInput';
-import { printQuotationDirectly } from '@/lib/printDirectly';
 
 
 interface Customer { id: string; name: string; phone?: string; balance: number; }
@@ -266,8 +265,8 @@ export default function NewQuotationPage() {
             });
             if (res.ok) {
                 const savedQuotation = await res.json();
-                printQuotationDirectly(savedQuotation.id)
-                router.push('/quotations');
+                const { printQuotationViaIframe } = await import('@/lib/printDirectly');
+                printQuotationViaIframe(savedQuotation.id, () => router.push('/quotations'));
             } else {
                 const err = await res.json();
                 setErrorMsg(err.error || t('فشل حفظ عرض السعر'));

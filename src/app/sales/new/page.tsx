@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -14,7 +14,6 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
 
 
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
@@ -378,7 +377,7 @@ function NewSalePageInner() {
     };
 
     const handleSubmit = async (andPrint = false) => {
-        const isServicesBusiness = isServices; // use component-level var (already .toUpperCase())
+        const isServicesBusiness = isServices;
         setErrorMsg('');
         setFieldErrors({});
         const errors: Record<string, string> = {};
@@ -461,9 +460,11 @@ function NewSalePageInner() {
                 }
 
                 if (andPrint) {
-                    printInvoiceDirectly(savedInvoice.id)
+                    const { printInvoiceViaIframe } = await import('@/lib/printDirectly');
+                    printInvoiceViaIframe(savedInvoice.id, () => router.push('/sales'));
+                } else {
+                    router.push('/sales');
                 }
-                router.push('/sales');
             } else {
                 const data = await res.json();
                 setErrorMsg(data.error || t('فشل الحفظ'));

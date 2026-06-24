@@ -92,8 +92,13 @@ export default function NewPurchasePaymentPage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) printPayVoucher(saved, selectedPartner, nextNum, form, cSymbol, t);
-                router.push('/purchase-payments');
+                if (andPrint) {
+                    const { printHtmlViaIframe } = await import('@/lib/printDirectly');
+                    const html = buildPayVoucherHtml(saved, selectedPartner, nextNum, form, cSymbol, t);
+                    printHtmlViaIframe(html, () => router.push('/purchase-payments'));
+                } else {
+                    router.push('/purchase-payments');
+                }
             } else { const d = await res.json(); alert(d.error || t("فشل في الحفظ")); }
         } catch { alert(t("فشل الاتصال بالخادم")); }
         finally { setSubmitting(false); }
@@ -348,7 +353,7 @@ export default function NewPurchasePaymentPage() {
     );
 }
 
-function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any) {
+function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any): string {
     const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const amount = formatNumber(voucher.amount || 0);
     const COMPANY = {
@@ -447,9 +452,7 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
     <div class="sig"><div class="sl">${t('توقيع المُصرِف')}</div><div class="ss">${t('الاسم والتوقيع')}</div></div>
   </div>
 </div>
-<script>window.onload=()=>window.print();</script>
 </body></html>`;
 
-    const win = window.open('', '_blank');
-    if (win) { win.document.write(html); win.document.close(); }
+    return html;
 }

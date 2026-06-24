@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { formatNumber } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
@@ -14,7 +14,6 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
 
 
 /* ── Types ── */
@@ -304,9 +303,11 @@ export default function NewReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    printInvoiceDirectly(saved.id)
+                    const { printInvoiceViaIframe } = await import('@/lib/printDirectly');
+                    printInvoiceViaIframe(saved.id, () => router.push('/sale-returns'));
+                } else {
+                    router.push('/sale-returns');
                 }
-                router.push('/sale-returns');
             } else { const err = await res.json(); alert(err.error || t('فشل في الحفظ')); }
         } catch (err: any) { alert(err.message || t('فشل الاتصال')); }
         finally { setSubmitting(false); }
@@ -435,8 +436,8 @@ export default function NewReturnPage() {
                                                         : selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
                                                     ),
                                                     border: `1px solid ${selectedPartner.partnerType === 'customer'
-                                                            ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
-                                                            : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
                                                         }`,
                                                 }}>
                                                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />

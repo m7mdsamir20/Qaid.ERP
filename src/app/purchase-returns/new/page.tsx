@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -13,7 +13,6 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
 
 
 /* ── Types ── */
@@ -278,9 +277,11 @@ export default function NewPurchaseReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    printInvoiceDirectly(saved.id)
+                    const { printInvoiceViaIframe } = await import('@/lib/printDirectly');
+                    printInvoiceViaIframe(saved.id, () => router.push('/purchase-returns'));
+                } else {
+                    router.push('/purchase-returns');
                 }
-                router.push('/purchase-returns');
             } else { const err = await res.json(); alert(err.error || t("فشل في الحفظ")); }
         } catch (err: any) { alert(err.message || t("فشل الاتصال")); }
         finally { setSubmitting(false); }
@@ -417,8 +418,8 @@ export default function NewPurchaseReturnPage() {
                                                         : selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
                                                     ),
                                                     border: `1px solid ${selectedPartner.partnerType === 'customer'
-                                                            ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
-                                                            : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
                                                         }`,
                                                 }}>
                                                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
@@ -591,7 +592,7 @@ export default function NewPurchaseReturnPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span style={{ fontSize: '12px', color: C.textSecondary }}>{t('عدد الأصناف المرتجعة')}</span>
+                                    <span style={{ fontSize: '12px', color: C.textSecondary }}>{t('عدد الأصناف المرتجعة')}</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('صنف')}</span>
                                 </div>
 

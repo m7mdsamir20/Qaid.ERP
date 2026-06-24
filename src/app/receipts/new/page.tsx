@@ -12,7 +12,6 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { formatNumber } from '@/lib/currency';
-import { printVoucherDirectly } from '@/lib/printDirectly';
 
 
 /* ── Types ── */
@@ -116,15 +115,15 @@ export default function NewReceiptPage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) handlePrint(saved);
-                router.push('/receipts');
+                if (andPrint) {
+                    const { printVoucherViaIframe } = await import('@/lib/printDirectly');
+                    printVoucherViaIframe(saved.id, () => router.push('/receipts'));
+                } else {
+                    router.push('/receipts');
+                }
             } else { const d = await res.json(); alert(d.error || t("فشل في الحفظ")); }
         } catch { alert(t("فشل الاتصال بالخادم")); }
         finally { setSubmitting(false); }
-    };
-
-    const handlePrint = (v: any) => {
-        printVoucherDirectly(v.id)
     };
 
     const InlineError = ({ field, top = '-32px' }: { field: string, top?: string }) => {

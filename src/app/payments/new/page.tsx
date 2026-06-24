@@ -10,7 +10,6 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC
 import PageHeader from '@/components/PageHeader';
 import PriceInput from '@/components/PriceInput';
 import { formatNumber } from '@/lib/currency';
-import { printVoucherDirectly } from '@/lib/printDirectly';
 
 
 /* ── Types ── */
@@ -77,9 +76,6 @@ export default function NewPaymentPage() {
     const selectedSupplier = Array.isArray(suppliers) ? suppliers.find(c => c.id === form.supplierId) : null;
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
 
-    const handlePrint = (v: any) => {
-        printVoucherDirectly(v.id)
-    };
 
     const handleSubmit = async (andPrint = false) => {
         setFieldErrors({});
@@ -102,8 +98,12 @@ export default function NewPaymentPage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) handlePrint(saved);
-                router.push('/payments');
+                if (andPrint) {
+                    const { printVoucherViaIframe } = await import('@/lib/printDirectly');
+                    printVoucherViaIframe(saved.id, () => router.push('/payments'));
+                } else {
+                    router.push('/payments');
+                }
             } else { const d = await res.json(); alert(d.error || t("فشل في الحفظ")); }
         } catch { alert(t("فشل الاتصال بالخادم")); }
         finally { setSubmitting(false); }

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -14,7 +14,6 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
-import { printInvoiceDirectly } from '@/lib/printDirectly';
 
 
 interface Supplier { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
@@ -146,7 +145,7 @@ export default function NewPurchasePage() {
             setSuppliers(Array.isArray(sups) ? sups : []);
             setWarehouses(Array.isArray(whs) ? whs : []);
             setTreasuries(Array.isArray(trs) ? trs : []);
-            
+
             let fetchedItems = Array.isArray(its) ? its : (its.items || []);
             if (companyData?.businessType?.toUpperCase() === 'RESTAURANTS') {
                 fetchedItems = fetchedItems.filter((i: any) => i.type === 'raw');
@@ -339,8 +338,12 @@ export default function NewPurchasePage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) printInvoiceDirectly((saved.invoice || saved).id);
-                router.push('/purchases');
+                if (andPrint) {
+                    const { printInvoiceViaIframe } = await import('@/lib/printDirectly');
+                    printInvoiceViaIframe((saved.invoice || saved).id, () => router.push('/purchases'));
+                } else {
+                    router.push('/purchases');
+                }
             } else alert(t('فشل الحفظ'));
         } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
     };
@@ -457,19 +460,19 @@ export default function NewPurchasePage() {
                                                     headers: { 'Content-Type': 'application/json' },
                                                     body: JSON.stringify({ name: val })
                                                 })
-                                                .then(res => {
-                                                    if (res.ok) return res.json();
-                                                    throw new Error();
-                                                })
-                                                .then(newSupplier => {
-                                                    if (newSupplier && newSupplier.id) {
-                                                        setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newSupplier]);
-                                                        setForm((f: any) => ({ ...f, supplierId: newSupplier.id }));
-                                                        clearError('supplierId');
-                                                    }
-                                                })
-                                                .catch(() => alert(t('فشل في إضافة المورد')))
-                                                .finally(() => setSubmitting(false));
+                                                    .then(res => {
+                                                        if (res.ok) return res.json();
+                                                        throw new Error();
+                                                    })
+                                                    .then(newSupplier => {
+                                                        if (newSupplier && newSupplier.id) {
+                                                            setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newSupplier]);
+                                                            setForm((f: any) => ({ ...f, supplierId: newSupplier.id }));
+                                                            clearError('supplierId');
+                                                        }
+                                                    })
+                                                    .catch(() => alert(t('فشل في إضافة المورد')))
+                                                    .finally(() => setSubmitting(false));
                                             }}
                                             value={form.supplierId}
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
@@ -526,21 +529,21 @@ export default function NewPurchasePage() {
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId}
-                                            onChange={v => { 
-                                                setEntryItemId(v); 
-                                                clearError('entryItemId'); 
+                                            onChange={v => {
+                                                setEntryItemId(v);
+                                                clearError('entryItemId');
                                                 setTimeout(() => qtyRef.current?.focus(), 50);
                                             }}
                                             onCreate={handleCreateItem}
-                                            icon={Search} placeholder={isContracting ? t("اختر البند/المادة...") : t("اختر الصنف...")} 
+                                            icon={Search} placeholder={isContracting ? t("اختر البند/المادة...") : t("اختر الصنف...")}
                                             options={items.map(i => {
                                                 const s = i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0;
                                                 return {
-                                                    value: i.id, 
+                                                    value: i.id,
                                                     label: i.name,
                                                     sub: `${t('متاح:')} ${s}`
                                                 };
-                                            })} 
+                                            })}
                                         />
                                         <InlineError field="entryItemId" />
                                     </div>
@@ -548,10 +551,10 @@ export default function NewPurchasePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <PriceInput 
+                                        <PriceInput
                                             ref={qtyRef}
-                                            value={entryQty} 
-                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
+                                            value={entryQty}
+                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }}
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
                                             textAlign="center"
@@ -566,10 +569,10 @@ export default function NewPurchasePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <PriceInput 
+                                        <PriceInput
                                             ref={priceRef}
-                                            value={entryPrice} 
-                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
+                                            value={entryPrice}
+                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }}
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary }}
                                             textAlign="center"
@@ -592,9 +595,9 @@ export default function NewPurchasePage() {
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {[isContracting ? t('المادة / بند العمل') : t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => (
-                                                <th key={i} style={{ 
-                                                    textAlign: i === 0 ? 'start' : 'center', 
-                                                    padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO 
+                                                <th key={i} style={{
+                                                    textAlign: i === 0 ? 'start' : 'center',
+                                                    padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
@@ -618,13 +621,13 @@ export default function NewPurchasePage() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px',  color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>}
+                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>}
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
                                                 <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {isContracting ? t('المواد/البنود') : t('الأصناف')}</td>
-                                                <td style={{ padding: '12px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
+                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>
@@ -672,7 +675,7 @@ export default function NewPurchasePage() {
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <PriceInput 
+                                            <PriceInput
                                                 value={form.discountAmt || 0}
                                                 onChange={val => {
                                                     setForm((f: any) => ({
@@ -707,7 +710,7 @@ export default function NewPurchasePage() {
                                                 <span style={{ position: 'absolute', insetInlineEnd: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
-                                                <PriceInput 
+                                                <PriceInput
                                                     value={form.taxAmount}
                                                     onChange={val => {
                                                         setForm((f: any) => ({
@@ -746,7 +749,7 @@ export default function NewPurchasePage() {
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <PriceInput 
+                                            <PriceInput
                                                 value={form.paidAmount}
                                                 onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
                                                 style={{ height: '48px', fontSize: '16px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}

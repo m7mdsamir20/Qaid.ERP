@@ -177,7 +177,7 @@ export async function downloadInvoicePDF(id: string, _filename?: string): Promis
             try {
                 const errData = await res.json();
                 if (errData.error) errorText = errData.error;
-            } catch {}
+            } catch { }
             throw new Error(errorText);
         }
         const blob = await res.blob();
@@ -302,6 +302,50 @@ export async function downloadInstallmentPDF(id: string): Promise<void> {
         console.error(e);
         throw new Error(e.message || 'فشل تحميل PDF');
     }
+}
+
+/* ── Iframe print (no popup, works after async) ───────────────── */
+
+export function printHtmlViaIframe(html: string, onAfterPrint?: () => void): void {
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;width:0;height:0;left:-9999px;top:-9999px;border:none;';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) { onAfterPrint?.(); return; }
+
+    doc.open(); doc.write(html); doc.close();
+
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        if (onAfterPrint) {
+            iframe.contentWindow!.onafterprint = () => {
+                if (document.body.contains(iframe)) document.body.removeChild(iframe);
+                onAfterPrint();
+            };
+        } else {
+            setTimeout(() => { if (document.body.contains(iframe)) document.body.removeChild(iframe); }, 60000);
+        }
+        iframe.contentWindow?.print();
+    }, 500);
+}
+
+export async function printInvoiceViaIframe(id: string, onAfterPrint?: () => void): Promise<void> {
+    const res = await fetch(`/api/print/invoice/${id}?html=1`);
+    const html = await res.text();
+    printHtmlViaIframe(html, onAfterPrint);
+}
+
+export async function printVoucherViaIframe(id: string, onAfterPrint?: () => void): Promise<void> {
+    const res = await fetch(`/api/print/voucher/${id}?html=1`);
+    const html = await res.text();
+    printHtmlViaIframe(html, onAfterPrint);
+}
+
+export async function printQuotationViaIframe(id: string, onAfterPrint?: () => void): Promise<void> {
+    const res = await fetch(`/api/print/quotation/${id}?html=1`);
+    const html = await res.text();
+    printHtmlViaIframe(html, onAfterPrint);
 }
 
 /* ── Reports ──────────────────────────────────────────────────── */
