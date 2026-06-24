@@ -314,7 +314,10 @@ export function printHtmlViaIframe(html: string, onAfterPrint?: () => void): voi
     const doc = iframe.contentDocument || iframe.contentWindow?.document;
     if (!doc) { onAfterPrint?.(); return; }
 
-    doc.open(); doc.write(html); doc.close();
+    // Strip any auto-print scripts so the iframe doesn't fire a second print dialog
+    const cleanHtml = html.replace(/<script[^>]*>[\s\S]*?window\.print[\s\S]*?<\/script>/gi, '');
+
+    doc.open(); doc.write(cleanHtml); doc.close();
 
     setTimeout(() => {
         iframe.contentWindow?.focus();
