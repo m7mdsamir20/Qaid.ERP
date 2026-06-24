@@ -311,21 +311,7 @@ export default function AttendancePage() {
                     </div>
                 )}
 
-                {/* Save Footer */}
-                {!loading && rows.length > 0 && (
-                    <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'flex-end' }}>
-                        <button
-                            onClick={handleSaveAll}
-                            disabled={saving}
-                            style={{ height: '44px', padding: '0 32px', borderRadius: '12px', background: saving ? 'rgba(37,106,244,0.3)' : C.primary, border: 'none', color: '#fff', fontWeight: 700, fontSize: '14px', cursor: saving ? 'not-allowed' : 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}
-                        >
-                            {saving ? <Loader2 size={16} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={16} />}
-                            {saving ? 'جاري الحفظ...' : 'حفظ جميع السجلات'}
-                        </button>
-                    </div>
-                )}
-
-                <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }` }} />
+<style dangerouslySetInnerHTML={{ __html: `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }` }} />
             </div>
         </DashboardLayout>
     );

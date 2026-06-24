@@ -840,9 +840,10 @@ input[type="date"] {
   cursor: pointer;
 }
 
-/* Date/Datetime Calendar Icon - Standard Primary Blue */
+/* Date/Datetime/Time Calendar Icon - Standard Primary Blue */
 input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
   filter: invert(34%) sepia(91%) saturate(2366%) hue-rotate(212deg) brightness(98%) contrast(97%);
   opacity: 1 !important;
   cursor: pointer;
@@ -850,7 +851,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover,
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
 }
 

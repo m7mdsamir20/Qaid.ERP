@@ -88,7 +88,7 @@ export default function HolidaysPage() {
             />
 
             {toast && (
-                <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 9999, padding: '12px 24px', borderRadius: '10px', background: toastType === 'success' ? '#10b981' : '#ef4444', color: '#fff', fontFamily: CAIRO, fontWeight: 700, fontSize: '14px' }}>
+                <div style={{ position: 'fixed', top: '20px', left: '50%', transform: 'translateX(-50%)', zIndex: 999999, padding: '12px 24px', borderRadius: '10px', background: toastType === 'success' ? '#10b981' : '#ef4444', color: '#fff', fontFamily: CAIRO, fontWeight: 700, fontSize: '14px' }}>
                     {toast}
                 </div>
             )}

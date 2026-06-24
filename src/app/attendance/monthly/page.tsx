@@ -153,9 +153,9 @@ export default function MonthlyAttendancePage() {
                     <div>
                         <label style={LS}>السنة</label>
                         <CustomSelect
-                            value={year}
+                            value={String(year)}
                             onChange={val => setYear(Number(val))}
-                            options={years.map(y => ({ value: y, label: String(y) }))}
+                            options={years.map(y => ({ value: String(y), label: String(y) }))}
                             hideSearch={true}
                             style={{ width: '120px', height: '42px' }}
                         />
@@ -184,7 +184,7 @@ export default function MonthlyAttendancePage() {
                     </div>
                 ) : data ? (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: `${200 + data.days.length * 50}px` }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: `${200 + data.days.length * 38}px` }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     <th style={{ padding: '12px 16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textSecondary, minWidth: '180px', position: 'sticky', right: 0, background: C.card, zIndex: 10, borderLeft: `1px solid ${C.border}` }}>
@@ -195,7 +195,7 @@ export default function MonthlyAttendancePage() {
                                         const dayOfWeek = new Date(d).getDay();
                                         const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
                                         return (
-                                            <th key={d} style={{ padding: '8px 4px', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: isWeekend ? '#f59e0b' : C.textSecondary, minWidth: '44px' }}>
+                                            <th key={d} style={{ padding: '6px 2px', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: isWeekend ? '#f59e0b' : C.textSecondary, minWidth: '36px' }}>
                                                 {dayNum}
                                             </th>
                                         );
