@@ -100,7 +100,6 @@ export default function HolidaysPage() {
                     </div>
                 ) : holidays.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '60px', color: C.textSecondary, fontFamily: CAIRO }}>
-                        <CalendarDays size={48} style={{ opacity: 0.3, marginBottom: '12px' }} />
                         <p>لا توجد عطلات رسمية مضافة بعد</p>
                     </div>
                 ) : (
@@ -150,8 +149,27 @@ export default function HolidaysPage() {
                             <label style={{ display: 'block', fontFamily: CAIRO, fontSize: '13px', color: C.textSecondary, marginBottom: '6px' }}>تاريخ العطلة *</label>
                             <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontFamily: CAIRO, fontSize: '14px', color: C.textPrimary }}>
-                            <input type="checkbox" checked={form.isRecurring} onChange={e => setForm(f => ({ ...f, isRecurring: e.target.checked }))} style={{ width: '16px', height: '16px', accentColor: C.primary }} />
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontFamily: CAIRO, fontSize: '14px', color: C.textPrimary, userSelect: 'none' }}>
+                            <span style={{
+                                position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                width: '20px', height: '20px', borderRadius: '6px', flexShrink: 0,
+                                border: form.isRecurring ? `2px solid ${C.primary}` : `2px solid ${C.border}`,
+                                background: form.isRecurring ? C.primary : 'transparent',
+                                transition: 'all 0.2s ease',
+                                boxShadow: form.isRecurring ? `0 0 0 3px ${C.primary}22` : 'none',
+                            }}>
+                                <input
+                                    type="checkbox"
+                                    checked={form.isRecurring}
+                                    onChange={e => setForm(f => ({ ...f, isRecurring: e.target.checked }))}
+                                    style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', margin: 0 }}
+                                />
+                                {form.isRecurring && (
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                        <path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    </svg>
+                                )}
+                            </span>
                             عطلة سنوية متكررة
                         </label>
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', marginTop: '8px' }}>

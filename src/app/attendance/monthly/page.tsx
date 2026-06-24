@@ -152,13 +152,13 @@ export default function MonthlyAttendancePage() {
                     </div>
                     <div>
                         <label style={LS}>السنة</label>
-                        <CustomSelect
-                            value={String(year)}
-                            onChange={val => setYear(Number(val))}
-                            options={years.map(y => ({ value: String(y), label: String(y) }))}
-                            hideSearch={true}
-                            style={{ width: '120px', height: '42px' }}
-                        />
+                        <select
+                            value={year}
+                            onChange={e => setYear(Number(e.target.value))}
+                            style={{ ...IS, width: '120px', height: '42px', fontFamily: CAIRO, fontWeight: 600 }}
+                        >
+                            {years.map(y => <option key={y} value={y}>{y}</option>)}
+                        </select>
                     </div>
                     <div style={{ marginBottom: '2px' }}>
                         <button onClick={fetchData} style={{ height: '42px', padding: '0 20px', borderRadius: '10px', background: C.primary, border: 'none', color: '#fff', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}>
@@ -200,8 +200,8 @@ export default function MonthlyAttendancePage() {
                                             </th>
                                         );
                                     })}
-                                    <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: '11px', fontWeight: 700, color: C.textSecondary, minWidth: '200px', borderRight: `1px solid ${C.border}` }}>
-                                        الملخص
+                                    <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: '11px', fontWeight: 700, color: '#818cf8', minWidth: '200px', borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.08)', letterSpacing: '0.5px' }}>
+                                        ◀ الملخص
                                     </th>
                                 </tr>
                             </thead>
@@ -235,7 +235,7 @@ export default function MonthlyAttendancePage() {
                                             </td>
                                         ))}
                                         {/* Summary */}
-                                        <td style={{ padding: '10px', borderRight: `1px solid ${C.border}` }}>
+                                        <td style={{ padding: '10px', borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.05)' }}>
                                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
                                                 {[
                                                     { key: 'present', val: emp.summary.present, color: '#10b981', label: 'ح' },
@@ -271,7 +271,7 @@ export default function MonthlyAttendancePage() {
                                             </div>
                                         </td>
                                     ))}
-                                    <td style={{ borderRight: `1px solid ${C.border}` }} />
+                                    <td style={{ borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.05)' }} />
                                 </tr>
                             </tbody>
                         </table>

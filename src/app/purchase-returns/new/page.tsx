@@ -532,7 +532,18 @@ export default function NewPurchaseReturnPage() {
                                                         onMouseLeave={e => !fullyReturned && (e.currentTarget.style.background = l.selected ? `${C.primary}04` : 'transparent')}
                                                     >
                                                         <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                            {!fullyReturned && <input type="checkbox" checked={l.selected} onChange={() => toggleLine(i)} style={{ width: 14, height: 14, cursor: 'pointer', accentColor: C.primary }} />}
+                                                        {!fullyReturned && (
+                                                            <span onClick={() => toggleLine(i)} style={{
+                                                                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                                                width: '18px', height: '18px', borderRadius: '5px', flexShrink: 0, cursor: 'pointer',
+                                                                border: l.selected ? `2px solid ${C.primary}` : `2px solid ${C.border}`,
+                                                                background: l.selected ? C.primary : 'transparent',
+                                                                transition: 'all 0.2s ease',
+                                                                boxShadow: l.selected ? `0 0 0 3px ${C.primary}22` : 'none',
+                                                            }}>
+                                                                {l.selected && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                                                            </span>
+                                                        )}
                                                         </td>
                                                         <td style={{ padding: '12px' }}>
                                                             <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>

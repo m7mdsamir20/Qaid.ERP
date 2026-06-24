@@ -707,8 +707,18 @@ export default function OrdersHistoryPage() {
                                                     onChange={e => setCancelReasonInput(e.target.value)}
                                                     style={{ width: '100%', padding: '10px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', color: C.textPrimary, marginBottom: '10px', fontFamily: CAIRO, fontSize: '13px' }}
                                                 />
-                                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer' }}>
-                                                    <input type="checkbox" checked={revertInventoryCheck} onChange={e => setRevertInventoryCheck(e.target.checked)} />
+                                                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, cursor: 'pointer', userSelect: 'none' }}>
+                                                    <span style={{
+                                                        position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                                        width: '18px', height: '18px', borderRadius: '5px', flexShrink: 0,
+                                                        border: revertInventoryCheck ? `2px solid ${C.primary}` : `2px solid ${C.border}`,
+                                                        background: revertInventoryCheck ? C.primary : 'transparent',
+                                                        transition: 'all 0.2s ease',
+                                                        boxShadow: revertInventoryCheck ? `0 0 0 3px ${C.primary}22` : 'none',
+                                                    }}>
+                                                        <input type="checkbox" checked={revertInventoryCheck} onChange={e => setRevertInventoryCheck(e.target.checked)} style={{ position: 'absolute', opacity: 0, inset: 0, width: '100%', height: '100%', cursor: 'pointer', margin: 0 }} />
+                                                        {revertInventoryCheck && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                                                    </span>
                                                     {t('إرجاع المكونات إلى المخزن (إلغاء الاستهلاك)')}
                                                 </label>
                                                 <div style={{ display: 'flex', gap: '8px' }}>

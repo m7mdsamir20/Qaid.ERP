@@ -495,18 +495,28 @@ export default function SalesRepresentativesPage() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px' }}>
-                            <input
-                                type="checkbox"
-                                id="isActiveCheck"
-                                checked={isActive}
-                                onChange={e => setIsActive(e.target.checked)}
-                                style={{ width: '16px', height: '16px', accentColor: C.primary, cursor: 'pointer' }}
-                            />
-                            <label htmlFor="isActiveCheck" style={{ fontSize: '13px', color: '#f1f5f9', cursor: 'pointer', fontFamily: CAIRO }}>
+                        <label htmlFor="isActiveCheck" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px', cursor: 'pointer', userSelect: 'none' }}>
+                            <span style={{
+                                position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                                width: '20px', height: '20px', borderRadius: '6px', flexShrink: 0,
+                                border: isActive ? `2px solid ${C.primary}` : `2px solid ${C.border}`,
+                                background: isActive ? C.primary : 'transparent',
+                                transition: 'all 0.2s ease',
+                                boxShadow: isActive ? `0 0 0 3px ${C.primary}22` : 'none',
+                            }}>
+                                <input
+                                    type="checkbox"
+                                    id="isActiveCheck"
+                                    checked={isActive}
+                                    onChange={e => setIsActive(e.target.checked)}
+                                    style={{ position: 'absolute', opacity: 0, inset: 0, width: '100%', height: '100%', cursor: 'pointer', margin: 0 }}
+                                />
+                                {isActive && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                            </span>
+                            <span style={{ fontSize: '13px', color: '#f1f5f9', fontFamily: CAIRO }}>
                                 {t('مندوب نشط وعامل')}
-                            </label>
-                        </div>
+                            </span>
+                        </label>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>

@@ -220,12 +220,12 @@ export default function EmployeesPage() {
                             header: t('المنصب والقسم'),
                             style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Employee) => (
-                                <>
-                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.position || '—'}</div>
-                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}>{row.position || '—'}</div>
+                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                                         <Building2 size={12} /> {row.department?.name || t('غير مصنف')}
                                     </div>
-                                </>
+                                </div>
                             )
                         },
                         {
@@ -269,9 +269,9 @@ export default function EmployeesPage() {
                         },
                         {
                             header: t('الإجراءات'),
-                            style: { textAlign: 'center' } as React.CSSProperties,
+                            style: { textAlign: 'center', width: '120px' } as React.CSSProperties,
                             cell: (row: Employee) => (
-                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', alignItems: 'center' }}>
                                     <button
                                         onClick={() => router.push(`/employees/${row.id}`)}
                                         style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
