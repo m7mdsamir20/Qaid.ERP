@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
@@ -13,6 +13,7 @@ import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
 import { ShoppingCart, Search, Calendar, Loader2, ArrowUpRight, ArrowDownRight, Activity, DollarSign } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -154,6 +155,8 @@ export default function PurchasesReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -163,9 +166,27 @@ export default function PurchasesReportPage() {
                     backTab="sales-purchases"
                     printTitle={t("تقرير المشتريات")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
+                    branchName={selectedBranchName}
                 />
 
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Branch Filter (Placed before dates) */}
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
@@ -193,61 +214,49 @@ export default function PurchasesReportPage() {
                         </div>
                     </div>
 
-                    <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: 1 }}>
-                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                            <div style={{ minWidth: '180px', flex: 1 }}>
-                                <CustomSelect
-                                    value={branchId}
-                                    onChange={v => setBranchId(v)}
-                                    placeholder={t("كل الفروع")}
-                                    hideSearch
-                                    style={{ background: C.card, border: `1px solid ${C.border}` }}
-                                    options={[
-                                        { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                    ]}
-                                />
-                            </div>
-                        )}
-                        <button className="update-btn" onClick={fetchReport} style={{
-                            height: '42px', padding: '0 24px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                        }}>
-                            <Search size={16} /> {t('تحديث البيانات')}
-                        </button>
-                    </div>
+                    <button className="update-btn" onClick={fetchReport} style={{
+                        height: '42px', padding: '0 24px', borderRadius: '12px',
+                        background: C.primary, color: '#fff', border: 'none',
+                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
+                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
+                    }}>
+                        <Search size={16} /> {t('تحديث البيانات')}
+                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
                     <>
                         {data && data.invoices.length > 0 && (
-                            <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                                {[
-                                    { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#256af4', icon: <ShoppingCart size={18} /> },
-                                    { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
-                                    { label: t('المبالغ المسددة'), value: fmt(data.totalPaid), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                    { label: t('الأرصدة المستحقة'), value: fmt(data.totalRemaining), color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', icon: <DollarSign size={18} /> },
-                                ].map((s, i) => (
-                                    <div key={i} style={{
-                                        background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                        padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        transition: 'all 0.2s'
-                                    }}>
-                                        <div style={{ textAlign: 'center'}}>
-                                            <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                                <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                                <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{t(getCurrencyName(currency))}</span>
-                                            </div>
-                                        </div>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                            {s.icon}
-                                        </div>
-                                    </div>
-                                ))}
+                            <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '24px' }}>
+                                <StatCard
+                                    label={t('إجمالي المشتريات')}
+                                    value={fmt(data.totalPurchases)}
+                                    suffix={sym}
+                                    icon={<ShoppingCart size={18} />}
+                                    color="#256af4"
+                                />
+                                <StatCard
+                                    label={t('إجمالي الخصومات')}
+                                    value={fmt(data.totalDiscount)}
+                                    suffix={sym}
+                                    icon={<ArrowDownRight size={18} />}
+                                    color="#fb923c"
+                                />
+                                <StatCard
+                                    label={t('المبالغ المسددة')}
+                                    value={fmt(data.totalPaid)}
+                                    suffix={sym}
+                                    icon={<ArrowUpRight size={18} />}
+                                    color="#10b981"
+                                />
+                                <StatCard
+                                    label={t('الأرصدة المستحقة')}
+                                    value={fmt(data.totalRemaining)}
+                                    suffix={sym}
+                                    icon={<DollarSign size={18} />}
+                                    color={data.totalRemaining > 0 ? '#fb7185' : '#10b981'}
+                                />
                             </div>
                         )}
 

@@ -21,7 +21,13 @@ export const GET = withProtection(async (request, session) => {
             totalProfit: number;
         }
 
-        const branchFilter = getBranchFilter(session);
+        const { searchParams } = new URL(request.url);
+        const queryBranchId = searchParams.get('branchId');
+
+        let branchFilter = getBranchFilter(session);
+        if (queryBranchId && queryBranchId !== 'all') {
+            branchFilter = { branchId: queryBranchId };
+        }
 
         // Fetch invoice lines from 'sale' invoices
         const invoiceLines = await prisma.invoiceLine.findMany({

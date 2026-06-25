@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Package, TrendingUp, Search, Activity } from 'lucide-react';
+import CustomSelect from '@/components/CustomSelect';
 
 
 
@@ -38,14 +39,32 @@ export default function TopSellingReportPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
-        fetch('/api/reports/top-selling-items')
+        fetch('/api/branches')
+            .then(r => r.json())
+            .then(d => {
+                if (Array.isArray(d)) setBranches(d);
+            })
+            .catch(() => {});
+    }, []);
+
+    const fetchReport = () => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        fetch(`/api/reports/top-selling-items?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => { if (d.error) throw new Error(d.error); setData(d); })
             .catch(() => setError(t('فشل تحميل بيانات الأصناف الأكثر مبيعاً')))
             .finally(() => setLoading(false));
-    }, []);
+    };
+
+    useEffect(() => {
+        fetchReport();
+    }, [branchId]);
 
     const filtered = data.filter(i => 
         (i.name || '').toLowerCase().includes(q.toLowerCase()) || 
@@ -73,11 +92,12 @@ export default function TopSellingReportPage() {
         {
             header: t('الكمية'),
             cell: (row: TopSellingItem) => (
-                <>
+                <div style={{ textAlign: 'center' }}>
                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(row.totalQuantity)}</span>
-                    <span style={{ fontSize: '11px', color: C.textSecondary, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? row.unit : t(row.unit)}</span>
-                </>
-            )
+                    <span style={{ fontSize: '11px', color: C.textSecondary, marginInlineStart: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? row.unit : t(row.unit)}</span>
+                </div>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('القيمة'),
@@ -88,18 +108,12 @@ export default function TopSellingReportPage() {
         {
             header: t('الربح التقديري'),
             type: 'number' as const,
-            cell: (row: TopSellingItem) => (
-                <span style={{
-                    color: '#10b981', background: 'rgba(16,185,129,0.08)',
-                    padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                    fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT
-                }}>
-                    <Currency amount={row.totalProfit} />
-                </span>
-            ),
-            style: { textAlign: 'center' } as React.CSSProperties
+            cell: (row: TopSellingItem) => <Currency amount={row.totalProfit} />,
+            style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981', textAlign: 'center' } as React.CSSProperties
         }
     ];
+
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
 
     return (
         <DashboardLayout>
@@ -108,18 +122,34 @@ export default function TopSellingReportPage() {
                     title={isServices ? t("تحليل الخدمات الأكثر طلباً") : t("تحليل الأصناف الأكثر مبيعاً")}
                     subtitle={isServices ? t("نظرة شاملة على الخدمات الأعلى حركة وطلباً في نشاطك.") : t("نظرة شاملة على المنتجات الأعلى حركة وكفاءة ربحية في محفظة مبيعاتك.")}
                     backTab="sales-purchases"
+                    branchName={selectedBranchName}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                            {branches.length > 0 && (
+                                <div style={{ width: '180px' }}>
+                                    <CustomSelect
+                                        value={branchId}
+                                        onChange={(v: string) => setBranchId(v)}
+                                        placeholder={t("كل الفروع")}
+                                        hideSearch
+                                        style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                        options={[
+                                            { value: 'all', label: t('كل الفروع') },
+                                            ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                        ]}
+                                    />
+                                </div>
+                            )}
+                            <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
                                 <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
                                     placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
                                     value={q} onChange={e => setQ(e.target.value)}
                                     style={{ 
-                                        ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
+                                        ...IS, width: '100%', height: '42px', paddingInlineStart: '44px', 
                                         borderRadius: '12px', border: `1px solid ${C.border}`, 
                                         background: C.card, color: C.textPrimary, fontSize: '13.5px', 
                                         outline: 'none', fontFamily: CAIRO, fontWeight: 500
