@@ -82,10 +82,7 @@ export default function TopSellingReportPage() {
         {
             header: isServices ? t("بيانات الخدمة") : t("بيانات الصنف"),
             cell: (row: TopSellingItem) => (
-                <>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
-                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '3px', fontFamily: OUTFIT }}>{row.code} — {row.category}</div>
-                </>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{row.name}</div>
             ),
             style: { minWidth: '150px' }
         },
