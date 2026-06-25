@@ -62,7 +62,12 @@ export default function CustomerStatementPage() {
     const { fMoney, symbol, currency } = useCurrency();
 
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [selectedId, setSelectedId] = useState('');
+    const [selectedId, setSelectedId] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return new URLSearchParams(window.location.search).get('customerId') || '';
+        }
+        return '';
+    });
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<CustomerStatementData | null>(null);
     const [dateFrom, setDateFrom] = useState('');
@@ -92,15 +97,12 @@ export default function CustomerStatementPage() {
             .catch(() => { });
     }, []);
 
-    // 2. Initial Selection from URL (Run only ONCE on mount)
+    // 2. Auto-fetch on selection/dates changes
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const urlId = params.get('customerId');
-        if (urlId) {
-            setSelectedId(urlId);
-            fetchLedger(urlId);
+        if (selectedId) {
+            fetchLedger(selectedId);
         }
-    }, []);
+    }, [selectedId, dateFrom, dateTo, fetchLedger]);
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
@@ -296,18 +298,7 @@ export default function CustomerStatementPage() {
                                 }}
                             />
                         </div>
-                        <button className="update-btn" onClick={() => fetchLedger()} disabled={loading} style={{
-                            height: '42px', padding: '0 24px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                        }}>
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-                            {t('تحديث البيانات')}
-                        </button>
                     </div>
-                </div>
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>

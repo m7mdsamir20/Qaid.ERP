@@ -83,7 +83,7 @@ export default function PurchasesReportPage() {
     const exportToPDF = () => window.print();
     const sym = t(getCurrencyName(currency));
 
-    useEffect(() => { fetchReport(); }, []);
+    useEffect(() => { fetchReport(); }, [from, to, branchId]);
 
     const filteredInvoices = data ? data.invoices.filter(inv => {
         const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
@@ -134,12 +134,7 @@ export default function PurchasesReportPage() {
             header: t('المتبقي'),
             type: 'number',
             cell: (row: Invoice) => (
-                <span style={{
-                    fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT,
-                    color: row.remaining > 0 ? '#fb7185' : '#10b981',
-                    background: row.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
-                    padding: '4px 12px', borderRadius: '10px', border: `1px solid ${row.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
-                }}><Currency amount={row.remaining} /></span>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: row.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={row.remaining} /></span>
             ),
             style: { textAlign: 'center' } as React.CSSProperties
         }
@@ -213,16 +208,6 @@ export default function PurchasesReportPage() {
                             />
                         </div>
                     </div>
-
-                    <button className="update-btn" onClick={fetchReport} style={{
-                        height: '42px', padding: '0 24px', borderRadius: '12px',
-                        background: C.primary, color: '#fff', border: 'none',
-                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                    }}>
-                        <Search size={16} /> {t('تحديث البيانات')}
-                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (

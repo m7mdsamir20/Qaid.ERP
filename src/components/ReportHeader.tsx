@@ -203,6 +203,50 @@ tfoot tr *{background:#e0e0e0!important}
 tfoot td{font-weight:800;font-size:11.5px;border:1px solid #bbb;padding:8px 7px;white-space:nowrap}
 tfoot td:first-child{text-align:${firstColAlign}}
 
+/* ── Print Grid Layout and Cards ── */
+.print-grid-layout {
+  display: grid !important;
+  grid-template-columns: 1fr 280px !important;
+  gap: 20px !important;
+  margin-bottom: 20px !important;
+}
+.print-card {
+  border: 1px solid #bbb !important;
+  border-radius: 6px !important;
+  padding: 14px 18px !important;
+  background: #f8f8f8 !important;
+  margin-bottom: 14px !important;
+  display: block !important;
+}
+.print-card-title {
+  font-size: 10px !important;
+  color: #555 !important;
+  font-weight: 700 !important;
+  margin-bottom: 4px !important;
+}
+.print-card-value {
+  font-size: 14px !important;
+  color: #000 !important;
+  font-weight: 800 !important;
+}
+.print-progress-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin-bottom: 8px !important;
+}
+.print-progress-bar {
+  height: 5px !important;
+  background: #e0e0e0 !important;
+  border-radius: 10px !important;
+  flex: 1 !important;
+}
+.print-progress-fill {
+  height: 100% !important;
+  background: #256af4 !important;
+  border-radius: 10px !important;
+}
+
 @media print{
   @page{size:A4 landscape;margin:6mm 10mm}
   body{

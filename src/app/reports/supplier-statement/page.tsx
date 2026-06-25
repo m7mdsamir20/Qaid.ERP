@@ -60,7 +60,12 @@ export default function SupplierStatementPage() {
     const currency = session?.user?.currency || 'EGP';
 
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-    const [selectedId, setSelectedId] = useState('');
+    const [selectedId, setSelectedId] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return new URLSearchParams(window.location.search).get('supplierId') || '';
+        }
+        return '';
+    });
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState<SupplierStatementData | null>(null);
     const [dateFrom, setDateFrom] = useState('');
@@ -90,15 +95,12 @@ export default function SupplierStatementPage() {
             .catch(() => { });
     }, []);
 
-    // 2. Initial Selection from URL (Run only ONCE on mount)
+    // 2. Auto-fetch on selection/dates changes
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const urlId = params.get('supplierId');
-        if (urlId) {
-            setSelectedId(urlId);
-            fetchStatement(urlId);
+        if (selectedId) {
+            fetchStatement(selectedId);
         }
-    }, []);
+    }, [selectedId, dateFrom, dateTo, fetchStatement]);
 
     const sym = t(getCurrencyName(currency));
     const handlePrint = () => window.print();
@@ -295,18 +297,8 @@ export default function SupplierStatementPage() {
                                 }}
                             />
                         </div>
-                        <button className="update-btn" onClick={() => fetchStatement()} disabled={loading} style={{
-                            height: '42px', padding: '0 24px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                        }}>
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-                            {t('تحديث البيانات')}
-                        </button>
+                        </div>
                     </div>
-                </div>
 
                 {loading && !suppliers.length ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>

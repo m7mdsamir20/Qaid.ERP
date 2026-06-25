@@ -74,7 +74,7 @@ export default function SalesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    useEffect(() => { fetchReport(); }, []);
+    useEffect(() => { fetchReport(); }, [from, to, branchId]);
 
     const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
 
@@ -134,16 +134,6 @@ export default function SalesReportPage() {
                             />
                         </div>
                     </div>
-
-                    <button className="update-btn" onClick={fetchReport} style={{
-                        height: '42px', padding: '0 24px', borderRadius: '12px',
-                        background: C.primary, color: '#fff', border: 'none',
-                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                    }}>
-                        <Search size={16} /> {t('تحديث البيانات')}
-                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : !data || data.invoices.length === 0 ? (
