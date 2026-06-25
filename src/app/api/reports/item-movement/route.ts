@@ -20,7 +20,7 @@ export const GET = withProtection(async (request, session) => {
 
         if (!itemId) {
             const availableItems = await prisma.item.findMany({
-                where: { companyId, type: 'raw' },
+                where: { companyId, type: { in: ['raw', 'product'] } },
                 select: { id: true, name: true, code: true }
             });
             return NextResponse.json({ items: availableItems });

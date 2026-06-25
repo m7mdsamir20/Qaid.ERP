@@ -11,10 +11,17 @@ import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 import { useEffect, useState } from 'react';
-import { Package, Search, Activity, Box, DollarSign, Loader2 } from 'lucide-react';
+import { Package, Search, Activity, Box, DollarSign, Loader2, TrendingUp } from 'lucide-react';
 import { SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
+
+interface BranchOption {
+    id: string;
+    name: string;
+}
 
 interface StockItem {
     id: string;
@@ -43,14 +50,25 @@ export default function InventoryReportPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [search, setSearch] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
-        fetch('/api/reports/inventory-report')
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    useEffect(() => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        fetch(`/api/reports/inventory-report?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => { if (d.error) throw new Error(d.error); setData(d); })
             .catch(() => setError(t('فشل تحميل بيانات المخزون')))
             .finally(() => setLoading(false));
-    }, []);
+    }, [branchId]);
 
     const filtered = data?.stocks.filter(s =>
         (s.item?.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
@@ -137,6 +155,8 @@ export default function InventoryReportPage() {
         }
     ];
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -145,38 +165,56 @@ export default function InventoryReportPage() {
                     subtitle={isServices ? t("عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة.") : t("عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة.")}
                     backTab="inventory"
                     printTitle={isServices ? t("قائمة أسعار الخدمات") : t("جرد المخازن (Inventory Statement)")}
+                    branchName={selectedBranchName}
                 />
 
                 {data && (
-                    <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                        {[
-                            { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#256af4', icon: <Package size={20} /> },
-                            ...(!isServices ? [
-                                { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
-                                { label: t('قيمة المخزون (تكلفة)'), value: formatNumber(data.totalValue), color: '#f59e0b', icon: <DollarSign size={20} /> },
-                            ] : [])
-                        ].map((s, i) => (
-                            <div key={i} style={{
-                                background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                            }}>
-                                <div style={{ textAlign: 'center'}}>
-                                    <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                        {i === 2 && <span style={{ fontSize: '10px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencySymbol(currency, lang)}</span>}
-                                    </div>
-                                </div>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                    {s.icon}
-                                </div>
-                            </div>
-                        ))}
+                    <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <StatCard
+                            label={isServices ? t('عدد الخدمات') : t('عدد الأصناف')}
+                            value={data.totalItems}
+                            icon={<Package size={18} />}
+                            color="#256af4"
+                            formatValue={true}
+                        />
+                        {!isServices && (
+                            <>
+                                <StatCard
+                                    label={t('إجمالي الكميات')}
+                                    value={data.totalQuantity}
+                                    icon={<Box size={18} />}
+                                    color="#10b981"
+                                    formatValue={true}
+                                />
+                                <StatCard
+                                    label={t('قيمة المخزون (تكلفة)')}
+                                    value={data.totalValue}
+                                    suffix={getCurrencySymbol(currency, lang)}
+                                    icon={<DollarSign size={18} />}
+                                    color="#f59e0b"
+                                    formatValue={true}
+                                />
+                            </>
+                        )}
                     </div>
                 )}
 
-                <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
-                    <div style={SEARCH_STYLE.wrapper}>
+                <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'center', display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '20px' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+                    <div style={{ ...SEARCH_STYLE.wrapper, flex: 1 }}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
                             placeholder={isServices ? t("ابحث باسم الخدمة أو الكود...") : t("ابحث باسم الصنف أو الكود أو المخزن...")}
@@ -195,12 +233,14 @@ export default function InventoryReportPage() {
                 )}
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <DataTable
-                        columns={columns}
-                        data={filtered}
-                        emptyIcon={Package}
-                        emptyMessage={t('لا توجد بيانات مخزون')}
-                    />
+                    <div className="print-table-container">
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Package}
+                            emptyMessage={t('لا توجد بيانات مخزون')}
+                        />
+                    </div>
                 )}
             </div>
         </DashboardLayout>

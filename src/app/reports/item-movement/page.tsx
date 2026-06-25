@@ -9,8 +9,9 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 import { useSession } from 'next-auth/react';
-import { Package, Activity, Search, Loader2, Warehouse } from 'lucide-react';
+import { Package, Activity, Search, Loader2, Warehouse, TrendingUp, CheckCircle, Clock } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
 
 interface Movement {
@@ -239,27 +240,42 @@ export default function ItemMovementReportPage() {
                     </div>
                 ) : (
                     <>
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('الرصيد الكلي المتوفر'), value: itemDetails.totalStock.toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#10b981', icon: <Package size={20} /> },
-                                { label: t('إجمالي الحركات'), value: movements.length.toLocaleString('en-US'), unit: t('حركة'), color: C.primary, icon: <Activity size={20} /> },
-                                { label: t('إجمالي الوارد'), value: movements.filter(m => Number(m.quantity) > 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0).toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#10b981', icon: <Activity size={20} /> },
-                                { label: t('إجمالي الصادر'), value: movements.filter(m => Number(m.quantity) < 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0).toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#ef4444', icon: <Activity size={20} /> },
-                            ].map((s, i) => (
-                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>{s.unit}</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>{s.icon}</div>
-                                </div>
-                            ))}
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('الرصيد الكلي المتوفر')}
+                                value={itemDetails.totalStock}
+                                suffix={t(itemDetails.unit)}
+                                icon={<Package size={18} />}
+                                color="#10b981"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي الحركات')}
+                                value={movements.length}
+                                suffix={t('حركة')}
+                                icon={<Activity size={18} />}
+                                color={C.primary}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي الوارد')}
+                                value={movements.filter(m => Number(m.quantity) > 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0)}
+                                suffix={t(itemDetails.unit)}
+                                icon={<Activity size={18} />}
+                                color="#10b981"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي الصادر')}
+                                value={movements.filter(m => Number(m.quantity) < 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0)}
+                                suffix={t(itemDetails.unit)}
+                                icon={<Activity size={18} />}
+                                color="#ef4444"
+                                formatValue={true}
+                            />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
-                            <div>
+                            <div className="print-table-container">
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', paddingInlineStart: '4px' }}>
                                     <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
                                 </div>
@@ -271,7 +287,7 @@ export default function ItemMovementReportPage() {
                                 />
                             </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.4)' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
                                         <div style={{ width: 48, height: 48, borderRadius: '14px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>

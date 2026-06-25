@@ -12,6 +12,7 @@ import ReportHeader from '@/components/ReportHeader';
 import { AlertTriangle, Search, Box } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
+import CustomSelect from '@/components/CustomSelect';
 
 interface LowStockItem {
     id: string;
@@ -25,6 +26,11 @@ interface LowStockItem {
     value: number;
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function LowStockReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -34,14 +40,29 @@ export default function LowStockReportPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
-        fetch('/api/reports/low-stock-items')
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchReport = () => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        fetch(`/api/reports/low-stock-items?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => { if (d.error) throw new Error(d.error); setData(d); })
             .catch(() => setError(t('فشل تحميل بيانات الأصناف الناقصة')))
             .finally(() => setLoading(false));
-    }, []);
+    };
+
+    useEffect(() => {
+        fetchReport();
+    }, [branchId]);
 
     const filtered = data.filter(i =>
         (i.name || '').toLowerCase().includes(q.toLowerCase()) ||
@@ -101,6 +122,8 @@ export default function LowStockReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -108,12 +131,29 @@ export default function LowStockReportPage() {
                     title={t("أصناف تحت الحد الأدنى")}
                     subtitle={t("قائمة المنتجات التي أوشكت على النفاذ أو وصلت لمستوى إعادة الطلب.")}
                     backTab="inventory"
+                    printTitle={t("تقرير أصناف تحت الحد الأدنى")}
+                    branchName={selectedBranchName}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
-                            <div style={{ position: 'relative', flex: 1 }}>
+                        <div className="no-print" style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+                            {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                                <div style={{ minWidth: '180px' }}>
+                                    <CustomSelect
+                                        value={branchId}
+                                        onChange={v => setBranchId(v)}
+                                        placeholder={t("كل الفروع")}
+                                        hideSearch={true}
+                                        options={[
+                                            { value: 'all', label: t('كل الفروع') },
+                                            ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                        ]}
+                                    />
+                                </div>
+                            )}
+
+                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
                                 <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
                                     placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
@@ -126,9 +166,6 @@ export default function LowStockReportPage() {
                                     }}
                                 />
                             </div>
-                            <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
-                                {t('عدد النتائج:')} <span style={{ color: '#ef4444', fontWeight: 600, fontFamily: OUTFIT }}>{filtered.length}</span> {t('صنف')}
-                            </div>
                         </div>
 
                         {error && (
@@ -138,17 +175,22 @@ export default function LowStockReportPage() {
                             </div>
                         )}
 
-                        <DataTable
-                            columns={columns}
-                            data={filtered}
-                            emptyIcon={Box}
-                            emptyMessage={t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً')}
-                            isLoading={loading}
-                            footer={footerElement}
-                        />
+                        {loading ? (
+                            <TableSkeleton />
+                        ) : (
+                            <div className="print-table-container">
+                                <DataTable
+                                    columns={columns}
+                                    data={filtered}
+                                    emptyIcon={Box}
+                                    emptyMessage={t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً')}
+                                    footer={footerElement}
+                                />
+                            </div>
+                        )}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ background: 'linear-gradient(145deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 25px -10px rgba(239,68,68,0.2)' }}>
                             <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', marginBottom: '16px' }}>
                                 <AlertTriangle size={24} />

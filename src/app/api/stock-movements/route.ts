@@ -12,10 +12,14 @@ export const GET = withProtection(async (request, session) => {
         const type        = searchParams.get('type');
         const from        = searchParams.get('from');
         const to          = searchParams.get('to');
+        const branchId    = searchParams.get('branchId');
 
-        const where: any = { companyId, item: { type: 'raw' } };
+        const where: any = { companyId, item: { type: { in: ['raw', 'product'] } } };
         if (itemId)      where.itemId      = itemId;
         if (warehouseId) where.warehouseId = warehouseId;
+        if (branchId && branchId !== 'all') {
+            where.warehouse = { branchId };
+        }
         if (type)        where.type        = type;
         if (from || to) {
             where.date = {};

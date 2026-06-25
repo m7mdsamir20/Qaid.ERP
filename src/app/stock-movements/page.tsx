@@ -9,6 +9,7 @@ import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { DataTable } from '@/components/DataTable';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
 
 interface StockMovement {
     id: string;
@@ -21,6 +22,11 @@ interface StockMovement {
     warehouse: { name: string };
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function StockMovementsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -30,12 +36,22 @@ export default function StockMovementsPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<BranchOption[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
 
     const fetchData = useCallback(async () => {
         try {
+            setLoading(true);
             const params = new URLSearchParams();
             if (dateFrom) params.set('from', dateFrom);
             if (dateTo) params.set('to', dateTo);
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
             const url = `/api/stock-movements${params.toString() ? '?' + params.toString() : ''}`;
             const res = await fetch(url);
             if (res.ok) {
@@ -44,7 +60,7 @@ export default function StockMovementsPage() {
         } catch { } finally {
             setLoading(false);
         }
-    }, [dateFrom, dateTo]);
+    }, [dateFrom, dateTo, branchId]);
 
     useEffect(() => {
         fetchData();
@@ -90,6 +106,8 @@ export default function StockMovementsPage() {
         }
     };
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -97,29 +115,28 @@ export default function StockMovementsPage() {
                     title={t("حركات المخزون")}
                     subtitle={t("سجل كامل لجميع العمليات الصادرة والواردة، التحويلات الداخلية، وتسويات الجرد.")}
                     backTab="inventory"
-                    onExportPdf={() => window.print()}
+                    printTitle={t("تقرير حركات المخزون")}
+                    branchName={selectedBranchName}
+                    printDate={(dateFrom || dateTo) ? `${dateFrom ? t('من: ') + dateFrom : ''} ${dateTo ? t(' إلى: ') + dateTo : ''}` : undefined}
                 />
 
-                {/* Header للطباعة فقط */}
-                <div className="print-only">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                        <div style={{ textAlign: 'center' }}>
-                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
-                            {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الرقم الضريبي')}: {(session?.user as any)?.taxNumber}</div>}
-                            {(session?.user as any)?.commercialRegister && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('السجل التجاري')}: {(session?.user as any)?.commercialRegister}</div>}
-                            {(session?.user as any)?.phone && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الهاتف')}: {(session?.user as any)?.phone}</div>}
-                        </div>
-                        <div style={{ }}>
-                            <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{t('سجل حركات المخزون الشامل')}</h3>
-                        </div>
-                        <div style={{ maxWidth: '150px', textAlign: 'end' }}>
-                            {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
-                        </div>
-                    </div>
-                </div>
-
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                            <div style={{ minWidth: '180px' }}>
+                                <CustomSelect
+                                    value={branchId}
+                                    onChange={v => setBranchId(v)}
+                                    placeholder={t("كل الفروع")}
+                                    hideSearch={true}
+                                    options={[
+                                        { value: 'all', label: t('كل الفروع') },
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    ]}
+                                />
+                            </div>
+                        )}
+
                         <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
@@ -145,49 +162,43 @@ export default function StockMovementsPage() {
                         </div>
                     </div>
 
-                    <DataTable
-                        columns={[
-                            { header: t('التاريخ والوقت'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')} {new Date(row.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</span> },
-                            { header: t('نوع الحركة'), type: 'status', cell: (row) => {
-                                const tc = getTypeLabel(row.type, row.reference);
-                                return (
-                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '10px', background: tc.bg, border: `1px solid ${tc.border}`, color: tc.color, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>
-                                        {tc.icon} {tc.label}
-                                    </span>
-                                );
-                            }},
-                            { header: t('المرجع'), type: 'text', cell: (row) => <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{row.reference || '—'}</span> },
-                            { header: t('الصنف'), type: 'text', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.item?.name || '—'}</span> },
-                            { header: t('المخزن'), type: 'text', cell: (row) => <span style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{row.warehouse?.name || '—'}</span> },
-                            { header: t('الكمية'), type: 'number', cell: (row) => {
-                                const tc = getTypeLabel(row.type, row.reference);
-                                return <span style={{ fontSize: '13px', fontWeight: 600, color: tc.color, fontFamily: OUTFIT }}>{row.quantity > 0 ? '+' : ''}{formatNumber(row.quantity)}</span>;
-                            }},
-                        ]}
-                        data={filteredMovements}
-                        emptyIcon={Activity}
-                        emptyMessage={t('لا توجد حركات مخزنية')}
-                        isLoading={loading}
-                        loadingSkeleton={
-                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
-                            </div>
-                        }
-                    />
+                    <div className="print-table-container">
+                        <DataTable
+                            columns={[
+                                { header: t('التاريخ والوقت'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')} {new Date(row.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</span> },
+                                { header: t('نوع الحركة'), type: 'status', cell: (row) => {
+                                    const tc = getTypeLabel(row.type, row.reference);
+                                    return (
+                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', borderRadius: '10px', background: tc.bg, border: `1px solid ${tc.border}`, color: tc.color, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>
+                                            {tc.icon} {tc.label}
+                                        </span>
+                                    );
+                                }},
+                                { header: t('المرجع'), type: 'text', cell: (row) => <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{row.reference || '—'}</span> },
+                                { header: t('الصنف'), type: 'text', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.item?.name || '—'}</span> },
+                                { header: t('المخزن'), type: 'text', cell: (row) => <span style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{row.warehouse?.name || '—'}</span> },
+                                { header: t('الكمية'), type: 'number', cell: (row) => {
+                                    const tc = getTypeLabel(row.type, row.reference);
+                                    return <span style={{ fontSize: '13px', fontWeight: 600, color: tc.color, fontFamily: OUTFIT }}>{row.quantity > 0 ? '+' : ''}{formatNumber(row.quantity)}</span>;
+                                }},
+                            ]}
+                            data={filteredMovements}
+                            emptyIcon={Activity}
+                            emptyMessage={t('لا توجد حركات مخزنية')}
+                            isLoading={loading}
+                            loadingSkeleton={
+                                <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                                    <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                                    <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
+                                </div>
+                            }
+                        />
+                    </div>
                 </div>
             </div>
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
                 .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
             `}</style>
         </DashboardLayout>
     );
