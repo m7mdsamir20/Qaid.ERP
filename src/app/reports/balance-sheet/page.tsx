@@ -84,6 +84,7 @@ export default function BalanceSheetPage() {
         const toWD = (s: string) => s.replace(/[\u0660-\u0669]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
         const printDate = now.toLocaleDateString('en-ZA');
         const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
+        const branchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || t('الفرع الرئيسي'));
         const logo = company.logo || company.companyLogo || '';
         const companyName = company.companyName || company.name || '';
 
@@ -121,6 +122,7 @@ export default function BalanceSheetPage() {
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.grand-total-print, .grand-total-print * { background: #f0f0f0 !important; }
 body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:1.5}
 .page{padding:8mm 12mm}
 .rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:14px;direction:ltr}
@@ -140,19 +142,22 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
 <div class="rpt-header">
   <div class="rpt-logo">${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}</div>
   <div class="rpt-title-block">
-    <div class="rpt-title">${t('المركز المالي (Balance Sheet)')}</div>
-    <div class="rpt-meta"><span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDate} — ${printTime}</b></span></div>
+    <div class="rpt-title">${t('المركز المالي')}</div>
+    <div class="rpt-meta">
+      <span>${isRtl ? t("الفرع:") : 'Branch:'} <b>${branchName}</b></span>
+      <span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDate} — ${printTime}</b></span>
+    </div>
   </div>
   <div></div>
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-  <div>${sectionTable(t('الأصول (Assets)'), data.assets, t('إجمالي الأصول'), data.totalAssets, t('لا توجد أصول'))}</div>
+  <div>${sectionTable(t('الأصول'), data.assets, t('إجمالي الأصول'), data.totalAssets, t('لا توجد أصول'))}</div>
   <div>
-    ${sectionTable(t('الخصوم (Liabilities)'), data.liabilities, t('إجمالي الخصوم'), data.totalLiabilities, t('لا توجد خصوم'))}
-    ${sectionTable(t('حقوق الملكية (Equity)'), [...data.equities, { code: '—', name: t('صافي دخل الفترة'), type: '', balance: data.netIncome }], t('إجمالي حقوق الملكية'), data.totalEquities, t('لا توجد حقوق ملكية'))}
+    ${sectionTable(t('الخصوم'), data.liabilities, t('إجمالي الخصوم'), data.totalLiabilities, t('لا توجد خصوم'))}
+    ${sectionTable(t('حقوق الملكية'), [...data.equities, { code: '—', name: t('صافي دخل الفترة'), type: '', balance: data.netIncome }], t('إجمالي حقوق الملكية'), data.totalEquities, t('لا توجد حقوق ملكية'))}
   </div>
 </div>
-<div style="margin-top:12px;padding:12px 16px;background:#f0f0f0!important;border:2px solid #bbb;display:flex;justify-content:space-between;align-items:center">
+<div class="grand-total-print" style="margin-top:12px;padding:12px 16px;background:#f0f0f0!important;border:2px solid #bbb;display:flex;justify-content:space-between;align-items:center">
   <span style="font-size:13px;font-weight:900">${t('إجمالي الخصوم + حقوق الملكية')}</span>
   <span style="font-size:15px;font-weight:900">${fmt(data.totalLiabilitiesAndEquities)} <span style="font-family:Cairo,sans-serif;font-size:11px">${sym}</span></span>
 </div>
@@ -177,11 +182,12 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t("المركز المالي (Balance Sheet)")}
+                    title={t("المركز المالي")}
                     subtitle={t("يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد.")}
                     backTab="financial"
                     onPrint={handlePrint}
                     onExportPdf={handleDownloadPDF}
+                    branchName={branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '')}
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
@@ -240,7 +246,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                             <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ padding: '20px 24px', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#256af4' }}>
                                     <Landmark size={20} />
-                                    <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الأصول (Assets)')}</h3>
+                                    <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الأصول')}</h3>
                                 </div>
                                 <div style={{ padding: '16px', flex: 1 }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -267,7 +273,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                     <div style={{ padding: '16px 20px',  background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#fb7185' }}>
                                         <Scale size={18} />
-                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
+                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الخصوم')}</h3>
                                     </div>
                                     <div style={{ padding: '12px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -290,7 +296,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                     <div style={{ padding: '16px 20px', textAlign: 'center', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
                                         <Sigma size={18} />
-                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
+                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('حقوق الملكية')}</h3>
                                     </div>
                                     <div style={{ padding: '12px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -318,7 +324,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         </div>
 
                         {/* Grand Total Row */}
-                        <div style={{
+                        <div className="grand-total-row" style={{
                             padding: '24px 32px',
                             background: isBalanced ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                             borderRadius: '16px',
@@ -349,7 +355,10 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                     .no-print { display: none !important; }
                     .print-main-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
                     .print-table-container { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 0 !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div:not(.grand-total-row) { background: #fff !important; }
+                    .grand-total-row { background: inherit !important; }
+                    .grand-total-row * { background: transparent !important; }
+                    div { border-color: #e2e8f0 !important; }
                     div, span, h2, h3, p, small { color: #000 !important; }
                     .stat-value { font-size: 11px !important; color: #000 !important; }
                     .stat-label { font-size: 9px !important; color: #666 !important; }
