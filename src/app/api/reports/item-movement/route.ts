@@ -18,9 +18,13 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: "تاريخ البداية يجب أن يكون قبل تاريخ النهاية" }, { status: 400 });
         }
 
+        const bizType = (session.user as any).businessType?.toUpperCase() || 'TRADING';
+        const isRestaurant = bizType === 'RESTAURANTS';
+        const itemTypeFilter = isRestaurant ? { in: ['raw', 'product'] } : 'product';
+
         if (!itemId) {
             const availableItems = await prisma.item.findMany({
-                where: { companyId, type: { in: ['raw', 'product'] } },
+                where: { companyId, type: itemTypeFilter },
                 select: { id: true, name: true, code: true }
             });
             return NextResponse.json({ items: availableItems });

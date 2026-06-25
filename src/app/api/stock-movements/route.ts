@@ -13,8 +13,11 @@ export const GET = withProtection(async (request, session) => {
         const from        = searchParams.get('from');
         const to          = searchParams.get('to');
         const branchId    = searchParams.get('branchId');
+        const bizType = (session.user as any).businessType?.toUpperCase() || 'TRADING';
+        const isRestaurant = bizType === 'RESTAURANTS';
+        const itemTypeFilter = isRestaurant ? { in: ['raw', 'product'] } : 'product';
 
-        const where: any = { companyId, item: { type: { in: ['raw', 'product'] } } };
+        const where: any = { companyId, item: { type: itemTypeFilter } };
         if (itemId)      where.itemId      = itemId;
         if (warehouseId) where.warehouseId = warehouseId;
         if (branchId && branchId !== 'all') {

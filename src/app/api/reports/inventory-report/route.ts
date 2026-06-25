@@ -18,8 +18,12 @@ export const GET = withProtection(async (request, session) => {
             return {};
         })();
 
+        const bizType = (session.user as any).businessType?.toUpperCase() || 'TRADING';
+        const isRestaurant = bizType === 'RESTAURANTS';
+        const itemTypeFilter = isRestaurant ? { in: ['raw', 'product'] } : 'product';
+
         const stocks = await prisma.stock.findMany({
-            where: { item: { companyId, type: { in: ['raw', 'product'] } }, warehouse: { companyId, ...warehouseFilter } },
+            where: { item: { companyId, type: itemTypeFilter }, warehouse: { companyId, ...warehouseFilter } },
             include: {
                 item: { select: { code: true, name: true, unit: { select: { name: true } }, costPrice: true, sellPrice: true, averageCost: true } },
                 warehouse: { select: { name: true } },

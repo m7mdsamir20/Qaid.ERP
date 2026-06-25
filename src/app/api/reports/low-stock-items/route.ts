@@ -13,9 +13,13 @@ export const GET = withProtection(async (request, session) => {
         const { searchParams } = new URL(request.url);
         const branchId = searchParams.get('branchId');
 
+        const bizType = (session.user as any).businessType?.toUpperCase() || 'TRADING';
+        const isRestaurant = bizType === 'RESTAURANTS';
+        const itemTypeFilter = isRestaurant ? { in: ['raw', 'product'] } : 'product';
+
         // Fetch all items with their stocks, units, and categories
         const items = await prisma.item.findMany({
-            where: { companyId, type: { in: ['raw', 'product'] } },
+            where: { companyId, type: itemTypeFilter },
             include: {
                 stocks: {
                     include: {
