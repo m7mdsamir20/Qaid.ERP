@@ -13,6 +13,7 @@ import { AlertTriangle, Search, Box } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 
 interface LowStockItem {
     id: string;
@@ -90,9 +91,8 @@ export default function LowStockReportPage() {
             header: t('الرصيد الحالي'),
             cell: (row: LowStockItem) => (
                 <span style={{
-                    background: row.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
                     color: row.totalStock <= 0 ? '#ef4444' : '#f59e0b',
-                    padding: '4px 12px', borderRadius: '10px', fontWeight: 600, fontSize: '12px', fontFamily: OUTFIT
+                    fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT
                 }}>
                     {formatNumber(row.totalStock)}
                 </span>
@@ -135,89 +135,69 @@ export default function LowStockReportPage() {
                     branchName={selectedBranchName}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div className="no-print" style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
-                            {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                                <div style={{ minWidth: '180px' }}>
-                                    <CustomSelect
-                                        value={branchId}
-                                        onChange={v => setBranchId(v)}
-                                        placeholder={t("كل الفروع")}
-                                        hideSearch={true}
-                                        options={[
-                                            { value: 'all', label: t('كل الفروع') },
-                                            ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                        ]}
-                                    />
-                                </div>
-                            )}
+                <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px', marginBottom: '24px' }}>
+                    <StatCard
+                        label={t('إجمالي عدد النواقص')}
+                        value={filtered.length}
+                        suffix={t('صنف')}
+                        icon={<AlertTriangle size={18} />}
+                        color="#ef4444"
+                        formatValue={true}
+                    />
+                </div>
 
-                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
-                                <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
-                                <input
-                                    placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
-                                    value={q} onChange={e => setQ(e.target.value)}
-                                    style={{
-                                        ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
-                                        borderRadius: '12px', border: `1px solid ${C.border}`,
-                                        background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                        outline: 'none', fontFamily: CAIRO, fontWeight: 500
-                                    }}
-                                />
-                            </div>
-                        </div>
-
-                        {error && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                <span style={{ fontSize: '13px' }}>⚠️</span>{error}
-                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
-                            </div>
-                        )}
-
-                        {loading ? (
-                            <TableSkeleton />
-                        ) : (
-                            <div className="print-table-container">
-                                <DataTable
-                                    columns={columns}
-                                    data={filtered}
-                                    emptyIcon={Box}
-                                    emptyMessage={t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً')}
-                                    footer={footerElement}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div className="no-print" style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                            <div style={{ minWidth: '180px' }}>
+                                <CustomSelect
+                                    value={branchId}
+                                    onChange={v => setBranchId(v)}
+                                    placeholder={t("كل الفروع")}
+                                    hideSearch={true}
+                                    options={[
+                                        { value: 'all', label: t('كل الفروع') },
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    ]}
                                 />
                             </div>
                         )}
-                    </div>
 
-                    <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ background: 'linear-gradient(145deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 25px -10px rgba(239,68,68,0.2)' }}>
-                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', marginBottom: '16px' }}>
-                                <AlertTriangle size={24} />
-                            </div>
-                            <div style={{ fontSize: '11.5px', color: C.textSecondary, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي عدد النواقص')}</div>
-                            <div style={{ fontSize: '32px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>
-                                {formatNumber(filtered.length)}
-                                <span style={{ fontSize: '13px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t('صنف')}</span>
-                            </div>
-                        </div>
-
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
-                                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} /> {t('دليل الإحصائيات')}
-                            </div>
-                            <ul style={{ margin: 0, paddingInlineEnd: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                {[
-                                    t('الأصناف التي وصل رصيدها للحد الأدنى.'),
-                                    t('الأصناف التي نفد رصيدها تماماً (0).'),
-                                    t('تتأثر القائمة بعمليات الصرف والمبيعات.'),
-                                    t('يجب إعادة طلب هذه الكميات لسير العمل.')
-                                ].map((text, i) => (
-                                    <li key={i} style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>{text}</li>
-                                ))}
-                            </ul>
+                        <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <input
+                                placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
+                                value={q} onChange={e => setQ(e.target.value)}
+                                style={{
+                                    ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    outline: 'none', fontFamily: CAIRO, fontWeight: 500
+                                }}
+                            />
                         </div>
                     </div>
+
+                    {error && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                            <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                            <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
+                        </div>
+                    )}
+
+                    {loading ? (
+                        <TableSkeleton />
+                    ) : (
+                        <div className="print-table-container">
+                            <DataTable
+                                columns={columns}
+                                data={filtered}
+                                emptyIcon={Box}
+                                emptyMessage={t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً')}
+                                footer={footerElement}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </DashboardLayout>

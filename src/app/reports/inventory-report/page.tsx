@@ -127,8 +127,7 @@ export default function InventoryReportPage() {
             cell: (row: StockItem) => (
                 <span style={{
                     fontSize: '13px', fontWeight: 600, color: row.quantity <= 0 ? '#ef4444' : row.quantity <= 10 ? '#f59e0b' : '#10b981',
-                    fontFamily: OUTFIT, background: row.quantity <= 0 ? 'rgba(239, 68, 68, 0.1)' : row.quantity <= 10 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
-                    padding: '4px 10px', borderRadius: '10px'
+                    fontFamily: OUTFIT
                 }}>
                     {formatNumber(row.quantity)}
                 </span>
