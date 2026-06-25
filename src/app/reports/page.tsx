@@ -334,15 +334,16 @@ function ReportsHubPageInner() {
                         key={idx}
                         onClick={() => router.push(report.href)}
                         style={{
-                            height: '140px',
+                            minHeight: '155px',
+                            height: 'auto',
                             background: C.card,
                             border: `1px solid ${C.border}`,
                             borderRadius: '20px',
-                            padding: '24px',
+                            padding: '20px',
                             cursor: 'pointer',
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '16px',
+                            gap: '14px',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             position: 'relative',
                             overflow: 'hidden',

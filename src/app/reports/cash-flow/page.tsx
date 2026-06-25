@@ -126,6 +126,8 @@ export default function CashFlowReportPage() {
         }
     ];
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -133,6 +135,7 @@ export default function CashFlowReportPage() {
                     title={t("قائمة التدفق النقدي")}
                     subtitle={t("تحليل السيولة النقدية الواردة والمنصرفة عبر كافة الخزن والتحويلات البنكية.")}
                     backTab="financial"
+                    branchName={selectedBranchName}
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (

@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface Invoice {
     id: string;
@@ -75,6 +76,8 @@ export default function SalesReportPage() {
 
     useEffect(() => { fetchReport(); }, []);
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -84,9 +87,27 @@ export default function SalesReportPage() {
                     backTab="sales-purchases"
                     printTitle={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير مبيعات الأصناف")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
+                    branchName={selectedBranchName}
                 />
 
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Branch Filter (Placed before dates) */}
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v: string) => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
@@ -114,32 +135,15 @@ export default function SalesReportPage() {
                         </div>
                     </div>
 
-                    <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: 1 }}>
-                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                            <div style={{ minWidth: '180px', flex: 1 }}>
-                                <CustomSelect
-                                    value={branchId}
-                                    onChange={(v: string) => setBranchId(v)}
-                                    placeholder={t("كل الفروع")}
-                                    hideSearch
-                                    style={{ background: C.card, border: `1px solid ${C.border}` }}
-                                    options={[
-                                        { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                    ]}
-                                />
-                            </div>
-                        )}
-                        <button className="update-btn" onClick={fetchReport} style={{
-                            height: '42px', padding: '0 24px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                        }}>
-                            <Search size={16} /> {t('تحديث البيانات')}
-                        </button>
-                    </div>
+                    <button className="update-btn" onClick={fetchReport} style={{
+                        height: '42px', padding: '0 24px', borderRadius: '12px',
+                        background: C.primary, color: '#fff', border: 'none',
+                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
+                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
+                    }}>
+                        <Search size={16} /> {t('تحديث البيانات')}
+                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : !data || data.invoices.length === 0 ? (
@@ -151,43 +155,37 @@ export default function SalesReportPage() {
                 ) : (
                     <>
 
-                        <div data-print-stats style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><BarChart3 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(239,68,68,0.08)', color: '#ef4444', borderRadius: '10px' }}><ArrowDownRight size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصومات الممنوحة')}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><Wallet size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيل')}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(239,68,68,0.08)', color: '#ef4444', borderRadius: '10px' }}><Activity size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المطالبات المتبقية')}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div data-print-stats>
+                            <StatCardGrid cols={4}>
+                                <StatCard
+                                    label={isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}
+                                    value={fmt(data.totalSales)}
+                                    suffix={sym}
+                                    icon={<BarChart3 size={18} />}
+                                    color="#256af4"
+                                />
+                                <StatCard
+                                    label={t('الخصومات الممنوحة')}
+                                    value={fmt(data.totalDiscount)}
+                                    suffix={sym}
+                                    icon={<ArrowDownRight size={18} />}
+                                    color="#ef4444"
+                                />
+                                <StatCard
+                                    label={t('إجمالي التحصيل')}
+                                    value={fmt(data.totalPaid)}
+                                    suffix={sym}
+                                    icon={<Wallet size={18} />}
+                                    color="#10b981"
+                                />
+                                <StatCard
+                                    label={t('المطالبات المتبقية')}
+                                    value={fmt(data.totalRemaining)}
+                                    suffix={sym}
+                                    icon={<Activity size={18} />}
+                                    color="#ef4444"
+                                />
+                            </StatCardGrid>
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
