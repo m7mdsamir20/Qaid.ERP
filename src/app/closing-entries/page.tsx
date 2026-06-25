@@ -500,7 +500,7 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                 </th>
                                 <th style={{
                                     padding: '16px 20px',
-                                    textAlign: 'end',
+                                    textAlign: 'center',
                                     fontSize: '12px',
                                     fontWeight: 700,
                                     color: C.textSecondary,
@@ -524,11 +524,13 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.name}</div>
                                             <div className="notranslate" translate="no" style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
                                         </td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'end', verticalAlign: 'middle' }}>
-                                            <Currency 
-                                                amount={row.balance}
-                                                style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
-                                            />
+                                        <td style={{ padding: '14px 20px', verticalAlign: 'middle' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                <Currency 
+                                                    amount={row.balance}
+                                                    style={{ fontSize: '15px', color }}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 );
