@@ -155,37 +155,35 @@ export default function SalesReportPage() {
                 ) : (
                     <>
 
-                        <div data-print-stats>
-                            <StatCardGrid cols={4}>
-                                <StatCard
-                                    label={isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}
-                                    value={fmt(data.totalSales)}
-                                    suffix={sym}
-                                    icon={<BarChart3 size={18} />}
-                                    color="#256af4"
-                                />
-                                <StatCard
-                                    label={t('الخصومات الممنوحة')}
-                                    value={fmt(data.totalDiscount)}
-                                    suffix={sym}
-                                    icon={<ArrowDownRight size={18} />}
-                                    color="#ef4444"
-                                />
-                                <StatCard
-                                    label={t('إجمالي التحصيل')}
-                                    value={fmt(data.totalPaid)}
-                                    suffix={sym}
-                                    icon={<Wallet size={18} />}
-                                    color="#10b981"
-                                />
-                                <StatCard
-                                    label={t('المطالبات المتبقية')}
-                                    value={fmt(data.totalRemaining)}
-                                    suffix={sym}
-                                    icon={<Activity size={18} />}
-                                    color="#ef4444"
-                                />
-                            </StatCardGrid>
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+                            <StatCard
+                                label={isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}
+                                value={fmt(data.totalSales)}
+                                suffix={sym}
+                                icon={<BarChart3 size={18} />}
+                                color="#256af4"
+                            />
+                            <StatCard
+                                label={t('الخصومات الممنوحة')}
+                                value={fmt(data.totalDiscount)}
+                                suffix={sym}
+                                icon={<ArrowDownRight size={18} />}
+                                color="#ef4444"
+                            />
+                            <StatCard
+                                label={t('إجمالي التحصيل')}
+                                value={fmt(data.totalPaid)}
+                                suffix={sym}
+                                icon={<Wallet size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('المطالبات المتبقية')}
+                                value={fmt(data.totalRemaining)}
+                                suffix={sym}
+                                icon={<Activity size={18} />}
+                                color="#ef4444"
+                            />
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
