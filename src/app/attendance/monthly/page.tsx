@@ -200,8 +200,8 @@ export default function MonthlyAttendancePage() {
                                             </th>
                                         );
                                     })}
-                                    <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: '11px', fontWeight: 700, color: '#818cf8', minWidth: '200px', borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.08)', letterSpacing: '0.5px' }}>
-                                        ◀ الملخص
+                                    <th style={{ padding: '12px 10px', textAlign: 'center', fontSize: '11px', fontWeight: 700, color: '#818cf8', minWidth: '180px', borderRight: `2px solid #6366f1`, background: C.card, position: 'sticky', left: 0, zIndex: 10, letterSpacing: '0.5px' }}>
+                                        الملخص
                                     </th>
                                 </tr>
                             </thead>
@@ -235,7 +235,7 @@ export default function MonthlyAttendancePage() {
                                             </td>
                                         ))}
                                         {/* Summary */}
-                                        <td style={{ padding: '10px', borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.05)' }}>
+                                        <td style={{ padding: '10px', borderRight: `2px solid #6366f1`, background: C.card, position: 'sticky', left: 0, zIndex: 5 }}>
                                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center' }}>
                                                 {[
                                                     { key: 'present', val: emp.summary.present, color: '#10b981', label: 'ح' },
@@ -271,7 +271,7 @@ export default function MonthlyAttendancePage() {
                                             </div>
                                         </td>
                                     ))}
-                                    <td style={{ borderRight: `2px solid #6366f1`, background: 'rgba(99,102,241,0.05)' }} />
+                                    <td style={{ borderRight: `2px solid #6366f1`, background: 'rgba(14,23,42,0.9)', position: 'sticky', left: 0 }} />
                                 </tr>
                             </tbody>
                         </table>
