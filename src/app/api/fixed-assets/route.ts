@@ -6,8 +6,13 @@ import { getBranchFilter } from '@/lib/apiAuth';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const queryBranchId = searchParams.get('branchId');
 
-        const branchFilter = getBranchFilter(session);
+        let branchFilter: Record<string, any> = getBranchFilter(session);
+        if (queryBranchId && queryBranchId !== 'all') {
+            branchFilter = { branchId: queryBranchId };
+        }
 
         const assets = await prisma.fixedAsset.findMany({
             where: { companyId, ...branchFilter },

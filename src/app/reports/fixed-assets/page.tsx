@@ -61,15 +61,29 @@ export default function FixedAssetsReportPage() {
     const [search, setSearch]       = useState('');
     const [catFilter, setCatFilter] = useState(t('الكل'));
     const [statusFilter, setStatusFilter] = useState('all');
+    const [branchId, setBranchId]   = useState('all');
+    const [branches, setBranches]   = useState<{ id: string; name: string }[]>([]);
+
+    /* ── Fetch branches ── */
+    useEffect(() => {
+        fetch('/api/branches')
+            .then(r => r.json())
+            .then(d => {
+                if (Array.isArray(d)) setBranches(d);
+            })
+            .catch(() => {});
+    }, []);
 
     /* ── Fetch from API ── */
     useEffect(() => {
-        fetch('/api/fixed-assets')
+        setLoading(true);
+        const url = branchId && branchId !== 'all' ? `/api/fixed-assets?branchId=${branchId}` : '/api/fixed-assets';
+        fetch(url)
             .then(r => r.json())
             .then(d => setAssets(Array.isArray(d) ? d : []))
             .catch(() => setAssets([]))
             .finally(() => setLoading(false));
-    }, []);
+    }, [branchId]);
 
     /* ── Filter ── */
     const filtered = assets.filter(a => {
@@ -167,6 +181,8 @@ export default function FixedAssetsReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -177,6 +193,7 @@ export default function FixedAssetsReportPage() {
                     subtitle={t("كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية")}
                     backTab="financial"
                     printTitle={assets.length > 0 ? t("تقرير الأصول الثابتة") : undefined}
+                    branchName={selectedBranchName}
                 />
 
                 {loading ? ( <TableSkeleton /> ) : (
@@ -240,7 +257,7 @@ export default function FixedAssetsReportPage() {
                                 />
                             </div>
 
-                            {/* Category Filter */}
+                             {/* Category Filter */}
                             <div style={{ width: '180px' }}>
                                 <CustomSelect 
                                     value={catFilter} 
@@ -249,8 +266,26 @@ export default function FixedAssetsReportPage() {
                                     placeholder={t("الفئة")}
                                     options={CATEGORIES.map(c => ({ value: c, label: c === t("الكل") ? t('الكل') : t(c) }))}
                                     style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
+                                
                                 />
                             </div>
+
+                            {/* Branch Filter */}
+                            {branches.length > 0 && (
+                                <div style={{ width: '180px' }}>
+                                    <CustomSelect 
+                                        value={branchId} 
+                                        onChange={setBranchId}
+                                        icon={Building2} 
+                                        placeholder={t("الفرع")}
+                                        options={[
+                                            { value: 'all', label: t('كل الفروع') },
+                                            ...branches.map(b => ({ value: b.id, label: b.name }))
+                                        ]}
+                                        style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
+                                    />
+                                </div>
+                            )}
 
                             {/* Status Filters (Unified Background) */}
                             <div style={{ 
