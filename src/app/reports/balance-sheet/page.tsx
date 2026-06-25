@@ -136,7 +136,22 @@ thead tr{background:#f0f0f0!important}
 thead tr *{background:#f0f0f0!important}
 tfoot tr,tr[style*="e8e8e8"]{background:#e8e8e8!important}
 tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
-@media print{@page{size:A4 landscape;margin:6mm 10mm}.page{padding:0}}
+@media print{
+  @page{size:A4 landscape;margin:6mm 10mm}
+  body{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: #fff !important;
+  }
+  .page{
+    padding:0 !important;
+    width: 95% !important;
+    max-width: 270mm !important;
+    margin: 0 auto !important;
+  }
+}
 </style></head>
 <body><div class="page">
 <div class="rpt-header">

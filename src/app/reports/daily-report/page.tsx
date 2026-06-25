@@ -146,8 +146,20 @@ table{width:100%;border-collapse:collapse}
 .footer{margin-top:14px;padding-top:8px;border-top:1px solid #ccc;font-size:9.5px;color:#000;display:flex;justify-content:space-between}
 @media print{
   @page{size:A4 landscape;margin:6mm 10mm}
-  .page{padding:0}
-  body{font-size:10.5px}
+  body{
+    font-size:10.5px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: #fff !important;
+  }
+  .page{
+    padding:0 !important;
+    width: 95% !important;
+    max-width: 270mm !important;
+    margin: 0 auto !important;
+  }
 }
 </style>
 </head>

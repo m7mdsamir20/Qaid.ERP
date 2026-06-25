@@ -1276,8 +1276,21 @@ tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
   @page{size:A4 landscape;margin:6mm 8mm}
-  body{font-size:10px}
-  .page{padding:0;max-width:none;min-height:0}
+  body{
+    font-size:10px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: #fff !important;
+  }
+  .page{
+    padding:0 !important;
+    width: 95% !important;
+    max-width: 270mm !important;
+    margin: 0 auto !important;
+    min-height:0 !important;
+  }
   thead{display:table-header-group}
   tfoot{display:table-footer-group}
   tbody tr{page-break-inside:avoid}

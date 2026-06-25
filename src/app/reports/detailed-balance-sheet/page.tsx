@@ -163,7 +163,22 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
 .rpt-title{font-size:15px;font-weight:900;color:#000;margin-bottom:2px}
 .rpt-meta{font-size:9.5px;color:#000;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
 .rpt-meta b{color:#000;font-weight:800}
-@media print{@page{size:A4 landscape;margin:4mm 6mm}}
+@media print{
+  @page{size:A4 landscape;margin:4mm 6mm}
+  body{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    background: #fff !important;
+  }
+  .page{
+    padding:0 !important;
+    width: 95% !important;
+    max-width: 285mm !important;
+    margin: 0 auto !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -173,7 +188,6 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
   <div class="rpt-title-block">
     <div class="rpt-title">${t('الميزانية العمومية التفصيلية')}</div>
     <div class="rpt-meta">
-      <span>${isRtl ? t("الفرع:") : 'Branch:'} <b>${t('الرئيسي')}</b></span>
       <span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDate} — ${printTime}</b></span>
     </div>
   </div>
