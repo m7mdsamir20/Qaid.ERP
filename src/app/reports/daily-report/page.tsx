@@ -148,17 +148,18 @@ table{width:100%;border-collapse:collapse}
   @page{size:A4 landscape;margin:6mm 10mm}
   body{
     font-size:10.5px;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
     background: #fff !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
   }
   .page{
     padding:0 !important;
     width: 95% !important;
     max-width: 270mm !important;
     margin: 0 auto !important;
+    display: block !important;
   }
 }
 </style>

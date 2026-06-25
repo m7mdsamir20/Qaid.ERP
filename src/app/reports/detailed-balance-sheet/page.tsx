@@ -166,17 +166,18 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
 @media print{
   @page{size:A4 landscape;margin:4mm 6mm}
   body{
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
     background: #fff !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
   }
   .page{
     padding:0 !important;
     width: 95% !important;
     max-width: 285mm !important;
     margin: 0 auto !important;
+    display: block !important;
   }
 }
 </style>

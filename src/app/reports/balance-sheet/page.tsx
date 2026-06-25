@@ -139,17 +139,18 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
 @media print{
   @page{size:A4 landscape;margin:6mm 10mm}
   body{
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
     background: #fff !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
   }
   .page{
     padding:0 !important;
     width: 95% !important;
     max-width: 270mm !important;
     margin: 0 auto !important;
+    display: block !important;
   }
 }
 </style></head>
