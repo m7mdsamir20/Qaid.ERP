@@ -165,17 +165,21 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
 .rpt-meta b{color:#000;font-weight:800}
 @media print{
   @page{size:A4 landscape;margin:4mm 6mm}
-  html{display:flex !important;justify-content:center !important;width:100% !important}
+  html{width:100% !important;margin:0 !important;padding:0 !important}
   body{
-    background: #fff !important;
-    width: 95% !important;
-    max-width: 285mm !important;
-    margin: 0 auto !important;
-    padding: 0 !important;
+    background:#fff !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:flex-start !important;
   }
   .page{
-    padding:0 !important;
-    width: 100% !important;
+    padding:4mm 6mm !important;
+    width:95% !important;
+    max-width:285mm !important;
+    margin:0 !important;
   }
 }
 </style>
