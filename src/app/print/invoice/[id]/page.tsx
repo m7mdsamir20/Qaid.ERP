@@ -6,6 +6,7 @@ import { generateA4HTML } from '@/lib/printInvoices';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { CAIRO } from '@/constants/theme';
+import { generatePdfFromHtmlText } from '@/lib/printDirectly';
 
 export default function PrintInvoicePage() {
     const { t } = useTranslation();
@@ -52,35 +53,10 @@ export default function PrintInvoicePage() {
     const handlePrint = () => iframeRef.current?.contentWindow?.print();
 
     const handleDownloadPdf = async () => {
-        const iframeDoc = iframeRef.current?.contentDocument;
-        if (!iframeDoc) return;
+        if (!html) return;
         setDownloading(true);
         try {
-            const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-                import('html2canvas'),
-                import('jspdf'),
-            ]);
-            const renderW = iframeRef.current!.clientWidth || 794;
-            const canvas = await html2canvas(iframeDoc.body, {
-                scale: 2, useCORS: true, allowTaint: true,
-                backgroundColor: '#ffffff',
-                windowWidth: renderW, width: renderW,
-                height: iframeDoc.body.scrollHeight,
-                scrollX: 0, scrollY: 0,
-            });
-            const pw = 210, ph = 297;
-            const pdf = new jsPDF('p', 'mm', [pw, ph]);
-            const imgData = canvas.toDataURL('image/png');
-            const imgH = (canvas.height * pw) / canvas.width;
-            if (imgH <= ph) {
-                pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH);
-            } else {
-                let pos = 0, remaining = imgH;
-                pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
-                remaining -= ph;
-                while (remaining > 0) { pos -= ph; pdf.addPage(); pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH); remaining -= ph; }
-            }
-            pdf.save(`invoice-${invoiceNum}.pdf`);
+            await generatePdfFromHtmlText(html, `invoice-${invoiceNum}.pdf`);
         } catch (e) { console.error(e); alert(t("فشل تحميل PDF")); }
         finally { setDownloading(false); }
     };

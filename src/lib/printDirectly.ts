@@ -93,74 +93,39 @@ export async function printInstallmentReceiptDirectly(id: string) {
 
 const _downloading = new Set<string>();
 
-async function generatePdfFromHtmlText(
+export async function generatePdfFromHtmlText(
     htmlText: string,
     filename: string,
     options: { width?: number; height?: number; pw?: number; ph?: number; orientation?: 'p' | 'l' } = {}
 ) {
-    const isThermal = options.pw === 80;
-    const renderW = isThermal ? 380 : (options.width || 794);
-    const renderH = isThermal ? 800 : (options.height || 1123);
-    const pw = options.pw || 210;
-    const orientation = options.orientation || 'p';
-
-    const iframe = document.createElement('iframe');
-    Object.assign(iframe.style, {
-        position: 'fixed',
-        width: `${renderW}px`,
-        height: `${renderH}px`,
-        left: '-9999px',
-        top: '-9999px',
-        visibility: 'hidden',
-    });
-    document.body.appendChild(iframe);
-
-    const doc = iframe.contentWindow?.document || iframe.contentDocument;
-    if (!doc) throw new Error('Could not access iframe document');
-
-    doc.open();
-    doc.write(htmlText);
-    doc.close();
-
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
-        import('html2canvas'),
-        import('jspdf'),
-    ]);
-
-    const canvas = await html2canvas(doc.body, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        windowWidth: renderW,
-        width: renderW,
-        height: doc.body.scrollHeight,
-        scrollX: 0,
-        scrollY: 0,
+    const res = await fetch('/api/pdf/generate', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            html: htmlText,
+            filename,
+            options
+        })
     });
 
-    const ph = options.ph || (canvas.height * pw) / canvas.width;
-    const pdf = new jsPDF(orientation, 'mm', [pw, ph]);
-    const imgData = canvas.toDataURL('image/png');
-
-    if (imgH_fit(canvas.height, pw, canvas.width) <= ph) {
-        pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH_fit(canvas.height, pw, canvas.width));
-    } else {
-        let pos = 0, remaining = imgH_fit(canvas.height, pw, canvas.width);
-        pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH_fit(canvas.height, pw, canvas.width));
-        remaining -= ph;
-        while (remaining > 0) {
-            pos -= ph;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH_fit(canvas.height, pw, canvas.width));
-            remaining -= ph;
-        }
+    if (!res.ok) {
+        let errorMsg = 'Failed to generate PDF';
+        try {
+            const errData = await res.json();
+            if (errData.error) errorMsg = errData.error;
+        } catch {}
+        throw new Error(errorMsg);
     }
 
-    pdf.save(filename);
-    document.body.removeChild(iframe);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 function imgH_fit(canvasHeight: number, pw: number, canvasWidth: number): number {
