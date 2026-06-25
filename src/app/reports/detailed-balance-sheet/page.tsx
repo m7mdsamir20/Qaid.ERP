@@ -80,7 +80,7 @@ export default function DetailedBalanceSheetPage() {
         {
             header: t('كود الحساب'),
             cell: (row: BalanceSheetRow) => (
-                <span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{row.code}</span>
+                <span className="notranslate" translate="no" style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{row.code}</span>
             ),
             style: { width: '100px' }
         },
@@ -109,7 +109,7 @@ export default function DetailedBalanceSheetPage() {
         {
             header: t('كود الحساب'),
             cell: (row: BalanceSheetRow) => (
-                <span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textSecondary }}>{row.code}</span>
+                <span className="notranslate" translate="no" style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textSecondary }}>{row.code}</span>
             ),
             style: { width: '100px' }
         },
@@ -147,7 +147,7 @@ export default function DetailedBalanceSheetPage() {
     const equitiesColumns: TableColumn[] = [
         {
             header: t('كود الحساب'),
-            cell: (row: any) => row.code,
+            cell: (row: any) => <span className="notranslate" translate="no">{row.code}</span>,
             style: { width: '100px' }
         },
         {

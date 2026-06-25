@@ -75,7 +75,7 @@ export default function IncomeStatementPage() {
         {
             header: t('كود الحساب'),
             cell: (row: AccountLine) => (
-                <span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{row.code}</span>
+                <span className="notranslate" translate="no" style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{row.code}</span>
             ),
             style: { width: '150px' }
         },
@@ -104,7 +104,7 @@ export default function IncomeStatementPage() {
         {
             header: t('كود الحساب'),
             cell: (row: AccountLine) => (
-                <span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{row.code}</span>
+                <span className="notranslate" translate="no" style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textSecondary }}>{row.code}</span>
             ),
             style: { width: '150px' }
         },
@@ -196,7 +196,7 @@ export default function IncomeStatementPage() {
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <div style={{ padding: '16px 24px', background: 'rgba(16, 185, 129, 0.05)', color: '#10b981', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <TrendingUp size={20} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('تفصيل الإيرادات والمبيعات (Revenues)')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('تفصيل الإيرادات والمبيعات')}</h3>
                             </div>
                             <DataTable
                                 columns={revenueColumns}
@@ -211,7 +211,7 @@ export default function IncomeStatementPage() {
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <div style={{ padding: '16px 24px', background: 'rgba(251, 113, 133, 0.05)', color: '#fb7185', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <TrendingDown size={20} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('تفصيل المصروفات والتكاليف (Expenses)')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('تفصيل المصروفات والتكاليف')}</h3>
                             </div>
                             <DataTable
                                 columns={expenseColumns}

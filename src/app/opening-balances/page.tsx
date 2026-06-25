@@ -370,7 +370,7 @@ export default function OpeningBalancesPage() {
                                     cell: (row: Account) => {
                                         const natureColor = row.nature === 'debit' ? C.success : C.danger;
                                         return (
-                                            <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{row.code}</span>
+                                            <span className="notranslate" translate="no" style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{row.code}</span>
                                         );
                                     }
                                 },

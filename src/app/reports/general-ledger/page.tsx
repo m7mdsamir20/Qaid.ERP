@@ -263,7 +263,7 @@ export default function GeneralLedgerPage() {
                                         style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', cursor: 'pointer', borderBottom: `1px solid ${C.border}`, transition: 'background 0.1s' }}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <span style={{ fontFamily: OUTFIT, fontSize: '12px', fontWeight: 600, color: typeColors[a.type] || '#64748b', minWidth: '60px' }}>{a.code}</span>
+                                        <span className="notranslate" translate="no" style={{ fontFamily: OUTFIT, fontSize: '12px', fontWeight: 600, color: typeColors[a.type] || '#64748b', minWidth: '60px' }}>{a.code}</span>
                                         <span style={{ fontSize: '12px', color: C.textPrimary, flex: 1, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</span>
                                         <span style={{ fontSize: '10px', color: typeColors[a.type] || '#64748b', background: `${typeColors[a.type] || '#64748b'}15`, border: `1px solid ${typeColors[a.type] || '#64748b'}30`, borderRadius: '20px', padding: '2px 10px', flexShrink: 0, fontFamily: CAIRO }}>{typeLabels[a.type]}</span>
                                     </div>

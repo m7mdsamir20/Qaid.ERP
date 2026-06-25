@@ -296,7 +296,7 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div className="code-cell" style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textSecondary, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
+                    <div className="code-cell notranslate" translate="no" style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textSecondary, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
 
                     <div className="name-cell" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
                         <div className="type-icon" style={{
@@ -307,7 +307,7 @@ export default function AccountsPage() {
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                             <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{acc.name}</span>
-                            <span className="mobile-code" style={{ display: 'none', fontSize: '10px', color: C.textSecondary, fontFamily: OUTFIT }}>{acc.code}</span>
+                            <span className="mobile-code notranslate" translate="no" style={{ display: 'none', fontSize: '10px', color: C.textSecondary, fontFamily: OUTFIT }}>{acc.code}</span>
                         </div>
                     </div>
 

@@ -66,7 +66,7 @@ export default function TrialBalancePage() {
         {
             header: t('رمز الحساب'),
             cell: (row: TrialBalanceLine) => (
-                <span style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{row.code}</span>
+                <span className="notranslate" translate="no" style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{row.code}</span>
             ),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },

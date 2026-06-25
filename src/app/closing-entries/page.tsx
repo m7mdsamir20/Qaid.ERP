@@ -477,7 +477,7 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
             cell: (row: any) => (
                 <div style={{ textAlign: 'start' }}>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.name}</div>
-                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
+                    <div className="notranslate" translate="no" style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
                 </div>
             )
         },

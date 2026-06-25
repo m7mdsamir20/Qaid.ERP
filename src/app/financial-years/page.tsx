@@ -32,7 +32,7 @@ const CURRENCY_AR: Record<string, string> = {
 /* ── KPI card matching system design ── */
 function KpiCard({ icon: Icon, label, value, sub, color }: any) {
     return (
-        <div style={KPI_STYLE(color)} className="kpi-card-responsive">
+        <div style={{ ...KPI_STYLE(color), minWidth: '150px' }} className="kpi-card-responsive">
             <div style={{
                 width: '36px', height: '36px', borderRadius: '10px',
                 background: `${color}20`, display: 'flex', alignItems: 'center',
@@ -265,7 +265,7 @@ export default function FinancialYearsPage() {
                                 </div>
 
                                 {/* Body */}
-                                <div className="active-fy-body" style={{ padding: '24px 28px', display: 'flex', gap: '32px', alignItems: 'center' }}>
+                                <div className="active-fy-body" style={{ padding: '24px 28px', display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap' }}>
                                     {/* Circle Progress */}
                                     <div className="progress-container" style={{ position: 'relative', width: '120px', height: '120px', flexShrink: 0 }}>
                                         <svg width="120" height="120" viewBox="0 0 128 128" style={{ transform: 'rotate(-90deg)' }}>
@@ -283,7 +283,7 @@ export default function FinancialYearsPage() {
                                     </div>
 
                                     {/* KPI Cards */}
-                                    <div className="fy-stats-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
+                                    <div className="fy-stats-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '10px' }}>
                                         <KpiCard icon={Calendar} label={t("تاريخ البداية")} value={fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color={C.primary} />
                                         <KpiCard icon={CalendarCheck} label={t("تاريخ الانتهاء")} value={fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color="#8b5cf6" />
                                         <KpiCard icon={Clock} label={t("الأيام المتبقية")} value={`${formatNumber(remaining)} ${t('يوم')}`} color={remaining < 30 ? C.danger : '#f59e0b'}
