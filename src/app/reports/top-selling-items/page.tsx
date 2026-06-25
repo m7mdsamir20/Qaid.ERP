@@ -125,8 +125,8 @@ export default function TopSellingReportPage() {
                     branchName={selectedBranchName}
                 />
 
-                <div className="print-table-container print-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div className="print-grid-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
+                    <div className="print-table-container" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
                             {branches.length > 0 && (
                                 <div style={{ width: '180px' }}>
@@ -187,7 +187,7 @@ export default function TopSellingReportPage() {
 
                         <div className="print-card" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', padding: '20px' }}>
                             <div className="print-card-title" style={{ fontSize: '13px', fontWeight: 600, color: '#fb923c', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                <Activity size={16} /> {isServices ? t("أعلى 5 خدمات") : t("أعلى 5 أصناف")}
+                                <Activity size={16} /> {isServices ? `${t("أعلى")} ${Math.min(5, filtered.length)} ${t("خدمات")}` : `${t("أعلى")} ${Math.min(5, filtered.length)} ${t("أصناف")}`}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 {filtered.slice(0, 5).map((item, idx) => (
@@ -195,8 +195,8 @@ export default function TopSellingReportPage() {
                                         <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 600, color: idx < 3 ? '#000' : C.textMuted, fontFamily: OUTFIT }}>{idx + 1}</div>
                                         <div style={{ flex: 1, minWidth: 0 }}>
                                             <div style={{ fontSize: '12px', color: C.textPrimary, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: CAIRO }}>{item.name}</div>
-                                            <div className="print-progress-bar" style={{ width: '100%', height: '5px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', marginTop: '6px' }}>
-                                                <div className="print-progress-fill" style={{ width: `${(item.totalSales / (filtered[0]?.totalSales || 1)) * 100}%`, height: '100%', background: C.primary, borderRadius: '10px' }} />
+                                            <div className="print-progress-bar" data-keep-style style={{ width: '100%', height: '5px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', marginTop: '6px' }}>
+                                                <div className="print-progress-fill" data-keep-style style={{ width: `${(item.totalSales / (filtered[0]?.totalSales || 1)) * 100}%`, height: '100%', background: C.primary, borderRadius: '10px' }} />
                                             </div>
                                         </div>
                                     </div>

@@ -66,9 +66,14 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     });
 
     const stripStyles = (html: string) => html
-      .replace(/ style="[^"]*"/g, '')
       .replace(/<svg[\s\S]*?<\/svg>/g, '')
-      .replace(/<button[\s\S]*?<\/button>/g, '');
+      .replace(/<button[\s\S]*?<\/button>/g, '')
+      .replace(/<([a-z0-9]+)([^>]*?)\s*style="([^"]*)"/gi, (match, tag, attrs, styleVal) => {
+        if (attrs.includes('data-keep-style') || attrs.includes('print-progress-fill') || attrs.includes('print-progress-bar')) {
+          return `<${tag}${attrs} style="${styleVal}"`;
+        }
+        return `<${tag}${attrs}`;
+      });
 
     // Rebuild [data-print-include] / [data-print-stats] stat cards in KPI style
     const rebuildCards = (el: Element): string => {
@@ -163,7 +168,8 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <title>${reportTitle}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body,.page{background:#fff!important;color:#000!important}
 body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:1.5}
 .page{padding:8mm 12mm}
 
@@ -243,7 +249,7 @@ tfoot td:first-child{text-align:${firstColAlign}}
 }
 .print-progress-fill {
   height: 100% !important;
-  background: #256af4 !important;
+  background: #555555 !important;
   border-radius: 10px !important;
 }
 
