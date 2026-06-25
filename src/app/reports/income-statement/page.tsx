@@ -135,6 +135,7 @@ export default function IncomeStatementPage() {
                     title={t("قائمة الدخل")}
                     subtitle={t("ملخص الإيرادات والمصروفات لتحديد صافي الربح أو الخسارة عن الفترة المالية.")}
                     backTab="financial"
+                    branchName={branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '')}
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
@@ -167,7 +168,7 @@ export default function IncomeStatementPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         
                         {/* Summary Cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
                             {[
                                 { label: t('إجمالي الإيرادات'), value: fmt(data.totalRevenue), color: '#10b981', icon: <TrendingUp size={18} /> },
                                 { label: t('إجمالي المصروفات'), value: fmt(data.totalExpense), color: '#fb7185', icon: <TrendingDown size={18} /> },
@@ -222,7 +223,7 @@ export default function IncomeStatementPage() {
                         </div>
 
                         {/* Grand Summary Block */}
-                        <div style={{
+                        <div data-print-stats style={{
                             padding: '24px 32px',
                             background: `${netIncomeColor}12`,
                             borderRadius: '16px',

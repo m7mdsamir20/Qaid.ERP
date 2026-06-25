@@ -55,11 +55,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
     const dateRange = isDateRange ? printDate : '';
 
-    const allPrintable = Array.from(document.querySelectorAll('[data-print-include], .print-table-container'));
+    const allPrintable = Array.from(document.querySelectorAll('[data-print-include], [data-print-stats], .print-table-container'));
     const topLevelPrintable = allPrintable.filter(el => {
       let p = el.parentElement;
       while (p) {
-        if (p.hasAttribute('data-print-include') || p.classList.contains('print-table-container')) return false;
+        if (p.hasAttribute('data-print-include') || p.hasAttribute('data-print-stats') || p.classList.contains('print-table-container')) return false;
         p = p.parentElement;
       }
       return true;
