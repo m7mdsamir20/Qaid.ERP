@@ -205,6 +205,28 @@ export default function TrialBalancePage() {
                     </div>
                 )}
 
+                {/* Balance Status - print only */}
+                {!loading && report.length > 0 && (
+                    <div className="print-only" style={{
+                        padding: '10px 18px',
+                        border: `2px solid ${isBalanced ? '#10b981' : '#ef4444'}`,
+                        borderRadius: '8px',
+                        marginBottom: '16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        background: isBalanced ? '#f0fdf4' : '#fef2f2',
+                    }}>
+                        <span style={{ fontSize: '13px', fontWeight: 700, color: '#000', fontFamily: CAIRO }}>حالة اتزان الميزان:</span>
+                        <span style={{ color: isBalanced ? '#059669' : '#dc2626', fontWeight: 700, fontSize: '14px', fontFamily: CAIRO }}>
+                            {isBalanced ? '✓ متزن محاسبياً — المجاميع متطابقة' : '✗ غير متزن — يوجد خلل في الترحيل'}
+                        </span>
+                        <span style={{ marginRight: 'auto', fontSize: '12px', color: '#374151', fontFamily: CAIRO }}>
+                            إجمالي الحسابات: {report.length}
+                        </span>
+                    </div>
+                )}
+
                 <DataTable
                     columns={columns}
                     data={report}
