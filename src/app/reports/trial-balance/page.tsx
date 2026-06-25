@@ -174,11 +174,11 @@ export default function TrialBalancePage() {
 
                 {/* Balance Status Card */}
                 {!loading && report.length > 0 && (
-                    <div className="no-print" style={{ 
-                        padding: '16px 24px', 
-                        background: C.card, 
-                        border: `1px solid ${C.border}`, 
-                        borderRadius: '12px', 
+                    <div className="balance-status-card" style={{
+                        padding: '16px 24px',
+                        background: C.card,
+                        border: `1px solid ${C.border}`,
+                        borderRadius: '12px',
                         marginBottom: '24px',
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -199,31 +199,16 @@ export default function TrialBalancePage() {
                                 {isBalanced ? t('متزن محـاسبياً (المجاميع متطابقة)') : t('غير متزن (يوجد خلل في الترحيل)')}
                             </span>
                         </div>
-                        <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
-                            {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{report.length}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
+                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{report.length}</span>
+                            </div>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
+                                {t('الفرع:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>
+                                    {branchId === 'all' ? t('كل الفروع') : branches.find(b => b.id === branchId)?.name || t('كل الفروع')}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                )}
-
-                {/* Balance Status - print only */}
-                {!loading && report.length > 0 && (
-                    <div className="print-only" style={{
-                        padding: '10px 18px',
-                        border: `2px solid ${isBalanced ? '#10b981' : '#ef4444'}`,
-                        borderRadius: '8px',
-                        marginBottom: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        background: isBalanced ? '#f0fdf4' : '#fef2f2',
-                    }}>
-                        <span style={{ fontSize: '13px', fontWeight: 700, color: '#000', fontFamily: CAIRO }}>حالة اتزان الميزان:</span>
-                        <span style={{ color: isBalanced ? '#059669' : '#dc2626', fontWeight: 700, fontSize: '14px', fontFamily: CAIRO }}>
-                            {isBalanced ? '✓ متزن محاسبياً — المجاميع متطابقة' : '✗ غير متزن — يوجد خلل في الترحيل'}
-                        </span>
-                        <span style={{ marginRight: 'auto', fontSize: '12px', color: '#374151', fontFamily: CAIRO }}>
-                            إجمالي الحسابات: {report.length}
-                        </span>
                     </div>
                 )}
 
@@ -243,13 +228,24 @@ export default function TrialBalancePage() {
                 @media print {
                     .print-only { display: block !important; }
                     .no-print { display: none !important; }
-                    .print-table-container { 
-                        background: white !important; 
-                        border: 1px solid #e2e8f0 !important; 
-                        border-radius: 0 !important; 
+                    .balance-status-card {
+                        background: #fff !important;
+                        border: 1px solid #e2e8f0 !important;
+                        border-radius: 8px !important;
+                        padding: 10px 16px !important;
+                        margin-bottom: 14px !important;
+                        color: #000 !important;
                     }
-                    th, td { 
-                        border: 1px solid #e2e8f0 !important; 
+                    .balance-status-card * { color: #000 !important; background: transparent !important; border-color: #ccc !important; }
+                    .balance-status-card span[style*="10b981"], .balance-status-card span[style*="success"] { color: #059669 !important; font-weight: 700 !important; }
+                    .balance-status-card span[style*="danger"], .balance-status-card span[style*="ef4444"] { color: #dc2626 !important; font-weight: 700 !important; }
+                    .print-table-container {
+                        background: white !important;
+                        border: 1px solid #e2e8f0 !important;
+                        border-radius: 0 !important;
+                    }
+                    th, td {
+                        border: 1px solid #e2e8f0 !important;
                         color: #000 !important;
                         background: #fff !important;
                     }
