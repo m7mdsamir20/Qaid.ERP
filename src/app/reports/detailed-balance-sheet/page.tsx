@@ -94,9 +94,9 @@ export default function DetailedBalanceSheetPage() {
             </tr>`).join('');
 
         const assetsFooter = `
-            <tr style="background:rgba(16, 185, 129, 0.08);border-top:2px solid rgba(16, 185, 129, 0.3)">
-                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid rgba(16, 185, 129, 0.2);text-align:${fAlign};color:#10b981">${t('إجمالي الأصول')}</td>
-                <td style="padding:5px 6px;font-weight:950;font-size:11px;border:1px solid rgba(16, 185, 129, 0.2);text-align:center;color:#10b981">${formatNumber(data.totalAssets)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
+            <tr style="background:#e0e0e0;border-top:2px solid #bbb">
+                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid #ccc;text-align:${fAlign};color:#000">${t('إجمالي الأصول')}</td>
+                <td style="padding:5px 6px;font-weight:950;font-size:11px;border:1px solid #ccc;text-align:center;color:#000">${formatNumber(data.totalAssets)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
             </tr>`;
 
         const liabilitiesRowsHTML = data.liabilities.length === 0
@@ -108,9 +108,9 @@ export default function DetailedBalanceSheetPage() {
             </tr>`).join('');
 
         const liabilitiesFooter = `
-            <tr style="background:rgba(251, 113, 133, 0.05);border-top:1px solid rgba(251, 113, 133, 0.3)">
-                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid rgba(251, 113, 133, 0.2);text-align:${fAlign};color:#fb7185">${t('إجمالي الخصوم')}</td>
-                <td style="padding:5px 6px;font-weight:900;font-size:11px;border:1px solid rgba(251, 113, 133, 0.2);text-align:center;color:#fb7185">${formatNumber(data.totalLiabilities)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
+            <tr style="background:#e0e0e0;border-top:1px solid #bbb">
+                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid #ccc;text-align:${fAlign};color:#000">${t('إجمالي الخصوم')}</td>
+                <td style="padding:5px 6px;font-weight:900;font-size:11px;border:1px solid #ccc;text-align:center;color:#000">${formatNumber(data.totalLiabilities)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
             </tr>`;
 
         const equitiesRowsHTML = [
@@ -118,7 +118,7 @@ export default function DetailedBalanceSheetPage() {
             { code: '—', name: t('صافي الربح / الخسارة'), balance: data.netIncome }
         ].map(a => {
             const isNetIncome = a.code === '—';
-            const valColor = isNetIncome ? (a.balance >= 0 ? '#10b981' : '#fb7185') : '#000';
+            const valColor = '#000';
             return `<tr>
                 <td style="padding:4px 6px;font-size:9.5px;border:1px solid #ddd;text-align:center">${a.code}</td>
                 <td style="padding:4px 6px;font-size:10px;font-weight:600;border:1px solid #ddd;text-align:${fAlign};color:${isNetIncome ? '#000' : '#555'}">${a.name}</td>
@@ -127,9 +127,9 @@ export default function DetailedBalanceSheetPage() {
         }).join('');
 
         const equitiesFooter = `
-            <tr style="background:rgba(37, 106, 244, 0.08);border-top:1px solid rgba(37, 106, 244, 0.3)">
-                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid rgba(37, 106, 244, 0.2);text-align:${fAlign};color:#256af4">${t('إجمالي حقوق الملكية')}</td>
-                <td style="padding:5px 6px;font-weight:950;font-size:11px;border:1px solid rgba(37, 106, 244, 0.2);text-align:center;color:#256af4">${formatNumber(data.totalEquities)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
+            <tr style="background:#e0e0e0;border-top:1px solid #bbb">
+                <td colspan="2" style="padding:5px 6px;font-weight:700;font-size:10.5px;border:1px solid #ccc;text-align:${fAlign};color:#000">${t('إجمالي حقوق الملكية')}</td>
+                <td style="padding:5px 6px;font-weight:950;font-size:11px;border:1px solid #ccc;text-align:center;color:#000">${formatNumber(data.totalEquities)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
             </tr>`;
 
         const renderTableCard = (title: string, color: string, headerBg: string, borderColor: string, rowsHtml: string, footerHtml: string) => `
@@ -197,24 +197,24 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">
   <div>
-    ${renderTableCard(t('الأصول'), '#10b981', 'rgba(16, 185, 129, 0.05)', '#10b981', assetsRowsHTML, assetsFooter)}
+    ${renderTableCard(t('الأصول'), '#000', '#f0f0f0', '#bbb', assetsRowsHTML, assetsFooter)}
   </div>
   <div style="display:flex;flex-direction:column;gap:8px">
-    ${renderTableCard(t('الخصوم'), '#fb7185', 'rgba(251, 113, 133, 0.05)', '#fb7185', liabilitiesRowsHTML, liabilitiesFooter)}
-    ${renderTableCard(t('حقوق الملكية'), '#256af4', 'rgba(37, 106, 244, 0.05)', '#256af4', equitiesRowsHTML, equitiesFooter)}
+    ${renderTableCard(t('الخصوم'), '#000', '#f0f0f0', '#bbb', liabilitiesRowsHTML, liabilitiesFooter)}
+    ${renderTableCard(t('حقوق الملكية'), '#000', '#f0f0f0', '#bbb', equitiesRowsHTML, equitiesFooter)}
     
-    <div style="padding:8px 12px;background:${isBalanced ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)'};border:2.5px solid ${isBalanced ? '#10b981' : '#ef4444'};border-radius:4px;display:flex;justify-content:space-between;align-items:center">
+    <div style="padding:8px 12px;background:#e0e0e0;border:1.5px solid #bbb;border-radius:4px;display:flex;justify-content:space-between;align-items:center">
       <span style="font-size:11px;font-weight:700;color:#000">${t('إجمالي الخصوم وحقوق الملكية')}</span>
-      <span style="font-size:12.5px;font-weight:900;color:${isBalanced ? '#10b981' : '#ef4444'}">${formatNumber(data.totalLiabilitiesAndEquities)} <span style="font-family:Cairo,sans-serif;font-size:9.5px">${sym}</span></span>
+      <span style="font-size:12.5px;font-weight:900;color:#000">${formatNumber(data.totalLiabilitiesAndEquities)} <span style="font-family:Cairo,sans-serif;font-size:9.5px">${sym}</span></span>
     </div>
   </div>
 </div>
 
-<div style="margin-top:8px;padding:6px 10px;background:${isBalanced ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)'};border:1px solid ${isBalanced ? '#10b981' : '#ef4444'};border-radius:4px;display:flex;align-items:center">
+<div style="margin-top:8px;padding:6px 10px;background:#f9f9f9;border:1px solid #ccc;border-radius:4px;display:flex;align-items:center">
   <span style="font-size:10.5px;color:#000;font-weight:700">
     ${isBalanced 
-      ? `<span style="color:#10b981;font-weight:900">✓ ${t('الميزانية متزنة تفصيلياً: الأصول = الخصوم وحقوق الملكية')}</span>` 
-      : `<span style="color:#ef4444;font-weight:900">✗ ${t('الميزانية غير متزنة تفصيلياً')}</span>`
+      ? `<span style="color:#000;font-weight:900">✓ ${t('الميزانية متزنة تفصيلياً: الأصول = الخصوم وحقوق الملكية')}</span>` 
+      : `<span style="color:#000;font-weight:900">✗ ${t('الميزانية غير متزنة تفصيلياً')}</span>`
     }
     <span style="font-weight:normal;color:#555!important;margin-inline-start:10px">
       (${t('الأصول')}: ${formatNumber(data.totalAssets)} ${sym} | ${t('الخصوم وحقوق الملكية')}: ${formatNumber(data.totalLiabilitiesAndEquities)} ${sym})
