@@ -44,10 +44,16 @@ const fmt = (n: number) => formatNumber(n);
 
 
 
-/** التنسيق المحاسبي لرقم القيد ليصبح كود مميز */
 const formatEntryCode = (num: string | number) => {
     const cleanNum = String(num).replace(/\D/g, '');
     return `JV-${cleanNum.padStart(5, '0')}`;
+};
+
+const formatDate = (dateVal: string | Date) => {
+    if (!dateVal) return '';
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
 };
 
 export default function GeneralLedgerPage() {
@@ -130,7 +136,7 @@ export default function GeneralLedgerPage() {
             id: 'opening-balance',
             date: '',
             entryNumber: '',
-            description: fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي'),
+            description: fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${formatDate(fromDate)})` : t('الرصيد الافتتاحي'),
             reference: null,
             debit: 0,
             credit: 0,
@@ -144,7 +150,7 @@ export default function GeneralLedgerPage() {
             header: t('التاريخ'),
             cell: (row: LedgerTableItem) => {
                 if (row.isOpeningBalance) return '';
-                return new Date(row.date).toLocaleDateString('en-GB');
+                return formatDate(row.date);
             },
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textPrimary, fontWeight: 600 }
         },
