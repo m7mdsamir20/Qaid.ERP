@@ -123,6 +123,18 @@ function classifyAndProcessTextNode(node: Node) {
     const trimmed = val.trim();
     if (!trimmed) return;
     
+    // Skip formatting if parent or any ancestor has data-no-align, translate="no", or class "notranslate"
+    const parent = node.parentElement;
+    if (parent) {
+        if (
+            parent.closest('[data-no-align="true"]') ||
+            parent.closest('.notranslate') ||
+            parent.closest('[translate="no"]')
+        ) {
+            return;
+        }
+    }
+    
     // Check if it contains any digit. If not, do nothing.
     if (!/\d/.test(trimmed)) return;
     
@@ -174,6 +186,13 @@ function traverseAndProcess(node: Node) {
         
         // Exclude inputs, textareas, selects, and non-display tags
         if (['script', 'style', 'textarea', 'input', 'select', 'option', 'code', 'pre', 'noscript', 'iframe'].includes(tag)) {
+            return;
+        }
+        if (el.getAttribute && (
+            el.getAttribute('data-no-align') === 'true' ||
+            el.getAttribute('translate') === 'no' ||
+            el.classList?.contains('notranslate')
+        )) {
             return;
         }
         if (el.getAttribute && el.getAttribute('contenteditable') === 'true') {

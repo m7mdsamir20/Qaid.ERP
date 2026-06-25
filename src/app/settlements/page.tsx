@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -98,7 +98,7 @@ function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: {
                             <p style={{ margin: '2px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإدخال بيانات التسوية بدقة لتحديث أرصدة الحسابات')}</p>
                         </div>
                     </div>
-                    <button type="button" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}><X size={20} /></button>
+                    <button type="button" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = C.border; }}><X size={20} /></button>
                 </div>
                 <div style={{ padding: '24px', maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>{children}</div>
             </div>
@@ -235,7 +235,7 @@ export default function ComprehensiveSettlementPage() {
                                             </div>
                                             <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تسجيل تسوية ديون')}</h2>
                                         </div>
-                                        <button onClick={() => setShowForm(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '6px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}><X size={16} /></button>
+                                        <button onClick={() => setShowForm(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '6px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                                     </div>
                                     <div style={{ padding: '22px', maxHeight: 'calc(100vh - 160px)', overflowY: 'auto' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
@@ -372,7 +372,7 @@ export default function ComprehensiveSettlementPage() {
                                     <h3 style={{ margin: 0, color: C.textPrimary, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{t('مراجعة سند التسوية')}</h3>
                                 </div>
                             </div>
-                            <button onClick={() => setDetailsModal(null)} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', width: 30, height: 30, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}><X size={16} /></button>
+                            <button onClick={() => setDetailsModal(null)} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', width: 30, height: 30, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }} onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.borderColor = C.border; }}><X size={16} /></button>
                         </div>
                         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '22px' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '22px' }}>

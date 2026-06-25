@@ -390,8 +390,7 @@ export default function ClosingEntriesPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2, margin: '0 auto' }} />
+                                    <div data-no-align="true" style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                         <p style={{ color: C.textSecondary, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
                                     </div>
                                 )}
@@ -471,40 +470,73 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
 }
 
 function DetailTable({ title, accounts, color, t, currencySign }: any) {
-    const columns: TableColumn[] = [
-        {
-            header: t('الحساب'),
-            cell: (row: any) => (
-                <div style={{ textAlign: 'start' }}>
-                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.name}</div>
-                    <div className="notranslate" translate="no" style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
-                </div>
-            )
-        },
-        {
-            header: t('الرصيد'),
-            type: 'number' as const,
-            cell: (row: any) => (
-                <Currency 
-                    amount={row.balance}
-                    style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
-                />
-            )
-        }
-    ];
-
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
             <div style={{ padding: '16px 20px',  background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color }}>{title}</span>
                 <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textSecondary, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
             </div>
-            <DataTable
-                columns={columns}
-                data={accounts}
-                emptyIcon={Info}
-                emptyMessage={t('لا توجد أرصدة حالياً')}
-            />
+            
+            {accounts.length === 0 ? (
+                <div data-no-align="true" style={{ padding: '32px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', opacity: 0.5 }}>
+                    <Info size={24} style={{ color: C.textSecondary, margin: '0 auto' }} />
+                    <span style={{ fontSize: '12px', color: C.textSecondary }}>{t('لا توجد أرصدة حالياً')}</span>
+                </div>
+            ) : (
+                <div style={{ width: '100%', overflowX: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: C.textPrimary }}>
+                        <thead>
+                            <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                                <th style={{
+                                    padding: '16px 20px',
+                                    textAlign: 'start',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    color: C.textSecondary,
+                                    fontFamily: CAIRO,
+                                    borderBottom: `1px solid ${C.border}`
+                                }}>
+                                    {t('الحساب')}
+                                </th>
+                                <th style={{
+                                    padding: '16px 20px',
+                                    textAlign: 'end',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    color: C.textSecondary,
+                                    fontFamily: CAIRO,
+                                    borderBottom: `1px solid ${C.border}`
+                                }}>
+                                    {t('الرصيد')}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {accounts.map((row: any, idx: number) => {
+                                const isLast = idx === accounts.length - 1;
+                                return (
+                                    <tr key={row.id || idx} style={{
+                                        background: 'transparent',
+                                        borderBottom: isLast ? 'none' : `1px solid ${C.border}`,
+                                        transition: 'all 0.2s'
+                                    }}>
+                                        <td style={{ padding: '14px 20px', textAlign: 'start', verticalAlign: 'middle' }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{row.name}</div>
+                                            <div className="notranslate" translate="no" style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{row.code}</div>
+                                        </td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'end', verticalAlign: 'middle' }}>
+                                            <Currency 
+                                                amount={row.balance}
+                                                style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
+                                            />
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </div>
     );
 }
