@@ -243,7 +243,7 @@ export default function PayrollsPage() {
                             style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Payroll) => (
                                 <span style={{ fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
-                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                    {new Date(row.date).toLocaleDateString('en-ZA')}
                                 </span>
                             )
                         },

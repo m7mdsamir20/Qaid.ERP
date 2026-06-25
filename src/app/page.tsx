@@ -428,7 +428,7 @@ export default function DashboardPage() {
             <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
               {(() => {
                 const d = new Date();
-                const str = d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const str = d.toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 return toEnDigits(str);
               })()}
               <span className="hide-mobile" style={{ margin: '0 8px', color: C.border }}>|</span>
@@ -767,7 +767,7 @@ export default function DashboardPage() {
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <td style={{ padding: '12px 14px', textAlign: 'start', overflow: 'hidden' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
-                              <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
+                              <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString('en-ZA'))}</div>
                             </td>
                             <td style={{ padding: '12px 14px', fontSize: '13px', textAlign: 'center', whiteSpace: 'nowrap' }}>{renderCurrency(inv.total)}</td>
                             <td style={{ padding: '12px 8px', textAlign: 'center' }}>

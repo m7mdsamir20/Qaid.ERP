@@ -53,7 +53,7 @@ export default function WarehouseTransfersPage() {
         {
             header: t('التاريخ'),
             type: 'date',
-            cell: (row: Transfer) => new Date(row.date).toLocaleDateString('en-GB')
+            cell: (row: Transfer) => new Date(row.date).toLocaleDateString('en-ZA')
         },
         {
             header: t('من مخزن'),

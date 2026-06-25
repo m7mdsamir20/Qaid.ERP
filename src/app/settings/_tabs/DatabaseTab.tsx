@@ -150,7 +150,7 @@ export default function DatabaseTab({
                                             alert(
                                                 `✅ ${t('تم التحقق من النسخة')}\n\n` +
                                                 `${t('الشركة')}: ${d.companyName}\n` +
-                                                `${t('التصدير')}: ${new Date(d.exportedAt).toLocaleDateString('ar-EG')}\n\n` +
+                                                `${t('التصدير')}: ${new Date(d.exportedAt).toLocaleDateString('en-ZA')}\n\n` +
                                                 `${t('عملاء')}: ${d.stats.customers}\n` +
                                                 `${t('موردين')}: ${d.stats.suppliers}\n` +
                                                 `${t('أصناف')}: ${d.stats.items}\n` +

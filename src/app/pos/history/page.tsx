@@ -64,7 +64,7 @@ export default function OrdersHistoryPage() {
 
     // Use en-GB to enforce western arabic numerals (0-9) then replace am/pm
     const formatDate = (d: string) => {
-        let str = new Date(d).toLocaleString('en-GB', {
+        let str = new Date(d).toLocaleString('en-ZA', {
             year: 'numeric', month: '2-digit', day: '2-digit',
             hour: '2-digit', minute: '2-digit', hour12: true
         });
@@ -236,7 +236,7 @@ export default function OrdersHistoryPage() {
                     <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || orderData.orderNumber.toString().padStart(4, '0')}</td></tr>
                     ` : ''}
                     `}
-                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
+                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-ZA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
                     ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && orderData.customer ? `

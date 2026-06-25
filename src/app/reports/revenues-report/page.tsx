@@ -62,7 +62,7 @@ export default function RevenuesReportPage() {
         if (!data?.rows.length) return;
         const excelData = data.rows.map(row => ({
             [t('رقم القيد')]: `#${row.entryNumber}`,
-            [t('التاريخ')]: new Date(row.date).toLocaleDateString('en-GB'),
+            [t('التاريخ')]: new Date(row.date).toLocaleDateString('en-ZA'),
             [t('البيان')]: row.description,
             [t('حساب الإيراد')]: row.revenueAccountName,
             [t('المصدر')]: row.sourceName,
@@ -72,7 +72,7 @@ export default function RevenuesReportPage() {
         applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('تقرير الإيرادات'));
-        XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
     };
 
     const columns: TableColumn[] = [
@@ -83,7 +83,7 @@ export default function RevenuesReportPage() {
         },
         {
             header: t('التاريخ'),
-            cell: (row: RevenueRow) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: RevenueRow) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },
         {

@@ -104,7 +104,7 @@ export default function GeneralLedgerPage() {
 
     /* DataTable columns */
     const ledgerColumns: TableColumn[] = [
-        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')}</span> },
         { header: t('رقم القيد'), type: 'text', cell: (row) => (
             <>
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{row.entryNumber}</span>
@@ -294,7 +294,7 @@ export default function GeneralLedgerPage() {
                                 </tr>
                                 <tr style={{ background: 'rgba(37, 106, 244,0.06)', borderBottom: `1px solid ${C.border}` }}>
                                     <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
-                                        {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
+                                        {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-ZA')}` : t('الرصيد الافتتاحي')}
                                     </td>
                                     <td colSpan={2} style={TABLE_STYLE.td(false)} />
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>

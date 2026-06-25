@@ -168,14 +168,14 @@ export default function LeavesPage() {
             header: 'من',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: LeaveRequest) => (
-                <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textPrimary }}>{new Date(row.startDate).toLocaleDateString('ar-EG-u-nu-latn')}</span>
+                <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textPrimary }}>{new Date(row.startDate).toLocaleDateString('en-ZA')}</span>
             ),
         },
         {
             header: 'إلى',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: LeaveRequest) => (
-                <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textPrimary }}>{new Date(row.endDate).toLocaleDateString('ar-EG-u-nu-latn')}</span>
+                <span style={{ fontSize: '13px', fontFamily: OUTFIT, color: C.textPrimary }}>{new Date(row.endDate).toLocaleDateString('en-ZA')}</span>
             ),
         },
         {

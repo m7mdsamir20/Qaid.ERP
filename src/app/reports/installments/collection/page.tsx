@@ -13,7 +13,7 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { useCurrency } from '@/hooks/useCurrency';
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-ZA');
 const fmtN = (n: number) => formatNumber(n);
 
 interface CollectionInstallment {

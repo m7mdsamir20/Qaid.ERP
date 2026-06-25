@@ -144,7 +144,7 @@ export default function CashStatementPage() {
                 [t('الرصيد بعد')]: data.openingBalance
             },
             ...movements.map((m) => ({
-                [t('التاريخ')]: new Date(m.date).toLocaleDateString('en-GB'),
+                [t('التاريخ')]: new Date(m.date).toLocaleDateString('en-ZA'),
                 [t('البيان / الجهة')]: `${m.party} - ${m.description}`,
                 [t('الرصيد قبل')]: m.balanceBefore,
                 [t('وارد (+)')]: m.type === 'receipt' ? m.amount : 0,
@@ -158,7 +158,7 @@ export default function CashStatementPage() {
         XLSX.utils.book_append_sheet(wb, ws, t('كشف حركة الخزينة'));
         XLSX.writeFile(
             wb,
-            `${t('كشف_حركة_الخزينة')}_${data.treasuryName || 'cash'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
+            `${t('كشف_حركة_الخزينة')}_${data.treasuryName || 'cash'}_${new Date().toLocaleDateString('en-ZA')}.xlsx`
         );
     };
 
@@ -183,7 +183,7 @@ export default function CashStatementPage() {
             header: t('التاريخ'),
             cell: (row: CashStatementTableItem) => {
                 if (row.isOpeningBalance) return '';
-                return new Date(row.date).toLocaleDateString('en-GB');
+                return new Date(row.date).toLocaleDateString('en-ZA');
             },
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },

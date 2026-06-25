@@ -204,7 +204,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         const monthName = t(months.find(m => m.value === payroll?.month)?.label || '');
         const reportTitle = `${t('مسير رواتب شهر')} ${monthName} ${payroll?.year}`;
         const now = new Date();
-        const printDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const printDate = now.toLocaleDateString('en-ZA', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const printTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true });
         const sym = formatCurrency(company?.currency || 'EGP', t);
         const fmt = (n: number) => formatNumber(n || 0);

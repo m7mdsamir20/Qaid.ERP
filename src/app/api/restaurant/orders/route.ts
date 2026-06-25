@@ -651,7 +651,7 @@ export const PUT = withProtection(async (request, session, body) => {
                     where: { id: order.id },
                     data: {
                         status: 'returned',
-                        notes: `${order.notes || ''}\n[مرتجع: ${new Date().toLocaleDateString('ar-EG')}]`
+                        notes: `${order.notes || ''}\n[مرتجع: ${new Date().toLocaleDateString('en-ZA')}]`
                     }
                 });
 

@@ -73,7 +73,7 @@ export default function StocktakingsPage() {
     const printStocktaking = (st: Stocktaking) => {
         const printLines = st.lines;
         const printWarehouse = st.warehouse?.name || '—';
-        const printDate = new Date(st.date).toLocaleDateString('en-GB');
+        const printDate = new Date(st.date).toLocaleDateString('en-ZA');
         const printNumber = `STK-${st.stocktakingNum}`;
         const printNotes = st.notes;
 
@@ -191,7 +191,7 @@ export default function StocktakingsPage() {
                         {
                             header: t('التاريخ'),
                             type: 'number',
-                            cell: (row) => new Date(row.date).toLocaleDateString('en-GB')
+                            cell: (row) => new Date(row.date).toLocaleDateString('en-ZA')
                         },
                         {
                             header: t('المخزن'),

@@ -103,7 +103,7 @@ export default function PurchasesReportPage() {
         },
         {
             header: t('التاريخ'),
-            cell: (row: Invoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: Invoice) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },
         {

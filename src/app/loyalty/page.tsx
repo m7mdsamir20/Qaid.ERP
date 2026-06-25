@@ -193,7 +193,7 @@ export default function LoyaltyPage() {
             type: 'date',
             cell: (r: CustomerPointsRecord) => (
                 <span style={{ fontFamily: OUTFIT, color: C.textMuted, fontSize: '12px' }}>
-                    {new Date(r.updatedAt).toLocaleDateString('ar-EG')}
+                    {new Date(r.updatedAt).toLocaleDateString('en-ZA')}
                 </span>
             ),
         },

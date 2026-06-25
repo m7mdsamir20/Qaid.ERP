@@ -168,7 +168,7 @@ export default function SerialNumbersPage() {
             type: 'date',
             cell: (r: SerialRecord) => (
                 <span style={{ color: C.textMuted, fontSize: '12px', fontFamily: OUTFIT }}>
-                    {r.soldAt ? new Date(r.soldAt).toLocaleDateString('ar-EG') : '—'}
+                    {r.soldAt ? new Date(r.soldAt).toLocaleDateString('en-ZA') : '—'}
                 </span>
             ),
         },
@@ -180,7 +180,7 @@ export default function SerialNumbersPage() {
                 const expired = new Date(r.warrantyEnd) < new Date();
                 return (
                     <span style={{ color: expired ? '#ef4444' : '#4ade80', fontSize: '12px', fontFamily: OUTFIT, fontWeight: 600 }}>
-                        {new Date(r.warrantyEnd).toLocaleDateString('ar-EG')}
+                        {new Date(r.warrantyEnd).toLocaleDateString('en-ZA')}
                     </span>
                 );
             },

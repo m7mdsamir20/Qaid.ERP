@@ -78,7 +78,7 @@ export const GET = withProtection(async (request, session) => {
                 'الفواتير': (invoices as any[]).map(inv => ({
                     'رقم الفاتورة': (inv as any).invoiceNumber,
                     'نوع الفاتورة': (inv as any).type === 'sale' ? 'بيع' : 'شراء',
-                    'التاريخ': new Date((inv as any).date).toLocaleDateString('ar-EG'),
+                    'التاريخ': new Date((inv as any).date).toLocaleDateString('en-ZA'),
                     'الإجمالي': (inv as any).total || 0,
                     'الحالة': (inv as any).status || '',
                 })),

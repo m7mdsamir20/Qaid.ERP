@@ -138,11 +138,11 @@ export default function MaterialRequestsPage() {
                         },
                         {
                             header: 'تاريخ الطلب', type: 'text',
-                            cell: (row) => new Date(row.requestDate).toLocaleDateString('ar-EG')
+                            cell: (row) => new Date(row.requestDate).toLocaleDateString('en-ZA')
                         },
                         {
                             header: 'تاريخ المطلوب', type: 'text',
-                            cell: (row) => row.requiredDate ? new Date(row.requiredDate).toLocaleDateString('ar-EG') : '—'
+                            cell: (row) => row.requiredDate ? new Date(row.requiredDate).toLocaleDateString('en-ZA') : '—'
                         },
                         {
                             header: 'الحالة', type: 'text',

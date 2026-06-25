@@ -77,7 +77,7 @@ export default function DailyReportPage() {
     useEffect(() => { fetchReport(); }, [date, branchId]);
 
     const branchName = Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : '';
-    const printDate = new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const printDate = new Date(date).toLocaleDateString('en-ZA', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const sym = t(getCurrencyName(currency));
     const dir = isRtl ? 'rtl' : 'ltr';
     const fAlign = isRtl ? 'right' : 'left';
@@ -89,7 +89,7 @@ export default function DailyReportPage() {
         const companyName = (company as any)?.companyName || (company as any)?.name || '';
         const now = new Date();
         const toWesternDigits = (s: string) => s.replace(/[\u0660-\u0669]/g, d => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
-        const nowStr = toWesternDigits(now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' }));
+        const nowStr = toWesternDigits(now.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' }));
         const nowTime = toWesternDigits(now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' }));
 
         const kpis = [

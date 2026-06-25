@@ -143,12 +143,12 @@ export default function TreasuryReconciliationPage() {
         applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('تقرير العجز والزيادة'));
-        XLSX.writeFile(wb, `${t('تقرير_الجرد')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${t('تقرير_الجرد')}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
     };
 
     const filteredSnapshots = snapshots.filter(s =>
         !historyQ ||
-        new Date(s.createdAt).toLocaleDateString('en-GB').includes(historyQ) ||
+        new Date(s.createdAt).toLocaleDateString('en-ZA').includes(historyQ) ||
         (s.notes || '').toLowerCase().includes(historyQ.toLowerCase())
     );
 
@@ -298,7 +298,7 @@ export default function TreasuryReconciliationPage() {
                     backTab="treasury-bank"
                     onExportExcel={tab === 'new' ? exportToExcel : undefined}
                     printTitle={tab === 'history' && selectedSnapshot ? t("تقرير الجرد والعجز والزيادة") : undefined}
-                    printDate={tab === 'history' && selectedSnapshot ? new Date(selectedSnapshot.createdAt).toLocaleDateString('ar-EG') : undefined}
+                    printDate={tab === 'history' && selectedSnapshot ? new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA') : undefined}
                 />
 
                 {/* Tabs */}
@@ -403,7 +403,7 @@ export default function TreasuryReconciliationPage() {
                                                     </div>
                                                     <div>
                                                         <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                                            {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                            {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                         </div>
                                                         <div style={{ fontSize: '11.5px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
                                                             {new Date(snap.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
@@ -446,7 +446,7 @@ export default function TreasuryReconciliationPage() {
                                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                                             <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <span style={{ fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
-                                                    {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
+                                                    {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
                                                 </span>
                                                 {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
                                             </div>

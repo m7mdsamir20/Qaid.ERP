@@ -13,7 +13,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
 import DataTable from '@/components/DataTable';
 
-const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
+const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString('en-ZA');
 const fmtN = (n: number) => formatNumber(n);
 
 export default function DuePage() {

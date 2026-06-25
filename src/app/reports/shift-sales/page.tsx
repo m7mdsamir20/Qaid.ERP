@@ -76,7 +76,7 @@ export default function ShiftSalesReportPage() {
             cell: (row: ShiftData) => (
                 <>
                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>#{row.shiftNumber}</div>
-                    <div style={{ fontSize: '10px', color: C.textMuted }}>{new Date(row.openedAt).toLocaleString('en-GB')}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted }}>{new Date(row.openedAt).toLocaleString('en-ZA')}</div>
                 </>
             )
         },

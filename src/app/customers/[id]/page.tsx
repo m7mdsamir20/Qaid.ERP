@@ -110,9 +110,9 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'inherit',  fontSize: '13px', color: '#000' }}>
                         <div><strong>{t('اسم العميل:')}</strong> {customer.name}</div>
                         {customer.phone && <div><strong>{t('رقم الهاتف:')}</strong> {customer.phone}</div>}
-                        <div><strong>{t('تاريخ الطباعة:')}</strong> {new Date().toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>
-                        {dateFrom && <div><strong>{t('الفترة من:')}</strong> {new Date(dateFrom).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>}
-                        {dateTo && <div><strong>{t('إلى تاريخ:')}</strong> {new Date(dateTo).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>}
+                        <div><strong>{t('تاريخ الطباعة:')}</strong> {new Date().toLocaleDateString('en-ZA')}</div>
+                        {dateFrom && <div><strong>{t('الفترة من:')}</strong> {new Date(dateFrom).toLocaleDateString('en-ZA')}</div>}
+                        {dateTo && <div><strong>{t('إلى تاريخ:')}</strong> {new Date(dateTo).toLocaleDateString('en-ZA')}</div>}
                     </div>
                 </div>
 
@@ -194,7 +194,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 {ledger.map((row: any, i: number) => (
                                     <tr key={row.id + i} style={{ borderBottom: i < ledger.length - 1 ? '1px solid var(--border-subtle)' : 'none', transition: 'background 0.15s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-100)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 20px', textAlign: 'center',  color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600 }}>
-                                            {new Date(row.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                                            {new Date(row.date).toLocaleDateString('en-ZA', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                                         </td>
                                         <td style={{ padding: '14px 20px',  }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(37, 106, 244,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 600 }}>

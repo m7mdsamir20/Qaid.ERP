@@ -124,7 +124,7 @@ export default function ItemMovementReportPage() {
             header: t('التاريخ والوقت'),
             cell: (row: Movement) => {
                 const movementDate = row.date || row.createdAt;
-                return movementDate ? `${new Date(movementDate).toLocaleDateString('en-GB')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—';
+                return movementDate ? `${new Date(movementDate).toLocaleDateString('en-ZA')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—';
             },
             style: { fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
         },

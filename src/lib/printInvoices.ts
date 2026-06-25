@@ -151,7 +151,7 @@ export function generateA4HTML(
     const partyBalance = options.partyBalance ?? null;
 
     const invoiceDate = new Date(invoice.date || new Date());
-    const date = invoiceDate.toLocaleDateString('en-GB');
+    const date = invoiceDate.toLocaleDateString('en-ZA');
     const dateEn = '';
     const dateISO = invoiceDate.toISOString();
 
@@ -592,7 +592,7 @@ export function generateThermalVoucherHTML(voucher: any, type: VoucherType, comp
     const title = isReceipt ? 'سند قبض' : 'سند صرف';
     const titleEn = isReceipt ? 'Receipt Voucher' : 'Payment Voucher';
     const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
-    const date = new Date(voucher.date || new Date()).toLocaleDateString('en-GB');
+    const date = new Date(voucher.date || new Date()).toLocaleDateString('en-ZA');
 
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
@@ -775,7 +775,7 @@ export function generateQuotationHTML(
     const subtotal = Number(quotation.subtotal || 0);
     const taxAmt = Number(quotation.taxAmount || 0);
     const total = Number(quotation.total || subtotal + taxAmt);
-    const date = new Date(quotation.date || new Date()).toLocaleDateString('en-GB');
+    const date = new Date(quotation.date || new Date()).toLocaleDateString('en-ZA');
     const quoNum = String(quotation.quotationNumber || 1).padStart(5, '0');
 
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
@@ -1009,7 +1009,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
         tax: company.taxNumber || '',
     };
 
-    const date = new Date(plan.startDate || new Date()).toLocaleDateString('en-GB');
+    const date = new Date(plan.startDate || new Date()).toLocaleDateString('en-ZA');
     const planNum = String(plan.planNumber || 1).padStart(5, '0');
 
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
@@ -1143,7 +1143,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
         return `
             <tr>
                 <td style="font-family:monospace; color:#5286ed;">${instCode}</td>
-                <td style="font-family:sans-serif">${new Date(i.dueDate).toLocaleDateString('en-GB')}</td>
+                <td style="font-family:sans-serif">${new Date(i.dueDate).toLocaleDateString('en-ZA')}</td>
                 <td>${Number(i.amount).toLocaleString()} ${sym}</td>
                 <td>${Number(i.paidAmount || 0).toLocaleString()} ${sym}</td>
                 <td>${Number(i.remaining || 0).toLocaleString()} ${sym}</td>
@@ -1206,7 +1206,7 @@ export function generateReportHTML(
     };
 
     const now = new Date();
-    const printDateStr = now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    const printDateStr = now.toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
     const printTimeStr = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
 
     const baseFont  = isA5 ? '9px'  : '11px';

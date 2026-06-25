@@ -82,7 +82,7 @@ export default function BalanceSheetPage() {
         const bAlign = isRtl ? 'left' : 'right';
         const now = new Date();
         const toWD = (s: string) => s.replace(/[\u0660-\u0669]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
-        const printDate = now.toLocaleDateString('en-GB');
+        const printDate = now.toLocaleDateString('en-ZA');
         const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
         const logo = company.logo || company.companyLogo || '';
         const companyName = company.companyName || company.name || '';

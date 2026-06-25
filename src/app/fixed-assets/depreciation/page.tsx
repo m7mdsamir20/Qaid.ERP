@@ -192,7 +192,7 @@ export default function DepreciationPage() {
                     {selectedYear && (
                         <div style={{ marginInlineEnd: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textSecondary, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
                             <InfoIcon size={14} />
-                            <span>{t('نطاق السنة')}: {new Date(selectedYear.startDate).toLocaleDateString('en-GB')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-GB')}</span>
+                            <span>{t('نطاق السنة')}: {new Date(selectedYear.startDate).toLocaleDateString('en-ZA')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-ZA')}</span>
                         </div>
                     )}
                 </div>

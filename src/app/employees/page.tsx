@@ -234,7 +234,7 @@ export default function EmployeesPage() {
                             style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Employee) => (
                                 <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
-                                    {new Date(row.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                    {new Date(row.hireDate).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
                                 </div>
                             )
                         },

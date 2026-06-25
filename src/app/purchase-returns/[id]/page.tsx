@@ -97,7 +97,7 @@ export default function PurchaseReturnDetailPage(props: { params: Promise<{ id: 
 
                 <PageHeader
                     title={`${t('تفاصيل')} ${invLabel}`}
-                    subtitle={`${t('تاريخ المرتجع:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العمليات المرتجعة وتأثيرها المالي')}`}
+                    subtitle={`${t('تاريخ المرتجع:')} ${new Date(invoice.date).toLocaleDateString('en-ZA')} — ${t('سجل العمليات المرتجعة وتأثيرها المالي')}`}
                     icon={Receipt}
                     backUrl="/purchase-returns"
                     actions={[

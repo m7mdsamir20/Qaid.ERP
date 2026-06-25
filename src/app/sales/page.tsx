@@ -115,7 +115,7 @@ export default function SalesPage() {
             header: t("التاريخ"),
             type: 'date',
             cell: (inv: Invoice) => {
-                const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
+                const dateStr = new Date(inv.date).toLocaleDateString('en-ZA');
                 return <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</span>;
             }
         },

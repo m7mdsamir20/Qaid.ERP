@@ -309,7 +309,7 @@ export default function ClosingEntriesPage() {
                                 <h2 style={{ fontSize: '24px', fontWeight: 600, color: C.textPrimary, marginBottom: '12px' }}>{t('السنة المالية مقفلة محاسبياً')}</h2>
                                 <p style={{ fontSize: '15px', color: C.textSecondary, marginBottom: '40px' }}>
                                     {t('تم تدوير الأرصدة وإصدار قيد الإقفال بنجاح')} 
-                                    {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 600, marginInlineEnd: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-GB')}</span>}
+                                    {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 600, marginInlineEnd: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-ZA')}</span>}
                                 </p>
                                 
                                 <div className="done-actions" style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>

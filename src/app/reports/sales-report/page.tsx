@@ -218,7 +218,7 @@ export default function SalesReportPage() {
                                     header: t('التاريخ'),
                                     cell: (row: Invoice) => (
                                         <span style={{ fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>
-                                            {new Date(row.date).toLocaleDateString('en-GB')}
+                                            {new Date(row.date).toLocaleDateString('en-ZA')}
                                         </span>
                                     )
                                 },

@@ -465,7 +465,7 @@ export default function NewReturnPage() {
                                                 options={customerInvoices.map(i => ({
                                                     value: i.id,
                                                     label: `${isServices ? 'SRV' : 'INV'}-${String(i.invoiceNumber).padStart(5, '0')}`,
-                                                    sub: `${new Date(i.date).toLocaleDateString('en-GB')} | ${i.total.toLocaleString()} ${cSymbol}`,
+                                                    sub: `${new Date(i.date).toLocaleDateString('en-ZA')} | ${i.total.toLocaleString()} ${cSymbol}`,
                                                 }))}
                                             />
                                             <InlineError field="originalInvoiceId" />

@@ -85,7 +85,7 @@ export default function EmployeesDeductionsPage() {
         },
         {
             header: t('التاريخ'),
-            cell: (row: DeductionRecord) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: DeductionRecord) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' } as React.CSSProperties
         },
         {

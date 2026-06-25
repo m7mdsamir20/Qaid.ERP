@@ -120,7 +120,7 @@ export default function NewStocktakingPage() {
 
     const printStocktaking = () => {
         const printWarehouse = warehouses.find(w => w.id === form.warehouseId)?.name || '—';
-        const printDate = new Date(form.date).toLocaleDateString('en-GB');
+        const printDate = new Date(form.date).toLocaleDateString('en-ZA');
         const printNumber = t('مسودة جديدة');
         const printNotes = form.notes;
 

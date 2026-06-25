@@ -45,7 +45,7 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; color: string; b
 
 function fmtDate(d: string | null) {
     if (!d) return '—';
-    return new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric' });
+    return new Date(d).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 export default function WorkOrdersPage() {

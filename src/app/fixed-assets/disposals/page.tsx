@@ -198,7 +198,7 @@ export default function DisposalsPage() {
                             header: t('تاريخ الاستبعاد'),
                             type: 'date',
                             className: 'hide-mobile',
-                            cell: (row: Disposal) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</span>
+                            cell: (row: Disposal) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.disposalDate).toLocaleDateString('en-ZA')}</span>
                         },
                         {
                             header: t('العائد / البيع'),

@@ -177,7 +177,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
                 <PageHeader
                     title={`${t('تفاصيل')} ${invLabel}`}
-                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العميل والتحصيل المالي')}`}
+                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString('en-ZA')} — ${t('سجل العميل والتحصيل المالي')}`}
                     icon={Receipt}
                     backUrl="/sales"
                     actions={[
@@ -227,7 +227,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             if (invoice.notes?.includes(t("POS الكاشير السريع"))) {
                                 const printWindow = window.open('', '_blank', 'width=350,height=600');
                                 if (printWindow) {
-                                    const receiptDate = new Date(invoice.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+                                    const receiptDate = new Date(invoice.date).toLocaleString('en-ZA', { dateStyle: 'short', timeStyle: 'short' });
                                     printWindow.document.write(`
                                         <html>
                                         <head>
@@ -518,7 +518,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
-                                                    {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
+                                                    {new Date(ret.date).toLocaleDateString('en-ZA')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false) }}>
                                                     {fMoneyJSX(ret.total, '', { color: C.danger })}

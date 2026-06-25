@@ -344,7 +344,7 @@ export default function ComprehensiveSettlementPage() {
                                     </>
                                 )},
                                 { header: t('المبلغ'), type: 'number', cell: (row) => <span style={{ fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{row.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textSecondary, fontFamily: CAIRO }}>{currencySign}</span></span> },
-                                { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('ar-EG-u-nu-latn')}</span> },
+                                { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')}</span> },
                                 { header: t('الإجراءات'), type: 'action', cell: (row) => (
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
                                         <button onClick={() => setDetailsModal(row)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
@@ -378,7 +378,7 @@ export default function ComprehensiveSettlementPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '22px' }}>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, marginBottom: '4px' }}>{t('تاريخ التسجيل')}</div>
-                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }}>{new Date(detailsModal.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { dateStyle: 'full' })}</div>
+                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }}>{new Date(detailsModal.date).toLocaleDateString('en-ZA', { dateStyle: 'full' })}</div>
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>

@@ -656,7 +656,7 @@ export default function POSPage() {
                     <tr><td>${t('رقم الانتظار')}</td><td>: ${orderData.queueNumber || (orderData.orderNumber ? orderData.orderNumber.toString().padStart(4, '0') : '----')}</td></tr>
                     ` : ''}
                     `}
-                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
+                    <tr><td>${t('التاريخ')}</td><td>: ${new Date(orderData.createdAt || Date.now()).toLocaleString('en-ZA', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true }).replace('am', t('ص')).replace('pm', t('م')).replace('AM', t('ص')).replace('PM', t('م'))}</td></tr>
                     ${orderData.type !== 'delivery' ? `<tr><td>${isRetail ? t('البائع') : t('الكاشير')}</td><td>: ${orderData.shift?.user?.name || orderData.cashierName || '-'}</td></tr>` : ''}
                 </table>
                 ${orderData.type === 'delivery' && (orderData.deliveryName || orderData.customer) ? `
@@ -889,7 +889,7 @@ export default function POSPage() {
                     <h1 class="title">${t('بون تحضير')}</h1>
                     <p class="order-num">${t('رقم الطلب')}: ${orderData.orderNumber?.toString().padStart(4, '0') || '----'}</p>
                     <div class="table-name">${title}</div>
-                    <p class="date">${new Date().toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                    <p class="date">${new Date().toLocaleString('en-ZA', { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                 </div>
                 
                 <div class="items">

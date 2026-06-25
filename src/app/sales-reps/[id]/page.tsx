@@ -324,7 +324,7 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>
-                                                            {new Date(inv.date).toLocaleDateString('ar-EG-u-nu-latn')}
+                                                            {new Date(inv.date).toLocaleDateString('en-ZA')}
                                                         </span>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
@@ -437,7 +437,7 @@ export default function SalesRepProfilePage({ params }: { params: Promise<{ id: 
                                                     <tr key={col.id} style={TABLE_STYLE.row(idx === collections.length - 1)}>
                                                         <td style={TABLE_STYLE.td(true)}>
                                                             <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>
-                                                                {new Date(col.date).toLocaleDateString('ar-EG-u-nu-latn')}
+                                                                {new Date(col.date).toLocaleDateString('en-ZA')}
                                                             </span>
                                                         </td>
                                                         <td style={TABLE_STYLE.td(false)}>

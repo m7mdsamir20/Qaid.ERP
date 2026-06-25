@@ -181,7 +181,7 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
         : parseFloat(lines.reduce((a: number, l: any) => a + Number(l.quantity||0)*Number(l.price||0)*invoiceTaxRate/100, 0).toFixed(2));
 
     const invoiceDate = new Date(invoice?.date || new Date());
-    const date        = invoiceDate.toLocaleDateString('en-GB');
+    const date        = invoiceDate.toLocaleDateString('en-ZA');
     const dateISO     = invoiceDate.toISOString();
     const invoiceNum  = String(invoice?.invoiceNumber || 1).padStart(5, '0');
 

@@ -163,7 +163,7 @@ export default function ClientsSuppliersBalancesPage() {
             : hasCustomers
                 ? t('ارصدة_العملاء')
                 : t('ارصدة_الموردين');
-        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
     };
 
     const columns: TableColumn[] = [

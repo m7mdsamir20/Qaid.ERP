@@ -120,7 +120,7 @@ export default function PayrollStatementPage() {
                     subtitle={t("مراجعة شاملة لمسيرات الرواتب، الحوافز، الاستقطاعات، وصافي المستحقات لفترة محددة.")}
                     backTab="hr"
                     printTitle={data && data.records.length > 0 ? t("مسير رواتب الموظفين") : undefined}
-                    printDate={new Date(month + '-01').toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' })}
+                    printDate={new Date(month + '-01').toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}
                     printLabel={t('الشهر:')}
                 />
 

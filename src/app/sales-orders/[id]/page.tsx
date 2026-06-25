@@ -363,14 +363,14 @@ export default function SalesOrderDetailPage() {
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                             <span style={{ color: C.textSecondary }}>{t('التاريخ:')}</span>
                                             <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>
-                                                {new Date(order.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                                {new Date(order.date).toLocaleDateString('en-ZA')}
                                             </span>
                                         </div>
                                         {order.expectedDeliveryDate && (
                                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                                 <span style={{ color: C.textSecondary }}>{t('موعد التسليم:')}</span>
                                                 <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>
-                                                    {new Date(order.expectedDeliveryDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                                    {new Date(order.expectedDeliveryDate).toLocaleDateString('en-ZA')}
                                                 </span>
                                             </div>
                                         )}

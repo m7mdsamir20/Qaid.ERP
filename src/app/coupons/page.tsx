@@ -207,7 +207,7 @@ export default function CouponsPage() {
             type: 'date',
             cell: (c: Coupon) => (
                 <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                    {c.endDate ? new Date(c.endDate).toLocaleDateString('en-GB') : '—'}
+                    {c.endDate ? new Date(c.endDate).toLocaleDateString('en-ZA') : '—'}
                 </span>
             )
         },

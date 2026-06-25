@@ -105,7 +105,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
                 <PageHeader
                     title={`${t('تفاصيل')} ${invLabel}`}
-                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل الحالة المالية والتوريد')}`}
+                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString('en-ZA')} — ${t('سجل الحالة المالية والتوريد')}`}
                     icon={Receipt}
                     backUrl="/purchases"
                     actions={[

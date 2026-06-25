@@ -87,7 +87,7 @@ export default function CashFlowReportPage() {
     const columns: TableColumn[] = [
         {
             header: t('التاريخ'),
-            cell: (row: MoneyLog) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: MoneyLog) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },
         {

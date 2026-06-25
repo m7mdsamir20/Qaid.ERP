@@ -39,7 +39,7 @@ export default function ShiftsPage() {
     useEffect(() => { load(); }, [load]);
 
     const activeShift = shifts.find(s => s.status === 'open');
-    const formatDate  = (d: string) => new Date(d).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t("ص")).replace('pm', t("م")).replace('AM', t("ص")).replace('PM', t("م"));
+    const formatDate  = (d: string) => new Date(d).toLocaleString('en-ZA', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).replace('am', t("ص")).replace('pm', t("م")).replace('AM', t("ص")).replace('PM', t("م"));
     const arNum = (num: number | string) => num.toString();
 
     const handleOpen = async () => {

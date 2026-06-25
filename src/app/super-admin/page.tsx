@@ -32,7 +32,7 @@ const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
     contracting: { label: t('مقاولات وإنشاءات'), color: '#14b8a6', bg: 'rgba(20, 184, 166, 0.1)' },
 };
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
 const daysLeft = (endDate: string) => Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
 export default function SuperAdminPage() {

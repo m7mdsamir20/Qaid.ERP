@@ -73,7 +73,7 @@ export default function HolidaysPage() {
 
     const byMonth: Record<string, OfficialHoliday[]> = {};
     holidays.forEach(h => {
-        const month = new Date(h.date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' });
+        const month = new Date(h.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' });
         if (!byMonth[month]) byMonth[month] = [];
         byMonth[month].push(h);
     });
@@ -117,7 +117,7 @@ export default function HolidaysPage() {
                                                 <div>
                                                     <div style={{ fontFamily: CAIRO, fontWeight: 700, fontSize: '15px', color: C.textPrimary }}>{h.name}</div>
                                                     <div style={{ fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>
-                                                        {new Date(h.date).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                                        {new Date(h.date).toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                                         {h.isRecurring && (
                                                             <span style={{ marginRight: '8px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                                                                 <RefreshCcw size={11} /> سنوية

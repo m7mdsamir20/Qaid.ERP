@@ -122,9 +122,9 @@ export default function EmployeeDetailPage() {
                         <ProfileSection title={t("البيانات الشخصية")} icon={User} color={C.primary}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
                                 <InfoItem label={t("الرقم القومي")} value={employee.nationalId} icon={ShieldCheck} family={OUTFIT} />
-                                <InfoItem label={t("تاريخ الميلاد")} value={employee.birthDate ? new Date(employee.birthDate).toLocaleDateString('en-GB') : '—'} icon={Calendar} />
+                                <InfoItem label={t("تاريخ الميلاد")} value={employee.birthDate ? new Date(employee.birthDate).toLocaleDateString('en-ZA') : '—'} icon={Calendar} />
                                 <InfoItem label={t("الجنس")} value={employee.gender === 'male' ? t('ذكر') : employee.gender === 'female' ? t('أنثى') : '—'} icon={User} />
-                                <InfoItem label={t("تاريخ التعيين")} value={new Date(employee.hireDate).toLocaleDateString('en-GB')} icon={FileText} />
+                                <InfoItem label={t("تاريخ التعيين")} value={new Date(employee.hireDate).toLocaleDateString('en-ZA')} icon={FileText} />
                                 <InfoItem label={t("رقم الهاتف")} value={employee.phone} icon={Phone} family={OUTFIT} />
                                 <InfoItem label={t("البريد الإلكتروني")} value={employee.email} icon={Mail} family={OUTFIT} />
                                 <div style={{ gridColumn: '1 / -1' }}>

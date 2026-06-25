@@ -107,7 +107,7 @@ export default function CustomerStatementPage() {
         const debitLabel = isServices ? t('الخدمات (عليه)') : t('مدين (عليه)');
         const creditLabel = t('دائن (له)');
         const excelData = data.statement.map((row: StatementRow) => ({
-            [t('التاريخ')]: new Date(row.date).toLocaleDateString('en-GB'),
+            [t('التاريخ')]: new Date(row.date).toLocaleDateString('en-ZA'),
             [t('طبيعة الحركة')]: row.type,
             [t('المرجع')]: row.ref || '—',
             [t('البيان')]: row.description,
@@ -118,7 +118,7 @@ export default function CustomerStatementPage() {
 
         if (data.initialBalance !== 0) {
             excelData.unshift({
-                [t('التاريخ')]: data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-GB') : '—',
+                [t('التاريخ')]: data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-ZA') : '—',
                 [t('طبيعة الحركة')]: t('رصيد افتتاحي'),
                 [t('المرجع')]: '—',
                 [t('البيان')]: t('رصيد ما قبل فترة التقرير'),
@@ -132,7 +132,7 @@ export default function CustomerStatementPage() {
         applyExcelMoneyFormat(ws, currency, lang);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف الحساب'));
-        XLSX.writeFile(wb, `${t('كشف_حساب')}_${data.customer.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${t('كشف_حساب')}_${data.customer.name}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
     };
 
     const tableData: StatementTableItem[] = [];
@@ -158,9 +158,9 @@ export default function CustomerStatementPage() {
             header: t('التاريخ'),
             cell: (row: StatementTableItem) => {
                 if (row.isInitialBalance) {
-                    return row.date ? new Date(row.date).toLocaleDateString('en-GB') : '—';
+                    return row.date ? new Date(row.date).toLocaleDateString('en-ZA') : '—';
                 }
-                return new Date(row.date).toLocaleDateString('en-GB');
+                return new Date(row.date).toLocaleDateString('en-ZA');
             },
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },

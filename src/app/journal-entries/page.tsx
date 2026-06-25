@@ -185,7 +185,7 @@ export default function JournalEntriesPage() {
                 generatedBy: session?.user?.name || '',
                 metadata: [
                     { label: t('رقم القيد'), value: formatEntryCode(entry.entryNumber) },
-                    { label: t('تاريخ القيد'), value: new Date(entry.date).toLocaleDateString('en-GB') },
+                    { label: t('تاريخ القيد'), value: new Date(entry.date).toLocaleDateString('en-ZA') },
                     { label: t('الحالة'), value: entry.isPosted ? t('مرحّل') : t('مسودة') },
                     { label: t('المرجع'), value: entry.reference || '—' },
                     { label: t('البيان العام'), value: entry.description },
@@ -252,7 +252,7 @@ export default function JournalEntriesPage() {
                     <DataTable
                         columns={[
                             { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>{formatEntryCode(row.entryNumber)}</span> },
-                            { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                            { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')}</span> },
                             { header: t('البيان / الوصف العام'), type: 'text', cell: (row) => <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</div> },
                             { header: t('المرجع'), type: 'text', cell: (row) => row.reference ? <span style={{ fontSize: '10px', color: C.textSecondary, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{row.reference}</span> : <>—</> },
                             { header: t('المبلغ'), type: 'number', cell: (row) => <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fMoney(row.lines.reduce((s: number, l: JournalLine) => s + l.debit, 0))}</span> },

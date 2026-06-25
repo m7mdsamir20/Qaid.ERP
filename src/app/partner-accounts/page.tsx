@@ -211,7 +211,7 @@ export default function PartnerAccountsPage() {
                                                         type: 'date',
                                                         cell: (tx: Transaction) => (
                                                             <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                                                                {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                {new Date(tx.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
                                                             </span>
                                                         )
                                                     },

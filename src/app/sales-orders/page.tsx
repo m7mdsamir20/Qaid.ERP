@@ -121,7 +121,7 @@ export default function SalesOrdersPage() {
             type: 'date',
             cell: (order: SalesOrder) => (
                 <span style={{ color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>
-                    {new Date(order.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                    {new Date(order.date).toLocaleDateString('en-ZA')}
                 </span>
             ),
         },
@@ -161,7 +161,7 @@ export default function SalesOrdersPage() {
             type: 'date',
             cell: (order: SalesOrder) => order.expectedDeliveryDate
                 ? <span style={{ color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
-                    {new Date(order.expectedDeliveryDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                    {new Date(order.expectedDeliveryDate).toLocaleDateString('en-ZA')}
                   </span>
                 : <span style={{ color: C.textMuted, fontSize: '12px' }}>—</span>,
         },

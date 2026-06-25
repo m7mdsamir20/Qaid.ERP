@@ -144,7 +144,7 @@ export const POST = withProtection(async (request, session, body) => {
         module: 'attendance',
         entityType: 'AttendanceRecord',
         entityId: record.id,
-        description: `تسجيل حضور للموظف ${employee?.name || employeeId} بتاريخ ${dateObj.toLocaleDateString('ar-EG')}`,
+        description: `تسجيل حضور للموظف ${employee?.name || employeeId} بتاريخ ${dateObj.toLocaleDateString('en-ZA')}`,
     });
 
     return NextResponse.json(record, { status: 201 });

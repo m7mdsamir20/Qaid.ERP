@@ -207,7 +207,7 @@ export default function ApiTab() {
                                     <div>
                                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{k.name}</div>
                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT }}>
-                                            {t('تم الإنشاء')}: {new Date(k.createdAt).toLocaleDateString('ar-EG')}
+                                            {t('تم الإنشاء')}: {new Date(k.createdAt).toLocaleDateString('en-ZA')}
                                         </div>
                                     </div>
                                 </div>
@@ -279,7 +279,7 @@ export default function ApiTab() {
                                 {k.lastUsedAt && (
                                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                                         <RefreshCw size={12} />
-                                        {t('آخر استخدام')}: <strong style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{new Date(k.lastUsedAt).toLocaleDateString('ar-EG')}</strong>
+                                        {t('آخر استخدام')}: <strong style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{new Date(k.lastUsedAt).toLocaleDateString('en-ZA')}</strong>
                                     </span>
                                 )}
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

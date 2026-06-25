@@ -88,7 +88,7 @@ export default function ReturnsReportPage() {
         },
         {
             header: t('التاريخ'),
-            cell: (row: ReturnInvoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: ReturnInvoice) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
         },
         {

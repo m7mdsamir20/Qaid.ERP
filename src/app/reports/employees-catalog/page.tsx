@@ -65,7 +65,7 @@ export default function EmployeesCatalogPage() {
         },
         {
             header: t('تاريخ التعيين'),
-            cell: (row: Employee) => new Date(row.joinDate).toLocaleDateString('en-GB'),
+            cell: (row: Employee) => new Date(row.joinDate).toLocaleDateString('en-ZA'),
             style: { fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT }
         },
         {

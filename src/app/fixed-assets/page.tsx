@@ -258,7 +258,7 @@ export default function FixedAssetsPage() {
                             header: t('تاريخ الاقتناء'),
                             className: 'hide-mobile',
                             cell: (row: FixedAsset) => (
-                                <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
+                                <span style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.purchaseDate).toLocaleDateString('en-ZA')}</span>
                             )
                         },
                         {

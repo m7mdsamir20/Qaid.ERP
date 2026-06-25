@@ -97,7 +97,7 @@ export default function CapitalPage() {
             header: t('التاريخ'),
             cell: (row: CapitalChange) => (
                 <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
-                    {new Date(row.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    {new Date(row.date).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </span>
             )
         },

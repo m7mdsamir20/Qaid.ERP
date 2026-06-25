@@ -174,7 +174,7 @@ export default function DailySiteReportDetailPage() {
                                     {[
                                         { label: 'رقم التقرير', value: ref, icon: ClipboardCheck },
                                         { label: 'المشروع', value: report.project?.name || '—', icon: FileText },
-                                        { label: 'التاريخ', value: new Date(report.date).toLocaleDateString('ar-EG'), icon: Calendar },
+                                        { label: 'التاريخ', value: new Date(report.date).toLocaleDateString('en-ZA'), icon: Calendar },
                                         { label: 'الطقس', value: report.weather ? (WEATHER_LABELS[report.weather] || report.weather) : '—', icon: CloudSun },
                                         { label: 'عدد العمال', value: String(report.workersCount), icon: Users },
                                         { label: 'نسبة الإنجاز', value: report.completionPercent !== null ? `${report.completionPercent}%` : '—', icon: BarChart2 },
@@ -326,7 +326,7 @@ export default function DailySiteReportDetailPage() {
                                         <Calendar size={11} /> التاريخ
                                     </span>
                                     <span style={{ fontFamily: OUTFIT, fontWeight: 600 }}>
-                                        {new Date(report.date).toLocaleDateString('ar-EG')}
+                                        {new Date(report.date).toLocaleDateString('en-ZA')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

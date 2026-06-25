@@ -133,7 +133,7 @@ export default function TreasuryBankReportPage() {
             header: t('التاريخ'),
             cell: (row: TreasuryStatementTableItem) => {
                 if (row.isOpeningBalance) return '';
-                return new Date(row.date).toLocaleDateString('en-GB');
+                return new Date(row.date).toLocaleDateString('en-ZA');
             },
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },

@@ -13,7 +13,7 @@ import { C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 
-const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt  = (d: string) => new Date(d).toLocaleDateString('en-ZA');
 const fmtN = (n: number) => formatNumber(n);
 
 interface CustomerOption {

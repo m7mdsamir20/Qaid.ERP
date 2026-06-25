@@ -92,7 +92,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ البداية')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'center' }}>
-                                        {new Date(sub.startDate).toLocaleDateString('en-GB')}
+                                        {new Date(sub.startDate).toLocaleDateString('en-ZA')}
                                     </div>
                                 </div>
 
@@ -103,7 +103,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ الانتهاء')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'center' }}>
-                                        {new Date(sub.endDate).toLocaleDateString('en-GB')}
+                                        {new Date(sub.endDate).toLocaleDateString('en-ZA')}
                                         {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 600, fontFamily: CAIRO }}>{t('انتهى الاشتراك')}</span>}
                                     </div>
                                 </div>

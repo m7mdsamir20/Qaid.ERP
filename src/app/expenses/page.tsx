@@ -158,7 +158,7 @@ export default function ExpensesPage() {
 
                 <DataTable
                     columns={[
-                        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{new Date(row.date).toLocaleDateString('en-GB')}</span> },
+                        { header: t('التاريخ'), type: 'date', cell: (row) => <span style={{ color: C.textSecondary, fontSize: '12px' }}>{new Date(row.date).toLocaleDateString('en-ZA')}</span> },
                         { header: t('رقم القيد'), type: 'text', cell: (row) => <span style={{ fontFamily: OUTFIT, fontSize: '11px', fontWeight: 600, color: C.primary, opacity: 0.7 }}>{`JV-${row.entryNumber.toString().padStart(5, '0')}`}</span> },
                         { header: t('بند المصروف'), type: 'text', cell: (row) => {
                             const debitLine = row.lines.find((l: any) => l.debit > 0);

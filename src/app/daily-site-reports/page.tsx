@@ -204,7 +204,7 @@ export default function DailySiteReportsPage() {
                             type: 'number',
                             cell: (row: DailySiteReport) => (
                                 <span style={{ fontFamily: OUTFIT, color: C.textSecondary }}>
-                                    {new Date(row.date).toLocaleDateString('ar-EG')}
+                                    {new Date(row.date).toLocaleDateString('en-ZA')}
                                 </span>
                             ),
                         },

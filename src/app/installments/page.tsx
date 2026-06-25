@@ -14,7 +14,7 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BT
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-ZA');
 const fmtN = (n: number) => formatNumber(n);
 
 export default function InstallmentsPage() {

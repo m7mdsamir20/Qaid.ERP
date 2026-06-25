@@ -147,7 +147,7 @@ export default function StockMovementsPage() {
 
                     <DataTable
                         columns={[
-                            { header: t('التاريخ والوقت'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-GB')} {new Date(row.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</span> },
+                            { header: t('التاريخ والوقت'), type: 'date', cell: (row) => <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{new Date(row.date).toLocaleDateString('en-ZA')} {new Date(row.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}</span> },
                             { header: t('نوع الحركة'), type: 'status', cell: (row) => {
                                 const tc = getTypeLabel(row.type, row.reference);
                                 return (

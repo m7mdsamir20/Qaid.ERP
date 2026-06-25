@@ -166,14 +166,14 @@ export const GET = withProtection(async (request, session) => {
             const d = new Date();
             d.setMonth(d.getMonth() - i);
             // Format to Arabic: e.g. "يونيو 2026"
-            const label = d.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' });
+            const label = d.toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' });
             last6MonthsLabels.push(label);
             monthlySummary[label] = { billed: 0, billedPaid: 0, subcontractVal: 0, subcontractPaid: 0 };
         }
 
         // Aggregate progress bills into months
         monthlyBills.forEach(bill => {
-            const label = new Date(bill.date).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' });
+            const label = new Date(bill.date).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' });
             if (monthlySummary[label]) {
                 monthlySummary[label].billed += bill.netAmount || 0;
                 monthlySummary[label].billedPaid += bill.paidAmount || 0;
@@ -182,7 +182,7 @@ export const GET = withProtection(async (request, session) => {
 
         // Aggregate subcontracts into months
         monthlySubcontracts.forEach(contract => {
-            const label = new Date(contract.createdAt).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' });
+            const label = new Date(contract.createdAt).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric' });
             if (monthlySummary[label]) {
                 monthlySummary[label].subcontractVal += contract.contractValue || 0;
                 monthlySummary[label].subcontractPaid += contract.paidAmount || 0;

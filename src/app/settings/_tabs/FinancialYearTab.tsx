@@ -19,7 +19,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
 
     const calcDays = (s: any, e: any) =>
         Math.max(0, Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000) + 1);
-    const fmt = (d: any) => new Date(d).toLocaleDateString('en-GB');
+    const fmt = (d: any) => new Date(d).toLocaleDateString('en-ZA');
 
     const getNextStart = () => {
         const base = activeFY || closedYears[0];

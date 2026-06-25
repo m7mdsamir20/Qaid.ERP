@@ -241,7 +241,7 @@ export default function AdvancesPage() {
                             style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Advance) => (
                                 <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
-                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                    {new Date(row.date).toLocaleDateString('en-ZA')}
                                 </div>
                             )
                         },

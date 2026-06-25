@@ -72,7 +72,7 @@ export default function QuotationViewPage() {
 
     const fmt = (num: number) => formatNumber(Number(num || 0));
     const quoCode = `QUO-${String(quotation.quotationNumber).padStart(5, '0')}`;
-    const dateStr = new Date(quotation.date).toLocaleDateString('en-GB');
+    const dateStr = new Date(quotation.date).toLocaleDateString('en-ZA');
 
     const statusColor = quotation.status === 'converted' ? '#4ade80' : quotation.status === 'cancelled' ? '#fb7185' : '#fbbf24';
     const statusBg    = quotation.status === 'converted' ? 'rgba(74,222,128,0.08)' : quotation.status === 'cancelled' ? 'rgba(251,113,133,0.08)' : 'rgba(251,191,36,0.08)';

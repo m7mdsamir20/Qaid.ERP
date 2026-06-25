@@ -69,7 +69,7 @@ export default function KitchenWasteReportPage() {
             header: t('التاريخ'),
             cell: (row: WasteMovement) => (
                 <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
-                    {new Date(row.date).toLocaleString('en-GB')}
+                    {new Date(row.date).toLocaleString('en-ZA')}
                 </span>
             )
         },

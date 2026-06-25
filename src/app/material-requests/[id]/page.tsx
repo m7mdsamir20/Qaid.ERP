@@ -92,8 +92,8 @@ export default function MaterialRequestDetailPage() {
                                     { label: 'رقم الطلب', value: `MR-${String(mr.requestNumber).padStart(5, '0')}` },
                                     { label: 'المشروع', value: mr.project?.name || '—' },
                                     { label: 'المرحلة', value: mr.phase?.name || '—' },
-                                    { label: 'تاريخ الطلب', value: new Date(mr.requestDate).toLocaleDateString('ar-EG') },
-                                    { label: 'تاريخ المطلوب', value: mr.requiredDate ? new Date(mr.requiredDate).toLocaleDateString('ar-EG') : '—' },
+                                    { label: 'تاريخ الطلب', value: new Date(mr.requestDate).toLocaleDateString('en-ZA') },
+                                    { label: 'تاريخ المطلوب', value: mr.requiredDate ? new Date(mr.requiredDate).toLocaleDateString('en-ZA') : '—' },
                                     { label: 'طلب بواسطة', value: mr.requestedBy || '—' },
                                 ].map((item, i) => (
                                     <div key={i}>

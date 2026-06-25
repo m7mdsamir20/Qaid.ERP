@@ -126,7 +126,7 @@ export default function AgingReportPage() {
         if (!data.length) return;
         const excelData = data.map(inv => ({
             [t('رقم الفاتورة')]: `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`,
-            [t('التاريخ')]: new Date(inv.date).toLocaleDateString('en-GB'),
+            [t('التاريخ')]: new Date(inv.date).toLocaleDateString('en-ZA'),
             [t('العميل')]: inv.customer,
             [t('عمر الدين (يوم)')]: inv.ageDays,
             [t('المبلغ المتبقي')]: inv.remaining,
@@ -146,7 +146,7 @@ export default function AgingReportPage() {
             : hasCustomers 
                 ? t("تقرير_أعمار_ديون_العملاء") 
                 : t("تقرير_أعمار_ديون_الموردين");
-        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(wb, `${fileName}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
     };
 
     const columns: TableColumn[] = [
@@ -161,7 +161,7 @@ export default function AgingReportPage() {
         },
         {
             header: t('تاريخ الإصدار'),
-            cell: (row: AgingInvoice) => new Date(row.date).toLocaleDateString('en-GB'),
+            cell: (row: AgingInvoice) => new Date(row.date).toLocaleDateString('en-ZA'),
             style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
         },
         {

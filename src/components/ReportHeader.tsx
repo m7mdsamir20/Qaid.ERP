@@ -48,7 +48,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const reportTitle = printTitle || title;
     const now = new Date();
     const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String(t("٠١٢٣٤٥٦٧٨٩").indexOf(d)));
-    const printDateStr = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const printDateStr = now.toLocaleDateString('en-ZA', { year: 'numeric', month: '2-digit', day: '2-digit' });
     const printTimeStr = toWesternDigits(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
 
     const isDateRange = printDate && (printDate.includes(t("من")) || printDate.includes(t("إلى")) || printDate.includes('/') || printDate.includes('-'));

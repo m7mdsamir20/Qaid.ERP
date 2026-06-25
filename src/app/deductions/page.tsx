@@ -224,7 +224,7 @@ export default function DeductionsPage() {
                             style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Deduction) => (
                                 <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
-                                    {new Date(row.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                    {new Date(row.date).toLocaleDateString('en-ZA')}
                                 </div>
                             )
                         },

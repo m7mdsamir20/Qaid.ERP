@@ -135,7 +135,7 @@ export default function AdvanceDetailPage() {
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الصرف')}</label>
                                     <div style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} style={{ color: C.primary }} /> {new Date(advance.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
+                                        <Calendar size={14} style={{ color: C.primary }} /> {new Date(advance.date).toLocaleDateString('en-ZA')}
                                     </div>
                                 </div>
                                 <div>
