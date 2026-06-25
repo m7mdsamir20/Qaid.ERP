@@ -174,7 +174,7 @@ export default function TrialBalancePage() {
 
                 {/* Balance Status Card */}
                 {!loading && report.length > 0 && (
-                    <div className="balance-status-card" style={{
+                    <div className="no-print" style={{
                         padding: '16px 24px',
                         background: C.card,
                         border: `1px solid ${C.border}`,
@@ -199,15 +199,8 @@ export default function TrialBalancePage() {
                                 {isBalanced ? t('متزن محـاسبياً (المجاميع متطابقة)') : t('غير متزن (يوجد خلل في الترحيل)')}
                             </span>
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
-                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
-                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{report.length}</span>
-                            </div>
-                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
-                                {t('الفرع:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>
-                                    {branchId === 'all' ? t('كل الفروع') : branches.find(b => b.id === branchId)?.name || t('كل الفروع')}
-                                </span>
-                            </div>
+                        <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO }}>
+                            {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{report.length}</span>
                         </div>
                     </div>
                 )}
@@ -228,17 +221,6 @@ export default function TrialBalancePage() {
                 @media print {
                     .print-only { display: block !important; }
                     .no-print { display: none !important; }
-                    .balance-status-card {
-                        background: #fff !important;
-                        border: 1px solid #e2e8f0 !important;
-                        border-radius: 8px !important;
-                        padding: 10px 16px !important;
-                        margin-bottom: 14px !important;
-                        color: #000 !important;
-                    }
-                    .balance-status-card * { color: #000 !important; background: transparent !important; border-color: #ccc !important; }
-                    .balance-status-card span[style*="10b981"], .balance-status-card span[style*="success"] { color: #059669 !important; font-weight: 700 !important; }
-                    .balance-status-card span[style*="danger"], .balance-status-card span[style*="ef4444"] { color: #dc2626 !important; font-weight: 700 !important; }
                     .print-table-container {
                         background: white !important;
                         border: 1px solid #e2e8f0 !important;
