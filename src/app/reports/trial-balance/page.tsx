@@ -152,6 +152,7 @@ export default function TrialBalancePage() {
                     subtitle={t("تقرير إجمالي حركة الحسابات وأرصدتها للسنة المالية النشطة للتأكد من اتزان القيود المزدوجة.")}
                     backTab="financial"
                     printTitle={t("ميزان المراجعة (بالمجاميع والأرصدة)")}
+                    branchName={branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '')}
                 />
 
                 {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
@@ -174,7 +175,7 @@ export default function TrialBalancePage() {
 
                 {/* Balance Status Card */}
                 {!loading && report.length > 0 && (
-                    <div className="no-print" style={{
+                    <div data-print-stats style={{
                         padding: '16px 24px',
                         background: C.card,
                         border: `1px solid ${C.border}`,

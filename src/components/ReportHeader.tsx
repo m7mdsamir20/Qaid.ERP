@@ -89,10 +89,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         const texts = getLeafTexts(card).filter(t => t !== '—');
         if (texts.length === 0) return '';
         const isNumeric = (s: string) => /^[\d,.\s٠-٩]+$/.test(s.replace(/[ر.سج.م\$د.إد.كر.قد.بر.عد.أ]/g, '').trim());
-        const valueIdx = texts.findLastIndex(isNumeric);
+        let valueIdx = texts.findLastIndex(isNumeric);
+        if (valueIdx === -1 && texts.length > 1) {
+          valueIdx = texts.length - 1;
+        }
         const valueTexts = valueIdx >= 0 ? texts.slice(valueIdx) : [];
-        const labelTexts = texts.filter((_, i) => i < valueIdx);
-        const label = (labelTexts.length ? labelTexts : texts.filter((_, i) => i !== valueIdx)).join(' ');
+        const labelTexts = valueIdx >= 0 ? texts.filter((_, i) => i < valueIdx) : [];
+        const label = (labelTexts.length ? labelTexts : texts.filter((_, i) => i !== valueIdx)).join(' ').replace(/:$/, '').trim();
         const value = valueTexts.join(' ');
         return `<div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:7px 10px;text-align:center;background:#f8f8f8;">
           <div style="font-size:8.5px;color:#555;font-weight:700;margin-bottom:4px;line-height:1.3">${label}</div>
