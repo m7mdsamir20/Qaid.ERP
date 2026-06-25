@@ -202,12 +202,13 @@ export default function OpeningBalancesPage() {
                                 onChange={setSelectedYear}
                                 icon={CalendarDays}
                                 placeholder={t("اختر السنة المالية")}
+                                hideSearch
                                 options={years.filter(y => y.isOpen).map(y => ({ value: y.id, label: y.name }))} 
                             />
                         </div>
                     )}
                     actions={selectedYear ? [
-                        !isLocked && years.some(y => new Date(y.startDate) < new Date(curYear?.startDate || '')) && (
+                        !isLocked && filledCount === 0 && years.some(y => new Date(y.startDate) < new Date(curYear?.startDate || '')) && (
                              <button key="carry" onClick={() => setShowCarryModal(true)} disabled={carrying} 
                                  style={{ 
                                      display: 'flex', alignItems: 'center', gap: '8px', height: '42px', padding: '0 18px', 
@@ -495,9 +496,7 @@ export default function OpeningBalancesPage() {
                     <p style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>
                         {t('سيتم استيراد كافة الأرصدة الختامية من السنة المالية السابقة كأرصدة افتتاحية لهذه السنة')} ({curYear?.name}).
                         <br />
-                        <span style={{ color: C.warning, fontWeight: 700 }}>{t('تنبيه: سيتم استبدال أي أرصدة افتتاحية مدخلة حالياً بأرصدة السنة السابقة.')}</span>
-                        <br />
-                        <span style={{ color: C.textSecondary, fontSize: '12px' }}>{t('ملاحظة: تأكد أن السنة السابقة تم تدقيقها وإقفالها بشكل نهائي.')}</span>
+                        <span style={{ color: C.warning, fontWeight: 700 }}>{t('ملاحظة: تأكد أن السنة السابقة تم تدقيقها وإقفالها بشكل نهائي.')}</span>
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
