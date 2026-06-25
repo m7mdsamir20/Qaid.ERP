@@ -19,8 +19,10 @@ const getCurrencyName = (code: string) => {
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 import { useEffect, useState } from 'react';
-import { Users, Truck, Phone, Search, Loader2, ArrowUpRight, ArrowDownLeft, UserCheck } from 'lucide-react';
+import { Users, Truck, Phone, Search, Loader2, ArrowUpRight, ArrowDownLeft, UserCheck, TrendingUp, CheckCircle } from 'lucide-react';
 
 interface PartnerBalance {
     id: string;
@@ -80,9 +82,20 @@ export default function ClientsSuppliersBalancesPage() {
     const [error, setError] = useState('');
     const [filter, setFilter] = useState<'all' | 'customer' | 'supplier' | 'debtor' | 'creditor'>('all');
     const [search, setSearch] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
-        fetch('/api/reports/balances')
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    useEffect(() => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        fetch(`/api/reports/balances?${params}`)
             .then(res => {
                 if (!res.ok) throw new Error('server_error');
                 return res.json();
@@ -93,7 +106,7 @@ export default function ClientsSuppliersBalancesPage() {
             })
             .catch(() => setError(t("فشل تحميل بيانات الأرصدة، يرجى المحاولة لاحقاً")))
             .finally(() => setLoading(false));
-    }, []);
+    }, [branchId]);
 
     let filteredData = result?.data || [];
     
@@ -257,6 +270,8 @@ export default function ClientsSuppliersBalancesPage() {
         ])
     ];
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -273,26 +288,64 @@ export default function ClientsSuppliersBalancesPage() {
                             : t("تقرير شامل يعرض أرصدة ومستحقات جميع الموردين.")}
                     backTab="partners"
                     printTitle={hasCustomers && hasSuppliers 
-                        ? t("أرصدة العملاء والموردين") 
+                        ? t("تقرير أرصدة العملاء والموردين") 
                         : hasCustomers 
-                            ? t("أرصدة العملاء") 
-                            : t("أرصدة الموردين")}
+                            ? t("تقرير أرصدة العملاء") 
+                            : t("تقرير أرصدة الموردين")}
+                    branchName={selectedBranchName}
                     onExportExcel={exportToExcel}
                 />
 
-                <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
-                    <div style={{ position: 'relative', width: '100%' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
-                        <input
-                            placeholder={t("ابحث باسم الحساب أو رقم الهاتف...")}
-                            value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ 
-                                ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                outline: 'none', fontFamily: CAIRO, fontWeight: 500 
-                            }}
+                {!loading && (
+                    <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <StatCard
+                            label={t('إجمالي مديونيات الغير (أرصدة مدينة)')}
+                            value={summaryMaden}
+                            suffix={sym}
+                            icon={<TrendingUp size={18} />}
+                            color="#ef4444"
+                            formatValue={true}
                         />
+                        <StatCard
+                            label={t('إجمالي التزامات الشركة (أرصدة دائنة)')}
+                            value={summaryDaen}
+                            suffix={sym}
+                            icon={<CheckCircle size={18} />}
+                            color="#10b981"
+                            formatValue={true}
+                        />
+                    </div>
+                )}
+
+                <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
+                    <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                            <div style={{ minWidth: '180px' }}>
+                                <CustomSelect
+                                    value={branchId}
+                                    onChange={v => setBranchId(v)}
+                                    placeholder={t("كل الفروع")}
+                                    hideSearch={true}
+                                    options={[
+                                        { value: 'all', label: t('كل الفروع') },
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    ]}
+                                />
+                            </div>
+                        )}
+                        <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <input
+                                placeholder={t("ابحث باسم الحساب أو رقم الهاتف...")}
+                                value={search} onChange={e => setSearch(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
+                                    borderRadius: '12px', border: `1px solid ${C.border}`, 
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                                    outline: 'none', fontFamily: CAIRO, fontWeight: 500 
+                                }}
+                            />
+                        </div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
@@ -331,32 +384,14 @@ export default function ClientsSuppliersBalancesPage() {
                 )}
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <>
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('إجمالي مديونيات الغير (أرصدة مدينة)'), value: summaryMaden, color: '#ef4444' },
-                                { label: t('إجمالي التزامات الشركة (أرصدة دائنة)'), value: summaryDaen, color: '#10b981' },
-                            ].map((s, i) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}25`, borderRadius: '16px',
-                                    padding: '20px', display: 'flex', flexDirection: 'column', gap: '4px'
-                                }}>
-                                    <span style={{ fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{s.label}</span>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        <span style={{ fontSize: '24px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                        <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
+                    <div className="print-table-container">
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             emptyIcon={Users}
                             emptyMessage={t('لا توجد حسابات حالياً')}
                         />
-                    </>
+                    </div>
                 )}
             </div>
         </DashboardLayout>

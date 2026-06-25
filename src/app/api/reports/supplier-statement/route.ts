@@ -35,13 +35,22 @@ export const GET = withProtection(async (request, session) => {
         }
 
         // Fetch all transactions to calculate the real opening balance if filtered
+        const branchId = searchParams.get('branchId');
+        const invoiceWhere: any = { supplierId, companyId, type: { in: ['purchase', 'purchase_return'] } };
+        const voucherWhere: any = { supplierId, companyId, type: { in: ['receipt', 'payment'] } };
+
+        if (branchId && branchId !== 'all') {
+            invoiceWhere.branchId = branchId;
+            voucherWhere.branchId = branchId;
+        }
+
         const [allInvoices, allVouchers] = await Promise.all([
             prisma.invoice.findMany({
-                where: { supplierId, companyId, type: { in: ['purchase', 'purchase_return'] } },
+                where: invoiceWhere,
                 orderBy: { date: 'asc' },
             }),
             prisma.voucher.findMany({
-                where: { supplierId, companyId, type: { in: ['receipt', 'payment'] } },
+                where: voucherWhere,
                 orderBy: { date: 'asc' },
             }),
         ]);

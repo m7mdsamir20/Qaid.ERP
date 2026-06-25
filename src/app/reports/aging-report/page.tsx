@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
@@ -14,6 +14,7 @@ import { Search, Phone, Clock, AlertTriangle, TrendingDown, History } from 'luci
 import * as XLSX from 'xlsx';
 import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 import { navSections } from '@/constants/navigation';
 
 const t = (s: string) => s;
@@ -221,6 +222,8 @@ export default function AgingReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -241,41 +244,64 @@ export default function AgingReportPage() {
                         : hasCustomers 
                             ? t("أعمار ديون العملاء") 
                             : t("أعمار ديون الموردين")}
+                    branchName={selectedBranchName}
                     onExportExcel={exportToExcel}
                 />
 
                 {/* Summary Cards */}
                 {buckets && (
-                    <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                        {[
-                            { label: t('مديونية (0 - 30 يوم)'), value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#256af4', icon: <Clock size={20} />, sign: t('ديون حديثة') },
-                            { label: t('مديونية (31 - 60 يوم)'), value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: t('تنبيه أول') },
-                            { label: t('مديونية (61 - 90 يوم)'), value: buckets['61-90'].total, count: buckets['61-90'].count, color: '#f59e0b', icon: <TrendingDown size={20} />, sign: t('حذر شديد') },
-                            { label: t('متأخرات (91+ يوم)'), value: buckets['91+'].total, count: buckets['91+'].count, color: '#ef4444', icon: <AlertTriangle size={20} />, sign: t('خطر التحصيل') },
-                        ].map((s, i: number) => (
-                            <div key={i} style={{
-                                background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
-                            }}>
-                                <div style={{ textAlign: 'center'}}>
-                                    <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                        <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>
-                                    </div>
-                                    <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.count} {t('فاتورة')} | {s.sign}</div>
-                                </div>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                    {s.icon}
-                                </div>
-                            </div>
-                        ))}
+                    <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <StatCard
+                            label={t('مديونية (0 - 30 يوم)')}
+                            value={buckets['0-30'].total}
+                            suffix={`${sym} (${buckets['0-30'].count} ${t('فاتورة')})`}
+                            icon={<Clock size={18} />}
+                            color="#256af4"
+                            formatValue={true}
+                        />
+                        <StatCard
+                            label={t('مديونية (31 - 60 يوم)')}
+                            value={buckets['31-60'].total}
+                            suffix={`${sym} (${buckets['31-60'].count} ${t('فاتورة')})`}
+                            icon={<History size={18} />}
+                            color="#eab308"
+                            formatValue={true}
+                        />
+                        <StatCard
+                            label={t('مديونية (61 - 90 يوم)')}
+                            value={buckets['61-90'].total}
+                            suffix={`${sym} (${buckets['61-90'].count} ${t('فاتورة')})`}
+                            icon={<TrendingDown size={18} />}
+                            color="#f59e0b"
+                            formatValue={true}
+                        />
+                        <StatCard
+                            label={t('متأخرات (91+ يوم)')}
+                            value={buckets['91+'].total}
+                            suffix={`${sym} (${buckets['91+'].count} ${t('فاتورة')})`}
+                            icon={<AlertTriangle size={18} />}
+                            color="#ef4444"
+                            formatValue={true}
+                        />
                     </div>
                 )}
 
-                <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
-                    <div style={{ position: 'relative', flex: 1 }}>
+                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v) => { setLoading(true); setBranchId(v); }}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+                    <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder={t("ابحث باسم العميل أو رقم الفاتورة للفلترة السريعة...")}
@@ -288,38 +314,19 @@ export default function AgingReportPage() {
                             }}
                         />
                     </div>
-                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                        <CustomSelect
-                            value={branchId}
-                            onChange={(v) => { setLoading(true); setBranchId(v); }}
-                            placeholder={t("كل الفروع")}
-                            options={[
-                                { value: 'all', label: t('كل الفروع') },
-                                ...branches.map((b) => ({ value: b.id, label: b.name }))
-                            ]}
-                        />
-                    )}
                 </div>
 
-                <DataTable
-                    columns={columns}
-                    data={filtered}
-                    emptyIcon={Clock}
-                    emptyMessage={t('لم يتم العثور على مديونيات متأخرة حالياً في النظام')}
-                    isLoading={loading}
-                    footer={footerElement}
-                />
+                <div className="print-table-container">
+                    <DataTable
+                        columns={columns}
+                        data={filtered}
+                        emptyIcon={Clock}
+                        emptyMessage={t('لم يتم العثور على مديونيات متأخرة حالياً في النظام')}
+                        isLoading={loading}
+                        footer={footerElement}
+                    />
+                </div>
             </div>
-            <style>{`
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }

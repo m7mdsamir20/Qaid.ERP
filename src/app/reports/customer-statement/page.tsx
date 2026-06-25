@@ -9,6 +9,7 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
+import StatCard from '@/components/StatCard';
 import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { applyExcelMoneyFormat } from '@/lib/excelFormat';
@@ -73,8 +74,16 @@ export default function CustomerStatementPage() {
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [error, setError] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
-    const fetchLedger = useCallback(async (customerId: string = selectedId) => {
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchLedger = useCallback(async (customerId: string = selectedId, currentBranchId = branchId) => {
         if (!customerId) { setData(null); return; }
         setLoading(true);
         try {
@@ -82,12 +91,13 @@ export default function CustomerStatementPage() {
             const q = new URLSearchParams();
             if (dateFrom) q.append('from', dateFrom);
             if (dateTo) q.append('to', dateTo);
+            if (currentBranchId && currentBranchId !== 'all') q.append('branchId', currentBranchId);
             if (q.toString()) url += `&${q.toString()}`;
             const res = await fetch(url);
             if (!res.ok) { const e = await res.json(); setError(e.error || t('فشل جلب كشف الحساب')); }
             else { const d = await res.json(); setData(d); setError(''); }
         } catch { setError(t('خطأ في الاتصال بالخادم')); } finally { setLoading(false); }
-    }, [selectedId, dateFrom, dateTo]);
+    }, [selectedId, dateFrom, dateTo, branchId]);
 
     // 1. Initial Load: Fetch All Customers
     useEffect(() => {
@@ -97,12 +107,12 @@ export default function CustomerStatementPage() {
             .catch(() => { });
     }, []);
 
-    // 2. Auto-fetch on selection/dates changes
+    // 2. Auto-fetch on selection/dates/branch changes
     useEffect(() => {
         if (selectedId) {
-            fetchLedger(selectedId);
+            fetchLedger(selectedId, branchId);
         }
-    }, [selectedId, dateFrom, dateTo, fetchLedger]);
+    }, [selectedId, dateFrom, dateTo, branchId, fetchLedger]);
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
@@ -240,6 +250,8 @@ export default function CustomerStatementPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -251,14 +263,30 @@ export default function CustomerStatementPage() {
                     printTitle={t("كشف حساب عميل تفصيلي")}
                     accountName={data ? data.customer.name : undefined}
                     printLabel={t('العميل:')}
+                    branchName={selectedBranchName}
                     printDate={dateFrom || dateTo ? `${dateFrom ? `${t('من')} ${dateFrom}` : ''} ${dateTo ? `${t('إلى')} ${dateTo}` : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0, flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => { setBranchId(v); if (selectedId) fetchLedger(selectedId, v); }}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div className="account-select-wrapper" style={{ flex: 2, position: 'relative', minWidth: '250px' }}>
                         <CustomSelect
                             value={selectedId}
-                            onChange={val => { setSelectedId(val); if (val) fetchLedger(val); else setData(null); }}
+                            onChange={val => { setSelectedId(val); if (val) fetchLedger(val, branchId); else setData(null); }}
                             placeholder={t("اختر العميل لمتابعة حسابه...")}
                             options={[
                                 { value: '', label: `-- ${t('اختر عميلاً من القائمة')} --` },
@@ -317,41 +345,49 @@ export default function CustomerStatementPage() {
                     </div>
                 ) : (
                     <>
-                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('رصيد سابق (منقول)'), value: Math.abs(data.initialBalance), sign: data.initialBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.initialBalance > 0 ? '#ef4444' : '#10b981', icon: <History size={20} /> },
-                                { label: isServices ? t('إجمالي الخدمات (عليه)') : t('إجمالي المبيعات (عليه)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: isServices ? t('فواتير خدمات') : t('فواتير مبيعات'), color: '#ef4444', icon: <TrendingDown size={20} /> },
-                                { label: t('إجمالي المدفوعات (له)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0), sign: t('سندات قبض'), color: '#10b981', icon: <TrendingUp size={20} /> },
-                                { label: t('الرصيد النهائي (الآن)'), value: Math.abs(data.finalBalance), sign: data.finalBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.finalBalance > 0 ? '#ef4444' : '#10b981', icon: <FileText size={20} /> },
-                            ].map((s, i) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    transition: 'all 0.2s'
-                                }}>
-                                    <div style={{ textAlign: 'center'}}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                            <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                        </div>
-                                        <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
-                                    </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {s.icon}
-                                    </div>
-                                </div>
-                            ))}
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('رصيد سابق (منقول)')}
+                                value={Math.abs(data.initialBalance)}
+                                suffix={`${getCurrencyName(currency)} (${data.initialBalance > 0 ? t('عليه') : t('له')})`}
+                                icon={<History size={18} />}
+                                color={data.initialBalance > 0 ? '#ef4444' : '#10b981'}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={isServices ? t('إجمالي الخدمات (عليه)') : t('إجمالي المبيعات (عليه)')}
+                                value={data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0)}
+                                suffix={getCurrencyName(currency)}
+                                icon={<TrendingDown size={18} />}
+                                color="#ef4444"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي المدفوعات (له)')}
+                                value={data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0)}
+                                suffix={getCurrencyName(currency)}
+                                icon={<TrendingUp size={18} />}
+                                color="#10b981"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('الرصيد النهائي (الآن)')}
+                                value={Math.abs(data.finalBalance)}
+                                suffix={`${getCurrencyName(currency)} (${data.finalBalance >= 0 ? t('عليه') : t('له')})`}
+                                icon={<FileText size={18} />}
+                                color={data.finalBalance >= 0 ? '#ef4444' : '#10b981'}
+                                formatValue={true}
+                            />
                         </div>
 
                         <div className="print-table-container">
-                        <DataTable
-                            columns={columns}
-                            data={tableData}
-                            emptyIcon={ScrollText}
-                            emptyMessage={t('لا توجد حركات في الحساب حالياً')}
-                            footer={footerElement}
-                        />
+                            <DataTable
+                                columns={columns}
+                                data={tableData}
+                                emptyIcon={ScrollText}
+                                emptyMessage={t('لا توجد حركات في الحساب حالياً')}
+                                footer={footerElement}
+                            />
                         </div>
                     </>
                 )}

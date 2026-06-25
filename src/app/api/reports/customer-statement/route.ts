@@ -37,17 +37,28 @@ export const GET = withProtection(async (request, session) => {
 
         const isServices = (session.user as any).businessType === 'SERVICES';
 
+        const branchId = searchParams.get('branchId');
+        const invoiceWhere: any = { customerId, companyId, type: { in: ['sale', 'sale_return'] } };
+        const voucherWhere: any = { customerId, companyId, type: { in: ['receipt', 'payment'] } };
+        const planWhere: any = { customerId, companyId };
+
+        if (branchId && branchId !== 'all') {
+            invoiceWhere.branchId = branchId;
+            voucherWhere.branchId = branchId;
+            planWhere.branchId = branchId;
+        }
+
         const [allInvoices, allVouchers, allPlans] = await Promise.all([
             prisma.invoice.findMany({
-                where: { customerId, companyId, type: { in: ['sale', 'sale_return'] } },
+                where: invoiceWhere,
                 orderBy: { date: 'asc' },
             }),
             prisma.voucher.findMany({
-                where: { customerId, companyId, type: { in: ['receipt', 'payment'] } },
+                where: voucherWhere,
                 orderBy: { date: 'asc' },
             }),
             prisma.installmentPlan.findMany({
-                where: { customerId, companyId },
+                where: planWhere,
                 orderBy: { startDate: 'asc' },
             })
         ]);
