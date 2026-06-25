@@ -318,22 +318,8 @@ export default function ClientsSuppliersBalancesPage() {
                 )}
 
                 <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
-                    <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                            <div style={{ minWidth: '180px' }}>
-                                <CustomSelect
-                                    value={branchId}
-                                    onChange={v => setBranchId(v)}
-                                    placeholder={t("كل الفروع")}
-                                    hideSearch={true}
-                                    options={[
-                                        { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                    ]}
-                                />
-                            </div>
-                        )}
-                        <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
+                        <div style={{ position: 'relative', width: '240px', flexShrink: 0 }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder={t("ابحث باسم الحساب أو رقم الهاتف...")}
@@ -346,32 +332,47 @@ export default function ClientsSuppliersBalancesPage() {
                                 }}
                             />
                         </div>
-                    </div>
 
-                    <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
-                        {[
-                            { key: 'all', label: t('الكل'), icon: UserCheck, color: C.primary },
-                            ...(hasCustomers ? [{ key: 'customer', label: t('العملاء'), icon: Users, color: '#256af4' }] : []),
-                            ...(hasSuppliers ? [{ key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' }] : []),
-                            { key: 'debtor', label: t('المدينون (عليهم)'), icon: ArrowUpRight, color: '#ef4444' },
-                            { key: 'creditor', label: t('الدائنون (لهم)'), icon: ArrowDownLeft, color: '#10b981' },
-                        ].map(t_btn => (
-                            <button
-                                key={t_btn.key}
-                                onClick={() => setFilter(t_btn.key as 'all' | 'customer' | 'supplier' | 'debtor' | 'creditor')}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: '8px',
-                                    padding: '8px 18px', borderRadius: '10px',
-                                    background: filter === t_btn.key ? `${t_btn.color}15` : C.card,
-                                    color: filter === t_btn.key ? t_btn.color : C.textSecondary,
-                                    border: `1px solid ${filter === t_btn.key ? `${t_btn.color}30` : C.border}`,
-                                    fontWeight: filter === t_btn.key ? 800 : 700, fontSize: '13px',
-                                    fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap'
-                                }}
-                            >
-                                <t_btn.icon size={16} /> {t_btn.label}
-                            </button>
-                        ))}
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                            <div style={{ minWidth: '150px', flexShrink: 0 }}>
+                                <CustomSelect
+                                    value={branchId}
+                                    onChange={v => setBranchId(v)}
+                                    placeholder={t("كل الفروع")}
+                                    hideSearch={true}
+                                    options={[
+                                        { value: 'all', label: t('كل الفروع') },
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                    ]}
+                                />
+                            </div>
+                        )}
+
+                        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', flex: 1, paddingBottom: '4px', alignItems: 'center', minWidth: '280px' }}>
+                            {[
+                                { key: 'all', label: t('الكل'), icon: UserCheck, color: C.primary },
+                                ...(hasCustomers ? [{ key: 'customer', label: t('العملاء'), icon: Users, color: '#256af4' }] : []),
+                                ...(hasSuppliers ? [{ key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' }] : []),
+                                { key: 'debtor', label: t('المدينون'), icon: ArrowUpRight, color: '#ef4444' },
+                                { key: 'creditor', label: t('الدائنون'), icon: ArrowDownLeft, color: '#10b981' },
+                            ].map(t_btn => (
+                                <button
+                                    key={t_btn.key}
+                                    onClick={() => setFilter(t_btn.key as 'all' | 'customer' | 'supplier' | 'debtor' | 'creditor')}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', gap: '6px',
+                                        padding: '7px 14px', borderRadius: '10px',
+                                        background: filter === t_btn.key ? `${t_btn.color}15` : C.card,
+                                        color: filter === t_btn.key ? t_btn.color : C.textSecondary,
+                                        border: `1px solid ${filter === t_btn.key ? `${t_btn.color}30` : C.border}`,
+                                        fontWeight: filter === t_btn.key ? 800 : 700, fontSize: '12.5px',
+                                        fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap'
+                                    }}
+                                >
+                                    <t_btn.icon size={14} /> {t_btn.label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 

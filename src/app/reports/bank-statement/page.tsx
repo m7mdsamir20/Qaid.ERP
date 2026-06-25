@@ -12,9 +12,12 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
+import StatCard from '@/components/StatCard';
 import { Search, Landmark, Loader2, FileText, History, TrendingUp, TrendingDown } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { applyExcelMoneyFormat } from '@/lib/excelFormat';
+
+import { useCurrency } from '@/hooks/useCurrency';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -66,19 +69,12 @@ interface BankStatementTableItem {
     balanceAfter: number;
 }
 
-interface SummaryCard {
-    label: string;
-    value: number;
-    color: string;
-    icon: React.ReactNode;
-    sign: string;
-}
-
 export default function BankStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
+    const { fMoneyJSX } = useCurrency();
 
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
@@ -86,11 +82,23 @@ export default function BankStatementPage() {
     const [treasuries, setTreasuries] = useState<TreasuryOption[]>([]);
     const [data, setData] = useState<StatementData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
 
     useEffect(() => {
         const fetchTreasuries = async () => {
             try {
-                const res = await fetch('/api/treasuries');
+                let url = '/api/treasuries';
+                if (branchId && branchId !== 'all') {
+                    url += `?branchId=${branchId}`;
+                }
+                const res = await fetch(url);
                 if (res.ok) {
                     const all = await res.json();
                     setTreasuries(Array.isArray(all) ? all.filter((treasury: TreasuryOption) => treasury.type === 'bank') : []);
@@ -98,7 +106,9 @@ export default function BankStatementPage() {
             } catch { }
         };
         fetchTreasuries();
-    }, []);
+        setSelectedId('');
+        setData(null);
+    }, [branchId]);
 
     const fetchReport = useCallback(async (id: string = selectedId) => {
         if (!id) { setData(null); return; }
@@ -117,6 +127,13 @@ export default function BankStatementPage() {
             setLoading(false); 
         }
     }, [selectedId, from, to]);
+
+    // Auto-fetch on parameters change
+    useEffect(() => {
+        if (selectedId) {
+            fetchReport(selectedId);
+        }
+    }, [selectedId, from, to, fetchReport]);
 
     const movements: MovementWithBalance[] = data ? (() => {
         let running = data.openingBalance;
@@ -248,6 +265,8 @@ export default function BankStatementPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -258,15 +277,31 @@ export default function BankStatementPage() {
                     printTitle={data ? t("كشف حساب بنكي") : undefined}
                     accountName={data?.treasuryName}
                     printLabel={t('البنك:')}
+                    branchName={selectedBranchName}
                     printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                     onExportExcel={exportToExcel}
                 />
 
-                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0 }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0, flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
+                    <div className="account-select-wrapper" style={{ flex: 1, position: 'relative', minWidth: '250px' }}>
                         <CustomSelect
                             value={selectedId}
-                            onChange={val => { setSelectedId(val); fetchReport(val); }}
+                            onChange={val => { setSelectedId(val); if (val) fetchReport(val); else setData(null); }}
                             placeholder={t("اختر الحساب البنكي لمتابعة حركته...")}
                             options={[
                                 { value: '', label: `-- ${t('اختر الحساب البنكي من القائمة')} --` },
@@ -281,27 +316,31 @@ export default function BankStatementPage() {
                         />
                     </div>
                     
-                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("من")}</span>
-                        <div className="date-input-wrapper">
-                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
-                            <input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
+                    <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '160px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
+                            <input type="date" value={from} onChange={e => setFrom(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
                         </div>
-                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '12px' }}>{t("إلى")}</span>
-                        <div className="date-input-wrapper">
-                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
-                            <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ ...IS, width: '160px' }} />
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '160px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
+                            <input type="date" value={to} onChange={e => setTo(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px',  direction: 'inherit',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
                         </div>
-                        <button onClick={() => fetchReport()} disabled={loading} style={{ 
-                            height: '42px', padding: '0 24px', borderRadius: '12px', 
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
-                        }}>
-                            {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={16} />} 
-                            {t('تحديث التقرير')}
-                        </button>
                     </div>
                 </div>
 
@@ -314,55 +353,53 @@ export default function BankStatementPage() {
                 ) : (
                     <>
                         {/* Summary Stats Cards */}
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('رصيد مرحل (قبل)'), value: data.openingBalance, color: '#256af4', icon: <History size={20} />, sign: t('الرصيد في بداية الفترة') },
-                                { label: t('إجمالي الإيداعات'), value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: t('وارد للحساب (+)') },
-                                { label: t('إجمالي السحوبات'), value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: t('صادر من الحساب (-)') },
-                                { label: t('صافي الرصيد البنكي'), value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: t('الرصيد الدفتري الحالي') },
-                            ].map((s: SummaryCard, i: number) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
-                                }}>
-                                    <div style={{ textAlign: 'center'}}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{sym}</span>
-                                        </div>
-                                        <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
-                                    </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {s.icon}
-                                    </div>
-                                </div>
-                            ))}
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('رصيد مرحل (قبل)')}
+                                value={data.openingBalance}
+                                suffix={sym}
+                                icon={<History size={18} />}
+                                color="#256af4"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي الإيداعات')}
+                                value={totalReceipts}
+                                suffix={sym}
+                                icon={<TrendingUp size={18} />}
+                                color={SC}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي السحوبات')}
+                                value={totalPayments}
+                                suffix={sym}
+                                icon={<TrendingDown size={18} />}
+                                color={DC}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('صافي الرصيد البنكي')}
+                                value={data.currentBalance}
+                                suffix={sym}
+                                icon={<FileText size={18} />}
+                                color={data.currentBalance >= 0 ? SC : DC}
+                                formatValue={true}
+                            />
                         </div>
 
-                        <DataTable
-                            columns={columns}
-                            data={tableData}
-                            emptyIcon={Landmark}
-                            emptyMessage={t('لا توجد حركات بنكية مسجلة للفترة المحددة')}
-                            footer={footerElement}
-                        />
+                        <div className="print-table-container">
+                            <DataTable
+                                columns={columns}
+                                data={tableData}
+                                emptyIcon={Landmark}
+                                emptyMessage={t('لا توجد حركات بنكية مسجلة للفترة المحددة')}
+                                footer={footerElement}
+                            />
+                        </div>
                     </>
                 )}
             </div>
-            <style>{`
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .stat-value { font-size: 11px !important; color: #000 !important; }
-                    .stat-label { font-size: 9px !important; color: #666 !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p, small { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }

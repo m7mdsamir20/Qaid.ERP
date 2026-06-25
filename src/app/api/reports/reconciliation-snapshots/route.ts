@@ -5,12 +5,24 @@ import { withProtection } from '@/lib/apiHandler';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const branchId = searchParams.get('branchId');
+
         const snapshots = await (prisma as any).reconciliationSnapshot.findMany({
             where: { companyId },
             orderBy: { createdAt: 'desc' },
-            take: 50,
+            take: 100, // Load more to allow in-memory branch filter
         });
-        return NextResponse.json(snapshots);
+
+        let filtered = snapshots;
+        if (branchId && branchId !== 'all') {
+            filtered = snapshots.filter((s: any) => {
+                const items = Array.isArray(s.items) ? s.items : [];
+                return items.some((item: any) => item.branchId === branchId);
+            });
+        }
+
+        return NextResponse.json(filtered.slice(0, 50));
     } catch (error) {
         console.error('GET reconciliation snapshots error:', error);
         return NextResponse.json([], { status: 500 });

@@ -1,16 +1,18 @@
 'use client';
+import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import TableSkeleton from '@/components/TableSkeleton';
-import { formatNumber } from '@/lib/currency';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, IS, OUTFIT } from '@/constants/theme';
+import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Search, FileText, Loader2 } from 'lucide-react';
+import { Search, FileText, Loader2, DollarSign, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
+import { formatNumber } from '@/lib/currency';
 
 const DC = '#ef4444';
 
@@ -34,17 +36,27 @@ export default function ExpensesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
+    const { data: session } = useSession();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [data, setData] = useState<ExpensesReportData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
-    const fetchReport = async () => {
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchReport = useCallback(async (currentBranchId = branchId) => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
             if (from) params.set('from', from);
             if (to) params.set('to', to);
+            if (currentBranchId && currentBranchId !== 'all') params.set('branchId', currentBranchId);
             const res = await fetch(`/api/reports/expenses-report?${params}`);
             if (!res.ok) {
                 const err = await res.json();
@@ -54,7 +66,12 @@ export default function ExpensesReportPage() {
             setData(await res.json());
         } catch { alert(t('فشل الاتصال بالخادم')); }
         finally { setLoading(false); }
-    };
+    }, [from, to, branchId]);
+
+    // Auto-fetch report
+    useEffect(() => {
+        fetchReport(branchId);
+    }, [from, to, branchId, fetchReport]);
 
     const columns: TableColumn[] = [
         {
@@ -107,6 +124,8 @@ export default function ExpensesReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
@@ -115,11 +134,27 @@ export default function ExpensesReportPage() {
                     subtitle={t("عرض تفصيلي لجميع المصروفات المسجلة خلال فترة زمنية محددة.")}
                     backTab="treasury-bank"
                     printTitle={t("تقرير المصروفات")}
+                    branchName={selectedBranchName}
                     printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                 />
 
                 {/* Filters */}
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('من:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
@@ -152,50 +187,45 @@ export default function ExpensesReportPage() {
                             />
                         </div>
                     </div>
-                    <button className="update-btn"
-                        onClick={fetchReport}
-                        style={{
-                            height: '42px', padding: '0 24px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
-                        }}
-                    >
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-                        {t('عرض التقرير')}
-                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : !data ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
-                        <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: C.primary }} />
-                        <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <FileText size={70} style={{ opacity: 0.1, marginBottom: '20px', color: C.primary }} />
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار تحديد الفترة')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('يرجى تحديد الفترة الزمنية والفرع لعرض تقرير المصروفات.')}</p>
                     </div>
                 ) : (
                     <>
                         {/* Summary Cards */}
-                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            <div style={{ background: `${DC}08`, border: `1px solid ${DC}33`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي المصروفات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
-                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
-                                </div>
-                            </div>
-                            <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
-                            </div>
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي المصروفات')}
+                                value={data.totalAmount}
+                                suffix={cSymbol}
+                                icon={<TrendingDown size={18} />}
+                                color={DC}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('عدد العمليات')}
+                                value={data.rows.length}
+                                suffix={t('عملية')}
+                                icon={<FileText size={18} />}
+                                color={C.primary}
+                                formatValue={false}
+                            />
                         </div>
 
-                        {/* Table using DataTable */}
-                        <DataTable
-                            columns={columns}
-                            data={data.rows}
-                            emptyIcon={FileText}
-                            emptyMessage={t('لا توجد مصروفات في هذه الفترة')}
-                            footer={footerElement}
-                        />
+                        <div className="print-table-container">
+                            <DataTable
+                                columns={columns}
+                                data={data.rows}
+                                emptyIcon={FileText}
+                                emptyMessage={t('لا توجد مصروفات في هذه الفترة')}
+                                footer={footerElement}
+                            />
+                        </div>
                     </>
                 )}
             </div>

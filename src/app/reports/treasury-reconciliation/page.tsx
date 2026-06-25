@@ -3,233 +3,67 @@ import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { formatNumber } from '@/lib/currency';
-
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Activity, RefreshCw, Landmark, Wallet, CheckCircle2, TrendingUp, TrendingDown, Search, Loader2, FileText, ShieldCheck, Save, ClipboardList, History as HistoryIcon } from 'lucide-react';
-import * as XLSX from 'xlsx';
-import { applyExcelMoneyFormat } from '@/lib/excelFormat';
+import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
+import { Activity, RefreshCw, Landmark, Wallet, CheckCircle2, TrendingUp, TrendingDown, Search, Loader2, FileText, ClipboardList } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
-
-const t = (s: string) => s;
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
-    return map[code] || code;
-};
 
 const SC = '#10b981';
 const DC = '#ef4444';
 
-interface TreasuryItem { id: string; name: string; type: string; balance: number; }
 interface Snapshot {
     id: string; createdAt: string; notes: string | null;
     totalSystem: number; totalPhysical: number; totalShortage: number; totalSurplus: number;
     items: { treasuryName: string; type: string; systemBalance: number; physicalBalance: number; diff: number; status: string }[];
 }
 
-export default function TreasuryReconciliationPage() {
+export default function TreasuryReconciliationReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
-    const { fMoneyJSX } = useCurrency();
+    const { symbol: sym } = useCurrency();
 
-    const [tab, setTab] = useState<'new' | 'history'>('new');
-    const [treasuries, setTreasuries] = useState<TreasuryItem[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [physicalBalances, setPhysicalBalances] = useState<Record<string, string>>({});
-    const [notes, setNotes] = useState('');
-    const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
     const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
-    const [snapshotsLoading, setSnapshotsLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [selectedSnapshot, setSelectedSnapshot] = useState<Snapshot | null>(null);
     const [historyQ, setHistoryQ] = useState('');
 
-    const fetchTreasuries = async () => {
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchSnapshots = async () => {
         setLoading(true);
         try {
-            const res = await fetch('/api/treasuries');
-            if (res.ok) setTreasuries(await res.json());
+            let url = '/api/reports/reconciliation-snapshots';
+            if (branchId && branchId !== 'all') {
+                url += `?branchId=${branchId}`;
+            }
+            const res = await fetch(url);
+            if (res.ok) setSnapshots(await res.json());
         } catch { } finally { setLoading(false); }
     };
 
-    const fetchSnapshots = async () => {
-        setSnapshotsLoading(true);
-        try {
-            const res = await fetch('/api/reports/reconciliation-snapshots');
-            if (res.ok) setSnapshots(await res.json());
-        } catch { } finally { setSnapshotsLoading(false); }
-    };
-
-    useEffect(() => { fetchTreasuries(); }, []);
-    useEffect(() => { if (tab === 'history') fetchSnapshots(); }, [tab]);
-
-    const filtered = treasuries.filter(t => t.name.toLowerCase().includes(q.toLowerCase()));
-    const sym = t(getCurrencyName(currency));
-
-    const totals = treasuries.reduce((acc, t) => {
-        const sys = t.balance;
-        const act = parseFloat(physicalBalances[t.id]) || 0;
-        const hasAct = physicalBalances[t.id] !== undefined && physicalBalances[t.id] !== '';
-        acc.systemTotal += sys;
-        if (hasAct) {
-            acc.actualTotal += act;
-            const diff = act - sys;
-            if (diff < 0) acc.totalShortage += Math.abs(diff);
-            if (diff > 0) acc.totalSurplus += diff;
-            acc.reconciledCount++;
-        }
-        return acc;
-    }, { systemTotal: 0, actualTotal: 0, totalShortage: 0, totalSurplus: 0, reconciledCount: 0 });
-
-    const handleSave = async () => {
-        const hasAny = treasuries.some(t => physicalBalances[t.id] !== undefined && physicalBalances[t.id] !== '');
-        if (!hasAny) { alert(t('أدخل رصيداً فعلياً لخزينة واحدة على الأقل')); return; }
-        setSaving(true);
-        try {
-            const items = treasuries.map(t => {
-                const sys = t.balance;
-                const act = parseFloat(physicalBalances[t.id]) || 0;
-                const hasAct = physicalBalances[t.id] !== undefined && physicalBalances[t.id] !== '';
-                const diff = hasAct ? act - sys : 0;
-                return {
-                    treasuryId: t.id, treasuryName: t.name, type: t.type,
-                    systemBalance: sys, physicalBalance: hasAct ? act : null,
-                    diff: hasAct ? diff : null,
-                    status: !hasAct ? 'not_counted' : diff === 0 ? 'matched' : diff < 0 ? 'shortage' : 'surplus'
-                };
-            });
-            const body = {
-                notes: notes || null, items,
-                totalSystem: totals.systemTotal,
-                totalPhysical: totals.actualTotal,
-                totalShortage: totals.totalShortage,
-                totalSurplus: totals.totalSurplus,
-            };
-            const res = await fetch('/api/reports/reconciliation-snapshots', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-            });
-            if (res.ok) {
-                alert(t('تم حفظ نتيجة الجرد بنجاح'));
-                setPhysicalBalances({});
-                setNotes('');
-                setTab('history');
-            } else { alert(t('فشل في حفظ الجرد')); }
-        } catch { alert(t('خطأ في الاتصال')); } finally { setSaving(false); }
-    };
-
-    const exportToExcel = () => {
-        if (!treasuries.length) return;
-        const excelData = treasuries.map(tData => {
-            const sys = tData.balance;
-            const act = parseFloat(physicalBalances[tData.id]) || 0;
-            const diff = act - sys;
-            const hasActual = physicalBalances[tData.id] !== undefined && physicalBalances[tData.id] !== '';
-            return {
-                [t('اسم الخزينة')]: tData.name,
-                [t('النوع')]: tData.type === 'bank' ? t('بنكي') : t('نقدي'),
-                [t('الرصيد الدفتري')]: sys,
-                [t('الرصيد الفعلي')]: hasActual ? act : t('لم يجرد'),
-                [t('الفارق')]: hasActual ? diff : '—',
-                [t('الحالة')]: !hasActual ? t('غير مجرود') : (diff === 0 ? t('مطابق') : (diff < 0 ? t('عجز') : t('زيادة')))
-            };
-        });
-        const ws = XLSX.utils.json_to_sheet(excelData);
-        applyExcelMoneyFormat(ws, currency, lang);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, t('تقرير العجز والزيادة'));
-        XLSX.writeFile(wb, `${t('تقرير_الجرد')}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
-    };
+    useEffect(() => {
+        fetchSnapshots();
+    }, [branchId]);
 
     const filteredSnapshots = snapshots.filter(s =>
         !historyQ ||
         new Date(s.createdAt).toLocaleDateString('en-ZA').includes(historyQ) ||
         (s.notes || '').toLowerCase().includes(historyQ.toLowerCase())
     );
-
-    const newColumns: TableColumn[] = [
-        {
-            header: t('المرجع المالي'),
-            cell: (row: TreasuryItem) => (
-                <>
-                    <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center'}}>{row.name}</div>
-                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT }}>ID: {row.id.substring(0, 8)}</div>
-                </>
-            )
-        },
-        {
-            header: t('النوع'),
-            cell: (row: TreasuryItem) => (
-                row.type === 'bank'
-                    ? <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Landmark size={14} /> {t('بنكي')}</span>
-                    : <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: SC, padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>
-            ),
-            style: { textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('الرصيد الدفتري'),
-            type: 'number' as const,
-            cell: (row: TreasuryItem) => fMoneyJSX(row.balance),
-            style: { fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary, textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('الرصيد الفعلي (عَدّ يدوي)'),
-            cell: (row: TreasuryItem) => {
-                const act = parseFloat(physicalBalances[row.id]) || 0;
-                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
-                return (
-                    <>
-                        <div className="no-print" style={{ display: 'flex', justifyContent: 'center' }}>
-                            <input type="number" placeholder={t("أدخل المبلغ...")}
-                                value={physicalBalances[row.id] || ''}
-                                onChange={e => setPhysicalBalances(prev => ({ ...prev, [row.id]: e.target.value }))}
-                                style={{ width: '140px', height: '36px', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, outline: 'none', textAlign: 'center' }} />
-                        </div>
-                        <div className="print-only" style={{ display: 'none', fontWeight: 600, fontFamily: OUTFIT, textAlign: 'center' }}>
-                            {hasActual ? fMoneyJSX(act) : '—'}
-                        </div>
-                    </>
-                );
-            },
-            style: { textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('الفارق (عجز/زيادة)'),
-            type: 'number' as const,
-            cell: (row: TreasuryItem) => {
-                const sys = row.balance;
-                const act = parseFloat(physicalBalances[row.id]) || 0;
-                const diff = act - sys;
-                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
-                if (!hasActual) return '—';
-                return (
-                    <span style={{ fontWeight: 600, color: diff > 0 ? SC : diff < 0 ? DC : C.primary, fontSize: '15px', fontFamily: OUTFIT }}>
-                        {diff > 0 ? `+${formatNumber(diff)}` : formatNumber(diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span>
-                    </span>
-                );
-            },
-            style: { textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('حالة الجرد'),
-            cell: (row: TreasuryItem) => {
-                const sys = row.balance;
-                const act = parseFloat(physicalBalances[row.id]) || 0;
-                const diff = act - sys;
-                const hasActual = physicalBalances[row.id] !== undefined && physicalBalances[row.id] !== '';
-                if (!hasActual) return <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>;
-                if (diff === 0) return <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> {t('مطابق')}</span>;
-                if (diff < 0) return <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> {t('عجز')}</span>;
-                return <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> {t('زيادة')}</span>;
-            },
-            style: { textAlign: 'center' } as React.CSSProperties
-        }
-    ];
 
     const historyDetailColumns: TableColumn[] = [
         {
@@ -289,193 +123,180 @@ export default function TreasuryReconciliationPage() {
         }
     ];
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t("تقرير الجرد والعجز والزيادة")}
-                    subtitle={t("مطابقة الأرصدة الفعلية بالأرصدة الدفترية للخزن والحسابات البنكية.")}
+                    title={t("سجل تسويات وجرد الخزينة")}
+                    subtitle={t("سجلات ومطابقات الأرصدة الفعلية بالأرصدة الدفترية للخزن والحسابات البنكية.")}
                     backTab="treasury-bank"
-                    onExportExcel={tab === 'new' ? exportToExcel : undefined}
-                    printTitle={tab === 'history' && selectedSnapshot ? t("تقرير الجرد والعجز والزيادة") : undefined}
-                    printDate={tab === 'history' && selectedSnapshot ? new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA') : undefined}
+                    branchName={selectedBranchName}
+                    printTitle={selectedSnapshot ? t("تقرير تسوية وجرد الخزينة") : undefined}
+                    printDate={selectedSnapshot ? new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA') : undefined}
                 />
 
-                {/* Tabs */}
-                <div className="no-print" style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
-                    {([[ 'new', t('جرد جديد'), <Activity size={15} />], ['history', t('سجل الجرد'), <ClipboardList size={15} />]] as const).map(([key, label, icon]) => (
-                        <button key={key} onClick={() => setTab(key)} style={{
-                            height: '40px', padding: '0 20px', borderRadius: '10px',
-                            background: tab === key ? C.primary : 'transparent',
-                            color: tab === key ? '#fff' : C.textSecondary,
-                            border: `1px solid ${tab === key ? C.primary : C.border}`,
-                            fontSize: '13px', fontWeight: 600, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO
-                        }}>
-                            {icon} {t(label as string)}
-                        </button>
-                    ))}
-                </div>
-
-                {tab === 'new' ? (
+                {!selectedSnapshot ? (
                     <>
-                        {/* Summary Cards */}
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: t('إجمالي الرصيد الدفتري'), value: totals.systemTotal, color: '#256af4', icon: <HistoryIcon size={20} />, sign: t('المسجل في النظام') },
-                                { label: t('إجمالي العجز المكتشف'), value: totals.totalShortage, color: DC, icon: <TrendingDown size={20} />, sign: t('نقص في الأرصدة (-)') },
-                                { label: t('إجمالي الزيادة المكتشفة'), value: totals.totalSurplus, color: SC, icon: <TrendingUp size={20} />, sign: t('زيادة في الأرصدة (+)') },
-                                { label: t('نسبة الجرد المكتملة'), value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} ${t('من أصل')} ${treasuries.length}` },
-                            ].map((s, i) => (
-                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <div style={{ textAlign: 'center'}}>
-                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.isPercent ? (s.value as number).toFixed(0) : formatNumber(s.value as number)}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.isPercent ? '%' : sym}</span>
-                                        </div>
-                                        <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
-                                    </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>{s.icon}</div>
+                        {/* Filters */}
+                        <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                            {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                                <div style={{ minWidth: '180px' }}>
+                                    <CustomSelect
+                                        value={branchId}
+                                        onChange={v => setBranchId(v)}
+                                        placeholder={t("كل الفروع")}
+                                        hideSearch={true}
+                                        options={[
+                                            { value: 'all', label: t('كل الفروع') },
+                                            ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                        ]}
+                                    />
                                 </div>
-                            ))}
-                        </div>
-
-                        {/* Controls */}
-                        <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center' }}>
-                            <div style={{ flex: 1, position: 'relative' }}>
-                                <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
-                                <input placeholder={t("ابحث باسم الخزينة...")} value={q} onChange={e => setQ(e.target.value)}
-                                    style={{ ...IS, width: '100%', height: '40px', padding: '0 14px 0 40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: CAIRO }} />
+                            )}
+                            <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
+                                <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                                <input
+                                    placeholder={t("ابحث بالتاريخ أو الملاحظات...")}
+                                    value={historyQ}
+                                    onChange={e => setHistoryQ(e.target.value)}
+                                    style={{
+                                        ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
+                                        borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                        outline: 'none', fontFamily: CAIRO, fontWeight: 500
+                                    }}
+                                />
                             </div>
-                            <input placeholder={t("ملاحظات (اختياري)...")} value={notes} onChange={e => setNotes(e.target.value)}
-                                style={{ ...IS, flex: 2, height: '40px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: CAIRO }} />
-                            <button onClick={fetchTreasuries} style={{ height: '40px', padding: '0 16px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
+                            <button
+                                onClick={fetchSnapshots}
+                                style={{
+                                    height: '42px', padding: '0 16px', borderRadius: '12px',
+                                    background: 'transparent', border: `1px solid ${C.border}`,
+                                    color: C.textSecondary, fontSize: '13px', fontWeight: 700,
+                                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO
+                                }}
+                            >
                                 <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {t('تحديث')}
                             </button>
-                            <button onClick={handleSave} disabled={saving} style={{ height: '40px', padding: '0 20px', borderRadius: '10px', background: SC, color: '#fff', border: 'none', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} {t('حفظ الجرد')}
-                            </button>
                         </div>
 
-                        <DataTable
-                            columns={newColumns}
-                            data={filtered}
-                            emptyIcon={Activity}
-                            emptyMessage={t('لا توجد خزن أو حسابات بنكية مسجلة')}
-                            isLoading={loading}
-                        />
-                    </>
-                ) : (
-                    /* History Tab */
-                    <>
-                        <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-                            <div style={{ flex: 1, position: 'relative' }}>
-                                <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                                <input placeholder={t("ابحث بالتاريخ أو الملاحظات...")} value={historyQ} onChange={e => setHistoryQ(e.target.value)}
-                                    style={{ ...IS, width: '100%', height: '40px', padding: '0 14px 0 40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13px', outline: 'none', fontFamily: CAIRO }} />
-                            </div>
-                            <button onClick={fetchSnapshots} style={{ height: '40px', padding: '0 16px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                <RefreshCw size={14} className={snapshotsLoading ? 'animate-spin' : ''} /> {t('تحديث')}
-                            </button>
-                        </div>
-
-                        {snapshotsLoading ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center'}}><Loader2 size={36} className="animate-spin" style={{ color: C.primary }} /></div>
+                        {loading ? (
+                            <TableSkeleton />
                         ) : filteredSnapshots.length === 0 ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
-                                <FileText size={50} style={{ opacity: 0.1, color: C.primary, marginBottom: '16px' }} />
-                                <p style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد سجلات جرد محفوظة')}</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                                <FileText size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد سجلات تسوية')}</h3>
+                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('لم يتم العثور على أي مطابقات محفوظة للفترة أو الفرع المختار.')}</p>
                             </div>
                         ) : (
-                            <>
-                                {/* Snapshot list */}
-                                {!selectedSnapshot ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                        {filteredSnapshots.map(snap => (
-                                            <div key={snap.id} onClick={() => setSelectedSnapshot(snap)}
-                                                style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '18px 24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s' }}
-                                                onMouseEnter={e => (e.currentTarget.style.borderColor = C.primary)}
-                                                onMouseLeave={e => (e.currentTarget.style.borderColor = C.border)}>
-                                                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
-                                                        <ClipboardList size={20} />
-                                                    </div>
-                                                    <div>
-                                                        <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                                            {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                                        </div>
-                                                        <div style={{ fontSize: '11.5px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
-                                                            {new Date(snap.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
-                                                            {snap.notes && ` — ${snap.notes}`}
-                                                        </div>
-                                                    </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {filteredSnapshots.map(snap => (
+                                    <div
+                                        key={snap.id}
+                                        onClick={() => setSelectedSnapshot(snap)}
+                                        style={{
+                                            background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px',
+                                            padding: '18px 24px', cursor: 'pointer', display: 'flex',
+                                            alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.15s'
+                                        }}
+                                        onMouseEnter={e => (e.currentTarget.style.borderColor = C.primary)}
+                                        onMouseLeave={e => (e.currentTarget.style.borderColor = C.border)}
+                                    >
+                                        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                                <ClipboardList size={20} />
+                                            </div>
+                                            <div>
+                                                <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                                                    {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                 </div>
-                                                <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                                                    {snap.totalShortage > 0 && <span style={{ fontSize: '12px', color: DC, fontWeight: 600, fontFamily: CAIRO }}>{t("عجز:")} {formatNumber(snap.totalShortage)} {sym}</span>}
-                                                    {snap.totalSurplus > 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO }}>{t("زيادة:")} {formatNumber(snap.totalSurplus)} {sym}</span>}
-                                                    {snap.totalShortage === 0 && snap.totalSurplus === 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle2 size={14} /> {t('مطابق تماماً')}</span>}
-                                                    <span style={{ fontSize: '11px', color: C.primary, fontWeight: 700, fontFamily: CAIRO }}>{t('عرض التفاصيل')} ◄</span>
+                                                <div style={{ fontSize: '11.5px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
+                                                    {new Date(snap.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                                                    {snap.notes && ` — ${snap.notes}`}
                                                 </div>
                                             </div>
-                                        ))}
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                                            {snap.totalShortage > 0 && <span style={{ fontSize: '12.5px', color: DC, fontWeight: 700, fontFamily: CAIRO }}>{t("عجز:")} {formatNumber(snap.totalShortage)} {sym}</span>}
+                                            {snap.totalSurplus > 0 && <span style={{ fontSize: '12.5px', color: SC, fontWeight: 700, fontFamily: CAIRO }}>{t("زيادة:")} {formatNumber(snap.totalSurplus)} {sym}</span>}
+                                            {snap.totalShortage === 0 && snap.totalSurplus === 0 && <span style={{ fontSize: '12px', color: SC, fontWeight: 600, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}><CheckCircle2 size={14} /> {t('مطابق تماماً')}</span>}
+                                            <span style={{ fontSize: '11px', color: C.primary, fontWeight: 700, fontFamily: CAIRO }}>{t('عرض التفاصيل')} ◄</span>
+                                        </div>
                                     </div>
-                                ) : (
-                                    /* Snapshot detail view */
-                                    <>
-                                        <button onClick={() => setSelectedSnapshot(null)} className="no-print"
-                                            style={{ marginBottom: '16px', height: '36px', padding: '0 16px', borderRadius: '8px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                            ◄ {t('رجوع للسجل')}
-                                        </button>
-
-                                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                                            {[
-                                                { label: t('الرصيد الدفتري'), value: selectedSnapshot.totalSystem, color: '#256af4', sign: t('المسجل في النظام') },
-                                                { label: t('الرصيد الفعلي'), value: selectedSnapshot.totalPhysical, color: C.primary, sign: t('حسب العد') },
-                                                { label: t('إجمالي العجز'), value: selectedSnapshot.totalShortage, color: DC, sign: t('نقص (-)') },
-                                                { label: t('إجمالي الزيادة'), value: selectedSnapshot.totalSurplus, color: SC, sign: t('زيادة (+)') },
-                                            ].map((s, i) => (
-                                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px 20px' }}>
-                                                    <p style={{ fontSize: '11px', fontWeight: 600, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                                    <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)} <span style={{ fontSize: '10px', fontFamily: CAIRO, color: C.textSecondary }}>{sym}</span></div>
-                                                    <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-
-                                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
-                                                    {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
-                                                </span>
-                                                {selectedSnapshot.notes && <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
-                                            </div>
-                                            <DataTable
-                                                columns={historyDetailColumns}
-                                                data={selectedSnapshot.items}
-                                                emptyIcon={ClipboardList}
-                                                emptyMessage={t('لا توجد بنود جرد مسجلة')}
-                                            />
-                                        </div>
-                                    </>
-                                )}
-                            </>
+                                ))}
+                            </div>
                         )}
+                    </>
+                ) : (
+                    /* Snapshot detail view */
+                    <>
+                        <button
+                            onClick={() => setSelectedSnapshot(null)}
+                            className="no-print"
+                            style={{
+                                marginBottom: '16px', height: '38px', padding: '0 16px', borderRadius: '10px',
+                                background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary,
+                                fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex',
+                                alignItems: 'center', gap: '6px', fontFamily: CAIRO
+                            }}
+                        >
+                            ◄ {t('رجوع للسجل')}
+                        </button>
+
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('الرصيد الدفتري')}
+                                value={selectedSnapshot.totalSystem}
+                                suffix={sym}
+                                icon={<Activity size={18} />}
+                                color="#256af4"
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('الرصيد الفعلي')}
+                                value={selectedSnapshot.totalPhysical}
+                                suffix={sym}
+                                icon={<CheckCircle2 size={18} />}
+                                color={C.primary}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي العجز')}
+                                value={selectedSnapshot.totalShortage}
+                                suffix={sym}
+                                icon={<TrendingDown size={18} />}
+                                color={DC}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('إجمالي الزيادة')}
+                                value={selectedSnapshot.totalSurplus}
+                                suffix={sym}
+                                icon={<TrendingUp size={18} />}
+                                color={SC}
+                                formatValue={true}
+                            />
+                        </div>
+
+                        <div className="print-table-container">
+                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.card }}>
+                                <span style={{ fontFamily: CAIRO, fontWeight: 600, color: C.textPrimary, fontSize: '13.5px' }}>
+                                    {t('جرد')} — {new Date(selectedSnapshot.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' } as any)}
+                                </span>
+                                {selectedSnapshot.notes && <span style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{selectedSnapshot.notes}</span>}
+                            </div>
+                            <DataTable
+                                columns={historyDetailColumns}
+                                data={selectedSnapshot.items}
+                                emptyIcon={ClipboardList}
+                                emptyMessage={t('لا توجد بنود جرد مسجلة')}
+                            />
+                        </div>
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p, strong { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-            `}</style>
         </DashboardLayout>
     );
 }

@@ -27,7 +27,9 @@ export const isCenteredColumn = (col: TableColumn): boolean => {
            h.includes('number') ||
            h.includes('code') ||
            h.includes('id') ||
-           h.includes('serial');
+           h.includes('serial') ||
+           h.includes('هاتف') ||
+           h.includes('phone');
 };
 
 interface DataTableProps {
