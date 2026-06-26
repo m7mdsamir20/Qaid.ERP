@@ -431,7 +431,7 @@ function BranchSwitcher() {
     const switchBranch = async (branchId: string | null) => {
         setOpen(false);
         await update({ user: { activeBranchId: branchId === null ? 'all' : branchId } });
-        router.refresh();
+        window.location.reload();
     };
 
     if (!showBranch) return null;

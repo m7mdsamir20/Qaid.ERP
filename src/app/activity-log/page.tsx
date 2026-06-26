@@ -183,7 +183,7 @@ function renderDataFields(data: any, accentColor: string) {
                         {FIELD_LABELS[key] || key}
                     </span>
                     <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>
-                        {VALUE_LABELS[String(value)] ?? (typeof value === 'number' ? value.toLocaleString('en-US') : String(value))}
+                        {toWesternNumerals(VALUE_LABELS[String(value)] ?? (typeof value === 'number' ? value.toLocaleString('en-US') : String(value)))}
                     </span>
                 </div>
             ))}
@@ -456,7 +456,7 @@ export default function ActivityLogPage() {
                     title={row.description}
                     style={{ fontSize: '12px', color: C.textSecondary, cursor: 'default' }}
                 >
-                    {truncate(row.description, 60)}
+                    {toWesternNumerals(truncate(row.description, 60))}
                 </span>
             ),
         },
