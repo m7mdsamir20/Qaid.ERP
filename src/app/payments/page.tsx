@@ -67,7 +67,8 @@ export default function PaymentVouchersPage() {
     };
 
     const filteredAll = vouchers.filter(v => {
-        const matchSearch = String(v.voucherNumber).includes(searchTerm) || (v.supplier?.name || '').includes(searchTerm) || (v.description || '').includes(searchTerm);
+        const s = searchTerm.toLowerCase();
+        const matchSearch = String(v.voucherNumber).includes(s) || (v.supplier?.name || '').toLowerCase().includes(s) || (v.description || '').toLowerCase().includes(s);
         const rDate = new Date(v.date);
         const matchFrom = !dateFrom || rDate >= new Date(dateFrom);
         const matchTo = !dateTo || rDate <= new Date(dateTo + 'T23:59:59');

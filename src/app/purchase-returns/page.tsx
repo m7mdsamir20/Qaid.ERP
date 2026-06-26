@@ -51,7 +51,8 @@ export default function PurchaseReturnsListPage() {
     useEffect(() => { fetchAll(); }, [fetchAll]);
 
     const filtered = returns.filter(r => {
-        const matchSearch = (r.supplier?.name || '').includes(searchTerm) || String(r.invoiceNumber).includes(searchTerm);
+        const s = searchTerm.toLowerCase();
+        const matchSearch = (r.supplier?.name || '').toLowerCase().includes(s) || String(r.invoiceNumber).includes(s);
         const rDate = new Date(r.date);
         const matchFrom = !dateFrom || rDate >= new Date(dateFrom);
         const matchTo = !dateTo || rDate <= new Date(dateTo + 'T23:59:59');

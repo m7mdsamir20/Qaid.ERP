@@ -64,7 +64,7 @@ export const GET = withProtection(async (request, session) => {
         ]);
         return NextResponse.json({ invoices, activeYear, total, page, limit });
     } catch {
-        return NextResponse.json({ invoices: [], activeYear: null }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في جلب فواتير المشتريات' }, { status: 500 });
     }
 });
 

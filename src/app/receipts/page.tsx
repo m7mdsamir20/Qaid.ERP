@@ -53,16 +53,17 @@ export default function ReceiptVouchersPage() {
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
             ]);
-            const vList: Voucher[] = await vovRes.json();
+            const vList: Voucher[] = vovRes.ok ? await vovRes.json() : [];
             setVouchers(Array.isArray(vList) ? vList : []);
-            setCustomers(await custRes.json());
-            setTreasuries(await treaRes.json());
+            setCustomers(custRes.ok ? await custRes.json() : []);
+            setTreasuries(treaRes.ok ? await treaRes.json() : []);
         } catch { } finally { setLoading(false); }
     }, []);
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const filtered = vouchers.filter(v => {
-        const matchSearch = (v.customer?.name || '').includes(searchTerm) || String(v.voucherNumber).includes(searchTerm) || (v.description || '').includes(searchTerm);
+        const s = searchTerm.toLowerCase();
+        const matchSearch = (v.customer?.name || '').toLowerCase().includes(s) || String(v.voucherNumber).includes(s) || (v.description || '').toLowerCase().includes(s);
         const vDate = new Date(v.date);
         const matchFrom = !dateFrom || vDate >= new Date(dateFrom);
         const matchTo = !dateTo || vDate <= new Date(dateTo + 'T23:59:59');

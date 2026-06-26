@@ -48,6 +48,7 @@ export default function PurchasesListPage() {
     const fetchAll = useCallback(async () => {
         try {
             const purRes = await fetch('/api/purchases');
+            if (!purRes.ok) throw new Error('purchases fetch failed');
             const data = await purRes.json();
             setInvoices(data.invoices || []);
             setActiveYear(data.activeYear || null);

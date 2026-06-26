@@ -466,10 +466,14 @@ function NewSalePageInner() {
                     router.push('/sales');
                 }
             } else {
-                const data = await res.json();
-                setErrorMsg(data.error || t('فشل الحفظ'));
+                try {
+                    const data = await res.json();
+                    setErrorMsg(data.error || t('فشل الحفظ'));
+                } catch {
+                    setErrorMsg(t('خطأ في الخادم'));
+                }
             }
-        } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
+        } catch { setErrorMsg(t('خطأ في الاتصال بالخادم')); } finally { setSubmitting(false); }
     };
 
     if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }

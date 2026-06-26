@@ -23,7 +23,7 @@ export const GET = withProtection(async (request, session) => {
         });
         return NextResponse.json(vouchers);
     } catch {
-        return NextResponse.json([], { status: 500 });
+        return NextResponse.json({ error: 'فشل في جلب السندات' }, { status: 500 });
     }
 });
 

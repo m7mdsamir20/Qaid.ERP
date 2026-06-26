@@ -57,7 +57,8 @@ export default function PurchasePaymentsPage() {
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const filtered = vouchers.filter(v => {
-        const matchSearch = (v.supplier?.name || '').includes(searchTerm) || String(v.voucherNumber).includes(searchTerm) || (v.description || '').includes(searchTerm);
+        const s = searchTerm.toLowerCase();
+        const matchSearch = (v.supplier?.name || '').toLowerCase().includes(s) || String(v.voucherNumber).includes(s) || (v.description || '').toLowerCase().includes(s);
         const vDate = new Date(v.date);
         const matchFrom = !dateFrom || vDate >= new Date(dateFrom);
         const matchTo = !dateTo || vDate <= new Date(dateTo + 'T23:59:59');

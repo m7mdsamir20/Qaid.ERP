@@ -60,6 +60,42 @@ const MODULE_LABELS: Record<string, string> = {
     'progress-bills': 'فواتير الإنجاز',
 };
 
+// ربط مسار الصلاحية بالموديولات المقابلة له في السجل
+const PERMISSION_TO_MODULES: Record<string, string[]> = {
+    '/sales':               ['sales'],
+    '/purchases':           ['purchases'],
+    '/purchase-orders':     ['purchase-orders'],
+    '/sales-orders':        ['sales-orders'],
+    '/sale-returns':        ['sale-returns'],
+    '/purchase-returns':    ['purchase-returns'],
+    '/customers':           ['customers'],
+    '/suppliers':           ['suppliers'],
+    '/items':               ['items'],
+    '/warehouses':          ['warehouses'],
+    '/warehouse-transfers': ['warehouse-transfers'],
+    '/accounts':            ['accounts'],
+    '/journal-entries':     ['journal-entries'],
+    '/receipts':            ['vouchers'],
+    '/payments':            ['vouchers'],
+    '/purchase-payments':   ['vouchers'],
+    '/employees':           ['employees'],
+    '/attendance':          ['attendance', 'leaves'],
+    '/payrolls':            ['payrolls'],
+    '/expenses':            ['expenses'],
+    '/advances':            ['advances'],
+    '/deductions':          ['deductions'],
+    '/sales-reps':          ['sales_reps', 'collections', 'commissions', 'sales-targets'],
+    '/stocktakings':        ['stocktakings'],
+    '/serial-numbers':      ['serial-numbers'],
+    '/loyalty':             ['loyalty'],
+    '/service-contracts':   ['service-contracts'],
+    '/work-orders':         ['work-orders'],
+    '/projects':            ['projects'],
+    '/material-requests':   ['material-requests'],
+    '/daily-site-reports':  ['daily-site-reports'],
+    '/progress-bills':      ['progress-bills'],
+};
+
 const ACTION_LABELS: Record<string, { label: string; color: string }> = {
     'create':  { label: 'إنشاء',     color: '#22c55e' },
     'update':  { label: 'تعديل',     color: '#3b82f6' },
@@ -172,87 +208,70 @@ function truncate(str: string, len: number): string {
     return str.length > len ? str.slice(0, len) + '…' : str;
 }
 
+function toWesternNumerals(str: string): string {
+    if (!str) return str;
+    return str.replace(/[٠-٩]/g, d => String(d.charCodeAt(0) - 0x0660));
+}
+
 /* ─── Expandable Row Detail ─── */
 
 function MetaChip({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
     return (
-        <div style={{
-            display: 'flex', alignItems: 'center', gap: '6px',
-            padding: '5px 12px', borderRadius: '8px',
-            background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.border}`,
-        }}>
-            <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{label}</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{label}:</span>
             <span style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: mono ? OUTFIT : CAIRO }}>{value}</span>
-        </div>
+        </span>
     );
 }
 
 function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
     return (
         <tr>
-            <td
-                colSpan={6}
-                style={{ padding: '0', borderBottom: `1px solid ${C.border}` }}
-            >
-                <div
-                    style={{
-                        background: 'rgba(37,106,244,0.03)',
-                        borderTop: `1px solid ${C.border}`,
-                        padding: '14px 24px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '10px',
-                        fontFamily: CAIRO,
-                        fontSize: '12px',
-                        color: C.textSecondary,
-                    }}
-                >
+            <td colSpan={6} style={{ padding: '0', borderBottom: `1px solid ${C.border}` }}>
+                <div style={{
+                    borderTop: `1px solid ${C.border}`,
+                    padding: '12px 24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    fontFamily: CAIRO,
+                    fontSize: '13px',
+                    color: C.textPrimary,
+                }}>
                     {/* Full description */}
-                    <div style={{
-                        padding: '8px 14px', borderRadius: '8px',
-                        background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`,
-                        fontSize: '13px', color: C.textPrimary, fontWeight: 500,
-                    }}>
-                        {log.description}
+                    <div style={{ fontWeight: 500 }}>
+                        {toWesternNumerals(log.description)}
                     </div>
 
-                    {/* Meta chips row */}
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                    {/* Meta info */}
+                    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '12px', color: C.textSecondary }}>
                         <MetaChip label="الصفحة" value={MODULE_LABELS[log.module] || log.module.replace(/-|_/g, ' ')} />
-                        {log.entityRef && <MetaChip label="المرجع" value={log.entityRef} />}
-                        {log.ipAddress && <MetaChip label="عنوان IP" value={log.ipAddress} mono />}
+                        {log.entityRef && <MetaChip label="المرجع" value={toWesternNumerals(log.entityRef)} />}
+                        {log.ipAddress && <MetaChip label="IP" value={log.ipAddress} mono />}
                     </div>
 
                     {/* Old / New data diff */}
                     {(log.oldData || log.newData) && (
-                        <div
-                            style={{
-                                display: 'grid',
-                                gridTemplateColumns: log.oldData && log.newData ? '1fr 1fr' : '1fr',
-                                gap: '12px',
-                                marginTop: '4px',
-                            }}
-                        >
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: log.oldData && log.newData ? '1fr 1fr' : '1fr',
+                            gap: '12px',
+                            marginTop: '4px',
+                        }}>
                             {log.oldData && (
                                 <div>
-                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
+                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444', marginBottom: '6px' }}>
                                         قبل التغيير
                                     </div>
-                                    <div style={{ padding: '10px 14px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px' }}>
-                                        {renderDataFields(log.oldData, '#ef4444')}
-                                    </div>
+                                    {renderDataFields(log.oldData, '#ef4444')}
                                 </div>
                             )}
                             {log.newData && (
                                 <div>
-                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#22c55e', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }} />
+                                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#22c55e', marginBottom: '6px' }}>
                                         بعد التغيير
                                     </div>
-                                    <div style={{ padding: '10px 14px', background: 'rgba(34,197,94,0.06)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '8px' }}>
-                                        {renderDataFields(log.newData, '#22c55e')}
-                                    </div>
+                                    {renderDataFields(log.newData, '#22c55e')}
                                 </div>
                             )}
                         </div>
@@ -331,10 +350,31 @@ export default function ActivityLogPage() {
         });
     };
 
-    /* Select options */
+    /* Select options — مبنية على الصلاحيات فقط */
+    const perms: Record<string, any> = user.permissions || {};
+
+    // موديولات ظاهرة دايماً (بدون صلاحية محددة)
+    const alwaysVisible = ['auth', 'settings'];
+
+    // استخراج الموديولات من مسارات الصلاحيات المتاحة للمستخدم
+    const fromPerms = Object.keys(perms)
+        .filter(path => !!perms[path])
+        .flatMap(path => PERMISSION_TO_MODULES[path] || []);
+
+    const rawModules = [...new Set([...alwaysVisible, ...fromPerms])];
+
+    // إزالة المكررات بنفس الـ label
+    const seenLabels = new Set<string>();
+    const uniqueModules = rawModules.filter(mod => {
+        const label = MODULE_LABELS[mod];
+        if (!label || seenLabels.has(label)) return false;
+        seenLabels.add(label);
+        return true;
+    });
+
     const moduleOptions = [
         { value: '', label: 'كل الموديولات' },
-        ...Object.entries(MODULE_LABELS).map(([k, v]) => ({ value: k, label: v })),
+        ...uniqueModules.map(k => ({ value: k, label: MODULE_LABELS[k] })),
     ];
 
     const actionOptions = [
@@ -350,10 +390,10 @@ export default function ActivityLogPage() {
             cell: (row: ActivityLogEntry) => (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                     <span style={{ fontFamily: OUTFIT, fontSize: '12px', fontWeight: 600, color: C.textPrimary, whiteSpace: 'nowrap' }}>
-                        {formatDate(row.createdAt)}
+                        {toWesternNumerals(formatDate(row.createdAt))}
                     </span>
                     <span style={{ fontFamily: OUTFIT, fontSize: '11px', color: C.textMuted, whiteSpace: 'nowrap' }}>
-                        {formatTime(row.createdAt)}
+                        {toWesternNumerals(formatTime(row.createdAt))}
                     </span>
                 </div>
             ),
