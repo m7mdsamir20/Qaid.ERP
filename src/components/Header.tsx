@@ -407,6 +407,7 @@ function Actions() {
 function BranchSwitcher() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
+    const router = useRouter();
     const { data: session, update } = useSession();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
