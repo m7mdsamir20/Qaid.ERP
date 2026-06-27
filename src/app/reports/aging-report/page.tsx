@@ -153,7 +153,7 @@ export default function AgingReportPage() {
         {
             header: t('تاريخ الإصدار'),
             cell: (row: AgingInvoice) => new Date(row.date).toLocaleDateString('en-ZA'),
-            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('العميل المستحق'),
@@ -289,16 +289,17 @@ export default function AgingReportPage() {
                     </div>
                 </div>
 
-                <div className="print-table-container">
-                    <DataTable
-                        columns={columns}
-                        data={filtered}
-                        emptyIcon={Clock}
-                        emptyMessage={t('لم يتم العثور على مديونيات متأخرة حالياً في النظام')}
-                        isLoading={loading}
-                        footer={footerElement}
-                    />
-                </div>
+                {loading ? ( <TableSkeleton /> ) : (
+                    <div className="print-table-container">
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Clock}
+                            emptyMessage={t('لم يتم العثور على مديونيات متأخرة حالياً في النظام')}
+                            footer={footerElement}
+                        />
+                    </div>
+                )}
             </div>
         </DashboardLayout>
     );
