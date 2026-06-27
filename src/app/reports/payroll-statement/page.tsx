@@ -15,6 +15,8 @@ import { DollarSign, Search, Calendar, Wallet, ArrowUpRight, TrendingDown, Loade
 
 
 
+import CustomSelect from '@/components/CustomSelect';
+
 interface PayrollRecord {
     id: string;
     employeeName: string;
@@ -45,13 +47,25 @@ export default function PayrollStatementPage() {
     const [loading, setLoading] = useState(false);
     const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
 
     const sym = getCurrencySymbol(currency, lang);
-    const fetchReport = async () => {
+    const fetchReport = async (currentBranchId = branchId) => {
         setLoading(true);
         try {
             const [yearStr, monthStr] = month.split('-');
-            const res = await fetch(`/api/reports/hr?type=payroll-statement&month=${monthStr}&year=${yearStr}`);
+            let url = `/api/reports/hr?type=payroll-statement&month=${monthStr}&year=${yearStr}`;
+            if (currentBranchId && currentBranchId !== 'all') {
+                url += `&branchId=${currentBranchId}`;
+            }
+            const res = await fetch(url);
             if (res.ok) {
                 const results = await res.json();
                 setData(results);
@@ -66,7 +80,7 @@ export default function PayrollStatementPage() {
         }
     };
 
-    useEffect(() => { fetchReport(); }, [month]);
+    useEffect(() => { fetchReport(branchId); }, [month, branchId]);
 
     const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase())) : [];
 
@@ -79,25 +93,25 @@ export default function PayrollStatementPage() {
         {
             header: t('الراتب الأساسي'),
             type: 'number' as const,
-            cell: (row: PayrollRecord) => <Currency amount={row.basicSalary} />,
+            cell: (row: PayrollRecord) => <>{formatNumber(row.basicSalary)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('البدلات'),
             type: 'number' as const,
-            cell: (row: PayrollRecord) => <>+<Currency amount={row.allowances} /></>,
+            cell: (row: PayrollRecord) => <><span style={{ color: '#10b981' }}>+</span>{formatNumber(row.allowances)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('الاستقطاعات'),
             type: 'number' as const,
-            cell: (row: PayrollRecord) => <>-<Currency amount={row.deductions} /></>,
+            cell: (row: PayrollRecord) => <><span style={{ color: '#ef4444' }}>-</span>{formatNumber(row.deductions)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('الصافي'),
             type: 'number' as const,
-            cell: (row: PayrollRecord) => <Currency amount={row.netSalary} />,
+            cell: (row: PayrollRecord) => <>{formatNumber(row.netSalary)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: C.primary, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         }
     ];
@@ -105,12 +119,14 @@ export default function PayrollStatementPage() {
     const footerElement = data && (
         <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
             <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-            <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}><Currency amount={data.summary.totalSalaries} /></td>
-            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={data.summary.totalAllowances} /></td>
-            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={data.summary.totalDiscounts} /></td>
-            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={data.summary.netTotal} /></td>
+            <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, textAlign: 'center' }}>{formatNumber(data.summary.totalSalaries)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+{formatNumber(data.summary.totalAllowances)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-{formatNumber(data.summary.totalDiscounts)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></td>
+            <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{formatNumber(data.summary.netTotal)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></td>
         </tr>
     );
+
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
 
     return (
         <DashboardLayout>
@@ -119,12 +135,28 @@ export default function PayrollStatementPage() {
                     title={t("كشف رواتب الموظفين التفصيلي")}
                     subtitle={t("مراجعة شاملة لمسيرات الرواتب، الحوافز، الاستقطاعات، وصافي المستحقات لفترة محددة.")}
                     backTab="hr"
+                    branchName={selectedBranchName}
                     printTitle={data && data.records.length > 0 ? t("مسير رواتب الموظفين") : undefined}
                     printDate={new Date(month + '-01').toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}
                     printLabel={t('الشهر:')}
                 />
 
-                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => { setBranchId(v); fetchReport(v); }}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('اختر الشهر:')}</span>
                         <input type="month" value={month} onChange={e => setMonth(e.target.value)}
@@ -146,7 +178,7 @@ export default function PayrollStatementPage() {
                     </div>
                 ) : (
                     <>
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('إجمالي الأجور الأساسية'), value: fmt(data.summary.totalSalaries), color: '#256af4', icon: <Users size={18} /> },
                                 { label: t('إجمالي البدلات'), value: fmt(data.summary.totalAllowances), color: '#10b981', icon: <ArrowUpRight size={18} /> },
@@ -174,13 +206,15 @@ export default function PayrollStatementPage() {
                             <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                         </div>
 
-                        <DataTable
-                            columns={columns}
-                            data={filtered}
-                            emptyIcon={DollarSign}
-                            emptyMessage={t('لا توجد سجلات رواتب حالياً')}
-                            footer={footerElement}
-                        />
+                        <div className="print-table-container">
+                            <DataTable
+                                columns={columns}
+                                data={filtered}
+                                emptyIcon={DollarSign}
+                                emptyMessage={t('لا توجد سجلات رواتب حالياً')}
+                                footer={footerElement}
+                            />
+                        </div>
                     </>
                 )}
             </div>

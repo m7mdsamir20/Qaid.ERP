@@ -40,6 +40,8 @@ const typeColors: Record<string, string> = {
     other: '#64748b'
 };
 
+import CustomSelect from '@/components/CustomSelect';
+
 export default function EmployeesDeductionsPage() {
     const { lang, t } = useTranslation();
 
@@ -56,12 +58,24 @@ export default function EmployeesDeductionsPage() {
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
 
     const sym = getCurrencySymbol(currency, lang);
-    const fetchReport = async () => {
+    const fetchReport = async (currentBranchId = branchId) => {
         setLoading(true);
         try {
-            const res = await fetch('/api/reports/hr?type=deductions');
+            let url = '/api/reports/hr?type=deductions';
+            if (currentBranchId && currentBranchId !== 'all') {
+                url += `&branchId=${currentBranchId}`;
+            }
+            const res = await fetch(url);
             if (res.ok) {
                 const results = await res.json();
                 setData(results);
@@ -73,7 +87,7 @@ export default function EmployeesDeductionsPage() {
         }
     };
 
-    useEffect(() => { fetchReport(); }, []);
+    useEffect(() => { fetchReport(branchId); }, [branchId]);
 
     const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase()) || r.reason.toLowerCase().includes(q.toLowerCase())) : [];
 
@@ -102,10 +116,12 @@ export default function EmployeesDeductionsPage() {
         {
             header: t('القيمة'),
             type: 'number' as const,
-            cell: (row: DeductionRecord) => <>-<Currency amount={row.amount} /></>,
+            cell: (row: DeductionRecord) => <><span style={{ color: '#ef4444' }}>-</span>{formatNumber(row.amount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         }
     ];
+
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
 
     return (
         <DashboardLayout>
@@ -114,10 +130,29 @@ export default function EmployeesDeductionsPage() {
                     title={t("سجل الخصومات والجزاءات الفترية")}
                     subtitle={t("تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات).")}
                     backTab="hr"
+                    branchName={selectedBranchName}
                     printTitle={t("سجل الخصومات والجزاءات الفترية")}
                 />
 
-                <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                {/* Filters */}
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => { setBranchId(v); fetchReport(v); }}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي مبلغ الخصومات'), value: fmt(data?.totalAmount || 0), color: '#ef4444', icon: <ArrowDownRight size={18} /> },
                         { label: t('عدد الجزاءات المسجلة'), value: String(data?.totalCount || 0), color: '#fb923c', icon: <AlertTriangle size={18} /> },
@@ -142,12 +177,14 @@ export default function EmployeesDeductionsPage() {
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <DataTable
-                        columns={columns}
-                        data={filtered}
-                        emptyIcon={AlertTriangle}
-                        emptyMessage={t('لا توجد سجلات خصومات حالياً')}
-                    />
+                    <div className="print-table-container">
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={AlertTriangle}
+                            emptyMessage={t('لا توجد سجلات خصومات حالياً')}
+                        />
+                    </div>
                 )}
             </div>
         </DashboardLayout>

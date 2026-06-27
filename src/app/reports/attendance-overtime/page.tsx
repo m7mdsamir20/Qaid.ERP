@@ -8,26 +8,29 @@ import { C, CAIRO, PAGE_BASE, OUTFIT, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
-import { Search, Loader2, Users } from 'lucide-react';
-
-interface Employee {
-    id: string;
-    name: string;
-    department: string;
-    position: string;
-    joinDate: string;
-    phone: string;
-    status: 'active' | 'on_vacation' | 'inactive';
-}
-
+import { Search, Zap, PlusCircle } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
-export default function EmployeesCatalogPage() {
+interface OvertimeRecordRow {
+    id: string;
+    employeeName: string;
+    department: string;
+    position: string;
+    overtimeDaysCount: number;
+    totalOvertimeHours: number;
+}
+
+interface ReportData {
+    records: OvertimeRecordRow[];
+}
+
+export default function AttendanceOvertimePage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const [data, setData] = useState<Employee[] | null>(null);
+    const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
     const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
@@ -41,7 +44,8 @@ export default function EmployeesCatalogPage() {
     const fetchReport = async (currentBranchId = branchId) => {
         setLoading(true);
         try {
-            let url = '/api/reports/hr?type=catalog';
+            const [yearStr, monthStr] = month.split('-');
+            let url = `/api/reports/hr?type=attendance-overtime&month=${monthStr}&year=${yearStr}`;
             if (currentBranchId && currentBranchId !== 'all') {
                 url += `&branchId=${currentBranchId}`;
             }
@@ -49,60 +53,49 @@ export default function EmployeesCatalogPage() {
             if (res.ok) {
                 const results = await res.json();
                 setData(results);
+            } else {
+                setData(null);
             }
         } catch (error) {
-            console.error('Failed to fetch employees catalog:', error);
+            console.error('Failed to fetch overtime report:', error);
+            setData(null);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => { fetchReport(branchId); }, [branchId]);
+    useEffect(() => { fetchReport(branchId); }, [month, branchId]);
 
-    const filtered = data ? data.filter(e => e.name.toLowerCase().includes(q.toLowerCase()) || e.department.toLowerCase().includes(q.toLowerCase()) || e.position.toLowerCase().includes(q.toLowerCase())) : [];
+    const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase())) : [];
 
     const columns: TableColumn[] = [
         {
             header: t('الموظف'),
-            cell: (row: Employee) => row.name,
-            style: { fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }
+            cell: (row: OvertimeRecordRow) => (
+                <div>
+                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }}>{row.employeeName}</div>
+                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>{row.position}</div>
+                </div>
+            )
         },
         {
             header: t('القسم'),
-            cell: (row: Employee) => row.department,
+            cell: (row: OvertimeRecordRow) => row.department,
             style: { fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }
         },
         {
-            header: t('المسمى الوظيفي'),
-            cell: (row: Employee) => row.position,
-            style: { fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }
+            header: t('أيام العمل الإضافي'),
+            cell: (row: OvertimeRecordRow) => (
+                <span style={{ fontWeight: 600, color: '#256af4', fontFamily: OUTFIT }}>{row.overtimeDaysCount} {t('أيام')}</span>
+            ),
+            style: { textAlign: 'center', fontSize: '13px' } as React.CSSProperties
         },
         {
-            header: t('تاريخ التعيين'),
-            cell: (row: Employee) => new Date(row.joinDate).toLocaleDateString('en-ZA'),
-            style: { fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('الهاتف'),
-            cell: (row: Employee) => row.phone,
-            style: { fontSize: '13px', color: C.textSecondary, fontFamily: OUTFIT, textAlign: 'center' } as React.CSSProperties
-        },
-        {
-            header: t('الحالة'),
-            cell: (row: Employee) => {
-                const label = row.status === 'active' ? t('نشط') : row.status === 'on_vacation' ? t('في إجازة') : t('غير نشط');
-                const color = row.status === 'active' ? '#10b981' : row.status === 'on_vacation' ? '#256af4' : '#64748b';
-                const background = row.status === 'active' ? 'rgba(16,185,129,0.1)' : row.status === 'on_vacation' ? 'rgba(37, 106, 244,0.1)' : 'rgba(100,116,139,0.1)';
-                return (
-                    <span style={{
-                        fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px',
-                        background, color, fontFamily: CAIRO, border: `1px solid ${color}`
-                    }}>
-                        {label}
-                    </span>
-                );
-            },
-            style: { textAlign: 'center' } as React.CSSProperties
+            header: t('ساعات العمل الإضافي'),
+            cell: (row: OvertimeRecordRow) => (
+                <span style={{ fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>{row.totalOvertimeHours} {t('ساعة')}</span>
+            ),
+            style: { textAlign: 'center', fontSize: '13px' } as React.CSSProperties
         }
     ];
 
@@ -112,11 +105,12 @@ export default function EmployeesCatalogPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t("دليل بيانات الموظفين")}
-                    subtitle={t("كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية.")}
+                    title={t("تقرير العمل الإضافي")}
+                    subtitle={t("تقرير توضيحي يبين إجمالي ساعات العمل الإضافي والأيام المستحقة لكل موظف خلال الفترة المحددة.")}
                     backTab="hr"
                     branchName={selectedBranchName}
-                    printTitle={t("دليل بيانات الموظفين")}
+                    printTitle={t("تقرير العمل الإضافي")}
+                    printDate={new Date(month + '-01').toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' })}
                 />
 
                 {/* Filters */}
@@ -135,11 +129,23 @@ export default function EmployeesCatalogPage() {
                             />
                         </div>
                     )}
+
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الشهر:')}</span>
+                        <input type="month" value={month} onChange={e => setMonth(e.target.value)}
+                            style={{
+                                ...IS, height: '42px', padding: '0 12px', 
+                                borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: C.card, color: C.textPrimary, fontSize: '13px',
+                                fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                            }}
+                        />
+                    </div>
                 </div>
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder={t("ابحث باسم الموظف، القسم، أو المسمى الوظيفي...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
@@ -147,8 +153,8 @@ export default function EmployeesCatalogPage() {
                         <DataTable
                             columns={columns}
                             data={filtered}
-                            emptyIcon={Users}
-                            emptyMessage={t('لا توجد بيانات موظفين حالياً')}
+                            emptyIcon={Zap}
+                            emptyMessage={t('لا توجد سجلات عمل إضافي لهذا الشهر')}
                         />
                     </div>
                 )}

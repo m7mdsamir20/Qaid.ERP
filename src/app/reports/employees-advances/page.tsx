@@ -35,6 +35,8 @@ interface ReportData {
 
 const fmt = (n: number) => formatNumber(n);
 
+import CustomSelect from '@/components/CustomSelect';
+
 export default function EmployeesAdvancesPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -43,12 +45,24 @@ export default function EmployeesAdvancesPage() {
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
 
     const sym = getCurrencySymbol(currency, lang);
-    const fetchReport = async () => {
+    const fetchReport = async (currentBranchId = branchId) => {
         setLoading(true);
         try {
-            const res = await fetch('/api/reports/hr?type=advances');
+            let url = '/api/reports/hr?type=advances';
+            if (currentBranchId && currentBranchId !== 'all') {
+                url += `&branchId=${currentBranchId}`;
+            }
+            const res = await fetch(url);
             if (res.ok) {
                 const results = await res.json();
                 setData(results);
@@ -60,7 +74,7 @@ export default function EmployeesAdvancesPage() {
         }
     };
 
-    useEffect(() => { fetchReport(); }, []);
+    useEffect(() => { fetchReport(branchId); }, [branchId]);
 
     const filtered = data ? data.records.filter(r => r.employeeName.toLowerCase().includes(q.toLowerCase())) : [];
 
@@ -73,19 +87,19 @@ export default function EmployeesAdvancesPage() {
         {
             header: t('مبلغ السلفة'),
             type: 'number' as const,
-            cell: (row: AdvanceRecord) => <Currency amount={row.totalAmount} />,
+            cell: (row: AdvanceRecord) => <>{formatNumber(row.totalAmount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('المسدد'),
             type: 'number' as const,
-            cell: (row: AdvanceRecord) => <Currency amount={row.paidAmount} />,
+            cell: (row: AdvanceRecord) => <>{formatNumber(row.paidAmount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('المتبقي'),
             type: 'number' as const,
-            cell: (row: AdvanceRecord) => <Currency amount={row.remainingAmount} />,
+            cell: (row: AdvanceRecord) => <>{formatNumber(row.remainingAmount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{sym}</span></>,
             style: { fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT, fontSize: '13px', textAlign: 'center' } as React.CSSProperties
         },
         {
@@ -122,6 +136,8 @@ export default function EmployeesAdvancesPage() {
         }
     ];
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -129,10 +145,29 @@ export default function EmployeesAdvancesPage() {
                     title={t("تقرير سلف ومديونيات الموظفين")}
                     subtitle={t("متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة.")}
                     backTab="hr"
+                    branchName={selectedBranchName}
                     printTitle={t("تقرير سلف ومديونيات الموظفين")}
                 />
 
-                <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                {/* Filters */}
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => { setBranchId(v); fetchReport(v); }}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي السلف الممنوحة'), value: fmt(data?.totalAdvances || 0), color: C.primary, icon: <Wallet size={18} /> },
                         { label: t('إجمالي المبالغ المستردة'), value: fmt(data?.totalRecovered || 0), color: '#10b981', icon: <ArrowUpRight size={18} /> },
@@ -157,12 +192,14 @@ export default function EmployeesAdvancesPage() {
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : (
-                    <DataTable
-                        columns={columns}
-                        data={filtered}
-                        emptyIcon={Wallet}
-                        emptyMessage={t('لا توجد سجلات سلف حالياً')}
-                    />
+                    <div className="print-table-container">
+                        <DataTable
+                            columns={columns}
+                            data={filtered}
+                            emptyIcon={Wallet}
+                            emptyMessage={t('لا توجد سجلات سلف حالياً')}
+                        />
+                    </div>
                 )}
             </div>
         </DashboardLayout>

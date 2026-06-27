@@ -3,7 +3,7 @@
  * =======================
  * DO NOT CHANGE THE AUTH-OPTIONS IMPORT BELOW.
  * IT MUST POINT TO '@/lib/auth' ALWAYS.
- * VERSION: 1.0.1 (FRESH REBUILD)
+ * VERSION: 1.0.2 (HR & ATTENDANCE REBUILD)
  */
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
@@ -20,7 +20,6 @@ interface AdvanceRecord {
 }
 
 export async function GET(req: Request) {
-    // Session authorization check
     const session = await getServerSession(authOptions);
     if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -34,16 +33,22 @@ export async function GET(req: Request) {
             case 'payroll-statement': {
                 const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
                 const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const lineFilter: any = { payroll: { companyId, month, year } };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    lineFilter.employee = { branchId: urlBranchId };
+                }
 
                 const lines = await prisma.payrollLine.findMany({
-                    where: { payroll: { companyId, month, year } },
+                    where: lineFilter,
                     include: { employee: true }
                 });
 
-                const summary = await prisma.payroll.findFirst({
-                    where: { companyId, month, year },
-                    select: { totalSalaries: true, totalAllowances: true, totalDiscounts: true, netTotal: true }
-                });
+                const totalSalaries = lines.reduce((s, l) => s + l.basicSalary, 0);
+                const totalAllowances = lines.reduce((s, l) => s + l.allowances, 0);
+                const totalDiscounts = lines.reduce((s, l) => s + l.discounts + l.advances, 0);
+                const netTotal = lines.reduce((s, l) => s + l.netSalary, 0);
 
                 return NextResponse.json({
                     records: lines.map(l => ({
@@ -54,13 +59,24 @@ export async function GET(req: Request) {
                         deductions: l.discounts + l.advances,
                         netSalary: l.netSalary
                     })),
-                    summary: summary || { totalSalaries: 0, totalAllowances: 0, totalDiscounts: 0, netTotal: 0 }
+                    summary: {
+                        totalSalaries,
+                        totalAllowances,
+                        totalDiscounts,
+                        netTotal
+                    }
                 });
             }
 
             case 'advances': {
+                const urlBranchId = searchParams.get('branchId');
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
                 const employeesWithAdvances = await prisma.employee.findMany({
-                    where: { companyId },
+                    where: empFilter,
                     include: {
                         advances: true,
                         payrolls: { select: { advances: true } }
@@ -95,8 +111,14 @@ export async function GET(req: Request) {
             }
 
             case 'deductions': {
+                const urlBranchId = searchParams.get('branchId');
+                const dedFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    dedFilter.employee = { branchId: urlBranchId };
+                }
+
                 const deductions = await prisma.deduction.findMany({
-                    where: { companyId },
+                    where: dedFilter,
                     include: { employee: true },
                     orderBy: { date: 'desc' }
                 });
@@ -118,8 +140,14 @@ export async function GET(req: Request) {
             }
 
             case 'catalog': {
+                const urlBranchId = searchParams.get('branchId');
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
                 const employees = await prisma.employee.findMany({
-                    where: { companyId },
+                    where: empFilter,
                     include: { department: true },
                     orderBy: { name: 'asc' }
                 });
@@ -133,6 +161,215 @@ export async function GET(req: Request) {
                     phone: e.phone || '-',
                     status: e.status === 'active' ? 'active' : 'inactive'
                 })));
+            }
+
+            case 'attendance-monthly': {
+                const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
+                const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
+                const employees = await prisma.employee.findMany({
+                    where: empFilter,
+                    include: {
+                        department: true,
+                        attendanceRecords: {
+                            where: {
+                                date: {
+                                    gte: new Date(year, month - 1, 1),
+                                    lt: new Date(year, month, 1)
+                                }
+                            }
+                        }
+                    }
+                });
+
+                const records = employees.map(emp => {
+                    const present = emp.attendanceRecords.filter(r => r.status === 'present').length;
+                    const absent = emp.attendanceRecords.filter(r => r.status === 'absent').length;
+                    const late = emp.attendanceRecords.filter(r => r.status === 'late' || (r.lateMinutes && r.lateMinutes > 0)).length;
+                    const leave = emp.attendanceRecords.filter(r => r.status === 'leave').length;
+
+                    return {
+                        id: emp.id,
+                        employeeName: emp.name,
+                        department: emp.department?.name || '—',
+                        position: emp.position || '—',
+                        present,
+                        absent,
+                        late,
+                        leave,
+                    };
+                });
+
+                return NextResponse.json({ records });
+            }
+
+            case 'attendance-late': {
+                const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
+                const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
+                const employees = await prisma.employee.findMany({
+                    where: empFilter,
+                    include: {
+                        department: true,
+                        attendanceRecords: {
+                            where: {
+                                date: {
+                                    gte: new Date(year, month - 1, 1),
+                                    lt: new Date(year, month, 1)
+                                },
+                                lateMinutes: { gt: 0 }
+                            }
+                        }
+                    }
+                });
+
+                const records = employees.map(emp => {
+                    const totalLateMinutes = emp.attendanceRecords.reduce((sum, r) => sum + (r.lateMinutes || 0), 0);
+                    const lateDaysCount = emp.attendanceRecords.length;
+
+                    return {
+                        id: emp.id,
+                        employeeName: emp.name,
+                        department: emp.department?.name || '—',
+                        position: emp.position || '—',
+                        lateDaysCount,
+                        totalLateMinutes
+                    };
+                }).filter(r => r.lateDaysCount > 0);
+
+                return NextResponse.json({ records });
+            }
+
+            case 'attendance-absence': {
+                const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
+                const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
+                const employees = await prisma.employee.findMany({
+                    where: empFilter,
+                    include: {
+                        department: true,
+                        attendanceRecords: {
+                            where: {
+                                date: {
+                                    gte: new Date(year, month - 1, 1),
+                                    lt: new Date(year, month, 1)
+                                },
+                                status: 'absent'
+                            }
+                        }
+                    }
+                });
+
+                const records = employees.map(emp => {
+                    const absenceCount = emp.attendanceRecords.length;
+
+                    return {
+                        id: emp.id,
+                        employeeName: emp.name,
+                        department: emp.department?.name || '—',
+                        position: emp.position || '—',
+                        absenceCount
+                    };
+                }).filter(r => r.absenceCount > 0);
+
+                return NextResponse.json({ records });
+            }
+
+            case 'attendance-overtime': {
+                const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
+                const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
+                const employees = await prisma.employee.findMany({
+                    where: empFilter,
+                    include: {
+                        department: true,
+                        attendanceRecords: {
+                            where: {
+                                date: {
+                                    gte: new Date(year, month - 1, 1),
+                                    lt: new Date(year, month, 1)
+                                },
+                                overtimeHours: { gt: 0 }
+                            }
+                        }
+                    }
+                });
+
+                const records = employees.map(emp => {
+                    const totalOvertimeHours = emp.attendanceRecords.reduce((sum, r) => sum + (r.overtimeHours || 0), 0);
+                    const overtimeDaysCount = emp.attendanceRecords.length;
+
+                    return {
+                        id: emp.id,
+                        employeeName: emp.name,
+                        department: emp.department?.name || '—',
+                        position: emp.position || '—',
+                        overtimeDaysCount,
+                        totalOvertimeHours
+                    };
+                }).filter(r => r.overtimeDaysCount > 0);
+
+                return NextResponse.json({ records });
+            }
+
+            case 'leave-balance': {
+                const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
+                const urlBranchId = searchParams.get('branchId');
+
+                const empFilter: any = { companyId };
+                if (urlBranchId && urlBranchId !== 'all') {
+                    empFilter.branchId = urlBranchId;
+                }
+
+                const leaveBalances = await prisma.leaveBalance.findMany({
+                    where: {
+                        companyId,
+                        year,
+                        employee: empFilter
+                    },
+                    include: {
+                        employee: {
+                            include: { department: true }
+                        }
+                    }
+                });
+
+                const records = leaveBalances.map(lb => ({
+                    id: lb.id,
+                    employeeName: lb.employee.name,
+                    department: lb.employee.department?.name || '—',
+                    position: lb.employee.position || '—',
+                    type: lb.type,
+                    entitled: lb.entitled,
+                    used: lb.used,
+                    remaining: lb.remaining
+                }));
+
+                return NextResponse.json({ records });
             }
 
             default:
