@@ -92,21 +92,11 @@ export default function AgingReportPage() {
     const [buckets, setBuckets] = useState<AgingBuckets | null>(null);
     const [loading, setLoading] = useState(true);
     const [q, setQ] = useState('');
-    const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<BranchOption[]>([]);
-
-    useEffect(() => {
-        fetch('/api/branches').then(r => r.json()).then(d => {
-            if (Array.isArray(d)) setBranches(d);
-        }).catch(() => {});
-    }, []);
 
     useEffect(() => {
         const run = async () => {
-            const params = new URLSearchParams();
-            if (branchId && branchId !== 'all') params.set('branchId', branchId);
             try {
-                const res = await fetch(`/api/reports/aging-report?${params}`);
+                const res = await fetch('/api/reports/aging-report');
                 const d = await res.json();
                 if (!d.error) {
                     setData(d.invoices);
@@ -118,7 +108,7 @@ export default function AgingReportPage() {
             }
         };
         void run();
-    }, [branchId]);
+    }, []);
 
     const filtered = data.filter(inv => inv.customer.toLowerCase().includes(q.toLowerCase()) || String(inv.invoiceNumber).includes(q));
     const sym = t(getCurrencyName(currency));
@@ -222,8 +212,6 @@ export default function AgingReportPage() {
         </tr>
     );
 
-    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
-
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -244,7 +232,6 @@ export default function AgingReportPage() {
                         : hasCustomers 
                             ? t("أعمار ديون العملاء") 
                             : t("أعمار ديون الموردين")}
-                    branchName={selectedBranchName}
                     onExportExcel={exportToExcel}
                 />
 
@@ -287,20 +274,6 @@ export default function AgingReportPage() {
                 )}
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                        <div style={{ minWidth: '180px' }}>
-                            <CustomSelect
-                                value={branchId}
-                                onChange={(v) => { setLoading(true); setBranchId(v); }}
-                                placeholder={t("كل الفروع")}
-                                hideSearch={true}
-                                options={[
-                                    { value: 'all', label: t('كل الفروع') },
-                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                ]}
-                            />
-                        </div>
-                    )}
                     <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input

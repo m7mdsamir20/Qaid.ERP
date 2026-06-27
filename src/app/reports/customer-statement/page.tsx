@@ -74,16 +74,8 @@ export default function CustomerStatementPage() {
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [error, setError] = useState('');
-    const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
-    useEffect(() => {
-        fetch('/api/branches').then(r => r.json()).then(d => {
-            if (Array.isArray(d)) setBranches(d);
-        }).catch(() => { });
-    }, []);
-
-    const fetchLedger = useCallback(async (customerId: string = selectedId, currentBranchId = branchId) => {
+    const fetchLedger = useCallback(async (customerId: string = selectedId) => {
         if (!customerId) { setData(null); return; }
         setLoading(true);
         try {
@@ -91,13 +83,12 @@ export default function CustomerStatementPage() {
             const q = new URLSearchParams();
             if (dateFrom) q.append('from', dateFrom);
             if (dateTo) q.append('to', dateTo);
-            if (currentBranchId && currentBranchId !== 'all') q.append('branchId', currentBranchId);
             if (q.toString()) url += `&${q.toString()}`;
             const res = await fetch(url);
             if (!res.ok) { const e = await res.json(); setError(e.error || t('فشل جلب كشف الحساب')); }
             else { const d = await res.json(); setData(d); setError(''); }
         } catch { setError(t('خطأ في الاتصال بالخادم')); } finally { setLoading(false); }
-    }, [selectedId, dateFrom, dateTo, branchId]);
+    }, [selectedId, dateFrom, dateTo]);
 
     // 1. Initial Load: Fetch All Customers
     useEffect(() => {
@@ -107,12 +98,12 @@ export default function CustomerStatementPage() {
             .catch(() => { });
     }, []);
 
-    // 2. Auto-fetch on selection/dates/branch changes
+    // 2. Auto-fetch on selection/dates changes
     useEffect(() => {
         if (selectedId) {
-            fetchLedger(selectedId, branchId);
+            fetchLedger(selectedId);
         }
-    }, [selectedId, dateFrom, dateTo, branchId, fetchLedger]);
+    }, [selectedId, dateFrom, dateTo, fetchLedger]);
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
@@ -250,8 +241,6 @@ export default function CustomerStatementPage() {
         </tr>
     );
 
-    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
-
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -263,30 +252,14 @@ export default function CustomerStatementPage() {
                     printTitle={t("كشف حساب عميل تفصيلي")}
                     accountName={data ? data.customer.name : undefined}
                     printLabel={t('العميل:')}
-                    branchName={selectedBranchName}
                     printDate={dateFrom || dateTo ? `${dateFrom ? `${t('من')} ${dateFrom}` : ''} ${dateTo ? `${t('إلى')} ${dateTo}` : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0, flexWrap: 'wrap' }}>
-                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                        <div style={{ minWidth: '180px' }}>
-                            <CustomSelect
-                                value={branchId}
-                                onChange={v => { setBranchId(v); if (selectedId) fetchLedger(selectedId, v); }}
-                                placeholder={t("كل الفروع")}
-                                hideSearch={true}
-                                options={[
-                                    { value: 'all', label: t('كل الفروع') },
-                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                ]}
-                            />
-                        </div>
-                    )}
-
                     <div className="account-select-wrapper" style={{ flex: 2, position: 'relative', minWidth: '250px' }}>
                         <CustomSelect
                             value={selectedId}
-                            onChange={val => { setSelectedId(val); if (val) fetchLedger(val, branchId); else setData(null); }}
+                            onChange={val => { setSelectedId(val); if (val) fetchLedger(val); else setData(null); }}
                             placeholder={t("اختر العميل لمتابعة حسابه...")}
                             options={[
                                 { value: '', label: `-- ${t('اختر عميلاً من القائمة')} --` },

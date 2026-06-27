@@ -82,20 +82,10 @@ export default function ClientsSuppliersBalancesPage() {
     const [error, setError] = useState('');
     const [filter, setFilter] = useState<'all' | 'customer' | 'supplier' | 'debtor' | 'creditor'>('all');
     const [search, setSearch] = useState('');
-    const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
-
-    useEffect(() => {
-        fetch('/api/branches').then(r => r.json()).then(d => {
-            if (Array.isArray(d)) setBranches(d);
-        }).catch(() => { });
-    }, []);
 
     useEffect(() => {
         setLoading(true);
-        const params = new URLSearchParams();
-        if (branchId && branchId !== 'all') params.set('branchId', branchId);
-        fetch(`/api/reports/balances?${params}`)
+        fetch('/api/reports/balances')
             .then(res => {
                 if (!res.ok) throw new Error('server_error');
                 return res.json();
@@ -106,7 +96,7 @@ export default function ClientsSuppliersBalancesPage() {
             })
             .catch(() => setError(t("فشل تحميل بيانات الأرصدة، يرجى المحاولة لاحقاً")))
             .finally(() => setLoading(false));
-    }, [branchId]);
+    }, []);
 
     let filteredData = result?.data || [];
     
@@ -270,8 +260,6 @@ export default function ClientsSuppliersBalancesPage() {
         ])
     ];
 
-    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
-
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -292,7 +280,6 @@ export default function ClientsSuppliersBalancesPage() {
                         : hasCustomers 
                             ? t("تقرير أرصدة العملاء") 
                             : t("تقرير أرصدة الموردين")}
-                    branchName={selectedBranchName}
                     onExportExcel={exportToExcel}
                 />
 
@@ -332,21 +319,6 @@ export default function ClientsSuppliersBalancesPage() {
                                 }}
                             />
                         </div>
-
-                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
-                            <div style={{ minWidth: '150px', flexShrink: 0 }}>
-                                <CustomSelect
-                                    value={branchId}
-                                    onChange={v => setBranchId(v)}
-                                    placeholder={t("كل الفروع")}
-                                    hideSearch={true}
-                                    options={[
-                                        { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
-                                    ]}
-                                />
-                            </div>
-                        )}
 
                         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', flex: 1, paddingBottom: '4px', alignItems: 'center', minWidth: '280px' }}>
                             {[
