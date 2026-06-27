@@ -143,7 +143,9 @@ export default function AttendanceLatePage() {
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}
                                     style={{
-                                        ...IS, height: '42px', padding: isRtl ? '0 34px 0 20px' : '0 20px 0 34px',
+                                        ...IS, height: '42px',
+                                        paddingRight: isRtl ? '34px' : '20px',
+                                        paddingLeft: isRtl ? '20px' : '34px',
                                         borderRadius: '12px', border: `1px solid ${C.border}`,
                                         background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                         fontWeight: 600, outline: 'none', fontFamily: CAIRO,
@@ -158,13 +160,15 @@ export default function AttendanceLatePage() {
                                         </option>
                                     ))}
                                 </select>
-                                <Calendar size={14} style={{ position: 'absolute', insetInlineStart: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                                <Calendar size={14} style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '12px', color: '#256af4', pointerEvents: 'none' }} />
                             </div>
 
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}
                                     style={{
-                                        ...IS, height: '42px', padding: isRtl ? '0 34px 0 20px' : '0 20px 0 34px',
+                                        ...IS, height: '42px',
+                                        paddingRight: isRtl ? '34px' : '20px',
+                                        paddingLeft: isRtl ? '20px' : '34px',
                                         borderRadius: '12px', border: `1px solid ${C.border}`,
                                         background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                         fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
@@ -174,7 +178,7 @@ export default function AttendanceLatePage() {
                                         <option key={y} value={y} style={{ background: C.card }}>{y}</option>
                                     ))}
                                 </select>
-                                <Calendar size={14} style={{ position: 'absolute', insetInlineStart: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                                <Calendar size={14} style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '12px', color: '#256af4', pointerEvents: 'none' }} />
                             </div>
                         </div>
                     </div>

@@ -1,14 +1,14 @@
 # Translation Audit Report
 
-Generated on: 2026-06-24T11:25:53.175Z
+Generated on: 2026-06-27T08:08:30.045Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4741
-- **Total t() Keys in Code**: 4172
+- **Total Keys in `i18n.tsx`**: 4842
+- **Total t() Keys in Code**: 4219
 - **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 569
-- **Unwrapped Arabic Text Instances**: 3284
+- **Unused Keys in `i18n.tsx`**: 623
+- **Unwrapped Arabic Text Instances**: 3370
 
 ## Unwrapped Arabic Text
 
@@ -54,96 +54,96 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 58: `برنامج الولاء`
 - Line 59: `التقارير اليومية للموقع`
 - Line 60: `فواتير الإنجاز`
-- Line 64: `إنشاء`
-- Line 65: `تعديل`
-- Line 66: `حذف`
-- Line 67: `دخول`
-- Line 68: `خروج`
-- Line 69: `اعتماد`
-- Line 70: `رفض`
-- Line 71: `طباعة`
-- Line 72: `تصدير`
-- Line 73: `استلام`
-- Line 107: `المبلغ`
-- Line 107: `طريقة الدفع`
-- Line 107: `الحالة`
-- Line 108: `الاسم`
-- Line 108: `الهاتف`
-- Line 108: `البريد الإلكتروني`
-- Line 109: `الكود`
-- Line 109: `نسبة العمولة`
-- Line 109: `أساس العمولة`
-- Line 110: `الحالة`
-- Line 110: `التاريخ`
-- Line 110: `رقم الشيك`
-- Line 111: `تاريخ الاستحقاق`
-- Line 111: `ملاحظات`
-- Line 112: `الإجمالي`
-- Line 112: `رقم الفاتورة`
-- Line 112: `المتبقي`
-- Line 113: `الخصم`
-- Line 113: `الضريبة`
-- Line 113: `المجموع الفرعي`
-- Line 114: `العميل`
-- Line 114: `المورد`
-- Line 114: `الموظف`
-- Line 115: `الكمية`
-- Line 115: `السعر`
-- Line 115: `الوحدة`
-- Line 116: `النوع`
-- Line 116: `الفئة`
-- Line 116: `الوصف`
-- Line 117: `الرصيد`
-- Line 117: `المعدل`
-- Line 117: `النسبة`
-- Line 118: `العميل`
-- Line 118: `العميل`
-- Line 118: `المندوب`
-- Line 118: `المندوب`
-- Line 118: `المبلغ`
-- Line 118: `المبلغ`
-- Line 118: `طريقة الدفع`
-- Line 118: `طريقة الدفع`
-- Line 122: `نقدي`
-- Line 122: `شيك`
-- Line 122: `تحويل بنكي`
-- Line 123: `معلق`
-- Line 123: `مُعتمَد`
-- Line 123: `مرتجع`
-- Line 124: `على الفاتورة`
-- Line 124: `على التحصيل`
-- Line 125: `نعم`
-- Line 125: `لا`
-- Line 126: `مسودة`
-- Line 126: `مُعتمَد`
-- Line 126: `مرفوض`
-- Line 127: `نشط`
-- Line 127: `موقوف`
-- Line 221: `الصفحة`
-- Line 222: `المرجع`
-- Line 223: `عنوان`
-- Line 240: `قبل التغيير`
-- Line 251: `بعد التغيير`
-- Line 336: `كل الموديولات`
-- Line 341: `كل العمليات`
-- Line 348: `التاريخ والوقت`
-- Line 362: `المستخدم`
-- Line 380: `العملية`
-- Line 400: `الصفحة`
-- Line 413: `التفاصيل`
-- Line 424: `عرض`
-- Line 440: `إخفاء التفاصيل`
-- Line 440: `عرض التفاصيل`
-- Line 456: `سجل النشاط`
-- Line 457: `تتبع جميع العمليات والتغييرات في النظام`
-- Line 477: `بحث في التفاصيل`
-- Line 491: `كل الموديولات`
-- Line 502: `كل العمليات`
-- Line 528: `من تاريخ`
-- Line 551: `إلى تاريخ`
-- Line 574: `مسح الفلاتر`
-- Line 585: `إجمالي السجلات`
-- Line 601: `لا توجد سجلات مطابقة للبحث`
+- Line 100: `إنشاء`
+- Line 101: `تعديل`
+- Line 102: `حذف`
+- Line 103: `دخول`
+- Line 104: `خروج`
+- Line 105: `اعتماد`
+- Line 106: `رفض`
+- Line 107: `طباعة`
+- Line 108: `تصدير`
+- Line 109: `استلام`
+- Line 143: `المبلغ`
+- Line 143: `طريقة الدفع`
+- Line 143: `الحالة`
+- Line 144: `الاسم`
+- Line 144: `الهاتف`
+- Line 144: `البريد الإلكتروني`
+- Line 145: `الكود`
+- Line 145: `نسبة العمولة`
+- Line 145: `أساس العمولة`
+- Line 146: `الحالة`
+- Line 146: `التاريخ`
+- Line 146: `رقم الشيك`
+- Line 147: `تاريخ الاستحقاق`
+- Line 147: `ملاحظات`
+- Line 148: `الإجمالي`
+- Line 148: `رقم الفاتورة`
+- Line 148: `المتبقي`
+- Line 149: `الخصم`
+- Line 149: `الضريبة`
+- Line 149: `المجموع الفرعي`
+- Line 150: `العميل`
+- Line 150: `المورد`
+- Line 150: `الموظف`
+- Line 151: `الكمية`
+- Line 151: `السعر`
+- Line 151: `الوحدة`
+- Line 152: `النوع`
+- Line 152: `الفئة`
+- Line 152: `الوصف`
+- Line 153: `الرصيد`
+- Line 153: `المعدل`
+- Line 153: `النسبة`
+- Line 154: `العميل`
+- Line 154: `العميل`
+- Line 154: `المندوب`
+- Line 154: `المندوب`
+- Line 154: `المبلغ`
+- Line 154: `المبلغ`
+- Line 154: `طريقة الدفع`
+- Line 154: `طريقة الدفع`
+- Line 158: `نقدي`
+- Line 158: `شيك`
+- Line 158: `تحويل بنكي`
+- Line 159: `معلق`
+- Line 159: `مُعتمَد`
+- Line 159: `مرتجع`
+- Line 160: `على الفاتورة`
+- Line 160: `على التحصيل`
+- Line 161: `نعم`
+- Line 161: `لا`
+- Line 162: `مسودة`
+- Line 162: `مُعتمَد`
+- Line 162: `مرفوض`
+- Line 163: `نشط`
+- Line 163: `موقوف`
+- Line 213: `٠-٩`
+- Line 248: `الصفحة`
+- Line 249: `المرجع`
+- Line 264: `قبل التغيير`
+- Line 272: `بعد التغيير`
+- Line 376: `كل الموديولات`
+- Line 381: `كل العمليات`
+- Line 388: `التاريخ والوقت`
+- Line 402: `المستخدم`
+- Line 420: `العملية`
+- Line 440: `الصفحة`
+- Line 453: `التفاصيل`
+- Line 464: `عرض`
+- Line 480: `إخفاء التفاصيل`
+- Line 480: `عرض التفاصيل`
+- Line 496: `سجل النشاط`
+- Line 497: `تتبع جميع العمليات والتغييرات في النظام`
+- Line 517: `بحث في التفاصيل`
+- Line 531: `كل الموديولات`
+- Line 542: `كل العمليات`
+- Line 568: `من تاريخ`
+- Line 591: `إلى تاريخ`
+- Line 614: `مسح الفلاتر`
+- Line 625: `إجمالي السجلات`
+- Line 641: `لا توجد سجلات مطابقة للبحث`
 
 ### [app/api/accounts/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/accounts/route.ts)
 - Line 83: `جميع الحقول مطلوبة`
@@ -726,8 +726,8 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 193: `فشل تسجيل الاستبعاد`
 
 ### [app/api/fixed-assets/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/fixed-assets/route.ts)
-- Line 30: `البيانات الأساسية مطلوبة`
-- Line 96: `فشل في إضافة الأصل`
+- Line 35: `البيانات الأساسية مطلوبة`
+- Line 101: `فشل في إضافة الأصل`
 
 ### [app/api/general-ledger/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/general-ledger/route.ts)
 - Line 86: `فاتورة`
@@ -1024,6 +1024,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 405: `استخدم الإلغاء`
 - Line 422: `فشل حذف المسير`
 
+### [app/api/pdf/generate/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/pdf/generate/route.ts)
+- Line 89: `فشل توليد`
+
 ### [app/api/pdf/invoice/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/pdf/invoice/[id]/route.ts)
 - Line 66: `الفاتورة غير موجودة`
 - Line 105: `فشل توليد`
@@ -1182,6 +1185,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 304: `فشل في إنشاء مرتجع المشتريات`
 
 ### [app/api/purchases/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchases/route.ts)
+- Line 67: `فشل في جلب فواتير المشتريات`
 - Line 73: `النشاط الخدمي لا يدعم فواتير المشتريات`
 - Line 94: `لا يمكن إنشاء القيد: السنة المالية الحالية مغلقة. يرجى فتح سنة مالية جديدة`
 - Line 227: `فاتورة مشتريات رقم`
@@ -1249,9 +1253,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 69: `فشل في جلب تقرير أعمار الديون`
 
 ### [app/api/reports/balances/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/balances/route.ts)
-- Line 24: `عميل`
-- Line 25: `مورد`
-- Line 39: `فشل استخراج التقرير`
+- Line 94: `عميل`
+- Line 102: `مورد`
+- Line 117: `فشل استخراج التقرير`
 
 ### [app/api/reports/cash-flow/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/cash-flow/route.ts)
 - Line 71: `فشل في جلب تقرير التدفق النقدي`
@@ -1259,40 +1263,40 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/api/reports/customer-statement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/customer-statement/route.ts)
 - Line 19: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 35: `العميل غير موجود`
-- Line 95: `فاتورة خدمات`
-- Line 95: `فاتورة مبيعات`
-- Line 96: `مرتجع خدمات`
-- Line 96: `مرتجع مبيعات`
-- Line 99: `تقديم خدمة - فاتورة`
-- Line 99: `بيع بضاعة فاتورة`
-- Line 100: `مرتجع خدمة - فاتورة`
-- Line 100: `مرتجع بضاعة فاتورة`
-- Line 112: `سند قبض`
-- Line 112: `سند صرف`
-- Line 114: `سند قبض`
-- Line 114: `سند صرف`
-- Line 126: `خطة تقسيط`
-- Line 128: `فتح خطة تقسيط`
-- Line 148: `فشل في جلب كشف الحساب`
+- Line 106: `فاتورة خدمات`
+- Line 106: `فاتورة مبيعات`
+- Line 107: `مرتجع خدمات`
+- Line 107: `مرتجع مبيعات`
+- Line 110: `تقديم خدمة - فاتورة`
+- Line 110: `بيع بضاعة فاتورة`
+- Line 111: `مرتجع خدمة - فاتورة`
+- Line 111: `مرتجع بضاعة فاتورة`
+- Line 123: `سند قبض`
+- Line 123: `سند صرف`
+- Line 125: `سند قبض`
+- Line 125: `سند صرف`
+- Line 137: `خطة تقسيط`
+- Line 139: `فتح خطة تقسيط`
+- Line 159: `فشل في جلب كشف الحساب`
 
 ### [app/api/reports/expenses-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/expenses-report/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 89: `فشل في استخراج تقرير المصروفات`
 
 ### [app/api/reports/hr/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/hr/route.ts)
-- Line 107: `غياب`
-- Line 107: `تأخير`
-- Line 109: `خصم إداري`
-- Line 130: `بدون قسم`
-- Line 131: `غير محدد`
+- Line 129: `غياب`
+- Line 129: `تأخير`
+- Line 131: `خصم إداري`
+- Line 158: `بدون قسم`
+- Line 159: `غير محدد`
 
 ### [app/api/reports/inventory-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/inventory-report/route.ts)
-- Line 56: `فشل في جلب التقرير`
+- Line 60: `فشل في جلب التقرير`
 
 ### [app/api/reports/item-movement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/item-movement/route.ts)
 - Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
-- Line 57: `الصنف غير موجود أو غير تابع للشركة`
-- Line 74: `فشل في جلب تقرير حركة الصنف`
+- Line 61: `الصنف غير موجود أو غير تابع للشركة`
+- Line 78: `فشل في جلب تقرير حركة الصنف`
 
 ### [app/api/reports/kitchen-consumption/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/kitchen-consumption/route.ts)
 - Line 71: `حبة`
@@ -1302,14 +1306,26 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 24: `تالف`
 
 ### [app/api/reports/low-stock-items/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/low-stock-items/route.ts)
-- Line 47: `فشل في جلب تقرير النواقص`
+- Line 60: `فشل في جلب تقرير النواقص`
+
+### [app/api/reports/po-invoice-match/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/po-invoice-match/route.ts)
+- Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 73: `فشل في جلب تقرير المطابقة`
+
+### [app/api/reports/purchase-orders-pending/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/purchase-orders-pending/route.ts)
+- Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 65: `فشل في جلب تقرير أوامر الشراء المعلقة`
+
+### [app/api/reports/purchase-orders-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/purchase-orders-report/route.ts)
+- Line 19: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 71: `فشل في جلب تقرير أوامر الشراء`
 
 ### [app/api/reports/purchases-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/purchases-report/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 61: `فشل في جلب التقرير`
 
 ### [app/api/reports/reconciliation-snapshots/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/reconciliation-snapshots/route.ts)
-- Line 37: `فشل في حفظ نتيجة الجرد`
+- Line 49: `فشل في حفظ نتيجة الجرد`
 
 ### [app/api/reports/returns-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/returns-report/route.ts)
 - Line 26: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
@@ -1318,6 +1334,14 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/api/reports/revenues-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/revenues-report/route.ts)
 - Line 16: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 76: `فشل في استخراج تقرير الإيرادات`
+
+### [app/api/reports/sales-orders-pending/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-orders-pending/route.ts)
+- Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 65: `فشل في جلب تقرير أوامر البيع المعلقة`
+
+### [app/api/reports/sales-orders-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-orders-report/route.ts)
+- Line 19: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
+- Line 70: `فشل في جلب تقرير أوامر البيع`
 
 ### [app/api/reports/sales-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-report/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
@@ -1330,18 +1354,18 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/api/reports/supplier-statement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/supplier-statement/route.ts)
 - Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 34: `المورد غير موجود`
-- Line 87: `فاتورة مشتريات`
-- Line 87: `مرتجع مشتريات`
-- Line 89: `شراء بضاعة فاتورة`
-- Line 89: `مرتجع بضاعة فاتورة`
-- Line 102: `سند صرف`
-- Line 102: `سند قبض`
-- Line 104: `سند صرف`
-- Line 104: `سند قبض`
-- Line 124: `فشل في جلب كشف الحساب`
+- Line 96: `فاتورة مشتريات`
+- Line 96: `مرتجع مشتريات`
+- Line 98: `شراء بضاعة فاتورة`
+- Line 98: `مرتجع بضاعة فاتورة`
+- Line 111: `سند صرف`
+- Line 111: `سند قبض`
+- Line 113: `سند صرف`
+- Line 113: `سند قبض`
+- Line 133: `فشل في جلب كشف الحساب`
 
 ### [app/api/reports/top-selling-items/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/top-selling-items/route.ts)
-- Line 71: `فشل في جلب تقرير الأكثر مبيعاً`
+- Line 77: `فشل في جلب تقرير الأكثر مبيعاً`
 
 ### [app/api/reports/treasury-bank-report/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/treasury-bank-report/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
@@ -1831,6 +1855,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 23: `تمت إعادة ترقيم السندات بنجاح`
 
 ### [app/api/vouchers/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/vouchers/route.ts)
+- Line 26: `فشل في جلب السندات`
 - Line 36: `بيانات غير صالحة`
 - Line 44: `لا توجد سنة مالية مفتوحة`
 - Line 119: `رصيد الخزينة/البنك غير كافٍ لإتمام العملية`
@@ -1911,15 +1936,15 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 84: `العطلات الرسمية`
 - Line 85: `إدارة العطلات والأعياد الرسمية`
 - Line 87: `إضافة عطلة`
-- Line 104: `لا توجد عطلات رسمية مضافة بعد`
-- Line 124: `سنوية`
-- Line 143: `إضافة عطلة رسمية`
-- Line 146: `اسم العطلة`
-- Line 147: `مثال: عيد الفطر المبارك`
-- Line 150: `تاريخ العطلة`
-- Line 155: `عطلة سنوية متكررة`
-- Line 158: `إلغاء`
-- Line 161: `إضافة العطلة`
+- Line 103: `لا توجد عطلات رسمية مضافة بعد`
+- Line 123: `سنوية`
+- Line 142: `إضافة عطلة رسمية`
+- Line 145: `اسم العطلة`
+- Line 146: `مثال: عيد الفطر المبارك`
+- Line 149: `تاريخ العطلة`
+- Line 173: `عطلة سنوية متكررة`
+- Line 176: `إلغاء`
+- Line 179: `إضافة العطلة`
 
 ### [app/attendance/leaves/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/leaves/page.tsx)
 - Line 34: `سنوية`
@@ -2044,8 +2069,6 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 220: `ملاحظات`
 - Line 230: `لا يوجد موظفون نشطون`
 - Line 300: `ملاحظات`
-- Line 323: `جاري الحفظ`
-- Line 323: `حفظ جميع السجلات`
 
 ### [app/attendance/schedules/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/schedules/page.tsx)
 - Line 21: `أحد`
@@ -2066,26 +2089,26 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 124: `جداول مواعيد العمل`
 - Line 125: `إدارة جداول الحضور والانصراف`
 - Line 127: `جدول جديد`
-- Line 144: `لا توجد جداول عمل بعد`
-- Line 157: `موظف`
-- Line 167: `الحضور`
-- Line 171: `الانصراف`
-- Line 184: `تسامح التأخير`
+- Line 143: `لا توجد جداول عمل بعد`
+- Line 156: `موظف`
+- Line 166: `الحضور`
+- Line 170: `الانصراف`
+- Line 183: `تسامح التأخير`
+- Line 183: `د`
+- Line 184: `العمل الإضافي بعد`
 - Line 184: `د`
-- Line 185: `العمل الإضافي بعد`
-- Line 185: `د`
-- Line 196: `تعديل جدول العمل`
-- Line 196: `جدول عمل جديد`
-- Line 199: `اسم الجدول`
-- Line 200: `مثال: الدوام الرسمي`
-- Line 204: `وقت الحضور`
-- Line 208: `وقت الانصراف`
-- Line 213: `أيام العمل`
-- Line 224: `مدة التسامح في التأخير (دقيقة`
-- Line 228: `بداية العمل الإضافي بعد (دقيقة`
-- Line 233: `إلغاء`
-- Line 236: `حفظ التعديلات`
-- Line 236: `إنشاء الجدول`
+- Line 195: `تعديل جدول العمل`
+- Line 195: `جدول عمل جديد`
+- Line 198: `اسم الجدول`
+- Line 199: `مثال: الدوام الرسمي`
+- Line 203: `وقت الحضور`
+- Line 207: `وقت الانصراف`
+- Line 212: `أيام العمل`
+- Line 223: `مدة التسامح في التأخير (دقيقة`
+- Line 227: `بداية العمل الإضافي بعد (دقيقة`
+- Line 232: `إلغاء`
+- Line 235: `حفظ التعديلات`
+- Line 235: `إنشاء الجدول`
 
 ### [app/customers/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/customers/page.tsx)
 - Line 41: `،`
@@ -2323,7 +2346,7 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 193: `إجمالي الكميات`
 
 ### [app/payments/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/payments/page.tsx)
-- Line 164: `فشل التحميل`
+- Line 165: `فشل التحميل`
 
 ### [app/purchase-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/purchase-orders/page.tsx)
 - Line 33: `مسودة`
@@ -2343,19 +2366,99 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 57: `ملغي`
 
 ### [app/purchase-returns/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/purchase-returns/page.tsx)
-- Line 154: `فشل التحميل`
+- Line 155: `فشل التحميل`
 
 ### [app/purchases/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/purchases/page.tsx)
-- Line 154: `فشل التحميل`
+- Line 155: `فشل التحميل`
 
 ### [app/quotations/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/quotations/page.tsx)
 - Line 183: `فشل التحميل`
 
 ### [app/receipts/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/receipts/page.tsx)
-- Line 162: `فشل التحميل`
+- Line 163: `فشل التحميل`
+
+### [app/reports/attendance-absence/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-absence/page.tsx)
+- Line 149: `يناير`
+- Line 149: `فبراير`
+- Line 149: `مارس`
+- Line 149: `أبريل`
+- Line 149: `مايو`
+- Line 149: `يونيو`
+- Line 149: `يوليو`
+- Line 149: `أغسطس`
+- Line 149: `سبتمبر`
+- Line 149: `أكتوبر`
+- Line 149: `نوفمبر`
+- Line 149: `ديسمبر`
+
+### [app/reports/attendance-late/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-late/page.tsx)
+- Line 157: `يناير`
+- Line 157: `فبراير`
+- Line 157: `مارس`
+- Line 157: `أبريل`
+- Line 157: `مايو`
+- Line 157: `يونيو`
+- Line 157: `يوليو`
+- Line 157: `أغسطس`
+- Line 157: `سبتمبر`
+- Line 157: `أكتوبر`
+- Line 157: `نوفمبر`
+- Line 157: `ديسمبر`
+
+### [app/reports/attendance-monthly/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-monthly/page.tsx)
+- Line 173: `يناير`
+- Line 173: `فبراير`
+- Line 173: `مارس`
+- Line 173: `أبريل`
+- Line 173: `مايو`
+- Line 173: `يونيو`
+- Line 173: `يوليو`
+- Line 173: `أغسطس`
+- Line 173: `سبتمبر`
+- Line 173: `أكتوبر`
+- Line 173: `نوفمبر`
+- Line 173: `ديسمبر`
+
+### [app/reports/attendance-overtime/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-overtime/page.tsx)
+- Line 155: `يناير`
+- Line 155: `فبراير`
+- Line 155: `مارس`
+- Line 155: `أبريل`
+- Line 155: `مايو`
+- Line 155: `يونيو`
+- Line 155: `يوليو`
+- Line 155: `أغسطس`
+- Line 155: `سبتمبر`
+- Line 155: `أكتوبر`
+- Line 155: `نوفمبر`
+- Line 155: `ديسمبر`
+
+### [app/reports/detailed-balance-sheet/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/detailed-balance-sheet/page.tsx)
+- Line 19: `ج.م`
+- Line 19: `ر.س`
+- Line 19: `د.إ`
+- Line 20: `د.ك`
+- Line 20: `ر.ق`
+- Line 20: `د.ب`
+- Line 20: `ر.ع`
+- Line 20: `د.أ`
+
+### [app/reports/payroll-statement/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/payroll-statement/page.tsx)
+- Line 184: `يناير`
+- Line 184: `فبراير`
+- Line 184: `مارس`
+- Line 184: `أبريل`
+- Line 184: `مايو`
+- Line 184: `يونيو`
+- Line 184: `يوليو`
+- Line 184: `أغسطس`
+- Line 184: `سبتمبر`
+- Line 184: `أكتوبر`
+- Line 184: `نوفمبر`
+- Line 184: `ديسمبر`
 
 ### [app/sale-returns/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sale-returns/page.tsx)
-- Line 156: `فشل التحميل`
+- Line 157: `فشل التحميل`
 
 ### [app/sales/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales/page.tsx)
 - Line 176: `فشل التحميل`
@@ -3060,10 +3163,17 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 344: `العودة لقائمة أوامر العمل`
 
 ### [components/DataTable.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/DataTable.tsx)
-- Line 10: `رقم`
-- Line 11: `كود`
-- Line 12: `معرف`
-- Line 13: `الرمز`
+- Line 12: `رقم`
+- Line 13: `كود`
+- Line 14: `معرف`
+- Line 15: `الرمز`
+- Line 16: `الحالة`
+- Line 17: `الإجراءات`
+- Line 18: `إجراءات`
+- Line 21: `المنصب`
+- Line 22: `الراتب`
+- Line 23: `التاريخ`
+- Line 31: `هاتف`
 
 ### [components/EmptyTableState.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/EmptyTableState.tsx)
 - Line 18: `رقم`
@@ -3073,9 +3183,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 
 ### [components/ReportHeader.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/components/ReportHeader.tsx)
 - Line 50: `٠-٩`
-- Line 91: `٠-٩`
-- Line 91: `ر.سج.م`
-- Line 91: `د.إد.كر.قد.بر.عد.أ`
+- Line 96: `٠-٩`
+- Line 96: `ر.سج.م`
+- Line 96: `د.إد.كر.قد.بر.عد.أ`
 
 ### [constants/navigation.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/constants/navigation.ts)
 - Line 56: `الرئيسية`
@@ -3529,14 +3639,14 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 1: `جاري تحضير الطباعة`
 - Line 30: `يرجى الانتظار لحظات لجمع البيانات والتنسيق`
 - Line 91: `فشل الطباعة`
+- Line 199: `فشل تحميل`
+- Line 218: `فشل تحميل`
 - Line 234: `فشل تحميل`
-- Line 253: `فشل تحميل`
-- Line 269: `فشل تحميل`
-- Line 284: `فشل تحميل`
-- Line 303: `فشل تحميل`
-- Line 363: `تقرير`
-- Line 366: `جاري تحضير ملف`
-- Line 377: `فشل تحميل`
+- Line 249: `فشل تحميل`
+- Line 268: `فشل تحميل`
+- Line 331: `تقرير`
+- Line 334: `جاري تحضير ملف`
+- Line 345: `فشل تحميل`
 
 ### [lib/printInvoices.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/printInvoices.ts)
 - Line 27: `فاتورة مبيعات`
@@ -3803,7 +3913,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `رصيد النقدية`
 - `حدث خطأ ما`
 - `إنشاء حساب`
-- `الفرع الرئيسي`
 - `↑ مباشر`
 - `↑ نمو`
 - `العهد والسلف`
@@ -3893,7 +4002,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `شجرة الحسابات (دليل الحسابات)`
 - `هيكلة وتنظيم كافة الحسابات المالية للمنشأة`
 - `الخصوم / الالتزامات`
-- `حقوق الملكية`
 - `قيود غير مرحلة`
 - `أدخل تفاصيل الأطراف المتأثرة بالقيد لضمان توازن الحسابات`
 - `رقم القيد المقترح`
@@ -3973,6 +4081,8 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `اختر الطرف...`
 - `الحركة`
 - `مرتجعات`
+- `سندات قبض`
+- `سندات صرف`
 - `قيود يدوية`
 - `عرض الكشف`
 - `الرصيد النهائي`
@@ -4015,10 +4125,13 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `العجز (-)`
 - `الزيادة (+)`
 - `وارد المشتريات`
+- `وارد للحساب (+)`
+- `وارد للخزينة (+)`
 - `و جهة الاستلام...`
 - `الكمية الفعلية`
 - `الكمية الدفترية`
 - `لا توجد جلسات جرد`
+- `يجب إعادة طلب هذه الكميات لسير العمل.`
 - `يجب ترحيل قيود يومية لظهور الحركات المحاسبية في الميزان المحاسبي`
 - `إجمالي الأرصدة المستحقة`
 - `إجمالي التوزيع`
@@ -4083,8 +4196,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `+90 يوم`
 - `تاريخ آخر دفعة`
 - `أيام منذ آخر دفعة`
-- `أيام`
-- `ساعة`
 - `جلسة الجرد`
 - `تاريخ الجلسة`
 - `حالة الجلسة`
@@ -4219,7 +4330,15 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `جاري استخراج تقرير المبيعات...`
 - `جاري استخراج السجلات...`
 - `جاري تحميل الأرصدة...`
+- `تقرير الجرد والعجز والزيادة`
 - `مطابقة الأرصدة الفعلية بالأرصدة الدفترية المودعة في النظام للخزن والحسابات البنكية.`
+- `إجمالي الرصيد الدفتري`
+- `إجمالي العجز المكتشف`
+- `إجمالي الزيادة المكتشفة`
+- `نسبة الجرد المكتملة`
+- `المسجل في النظام`
+- `نقص في الأرصدة (-)`
+- `زيادة في الأرصدة (+)`
 - `ابحث باسم الخزينة أو الحساب البنكي...`
 - `تحديث الأرصدة`
 - `جاري سحب الأرصدة الدفترية...`
@@ -4308,6 +4427,47 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `نوع الدفع`
 - `نقدي (كاش)`
 - `المتبقي (آجل)`
+- `ديون حديثة`
+- `تنبيه أول`
+- `حذر شديد`
+- `خطر التحصيل`
+- `المركز المالي (Balance Sheet)`
+- `الأصول (Assets)`
+- `الخصوم (Liabilities)`
+- `حقوق الملكية (Equity)`
+- `تحديث التقرير`
+- `الرصيد في بداية الفترة`
+- `صادر من الحساب (-)`
+- `الرصيد الدفتري الحالي`
+- `منقول من السابق`
+- `صادر من الخزينة (-)`
+- `المدينون (عليهم)`
+- `الدائنون (لهم)`
+- `فواتير مبيعات`
+- `حدد الفترة الزمنية واضغط "عرض التقرير"`
+- `عدد النتائج:`
+- `دليل الإحصائيات`
+- `الأصناف التي وصل رصيدها للحد الأدنى.`
+- `الأصناف التي نفد رصيدها تماماً (0).`
+- `تتأثر القائمة بعمليات الصرف والمبيعات.`
+- `له (مستحق)`
+- `عليه (مسدد)`
+- `مشتريات جديدة`
+- `تم العثور على:`
+- `أعلى 5 خدمات`
+- `أعلى 5 أصناف`
+- `اسم الخزينة`
+- `لم يجرد`
+- `تقرير_الجرد`
+- `مطابقة الأرصدة الفعلية بالأرصدة الدفترية للخزن والحسابات البنكية.`
+- `ابحث باسم الخزينة...`
+- `ملاحظات (اختياري)...`
+- `حفظ الجرد`
+- `لا توجد خزن أو حسابات بنكية مسجلة`
+- `لا توجد سجلات جرد محفوظة`
+- `حسب العد`
+- `نقص (-)`
+- `زيادة (+)`
 - `فشل في تحميل المرتجع`
 - `تفاصيل إلغاء الخدمة / المرتجع`
 - `تفاصيل مرتجع المبيعات`
@@ -4392,11 +4552,15 @@ Authorization: Bearer <YOUR_API_KEY>
     }
   ]
 }`
+- `سجل حركات المخزون الشامل`
+- `جرد جديد`
+- `سجل الجرد`
 - `تجربة الترجمة التلقائية الفورية`
 - `تتبع أداء المبيعات والتحصيلات للمناديب واحتساب عمولاتهم المستحقة بدقة`
 - `العملاء المرتبطين`
 - `الفواتير المنسوبة`
 - `رمز فريد (مثال: REP01)`
+- `فواتير خدمات`
 - `فشل تحميل أمر البيع`
 - `جاري تحميل أمر البيع...`
 - `عارض أمر البيع`
