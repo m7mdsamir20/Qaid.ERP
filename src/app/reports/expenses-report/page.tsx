@@ -82,7 +82,7 @@ export default function ExpensesReportPage() {
         {
             header: t('التاريخ'),
             cell: (row: ExpenseRow) => new Date(row.date).toLocaleDateString('en-ZA'),
-            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('البيان'),

@@ -2,15 +2,15 @@
 import TableSkeleton from '@/components/TableSkeleton';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
-import { Currency } from '@/components/Currency';
 import { formatNumber } from '@/lib/currency';
+import StatCard from '@/components/StatCard';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, IS, OUTFIT, PAGE_BASE } from '@/constants/theme';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Search, FileText, Loader2 } from 'lucide-react';
+import { Search, FileText, Loader2, TrendingUp } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import * as XLSX from 'xlsx';
 import { applyExcelMoneyFormat } from '@/lib/excelFormat';
@@ -42,7 +42,7 @@ export default function RevenuesReportPage() {
     const [data, setData] = useState<RevenuesReportData | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const fetchReport = async () => {
+    const fetchReport = useCallback(async () => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
@@ -56,7 +56,11 @@ export default function RevenuesReportPage() {
         } finally { 
             setLoading(false); 
         }
-    };
+    }, [from, to]);
+
+    useEffect(() => {
+        fetchReport();
+    }, [from, to, fetchReport]);
 
     const exportToExcel = () => {
         if (!data?.rows.length) return;
@@ -84,7 +88,7 @@ export default function RevenuesReportPage() {
         {
             header: t('التاريخ'),
             cell: (row: RevenueRow) => new Date(row.date).toLocaleDateString('en-ZA'),
-            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary, textAlign: 'center' } as React.CSSProperties
         },
         {
             header: t('البيان'),
@@ -108,7 +112,7 @@ export default function RevenuesReportPage() {
         {
             header: t('المبلغ'),
             type: 'number' as const,
-            cell: (row: RevenueRow) => <Currency amount={row.amount} />,
+            cell: (row: RevenueRow) => formatNumber(row.amount),
             style: { fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: SC, textAlign: 'center' } as React.CSSProperties
         }
     ];
@@ -117,7 +121,7 @@ export default function RevenuesReportPage() {
         <tr style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
             <td colSpan={5} style={{ padding: '18px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
             <td style={{ padding: '18px 16px', fontWeight: 600, fontSize: '13px', color: SC, fontFamily: OUTFIT, textAlign: 'center' }}>
-                <Currency amount={data.totalAmount} />
+                {formatNumber(data.totalAmount)} <span style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{cSymbol}</span>
             </td>
         </tr>
     );
@@ -150,41 +154,45 @@ export default function RevenuesReportPage() {
                                 style={{ ...IS, width: '100%', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT }} />
                         </div>
                     </div>
-                    <button className="update-btn" onClick={fetchReport}
-                        style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37, 106, 244,0.25)', whiteSpace: 'nowrap' }}>
-                        {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Search size={16} />}
-                        {t('عرض التقرير')}
-                    </button>
                 </div>
 
                 {loading ? ( <TableSkeleton /> ) : !data ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
-                        <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px', color: SC }} />
-                        <h3 style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('حدد الفترة الزمنية واضغط "عرض التقرير"')}</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <FileText size={70} style={{ opacity: 0.1, marginBottom: '20px', color: SC }} />
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار تحديد الفترة')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{t('يرجى تحديد الفترة الزمنية لعرض تقرير الإيرادات الأخرى.')}</p>
                     </div>
                 ) : (
                     <>
                         {/* Summary Cards */}
-                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            <div style={{ background: `${SC}08`, border: `1px solid ${SC}33`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي الإيرادات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 600, color: SC, fontFamily: OUTFIT }}>
-                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
-                                </div>
-                            </div>
-                            <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
-                                <div style={{ fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
-                            </div>
+                        <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي الإيرادات')}
+                                value={data.totalAmount}
+                                suffix={cSymbol}
+                                icon={<TrendingUp size={18} />}
+                                color={SC}
+                                formatValue={true}
+                            />
+                            <StatCard
+                                label={t('عدد العمليات')}
+                                value={data.rows.length}
+                                suffix={t('عملية')}
+                                icon={<FileText size={18} />}
+                                color={C.primary}
+                                formatValue={false}
+                            />
                         </div>
 
-                        <DataTable
-                            columns={columns}
-                            data={data.rows}
-                            emptyIcon={FileText}
-                            emptyMessage={t('لا توجد إيرادات في هذه الفترة')}
-                            footer={footerElement}
-                        />
+                        <div className="print-table-container">
+                            <DataTable
+                                columns={columns}
+                                data={data.rows}
+                                emptyIcon={FileText}
+                                emptyMessage={t('لا توجد إيرادات في هذه الفترة')}
+                                footer={footerElement}
+                            />
+                        </div>
                     </>
                 )}
             </div>
