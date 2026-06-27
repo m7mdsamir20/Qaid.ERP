@@ -9,6 +9,7 @@ import { Currency } from '@/components/Currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
+import Link from 'next/link';
 import { Landmark, Plus, Banknote, Building2, Pencil, Trash2, Loader2, CheckCircle2, Wallet, Building, Tag } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
@@ -249,6 +250,17 @@ export default function TreasuriesPage() {
                         label: t("خزينة / بنك جديد"),
                         onClick: () => { setEditItem(null); setShowModal(true); }
                     } : undefined}
+                    actions={[
+                        <Link href="/treasuries/reconciliation" key="recon" style={{
+                            ...BTN_PRIMARY, background: 'transparent', border: `1px solid ${C.border}`,
+                            color: C.textSecondary, textDecoration: 'none', height: '42px', padding: '0 16px', 
+                            display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', 
+                            fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap'
+                        }}>
+                            <CheckCircle2 size={16} />
+                            {t('مطابقة وجرد الدرج')}
+                        </Link>
+                    ]}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>

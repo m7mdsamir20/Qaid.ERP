@@ -5,9 +5,10 @@ import { TableColumn } from '@/components/EmptyTableState';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, IS, OUTFIT, BTN_PRIMARY } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
+import Link from 'next/link';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import StatCard from '@/components/StatCard';
@@ -140,7 +141,7 @@ export default function TreasuryReconciliationReportPage() {
                 {!selectedSnapshot ? (
                     <>
                         {/* Filters */}
-                        <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
                             {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                                 <div style={{ minWidth: '180px' }}>
                                     <CustomSelect
