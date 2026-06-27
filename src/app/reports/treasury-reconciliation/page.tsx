@@ -169,17 +169,6 @@ export default function TreasuryReconciliationReportPage() {
                                     }}
                                 />
                             </div>
-                            <button
-                                onClick={fetchSnapshots}
-                                style={{
-                                    height: '42px', padding: '0 16px', borderRadius: '12px',
-                                    background: 'transparent', border: `1px solid ${C.border}`,
-                                    color: C.textSecondary, fontSize: '13px', fontWeight: 700,
-                                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO
-                                }}
-                            >
-                                <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {t('تحديث')}
-                            </button>
                         </div>
 
                         {loading ? (
@@ -210,7 +199,7 @@ export default function TreasuryReconciliationReportPage() {
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                                    {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                    {t('جرد')} — {new Date(snap.createdAt).toLocaleDateString('en-ZA')}
                                                 </div>
                                                 <div style={{ fontSize: '11.5px', color: C.textSecondary, fontFamily: CAIRO, marginTop: '2px' }}>
                                                     {new Date(snap.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
