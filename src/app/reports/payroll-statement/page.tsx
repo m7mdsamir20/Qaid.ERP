@@ -46,6 +46,13 @@ export default function PayrollStatementPage() {
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+
+    useEffect(() => {
+        setMonth(`${selectedYear}-${String(selectedMonth).padStart(2, '0')}`);
+    }, [selectedYear, selectedMonth]);
+
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
     const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
@@ -158,15 +165,45 @@ export default function PayrollStatementPage() {
                     )}
 
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('اختر الشهر:')}</span>
-                        <input type="month" value={month} onChange={e => setMonth(e.target.value)}
-                            style={{
-                                ...IS, height: '42px', padding: '0 12px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: C.card, color: C.textPrimary, fontSize: '13px',
-                                fontWeight: 600, outline: 'none', fontFamily: OUTFIT
-                            }}
-                        />
+                        <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('اختر الشهر:')}</span>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}
+                                    style={{
+                                        ...IS, height: '42px', paddingInlineStart: '12px', paddingInlineEnd: '32px',
+                                        borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                        fontWeight: 600, outline: 'none', fontFamily: CAIRO,
+                                        appearance: 'none', cursor: 'pointer'
+                                    }}>
+                                    {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                                        <option key={m} value={m} style={{ background: C.card }}>
+                                            {isRtl 
+                                                ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'][m - 1]
+                                                : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m - 1]
+                                            }
+                                        </option>
+                                    ))}
+                                </select>
+                                <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                            </div>
+
+                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}
+                                    style={{
+                                        ...IS, height: '42px', paddingInlineStart: '12px', paddingInlineEnd: '32px',
+                                        borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                        fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
+                                        appearance: 'none', cursor: 'pointer'
+                                    }}>
+                                    {Array.from({ length: 11 }, (_, i) => 2020 + i).map(y => (
+                                        <option key={y} value={y} style={{ background: C.card }}>{y}</option>
+                                    ))}
+                                </select>
+                                <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
