@@ -143,7 +143,7 @@ export default function AttendanceOvertimePage() {
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <select value={selectedMonth} onChange={e => setSelectedMonth(Number(e.target.value))}
                                     style={{
-                                        ...IS, height: '42px', paddingInlineStart: '12px', paddingInlineEnd: '32px',
+                                        ...IS, height: '42px', paddingInlineStart: '34px', paddingInlineEnd: '20px',
                                         borderRadius: '12px', border: `1px solid ${C.border}`,
                                         background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                         fontWeight: 600, outline: 'none', fontFamily: CAIRO,
@@ -158,13 +158,13 @@ export default function AttendanceOvertimePage() {
                                         </option>
                                     ))}
                                 </select>
-                                <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                                <Calendar size={14} style={{ position: 'absolute', insetInlineStart: '12px', color: '#256af4', pointerEvents: 'none' }} />
                             </div>
 
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <select value={selectedYear} onChange={e => setSelectedYear(Number(e.target.value))}
                                     style={{
-                                        ...IS, height: '42px', paddingInlineStart: '12px', paddingInlineEnd: '32px',
+                                        ...IS, height: '42px', paddingInlineStart: '34px', paddingInlineEnd: '20px',
                                         borderRadius: '12px', border: `1px solid ${C.border}`,
                                         background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                         fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
@@ -174,7 +174,7 @@ export default function AttendanceOvertimePage() {
                                         <option key={y} value={y} style={{ background: C.card }}>{y}</option>
                                     ))}
                                 </select>
-                                <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                                <Calendar size={14} style={{ position: 'absolute', insetInlineStart: '12px', color: '#256af4', pointerEvents: 'none' }} />
                             </div>
                         </div>
                     </div>
