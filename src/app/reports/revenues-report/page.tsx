@@ -4,6 +4,7 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { formatNumber } from '@/lib/currency';
 import StatCard from '@/components/StatCard';
+import CustomSelect from '@/components/CustomSelect';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -12,6 +13,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Search, FileText, Loader2, TrendingUp } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useSession } from 'next-auth/react';
 import * as XLSX from 'xlsx';
 import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
@@ -37,17 +39,27 @@ export default function RevenuesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { symbol: cSymbol, currency } = useCurrency();
+    const { data: session } = useSession();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [data, setData] = useState<RevenuesReportData | null>(null);
     const [loading, setLoading] = useState(false);
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
-    const fetchReport = useCallback(async () => {
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchReport = useCallback(async (currentBranchId = branchId) => {
         setLoading(true);
         try {
             const params = new URLSearchParams();
             if (from) params.set('from', from);
             if (to) params.set('to', to);
+            if (currentBranchId && currentBranchId !== 'all') params.set('branchId', currentBranchId);
             const res = await fetch(`/api/reports/revenues-report?${params}`);
             if (!res.ok) { const err = await res.json(); alert(err.error || t('فشل في استخراج التقرير')); return; }
             setData(await res.json());
@@ -56,11 +68,11 @@ export default function RevenuesReportPage() {
         } finally { 
             setLoading(false); 
         }
-    }, [from, to]);
+    }, [from, to, branchId]);
 
     useEffect(() => {
-        fetchReport();
-    }, [from, to, fetchReport]);
+        fetchReport(branchId);
+    }, [from, to, branchId, fetchReport]);
 
     const exportToExcel = () => {
         if (!data?.rows.length) return;
@@ -126,6 +138,8 @@ export default function RevenuesReportPage() {
         </tr>
     );
 
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, paddingBottom: '60px' }}>
@@ -134,12 +148,28 @@ export default function RevenuesReportPage() {
                     subtitle={t("عرض تفصيلي لجميع الإيرادات الأخرى المسجلة خلال فترة زمنية محددة.")}
                     backTab="treasury-bank"
                     printTitle={t("تقرير الإيرادات الأخرى")}
+                    branchName={selectedBranchName}
                     printDate={from || to ? `${from ? `${t('من')} ${from}` : ''} ${to ? `${t('إلى')} ${to}` : ''}`.trim() : undefined}
                     onExportExcel={exportToExcel}
                 />
 
                 {/* Filters */}
                 <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch={true}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
                     <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('من:')}</span>
                         <div className="date-input-wrapper" style={{ width: '170px' }}>
