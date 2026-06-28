@@ -115,7 +115,7 @@ export async function generatePdfFromHtmlText(
         try {
             const errData = await res.json();
             if (errData.error) errorMsg = errData.error;
-        } catch {}
+        } catch { }
         throw new Error(errorMsg);
     }
 
@@ -319,7 +319,7 @@ export async function printQuotationViaIframe(id: string, onAfterPrint?: () => v
 /* ── Reports ──────────────────────────────────────────────────── */
 
 export function printReportDirectly(html: string, _title?: string) {
-    const printHtml = html.replace('</body>', `<script>window.onload=()=>setTimeout(()=>window.print(),800);</script></body>`);
+    const printHtml = html.replace('</body>', `<script>window.onload=()=>setTimeout(()=>window.print(),400);</script></body>`);
     const blob = new Blob([printHtml], { type: 'text/html; charset=utf-8' });
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
