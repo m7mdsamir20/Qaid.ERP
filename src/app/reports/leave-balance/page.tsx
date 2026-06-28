@@ -8,7 +8,7 @@ import { C, CAIRO, PAGE_BASE, OUTFIT, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
-import { Search, CalendarDays, UserCheck } from 'lucide-react';
+import { Search, CalendarDays, UserCheck, Calendar } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
 interface LeaveBalanceRow {
@@ -154,14 +154,25 @@ export default function LeaveBalancePage() {
 
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('السنة المالية:')}</span>
-                        <input type="number" min="2020" max="2100" value={year} onChange={e => setYear(e.target.value)}
-                            style={{
-                                ...IS, height: '42px', padding: '0 12px', width: '100px',
-                                borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                fontWeight: 600, outline: 'none', fontFamily: OUTFIT
-                            }}
-                        />
+                        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                            <select value={year} onChange={e => setYear(e.target.value)}
+                                style={{
+                                    ...IS, height: '42px',
+                                    paddingRight: isRtl ? '34px' : '20px',
+                                    paddingLeft: isRtl ? '20px' : '34px',
+                                    minWidth: '110px',
+                                    textIndent: isRtl ? '20px' : '0px',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
+                                    appearance: 'none', cursor: 'pointer'
+                                }}>
+                                {Array.from({ length: 11 }, (_, i) => 2020 + i).map(y => (
+                                    <option key={y} value={String(y)} style={{ background: C.card }}>{y}</option>
+                                ))}
+                            </select>
+                            <Calendar size={14} style={{ position: 'absolute', [isRtl ? 'right' : 'left']: '12px', color: '#256af4', pointerEvents: 'none' }} />
+                        </div>
                     </div>
                 </div>
 

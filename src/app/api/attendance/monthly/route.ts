@@ -9,6 +9,7 @@ export const GET = withProtection(async (request, session) => {
     const month = parseInt(searchParams.get('month') || String(new Date().getMonth() + 1));
     const year = parseInt(searchParams.get('year') || String(new Date().getFullYear()));
     const departmentId = searchParams.get('departmentId');
+    const branchId = searchParams.get('branchId');
 
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0); // last day of month
@@ -16,6 +17,7 @@ export const GET = withProtection(async (request, session) => {
     // Get all employees
     const employeeWhere: any = { companyId, status: 'active' };
     if (departmentId && departmentId !== 'all') employeeWhere.departmentId = departmentId;
+    if (branchId && branchId !== 'all') employeeWhere.branchId = branchId;
 
     const employees = await prisma.employee.findMany({
         where: employeeWhere,
