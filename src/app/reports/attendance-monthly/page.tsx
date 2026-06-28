@@ -341,13 +341,25 @@ export default function AttendanceMonthlyPage() {
                                                 {t('الموظف')}
                                             </th>
                                             {detailedData.days.map((d: string) => {
-                                                const dayNum = new Date(d).getDate();
                                                 const parsedDate = new Date(d);
+                                                const dayNum = parsedDate.getUTCDate();
+                                                const monthNum = parsedDate.getUTCMonth() + 1;
                                                 const dayName = parsedDate.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
                                                 const isWeekend = !(detailedData.workDays || ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"]).includes(dayName);
+                                                const WEEKDAY_ARABIC: Record<string, string> = {
+                                                    Sun: 'الأحد',
+                                                    Mon: 'الإثنين',
+                                                    Tue: 'الثلاثاء',
+                                                    Wed: 'الأربعاء',
+                                                    Thu: 'الخميس',
+                                                    Fri: 'الجمعة',
+                                                    Sat: 'السبت'
+                                                };
+                                                const dayNameAr = WEEKDAY_ARABIC[dayName] || dayName;
                                                 return (
-                                                    <th key={d} style={{ padding: '6px 2px', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: isWeekend ? '#f59e0b' : C.textSecondary, minWidth: '36px' }}>
-                                                        {dayNum}
+                                                    <th key={d} style={{ padding: '6px 2px', textAlign: 'center', minWidth: '46px' }}>
+                                                        <div style={{ fontSize: '10px', fontWeight: 700, color: isWeekend ? '#f59e0b' : C.textPrimary }}>{dayNameAr}</div>
+                                                        <div style={{ fontSize: '9px', marginTop: '2px', color: isWeekend ? '#f59e0b' : C.textSecondary, fontFamily: OUTFIT }}>{`${dayNum}/${monthNum}`}</div>
                                                     </th>
                                                 );
                                             })}
