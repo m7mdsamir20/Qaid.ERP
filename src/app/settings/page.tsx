@@ -57,7 +57,7 @@ function SettingsContent() {
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices    = businessType === 'SERVICES';
+    const isServices = businessType === 'SERVICES';
     const isRestaurants = businessType === 'RESTAURANTS';
     const isContracting = businessType === 'CONTRACTING';
 
@@ -411,8 +411,8 @@ function SettingsContent() {
         if (retailFeatures.includes(featureKey) && businessType !== 'RETAIL') return false;
         if (pageId === 'reports-restaurant' && !isRestaurants) return false;
 
-        // 1. Check subscription (granular check) - settings and activity_log bypass subscription checks
-        if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings' && featureKey !== 'activity_log') {
+        // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
+        if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings') {
             if (!(featureKey in enabledFeatures)) return false;
             const pagesInSub = enabledFeatures[featureKey];
             if (!pagesInSub.includes(pageId)) return false;
@@ -489,7 +489,7 @@ function SettingsContent() {
                     section.title = t('المنيو والمخزون');
                     section.links = section.links?.map((l: any) => {
                         if (l.id === '/categories') return { ...l, label: t('تصنيفات المنيو') };
-                        if (l.id === '/items')      return { ...l, label: t('أصناف المنيو') };
+                        if (l.id === '/items') return { ...l, label: t('أصناف المنيو') };
                         if (l.id === '/warehouses') return { ...l, label: t('المخازن والمستودعات') };
                         return l;
                     });
@@ -498,7 +498,7 @@ function SettingsContent() {
                 if (section.featureKey === 'reports') {
                     section.links = section.links?.map((l: any) => {
                         if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t('تقارير الكاشير والمبيعات') };
-                        if (l.label === t("تقارير المخزون"))      return { ...l, label: t('تقارير المخزون والمنيو') };
+                        if (l.label === t("تقارير المخزون")) return { ...l, label: t('تقارير المخزون والمنيو') };
                         return l;
                     });
                 }
@@ -631,11 +631,11 @@ function SettingsContent() {
             const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, data }) });
             if (res.ok) {
                 showToast(t('تم الحفظ بنجاح ✓'));
-                await fetchData(); 
+                await fetchData();
                 setIsEditMode(false);
                 // Force session update with latest currency metadata
                 if (update) {
-                    const finalCurrency = action === 'update_general' 
+                    const finalCurrency = action === 'update_general'
                         ? (data.currency === 'OTHER' ? data.customCurrency : data.currency)
                         : undefined;
                     update({
@@ -741,7 +741,8 @@ function SettingsContent() {
         } finally { setIsSaving(false); }
     };
 
-    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>;
+    if (loading) {
+        return <DashboardLayout><ContentSkeleton /></DashboardLayout>;
     }
 
     // Filter tabs based on permissionHierarchy
@@ -789,48 +790,48 @@ function SettingsContent() {
                         zIndex: 10
                     }}>
                         <div className="settings-tabs">
-                        {filteredTabs.map(tab => {
-                            const Icon = tab.icon;
-                            const active = activeTab === tab.id;
-                            return (
-                                <button className="settings-tab-btn" key={tab.id} onClick={() => {
-                                    setActiveTab(tab.id);
-                                    handleCancel();
-                                }}
-                                    style={{
-                                        width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
-                                        padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
-                                        background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
-                                        color: active ? C.primary : C.textSecondary,
-                                        fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
-                                        fontFamily: CAIRO
+                            {filteredTabs.map(tab => {
+                                const Icon = tab.icon;
+                                const active = activeTab === tab.id;
+                                return (
+                                    <button className="settings-tab-btn" key={tab.id} onClick={() => {
+                                        setActiveTab(tab.id);
+                                        handleCancel();
                                     }}
-                                    onMouseEnter={e => {
-                                        if (!active) {
-                                            e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                                            e.currentTarget.style.color = C.textPrimary;
-                                        }
-                                    }}
-                                    onMouseLeave={e => {
-                                        if (!active) {
-                                            e.currentTarget.style.background = 'transparent';
-                                            e.currentTarget.style.color = C.textSecondary;
-                                        }
-                                    }}
-                                >
-                                    <div style={{
-                                        width: '32px', height: '32px', borderRadius: '8px',
-                                        background: active ? `${C.primary}20` : 'rgba(255,255,255,0.02)',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        color: active ? C.primary : C.textMuted, transition: 'all 0.2s'
-                                    }}>
-                                        <Icon size={16} />
-                                    </div>
-                                    <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
-                                    {active && <div style={{ marginInlineStart: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
-                                </button>
-                            );
-                        })}
+                                        style={{
+                                            width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
+                                            padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
+                                            background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
+                                            color: active ? C.primary : C.textSecondary,
+                                            fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
+                                            fontFamily: CAIRO
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (!active) {
+                                                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                                                e.currentTarget.style.color = C.textPrimary;
+                                            }
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (!active) {
+                                                e.currentTarget.style.background = 'transparent';
+                                                e.currentTarget.style.color = C.textSecondary;
+                                            }
+                                        }}
+                                    >
+                                        <div style={{
+                                            width: '32px', height: '32px', borderRadius: '8px',
+                                            background: active ? `${C.primary}20` : 'rgba(255,255,255,0.02)',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            color: active ? C.primary : C.textMuted, transition: 'all 0.2s'
+                                        }}>
+                                            <Icon size={16} />
+                                        </div>
+                                        <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
+                                        {active && <div style={{ marginInlineStart: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 

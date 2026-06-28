@@ -11,11 +11,11 @@ import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
 
-export default function Sidebar({ 
+export default function Sidebar({
     onLinkClick,
     isCollapsed = false,
     onToggle
-}: { 
+}: {
     onLinkClick?: () => void;
     isCollapsed?: boolean;
     onToggle?: () => void;
@@ -72,8 +72,8 @@ export default function Sidebar({
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
             // الإعدادات دائماً متاحة للـ admin والـ superadmin بغض النظر عن الاشتراك
-            // (settings and activity_log bypass subscription features check)
-            if (featureKey === 'settings' || featureKey === 'activity_log') {
+            // (settings مستبعدة من buildAllFeatures لذا لا تظهر في enabledFeatures)
+            if (featureKey === 'settings') {
                 if (isSuperAdmin || userRole === 'admin') return true;
                 // للمستخدم العادي: يحتاج صلاحية صريحة
                 const userPerms = user?.permissions || {};
@@ -307,30 +307,17 @@ export default function Sidebar({
 
     const isSidebarEmpty = useMemo(() => sidebarItems.every(i => i === null), [sidebarItems]);
 
-    if (!mounted || status === 'loading') {
+    if (!mounted) {
         return (
-            <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, padding: '24px 14px', gap: '16px' }} dir={isRtl ? 'rtl' : 'ltr'}>
-                <div className="skeleton-pulse" style={{ width: '80%', height: '32px', borderRadius: '8px', background: 'rgba(128,128,128,0.08)', marginBottom: '16px', marginInlineStart: '10px' }} />
-                {Array.from({ length: 9 }).map((_, i) => (
-                    <div key={i} className="skeleton-pulse" style={{ width: '100%', height: '40px', borderRadius: '12px', background: 'rgba(128,128,128,0.05)' }} />
-                ))}
-                <style jsx global>{`
-                    @keyframes pulse-shimmer {
-                        0% { opacity: 0.5; }
-                        50% { opacity: 0.8; }
-                        100% { opacity: 0.5; }
-                    }
-                    .skeleton-pulse {
-                        animation: pulse-shimmer 2s infinite ease-in-out;
-                    }
-                `}</style>
+            <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <Loader2 size={24} style={{ animation: 'spin 1s linear infinite', color: C.primary, opacity: 0.5 }} />
             </aside>
         );
     }
 
     return (
         <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            
+
             <nav className="sidebar-nav" style={{ padding: '10px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
                 {isSidebarEmpty ? (
                     <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>
@@ -346,3 +333,4 @@ export default function Sidebar({
         </aside>
     );
 }
+

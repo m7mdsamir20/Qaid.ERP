@@ -219,9 +219,9 @@ export default function DashboardPage() {
   })();
 
   const hasPage = (pageId: string, featureKey?: string): boolean => {
-    const isCore = pageId === '/' || pageId === '/settings' || featureKey === 'dashboard' || featureKey === 'activity_log';
+    const isCore = pageId === '/' || pageId === '/settings' || featureKey === 'dashboard';
 
-    // 1. Check subscription (granular check) - settings and activity_log bypass subscription checks
+    // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
     if (!isCore && Object.keys(enabledFeatures).length > 0 && featureKey) {
       const pagesInSub = enabledFeatures[featureKey] || [];
       if (!pagesInSub.includes(pageId)) return false;
@@ -312,7 +312,7 @@ export default function DashboardPage() {
         <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.danger }}>
           <AlertTriangle size={40} />
         </div>
-        <div style={{ }}>
+        <div style={{}}>
           <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>{t('فشل في تحميل الإحصائيات')}</h2>
           <p style={{ color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO, marginBottom: '24px' }}>{t('حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.')}</p>
           <button
@@ -398,12 +398,12 @@ export default function DashboardPage() {
       { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
     ];
 
-    const currentActions = isRestaurants 
-      ? restaurantActions 
-      : isServices 
-        ? serviceActions 
-        : isContracting 
-          ? contractingActions 
+    const currentActions = isRestaurants
+      ? restaurantActions
+      : isServices
+        ? serviceActions
+        : isContracting
+          ? contractingActions
           : tradingActions;
 
     return currentActions
