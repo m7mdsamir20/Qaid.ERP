@@ -410,6 +410,7 @@ function BranchSwitcher() {
     const router = useRouter();
     const { data: session, update } = useSession();
     const [open, setOpen] = useState(false);
+    const [switching, setSwitching] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
     const allBranches: any[] = (session?.user as any)?.branches || [];
@@ -430,6 +431,7 @@ function BranchSwitcher() {
 
     const switchBranch = async (branchId: string | null) => {
         setOpen(false);
+        setSwitching(true);
         await update({ user: { activeBranchId: branchId === null ? 'all' : branchId } });
         window.location.reload();
     };
@@ -439,6 +441,16 @@ function BranchSwitcher() {
     const activeBranch = branches.find(b => b.id === activeBranchId);
 
     return (
+        <>
+        {switching && (
+            <div style={{
+                position: 'fixed', inset: 0, zIndex: 99999,
+                background: C.bg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+                <Loader2 size={36} color={C.primary} style={{ animation: 'spin 0.8s linear infinite' }} />
+            </div>
+        )}
         <div ref={ref} style={{ position: 'relative' }}>
             <button onClick={() => setOpen(!open)}
                 style={{
@@ -506,6 +518,7 @@ function BranchSwitcher() {
                 </div>
             )}
         </div>
+        </>
     );
 }
 

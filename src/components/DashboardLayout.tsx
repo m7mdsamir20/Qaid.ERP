@@ -190,7 +190,7 @@ export default function DashboardLayout({
     const isLockoutActive = isExpired && !isSuperAdmin;
     const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');
 
-    if (status === 'loading' && !session) {
+    if (status === 'loading') {
         return <DashboardSkeleton isRtl={isRtl} />;
     }
 
