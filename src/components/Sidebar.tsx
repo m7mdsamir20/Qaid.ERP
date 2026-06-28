@@ -81,8 +81,8 @@ export default function Sidebar({
                 return hasGranularPerms ? !!userPerms[pageId]?.view : false;
             }
 
-            // 1. فحص الاشتراك — الفترة التجريبية تعرض كل الصفحات بدون قيود
-            if (!isTrial && hasSubscription && Object.keys(enabledFeatures).length > 0) {
+            // 1. فحص الاشتراك
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
             }

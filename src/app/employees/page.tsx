@@ -209,6 +209,7 @@ export default function EmployeesPage() {
                         },
                         {
                             header: t('الموظف'),
+                            style: { textAlign: 'center' } as React.CSSProperties,
                             cell: (row: Employee) => (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'center' }}>{row.name}</div>
@@ -239,7 +240,7 @@ export default function EmployeesPage() {
                                 const year = d.getFullYear();
                                 return (
                                     <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }} dir="ltr">
-                                        {`${day}/${month}/${year}`}
+                                        {`${year}/${month}/${day}`}
                                     </div>
                                 );
                             }

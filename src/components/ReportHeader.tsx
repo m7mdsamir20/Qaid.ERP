@@ -154,10 +154,16 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const labelAccount = printLabel || (isRtl ? t("تاريخ التقرير:") : 'Report Date:');
     const labelBranch = isRtl ? t("الفرع:") : 'Branch:';
 
+    const user = session?.user as any;
+    const userBranches = user?.branches || [];
+    const isSuper = !!user?.isSuperAdmin;
+    const userRole = user?.role;
+    const hasMultipleBranchesForUser = (userBranches.length > 1 && userRole === 'admin') || isSuper;
+
     const metaItems = [
       accountName ? `<span>${labelAccount} <b>${accountName}</b></span>` : '',
       dateRange   ? `<span>${labelPeriod} <b>${dateRange}</b></span>` : '',
-      branchName  ? `<span>${labelBranch} <b>${branchName}</b></span>` : '',
+      (branchName && hasMultipleBranchesForUser) ? `<span>${labelBranch} <b>${branchName}</b></span>` : '',
       `<span>${isRtl ? t("طُبع:") : 'Printed:'} <b>${printDateStr} — ${printTimeStr}</b></span>`,
     ].filter(Boolean).join('');
 
