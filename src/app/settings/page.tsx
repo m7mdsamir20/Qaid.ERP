@@ -411,8 +411,8 @@ function SettingsContent() {
         if (retailFeatures.includes(featureKey) && businessType !== 'RETAIL') return false;
         if (pageId === 'reports-restaurant' && !isRestaurants) return false;
 
-        // 1. Check subscription (granular check) - settings and activity_log bypass subscription checks
-        if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings' && featureKey !== 'activity_log') {
+        // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
+        if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings') {
             if (!(featureKey in enabledFeatures)) return false;
             const pagesInSub = enabledFeatures[featureKey];
             if (!pagesInSub.includes(pageId)) return false;

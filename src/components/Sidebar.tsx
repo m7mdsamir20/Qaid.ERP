@@ -71,8 +71,9 @@ export default function Sidebar({
         try {
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
-            // الإعدادات وسجل النشاط دائماً متاحة للـ admin والـ superadmin بغض النظر عن الاشتراك
-            if (featureKey === 'settings' || featureKey === 'activity_log') {
+            // الإعدادات دائماً متاحة للـ admin والـ superadmin بغض النظر عن الاشتراك
+            // (settings مستبعدة من buildAllFeatures لذا لا تظهر في enabledFeatures)
+            if (featureKey === 'settings') {
                 if (isSuperAdmin || userRole === 'admin') return true;
                 // للمستخدم العادي: يحتاج صلاحية صريحة
                 const userPerms = user?.permissions || {};

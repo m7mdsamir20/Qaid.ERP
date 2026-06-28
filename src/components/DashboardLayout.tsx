@@ -117,12 +117,8 @@ export default function DashboardLayout({
             if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
             if (['/quotations', '/sales-orders'].includes(pageId) && businessType === 'RETAIL') return false;
 
-            // 1. Admin/SuperAdmin/Settings/Activity Log bypass subscription feature checks
-            if (isSuperAdmin || userRole === 'admin' || featureKey === 'settings' || featureKey === 'activity_log') {
-                const userPerms = user?.permissions || {};
-                const hasGranularPerms = Object.keys(userPerms).length > 0;
-                if (featureKey === 'settings') return !hasGranularPerms;
-                if (hasGranularPerms) return !!userPerms[pageId]?.view;
+            // 1. Admin/SuperAdmin دايمًا لهم صلاحية — قبل فحص الاشتراك لأن الإعدادات لازم تكون متاحة دايمًا
+            if (isSuperAdmin || userRole === 'admin') {
                 return true;
             }
 
@@ -135,6 +131,8 @@ export default function DashboardLayout({
             // 3. فحص الأدوار والصلاحيات
             const userPerms = user?.permissions || {};
             const hasGranularPerms = Object.keys(userPerms).length > 0;
+
+            if (featureKey === 'settings') return !hasGranularPerms;
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
         } catch { return true; }

@@ -204,7 +204,7 @@ export default function EditCompanyPage() {
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
-            if (s.featureKey === 'activity_log') return; // يظهر في إعدادات السوبر ادمن فقط
+            // يسمح بظهور سجل النشاط في صلاحيات السوبر أدمن لتفعيله لكل شركة حسب الرغبة
 
             // فلترة حسب نوع النشاط
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;

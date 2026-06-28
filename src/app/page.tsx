@@ -219,9 +219,9 @@ export default function DashboardPage() {
   })();
 
   const hasPage = (pageId: string, featureKey?: string): boolean => {
-    const isCore = pageId === '/' || pageId === '/settings' || featureKey === 'dashboard' || featureKey === 'activity_log';
+    const isCore = pageId === '/' || pageId === '/settings' || featureKey === 'dashboard';
 
-    // 1. Check subscription (granular check) - settings and activity_log bypass subscription checks
+    // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
     if (!isCore && Object.keys(enabledFeatures).length > 0 && featureKey) {
       const pagesInSub = enabledFeatures[featureKey] || [];
       if (!pagesInSub.includes(pageId)) return false;
