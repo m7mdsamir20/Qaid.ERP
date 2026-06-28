@@ -194,7 +194,8 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:
 .print-table-container{display:block!important;margin-bottom:16px;border:1px solid #bbb!important;border-radius:4px!important;overflow:hidden!important}
 
 /* ── Tables ── */
-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto}
+.table-wrapper{width:100%;overflow:visible}
+table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto;direction:${dir}}
 thead tr{background:#e0e0e0!important}
 thead tr *{background:#e0e0e0!important}
 th{padding:9px 8px;font-size:11px;font-weight:800;text-align:center;border:1px solid #bbb;white-space:nowrap}
@@ -260,23 +261,49 @@ tfoot td:first-child{text-align:${firstColAlign}}
 }
 
 @media print{
-  @page{size:A4 landscape;margin:6mm 10mm}
-  body{
+  @page{size:A4 landscape;margin:5mm 8mm}
+  html,body{
     background: #fff !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     display: block !important;
+    direction: ${dir} !important;
   }
   .page{
     padding:0 !important;
-    width: 95% !important;
-    max-width: 270mm !important;
-    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     display: block !important;
+    direction: ${dir} !important;
+  }
+  .scale-to-fit{
+    transform-origin: top ${dir === 'rtl' ? 'right' : 'left'} !important;
   }
 }
 </style>
+<script>
+// Auto-scale wide tables to fit print page width
+window.addEventListener('load', function() {
+  var tables = document.querySelectorAll('table');
+  tables.forEach(function(tbl) {
+    var pageWidth = document.querySelector('.page').offsetWidth || 1040;
+    var tblWidth = tbl.scrollWidth;
+    if (tblWidth > pageWidth) {
+      var scale = pageWidth / tblWidth;
+      var wrapper = tbl.closest('.print-table-container') || tbl.parentElement;
+      if (wrapper) {
+        wrapper.style.transformOrigin = '${dir === "rtl" ? "top right" : "top left"}';
+        wrapper.style.transform = 'scale(' + scale + ')';
+        wrapper.style.marginBottom = '-' + Math.round(tblWidth * (1 - scale)) + 'px';
+        wrapper.style.display = 'block';
+        wrapper.style.width = (tblWidth) + 'px';
+      }
+    }
+  });
+});
+</script>
 </head>
 <body>
 <div class="page">

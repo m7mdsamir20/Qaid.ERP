@@ -184,6 +184,7 @@ export default function MonthlyAttendancePage() {
                         جاري التحميل...
                     </div>
                 ) : data ? (
+                    <div className="print-table-container" style={{ borderRadius: '14px' }}>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', overflowX: 'auto' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: `${200 + data.days.length * 38}px` }}>
                             <thead>
@@ -289,6 +290,7 @@ export default function MonthlyAttendancePage() {
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
                     </div>
                 ) : (
                     <div style={{ textAlign: 'center', padding: '60px', color: C.textSecondary }}>
