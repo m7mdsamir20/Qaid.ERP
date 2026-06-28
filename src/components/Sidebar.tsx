@@ -309,8 +309,21 @@ export default function Sidebar({
 
     if (!mounted || status === 'loading') {
         return (
-            <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                <Loader2 size={24} style={{ animation: 'spin 1s linear infinite', color: C.primary, opacity: 0.5 }} />
+            <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, padding: '24px 14px', gap: '16px' }} dir={isRtl ? 'rtl' : 'ltr'}>
+                <div className="skeleton-pulse" style={{ width: '80%', height: '32px', borderRadius: '8px', background: 'rgba(128,128,128,0.08)', marginBottom: '16px', marginInlineStart: '10px' }} />
+                {Array.from({ length: 9 }).map((_, i) => (
+                    <div key={i} className="skeleton-pulse" style={{ width: '100%', height: '40px', borderRadius: '12px', background: 'rgba(128,128,128,0.05)' }} />
+                ))}
+                <style jsx global>{`
+                    @keyframes pulse-shimmer {
+                        0% { opacity: 0.5; }
+                        50% { opacity: 0.8; }
+                        100% { opacity: 0.5; }
+                    }
+                    .skeleton-pulse {
+                        animation: pulse-shimmer 2s infinite ease-in-out;
+                    }
+                `}</style>
             </aside>
         );
     }
