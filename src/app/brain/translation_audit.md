@@ -1,6 +1,6 @@
 # Translation Audit Report
 
-Generated on: 2026-06-27T08:08:30.045Z
+Generated on: 2026-06-28T05:17:08.880Z
 
 ## Summary
 
@@ -2378,60 +2378,60 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 163: `فشل التحميل`
 
 ### [app/reports/attendance-absence/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-absence/page.tsx)
-- Line 149: `يناير`
-- Line 149: `فبراير`
-- Line 149: `مارس`
-- Line 149: `أبريل`
-- Line 149: `مايو`
-- Line 149: `يونيو`
-- Line 149: `يوليو`
-- Line 149: `أغسطس`
-- Line 149: `سبتمبر`
-- Line 149: `أكتوبر`
-- Line 149: `نوفمبر`
-- Line 149: `ديسمبر`
+- Line 151: `يناير`
+- Line 151: `فبراير`
+- Line 151: `مارس`
+- Line 151: `أبريل`
+- Line 151: `مايو`
+- Line 151: `يونيو`
+- Line 151: `يوليو`
+- Line 151: `أغسطس`
+- Line 151: `سبتمبر`
+- Line 151: `أكتوبر`
+- Line 151: `نوفمبر`
+- Line 151: `ديسمبر`
 
 ### [app/reports/attendance-late/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-late/page.tsx)
-- Line 157: `يناير`
-- Line 157: `فبراير`
-- Line 157: `مارس`
-- Line 157: `أبريل`
-- Line 157: `مايو`
-- Line 157: `يونيو`
-- Line 157: `يوليو`
-- Line 157: `أغسطس`
-- Line 157: `سبتمبر`
-- Line 157: `أكتوبر`
-- Line 157: `نوفمبر`
-- Line 157: `ديسمبر`
+- Line 159: `يناير`
+- Line 159: `فبراير`
+- Line 159: `مارس`
+- Line 159: `أبريل`
+- Line 159: `مايو`
+- Line 159: `يونيو`
+- Line 159: `يوليو`
+- Line 159: `أغسطس`
+- Line 159: `سبتمبر`
+- Line 159: `أكتوبر`
+- Line 159: `نوفمبر`
+- Line 159: `ديسمبر`
 
 ### [app/reports/attendance-monthly/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-monthly/page.tsx)
-- Line 173: `يناير`
-- Line 173: `فبراير`
-- Line 173: `مارس`
-- Line 173: `أبريل`
-- Line 173: `مايو`
-- Line 173: `يونيو`
-- Line 173: `يوليو`
-- Line 173: `أغسطس`
-- Line 173: `سبتمبر`
-- Line 173: `أكتوبر`
-- Line 173: `نوفمبر`
-- Line 173: `ديسمبر`
+- Line 175: `يناير`
+- Line 175: `فبراير`
+- Line 175: `مارس`
+- Line 175: `أبريل`
+- Line 175: `مايو`
+- Line 175: `يونيو`
+- Line 175: `يوليو`
+- Line 175: `أغسطس`
+- Line 175: `سبتمبر`
+- Line 175: `أكتوبر`
+- Line 175: `نوفمبر`
+- Line 175: `ديسمبر`
 
 ### [app/reports/attendance-overtime/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-overtime/page.tsx)
-- Line 155: `يناير`
-- Line 155: `فبراير`
-- Line 155: `مارس`
-- Line 155: `أبريل`
-- Line 155: `مايو`
-- Line 155: `يونيو`
-- Line 155: `يوليو`
-- Line 155: `أغسطس`
-- Line 155: `سبتمبر`
-- Line 155: `أكتوبر`
-- Line 155: `نوفمبر`
-- Line 155: `ديسمبر`
+- Line 159: `يناير`
+- Line 159: `فبراير`
+- Line 159: `مارس`
+- Line 159: `أبريل`
+- Line 159: `مايو`
+- Line 159: `يونيو`
+- Line 159: `يوليو`
+- Line 159: `أغسطس`
+- Line 159: `سبتمبر`
+- Line 159: `أكتوبر`
+- Line 159: `نوفمبر`
+- Line 159: `ديسمبر`
 
 ### [app/reports/detailed-balance-sheet/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/detailed-balance-sheet/page.tsx)
 - Line 19: `ج.م`
@@ -2444,18 +2444,18 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 20: `د.أ`
 
 ### [app/reports/payroll-statement/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/payroll-statement/page.tsx)
-- Line 184: `يناير`
-- Line 184: `فبراير`
-- Line 184: `مارس`
-- Line 184: `أبريل`
-- Line 184: `مايو`
-- Line 184: `يونيو`
-- Line 184: `يوليو`
-- Line 184: `أغسطس`
-- Line 184: `سبتمبر`
-- Line 184: `أكتوبر`
-- Line 184: `نوفمبر`
-- Line 184: `ديسمبر`
+- Line 186: `يناير`
+- Line 186: `فبراير`
+- Line 186: `مارس`
+- Line 186: `أبريل`
+- Line 186: `مايو`
+- Line 186: `يونيو`
+- Line 186: `يوليو`
+- Line 186: `أغسطس`
+- Line 186: `سبتمبر`
+- Line 186: `أكتوبر`
+- Line 186: `نوفمبر`
+- Line 186: `ديسمبر`
 
 ### [app/sale-returns/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sale-returns/page.tsx)
 - Line 157: `فشل التحميل`
