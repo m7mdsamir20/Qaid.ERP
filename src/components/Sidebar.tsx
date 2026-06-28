@@ -72,8 +72,8 @@ export default function Sidebar({
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
             // الإعدادات دائماً متاحة للـ admin والـ superadmin بغض النظر عن الاشتراك
-            // (settings مستبعدة من buildAllFeatures لذا لا تظهر في enabledFeatures)
-            if (featureKey === 'settings') {
+            // (settings and activity_log bypass subscription features check)
+            if (featureKey === 'settings' || featureKey === 'activity_log') {
                 if (isSuperAdmin || userRole === 'admin') return true;
                 // للمستخدم العادي: يحتاج صلاحية صريحة
                 const userPerms = user?.permissions || {};
@@ -307,7 +307,7 @@ export default function Sidebar({
 
     const isSidebarEmpty = useMemo(() => sidebarItems.every(i => i === null), [sidebarItems]);
 
-    if (!mounted) {
+    if (!mounted || status === 'loading') {
         return (
             <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <Loader2 size={24} style={{ animation: 'spin 1s linear infinite', color: C.primary, opacity: 0.5 }} />
