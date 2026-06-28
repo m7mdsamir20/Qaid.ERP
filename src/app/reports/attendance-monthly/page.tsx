@@ -342,8 +342,9 @@ export default function AttendanceMonthlyPage() {
                                             </th>
                                             {detailedData.days.map((d: string) => {
                                                 const dayNum = new Date(d).getDate();
-                                                const dayOfWeek = new Date(d).getDay();
-                                                const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
+                                                const parsedDate = new Date(d);
+                                                const dayName = parsedDate.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
+                                                const isWeekend = !(detailedData.workDays || ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"]).includes(dayName);
                                                 return (
                                                     <th key={d} style={{ padding: '6px 2px', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: isWeekend ? '#f59e0b' : C.textSecondary, minWidth: '36px' }}>
                                                         {dayNum}

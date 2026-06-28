@@ -42,6 +42,7 @@ interface MonthlyData {
     year: number;
     days: string[];
     employees: EmployeeRow[];
+    workDays?: string[];
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -192,8 +193,9 @@ export default function MonthlyAttendancePage() {
                                     </th>
                                     {data.days.map(d => {
                                         const dayNum = new Date(d).getDate();
-                                        const dayOfWeek = new Date(d).getDay();
-                                        const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
+                                        const parsedDate = new Date(d);
+                                        const dayName = parsedDate.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
+                                        const isWeekend = !(data.workDays || ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"]).includes(dayName);
                                         return (
                                             <th key={d} style={{ padding: '6px 2px', textAlign: 'center', fontSize: '11px', fontWeight: 600, color: isWeekend ? '#f59e0b' : C.textSecondary, minWidth: '36px' }}>
                                                 {dayNum}

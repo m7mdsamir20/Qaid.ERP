@@ -14,6 +14,17 @@ export const GET = withProtection(async (request, session) => {
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0); // last day of month
 
+    // Get company work schedule to determine work days
+    const schedule = await prisma.workSchedule.findFirst({
+        where: { companyId }
+    });
+    let workDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Sat"];
+    if (schedule && schedule.workDays) {
+        try {
+            workDays = JSON.parse(schedule.workDays);
+        } catch {}
+    }
+
     // Get all employees
     const employeeWhere: any = { companyId, status: 'active' };
     if (departmentId && departmentId !== 'all') employeeWhere.departmentId = departmentId;
@@ -117,5 +128,6 @@ export const GET = withProtection(async (request, session) => {
         year,
         days: daysArray,
         employees: employeesData,
+        workDays,
     });
 });
