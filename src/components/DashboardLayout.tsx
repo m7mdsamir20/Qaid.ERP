@@ -117,15 +117,15 @@ export default function DashboardLayout({
             if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
             if (['/quotations', '/sales-orders'].includes(pageId) && businessType === 'RETAIL') return false;
 
-            // 1. Admin/SuperAdmin دايمًا لهم صلاحية — قبل فحص الاشتراك لأن الإعدادات لازم تكون متاحة دايمًا
-            if (isSuperAdmin || userRole === 'admin') {
-                return true;
-            }
-
-            // 2. فحص الاشتراك (للمستخدمين غير الأدمن فقط)
-            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+            // 1. فحص الاشتراك (يطبق على الجميع بما فيهم الأدمن، باستثناء ميزة الإعدادات)
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0 && featureKey !== 'settings') {
                 if (!(featureKey in enabledFeatures)) return false;
                 if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
+            }
+
+            // 2. الأدمن والـ SuperAdmin لهم صلاحية افتراضية للميزات المشتركة في الباقة
+            if (isSuperAdmin || userRole === 'admin') {
+                return true;
             }
 
             // 3. فحص الأدوار والصلاحيات

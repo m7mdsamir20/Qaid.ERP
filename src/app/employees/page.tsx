@@ -232,11 +232,17 @@ export default function EmployeesPage() {
                             header: t('تاريخ التعيين'),
                             className: 'hide-mobile',
                             style: { textAlign: 'center' } as React.CSSProperties,
-                            cell: (row: Employee) => (
-                                <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
-                                    {new Date(row.hireDate).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' })}
-                                </div>
-                            )
+                            cell: (row: Employee) => {
+                                const d = new Date(row.hireDate);
+                                const day = String(d.getDate()).padStart(2, '0');
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const year = d.getFullYear();
+                                return (
+                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }} dir="ltr">
+                                        {`${day}/${month}/${year}`}
+                                    </div>
+                                );
+                            }
                         },
                         {
                             header: t('صافي الراتب'),
