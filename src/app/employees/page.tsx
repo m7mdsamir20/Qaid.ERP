@@ -210,10 +210,10 @@ export default function EmployeesPage() {
                         {
                             header: t('الموظف'),
                             cell: (row: Employee) => (
-                                <>
-                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{row.name}</div>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'center' }}>{row.name}</div>
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'center' }}>{row.email || '—'}</div>
-                                </>
+                                </div>
                             )
                         },
                         {
