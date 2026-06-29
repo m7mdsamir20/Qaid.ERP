@@ -192,6 +192,31 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:
 /* ── Stats cards (rebuilt via JS, CSS here is fallback only) ── */
 [data-print-include] svg,.no-print{display:none!important}
 .print-table-container{display:block!important;margin-bottom:16px;border:1px solid #bbb!important;border-radius:4px!important;overflow:hidden!important}
+.print-plan-card {
+  background: #fff !important;
+  border: 1px solid #bbb !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px !important;
+  display: block !important;
+}
+.print-plan-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 25px !important;
+  padding: 10px 15px !important;
+  background: #fafafa !important;
+  border-bottom: 1px solid #bbb !important;
+}
+.print-plan-item {
+  display: block !important;
+}
+.print-plan-divider {
+  display: block !important;
+  width: 1px !important;
+  height: 25px !important;
+  background: #bbb !important;
+}
 
 /* ── Tables ── */
 table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto}

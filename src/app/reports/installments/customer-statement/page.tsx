@@ -226,20 +226,20 @@ function CustomerStatementReportContent() {
 
                         <div className="print-table-container">
                         {(data.plans || []).map((plan) => (
-                            <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
-                                <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
-                                    <div>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
+                            <div key={plan.id} className="print-plan-card" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '14px', marginBottom: '24px', overflow: 'hidden' }}>
+                                <div className="print-plan-header" style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
+                                    <div className="print-plan-item">
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '2px' }}>{t('رقم الخطة')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{`PLAN-${String(plan.planNumber || 0).padStart(5, '0')}`}</div>
                                     </div>
-                                    <div style={{ width: 1, height: 32, background: C.border }} />
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('المنتج')}</div>
+                                    <div className="print-plan-divider" style={{ width: '1px', height: '32px', background: C.border }} />
+                                    <div className="print-plan-item" style={{ flex: 1 }}>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '2px' }}>{t('المنتج')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
                                     </div>
-                                    <div style={{ width: 1, height: 32, background: C.border }} />
-                                    <div style={{ textAlign: 'center'}}>
-                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
+                                    <div className="print-plan-divider" style={{ width: '1px', height: '32px', background: C.border }} />
+                                    <div className="print-plan-item" style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginBottom: '2px' }}>{t('إجمالي الخطة')}</div>
                                         <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                             {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
