@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
@@ -191,27 +191,10 @@ function CustomerStatementReportContent() {
                         }}
                     />
                 </div>
-                <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{
-                    height: '42px', padding: '0 24px', borderRadius: '12px',
-                    background: C.primary, color: '#fff', border: 'none',
-                    fontSize: '13.5px', fontWeight: 600, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
-                    boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', opacity: !selectedCustomer ? 0.6 : 1
-                }}>
-                    {loading ? <span className="animate-spin">⌛</span> : <Search size={16} />}
-                    {t('عرض كشف الحساب')}
-                </button>
             </div>
 
             <div style={{ minHeight: '300px' }}>
-                {loading && ( <TableSkeleton /> )}
-
-                {!loading && !data && (
-                    <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                        <FileText size={60} style={{ color: C.textSecondary }} />
-                        <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
-                    </div>
-                )}
+                {loading && <TableSkeleton />}
 
                 {!loading && data && (
                     <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>

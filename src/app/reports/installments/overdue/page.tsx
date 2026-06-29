@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import TableSkeleton from '@/components/TableSkeleton';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
@@ -56,16 +56,20 @@ export default function OverdueReportPage() {
         fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {});
     }, []);
 
-    const fetchReport = async () => {
+    const fetchReport = async (customerId: string) => {
         setLoading(true);
         setData(null);
         try {
             let url = `/api/installments/reports?type=overdue`;
-            if (selectedCustomer) url += `&customerId=${selectedCustomer}`;
+            if (customerId) url += `&customerId=${customerId}`;
             const res = await fetch(url);
             if (res.ok) setData(await res.json());
         } finally { setLoading(false); }
     };
+
+    useEffect(() => {
+        fetchReport(selectedCustomer);
+    }, [selectedCustomer]);
 
     const getCurrencyName = (code: string) => {
         const map: Record<string, string> = { 'EGP': t("ج.م"), 'SAR': t("ر.س"), 'AED': t("د.إ"), 'USD': '$', 'KWD': t("د.ك"), 'QAR': t("ر.ق"), 'BHD': t("د.ب"), 'OMR': t("ر.ع"), 'JOD': t("د.أ") };
@@ -170,27 +174,10 @@ export default function OverdueReportPage() {
                             }}
                         />
                     </div>
-                    <button onClick={fetchReport} disabled={loading} style={{
-                        height: '42px', padding: '0 24px', borderRadius: '12px',
-                        background: C.primary, color: '#fff', border: 'none',
-                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
-                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
-                    }}>
-                        {loading ? <span className="animate-spin">⌛</span> : <Search size={16} />}
-                        {t("استخراج التقرير")}
-                    </button>
                 </div>
 
                 <div style={{ minHeight: '300px' }}>
-                    {loading && ( <TableSkeleton /> )}
-
-                    {!loading && !data && (
-                        <div style={{  padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                            <AlertTriangle size={60} style={{ color: C.textSecondary }} />
-                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t("اضغط على زر استخراج التقرير لعرض المديونيات")}</p>
-                        </div>
-                    )}
+                    {loading && <TableSkeleton />}
 
                     {!loading && data && (
                         <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
