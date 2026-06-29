@@ -106,20 +106,20 @@ export default function Sidebar({
             if (!featureKey || featureKey === 'dashboard') return true;
 
             // سجل النشاط يحتاج تفعيل صريح من السوبر أدمن حتى للـ admin
-            // نتحقق من featuresRaw مباشرةً لتجنب الـ default الذي يشمل الكل
+            // لا يكفي وجود المفتاح — لازم يكون فيه روابط مفعّلة فعلاً (مش [] فاضية)
             if (featureKey === 'activity_log') {
-                if (!featuresRaw) return false; // لا يظهر إذا لم يكن هناك اشتراك
-                try {
-                    const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
-                    if (Array.isArray(parsed)) return parsed.includes('activity_log');
-                    return 'activity_log' in (parsed || {});
-                } catch { return false; }
+                if (!featuresRaw) return false;
+                // enabledFeatures يحتوي على الروابط الفعلية المفعّلة
+                // لو activity_log مش موجود أو قيمته [] فاضية → مش مفعّل
+                const activityLinks = enabledFeatures['activity_log'];
+                if (!activityLinks || activityLinks.length === 0) return false;
+                return activityLinks.includes('/activity-log');
             }
 
             const section = navSections.find(s => s.featureKey === featureKey);
             return section?.links?.some(l => hasPage(featureKey, l.id)) ?? true;
         } catch { return true; }
-    }, [isSuperAdmin, hasPage, featuresRaw]);
+    }, [isSuperAdmin, hasPage, featuresRaw, enabledFeatures]);
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
         const initialState: Record<string, boolean> = {};
