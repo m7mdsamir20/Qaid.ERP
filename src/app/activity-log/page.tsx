@@ -400,8 +400,9 @@ export default function ActivityLogPage() {
         },
         {
             header: 'المستخدم',
+            style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                     <div style={{
                         width: '30px', height: '30px', borderRadius: '50%',
                         background: `${C.primary}20`, border: `1px solid ${C.primary}30`,
@@ -410,7 +411,7 @@ export default function ActivityLogPage() {
                     }}>
                         <User size={14} />
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>
+                    <span style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, whiteSpace: 'nowrap' }}>
                         {row.userName || '—'}
                     </span>
                 </div>
@@ -451,10 +452,11 @@ export default function ActivityLogPage() {
         },
         {
             header: 'التفاصيل',
+            style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <span
                     title={row.description}
-                    style={{ fontSize: '12px', color: C.textSecondary, cursor: 'default' }}
+                    style={{ fontSize: '12px', color: C.textSecondary, cursor: 'default', display: 'block', textAlign: 'center' }}
                 >
                     {toWesternNumerals(truncate(row.description, 60))}
                 </span>
