@@ -104,10 +104,22 @@ export default function Sidebar({
         try {
             if (isSuperAdmin) return true;
             if (!featureKey || featureKey === 'dashboard') return true;
+
+            // سجل النشاط يحتاج تفعيل صريح من السوبر أدمن حتى للـ admin
+            // نتحقق من featuresRaw مباشرةً لتجنب الـ default الذي يشمل الكل
+            if (featureKey === 'activity_log') {
+                if (!featuresRaw) return false; // لا يظهر إذا لم يكن هناك اشتراك
+                try {
+                    const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
+                    if (Array.isArray(parsed)) return parsed.includes('activity_log');
+                    return 'activity_log' in (parsed || {});
+                } catch { return false; }
+            }
+
             const section = navSections.find(s => s.featureKey === featureKey);
             return section?.links?.some(l => hasPage(featureKey, l.id)) ?? true;
         } catch { return true; }
-    }, [isSuperAdmin, hasPage]);
+    }, [isSuperAdmin, hasPage, featuresRaw]);
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
         const initialState: Record<string, boolean> = {};
