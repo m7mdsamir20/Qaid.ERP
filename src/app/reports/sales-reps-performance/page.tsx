@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface PerformanceItem {
     id: string;
@@ -221,40 +222,37 @@ export default function SalesRepsPerformanceReportPage() {
                     </div>
                 ) : (
                     <>
-                        {/* KPI Cards Row */}
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><BarChart3 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي المبيعات')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totals.sales} /></span>
-                                </div>
-                            </div>
-                            
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><CheckCircle2 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي المحصل')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totals.collected} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '10px' }}><ArrowDownRight size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المتبقي (آجل)')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={totals.remaining} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(245,158,11,0.08)', color: '#f59e0b', borderRadius: '10px' }}><Target size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المبيعات المستهدفة')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totals.target} /></span>
-                                </div>
-                            </div>
-                        </div>
+                        {/* KPI Cards Row — يستخدم StatCard الموحّد */}
+                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي المبيعات')}
+                                value={fmt(totals.sales)}
+                                suffix={sym}
+                                icon={<BarChart3 size={18} />}
+                                color="#256af4"
+                            />
+                            <StatCard
+                                label={t('إجمالي المحصل')}
+                                value={fmt(totals.collected)}
+                                suffix={sym}
+                                icon={<CheckCircle2 size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('المتبقي (آجل)')}
+                                value={fmt(totals.remaining)}
+                                suffix={sym}
+                                icon={<ArrowDownRight size={18} />}
+                                color="#ef4444"
+                            />
+                            <StatCard
+                                label={t('المبيعات المستهدفة')}
+                                value={fmt(totals.target)}
+                                suffix={sym}
+                                icon={<Target size={18} />}
+                                color="#f59e0b"
+                            />
+                        </StatCardGrid>
 
                         {/* Performance Table */}
                         <div style={{ marginBottom: '30px' }}>

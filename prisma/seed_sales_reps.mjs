@@ -47,8 +47,7 @@ async function main() {
                 phone: r.phone,
                 commissionRate: r.commissionRate,
                 commissionType: r.commissionType,
-                companyId,
-                branchId
+                companyId
             }
         });
         reps.push(rep);

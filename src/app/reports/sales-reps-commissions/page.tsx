@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface InvoiceDetail {
     id: string;
@@ -345,40 +346,37 @@ export default function SalesRepresentativesReportPage() {
                     </div>
                 ) : (
                     <>
-                        {/* KPI Cards Row */}
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><BarChart3 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي مبيعات المناديب')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totals.sales} /></span>
-                                </div>
-                            </div>
-                            
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><Wallet size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيلات')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={totals.collected} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(239, 68, 68, 0.08)', color: '#ef4444', borderRadius: '10px' }}><ArrowDownRight size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي المتبقي (آجل)')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={totals.remaining} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: 'rgba(139, 92, 246, 0.06)', padding: '16px', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)', display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(139, 92, 246, 0.12)', color: '#a78bfa', borderRadius: '10px' }}><Award size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: '#c084fc', fontFamily: CAIRO }}>{t('إجمالي العمولات المستحقة')}</p>
-                                    <span style={{ fontSize: '17px', fontWeight: 700, color: '#a78bfa', fontFamily: OUTFIT }}><Currency amount={totals.commission} /></span>
-                                </div>
-                            </div>
-                        </div>
+                        {/* KPI Cards Row — يستخدم StatCard الموحّد */}
+                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي مبيعات المناديب')}
+                                value={fmt(totals.sales)}
+                                suffix={sym}
+                                icon={<BarChart3 size={18} />}
+                                color="#256af4"
+                            />
+                            <StatCard
+                                label={t('إجمالي التحصيلات')}
+                                value={fmt(totals.collected)}
+                                suffix={sym}
+                                icon={<Wallet size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('إجمالي المتبقي (آجل)')}
+                                value={fmt(totals.remaining)}
+                                suffix={sym}
+                                icon={<ArrowDownRight size={18} />}
+                                color="#ef4444"
+                            />
+                            <StatCard
+                                label={t('إجمالي العمولات المستحقة')}
+                                value={fmt(totals.commission)}
+                                suffix={sym}
+                                icon={<Award size={18} />}
+                                color="#a78bfa"
+                            />
+                        </StatCardGrid>
 
                         {/* Representatives Summary Table */}
                         <div style={{ marginBottom: '30px' }}>

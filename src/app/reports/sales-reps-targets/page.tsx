@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface TargetItem {
     id: string;
@@ -233,32 +234,30 @@ export default function SalesRepsTargetsReportPage() {
                     </div>
                 ) : (
                     <>
-                        {/* KPI Cards Row */}
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><Target size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي المبيعات المستهدفة')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={summary.totalTarget} /></span>
-                                </div>
-                            </div>
-                            
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><CheckCircle2 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي المبيعات الفعلية')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={summary.totalAchieved} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(139,92,246,0.08)', color: '#a78bfa', borderRadius: '10px' }}><Award size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('متوسط نسبة الإنجاز')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 700, color: '#a78bfa', fontFamily: OUTFIT }}>{summary.percent.toFixed(1)}%</span>
-                                </div>
-                            </div>
-                        </div>
+                        {/* KPI Cards Row — يستخدم StatCard الموحّد */}
+                        <StatCardGrid cols={3} style={{ marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي المبيعات المستهدفة')}
+                                value={fmt(summary.totalTarget)}
+                                suffix={sym}
+                                icon={<Target size={18} />}
+                                color="#256af4"
+                            />
+                            <StatCard
+                                label={t('إجمالي المبيعات الفعلية')}
+                                value={fmt(summary.totalAchieved)}
+                                suffix={sym}
+                                icon={<CheckCircle2 size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('متوسط نسبة الإنجاز')}
+                                value={summary.percent.toFixed(1)}
+                                suffix="%"
+                                icon={<Award size={18} />}
+                                color="#a78bfa"
+                            />
+                        </StatCardGrid>
 
                         {/* Targets Table */}
                         <div style={{ marginBottom: '30px' }}>

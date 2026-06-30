@@ -14,6 +14,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import StatCard, { StatCardGrid } from '@/components/StatCard';
 
 interface CollectionItem {
     id: string;
@@ -275,40 +276,37 @@ export default function SalesRepsCollectionsReportPage() {
                     </div>
                 ) : (
                     <>
-                        {/* KPI Cards Row */}
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><CheckCircle2 size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيلات')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={summary.total} /></span>
-                                </div>
-                            </div>
-                            
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(16,185,129,0.08)', color: '#10b981', borderRadius: '10px' }}><Wallet size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('التحصيل النقدي')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={summary.cash} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(37,106,244,0.08)', color: '#256af4', borderRadius: '10px' }}><Landmark size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('التحويل البنكي')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={summary.transfer} /></span>
-                                </div>
-                            </div>
-
-                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(245,158,11,0.08)', color: '#f59e0b', borderRadius: '10px' }}><AlertTriangle size={20} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('شيكات معلقة')}</p>
-                                    <span style={{ fontSize: '15.5px', fontWeight: 600, color: '#f59e0b', fontFamily: OUTFIT }}><Currency amount={summary.checkPending} /></span>
-                                </div>
-                            </div>
-                        </div>
+                        {/* KPI Cards Row — يستخدم StatCard الموحّد */}
+                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                            <StatCard
+                                label={t('إجمالي التحصيلات')}
+                                value={fmt(summary.total)}
+                                suffix={sym}
+                                icon={<CheckCircle2 size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('التحصيل النقدي')}
+                                value={fmt(summary.cash)}
+                                suffix={sym}
+                                icon={<Wallet size={18} />}
+                                color="#10b981"
+                            />
+                            <StatCard
+                                label={t('التحويل البنكي')}
+                                value={fmt(summary.transfer)}
+                                suffix={sym}
+                                icon={<Landmark size={18} />}
+                                color="#256af4"
+                            />
+                            <StatCard
+                                label={t('شيكات معلقة')}
+                                value={fmt(summary.checkPending)}
+                                suffix={sym}
+                                icon={<AlertTriangle size={18} />}
+                                color="#f59e0b"
+                            />
+                        </StatCardGrid>
 
                         {/* Collections Table */}
                         <div style={{ marginBottom: '30px' }}>
