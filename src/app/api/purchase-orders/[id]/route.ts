@@ -35,7 +35,7 @@ export const PUT = withProtection(async (request: NextRequest, session: any, bod
 
     const existing = await prisma.purchaseOrder.findUnique({
         where: { id, companyId },
-        select: { id: true, status: true, orderNumber: true, supplierId: true },
+        select: { id: true, status: true, orderNumber: true, supplierId: true, subtotal: true, discount: true, taxRate: true },
     });
 
     if (!existing) return NextResponse.json({ error: 'أمر الشراء غير موجود' }, { status: 404 });
@@ -119,14 +119,20 @@ export const PUT = withProtection(async (request: NextRequest, session: any, bod
 
     const {
         supplierId, warehouseId, projectId, date, expectedDeliveryDate,
-        notes, taxRate, lines,
+        notes, taxRate, lines, discount,
     } = body;
 
     const subtotal = lines
         ? lines.reduce((s: number, l: any) => s + (Number(l.quantity) * Number(l.price) - Number(l.discount || 0)), 0)
         : undefined;
-    const taxAmount = subtotal !== undefined ? subtotal * (Number(taxRate || 0) / 100) : undefined;
-    const total = subtotal !== undefined && taxAmount !== undefined ? subtotal + taxAmount : undefined;
+
+    const subtotalVal = subtotal !== undefined ? subtotal : existing.subtotal;
+    const discountVal = discount !== undefined ? Number(discount || 0) : existing.discount;
+    const taxRateVal = taxRate !== undefined ? Number(taxRate || 0) : existing.taxRate;
+
+    const afterDiscount = Math.max(0, subtotalVal - discountVal);
+    const taxAmount = afterDiscount * (taxRateVal / 100);
+    const total = afterDiscount + taxAmount;
 
     const updateData: any = {};
     if (supplierId !== undefined) updateData.supplierId = supplierId;
@@ -135,10 +141,11 @@ export const PUT = withProtection(async (request: NextRequest, session: any, bod
     if (date !== undefined) updateData.date = new Date(date);
     if (expectedDeliveryDate !== undefined) updateData.expectedDeliveryDate = expectedDeliveryDate ? new Date(expectedDeliveryDate) : null;
     if (notes !== undefined) updateData.notes = notes || null;
-    if (taxRate !== undefined) updateData.taxRate = Number(taxRate);
+    if (taxRate !== undefined) updateData.taxRate = taxRateVal;
+    if (discount !== undefined) updateData.discount = discountVal;
     if (subtotal !== undefined) updateData.subtotal = subtotal;
-    if (taxAmount !== undefined) updateData.taxAmount = taxAmount;
-    if (total !== undefined) updateData.total = total;
+    updateData.taxAmount = taxAmount;
+    updateData.total = total;
 
     const updated = await prisma.$transaction(async (tx) => {
         if (lines) {

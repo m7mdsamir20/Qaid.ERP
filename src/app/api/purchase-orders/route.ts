@@ -75,7 +75,7 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
 
     const {
         supplierId, warehouseId, projectId, date, expectedDeliveryDate,
-        notes, taxRate, lines,
+        notes, taxRate, lines, discount,
     } = body;
 
     if (!supplierId) return NextResponse.json({ error: 'يرجى تحديد المورد' }, { status: 400 });
@@ -84,8 +84,10 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
     const subtotal = lines.reduce((s: number, l: any) => {
         return s + (Number(l.quantity) * Number(l.price) - Number(l.discount || 0));
     }, 0);
-    const taxAmount = subtotal * (Number(taxRate || 0) / 100);
-    const total = subtotal + taxAmount;
+    const discountVal = Number(discount || 0);
+    const afterDiscount = Math.max(0, subtotal - discountVal);
+    const taxAmount = afterDiscount * (Number(taxRate || 0) / 100);
+    const total = afterDiscount + taxAmount;
 
     const result = await prisma.$transaction(async (tx) => {
         const lastOrder = await tx.purchaseOrder.findFirst({
@@ -110,6 +112,7 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
                 projectId: projectId || null,
                 status: 'draft',
                 subtotal,
+                discount: discountVal,
                 taxRate: Number(taxRate || 0),
                 taxAmount,
                 total,

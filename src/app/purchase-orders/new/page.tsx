@@ -39,6 +39,7 @@ export default function NewPurchaseOrderPage() {
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [projects, setProjects] = useState<Project[]>([]);
     const [items, setItems] = useState<Item[]>([]);
+    const [taxSettings, setTaxSettings] = useState<any>(null);
 
     const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -72,11 +73,15 @@ export default function NewPurchaseOrderPage() {
         expectedDeliveryDate: '',
         notes: '',
         taxRate: 0,
+        discountAmt: 0,
+        discountPct: 0,
     });
 
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
-    const taxAmount = subtotal * (form.taxRate / 100);
-    const total = subtotal + taxAmount;
+    const discountAmt = parseFloat(String(form.discountAmt)) || 0;
+    const afterDiscount = Math.max(0, subtotal - discountAmt);
+    const taxAmount = taxSettings?.enabled ? afterDiscount * ((parseFloat(String(form.taxRate)) || 0) / 100) : 0;
+    const total = afterDiscount + taxAmount;
 
     const loadData = useCallback(async () => {
         try {
@@ -95,6 +100,18 @@ export default function NewPurchaseOrderPage() {
 
             let fetchedItems = Array.isArray(its) ? its : (its.items || []);
             setItems(fetchedItems);
+
+            const taxRes = await fetch('/api/settings');
+            if (taxRes.ok) {
+                const taxData = await taxRes.json();
+                if (taxData.company?.taxSettings) {
+                    const ts = typeof taxData.company.taxSettings === 'string' ? JSON.parse(taxData.company.taxSettings) : taxData.company.taxSettings;
+                    setTaxSettings(ts);
+                    if (ts.enabled) {
+                        setForm(f => ({ ...f, taxRate: ts.rate }));
+                    }
+                }
+            }
 
             if (Array.isArray(whs) && whs.length > 0) {
                 const lastWh = typeof window !== 'undefined' ? localStorage.getItem('last_warehouse_id') : null;
@@ -222,7 +239,8 @@ export default function NewPurchaseOrderPage() {
                     date: form.date,
                     expectedDeliveryDate: form.expectedDeliveryDate || undefined,
                     notes: form.notes,
-                    taxRate: Number(form.taxRate),
+                    taxRate: taxSettings?.enabled ? Number(form.taxRate) : 0,
+                    discount: parseFloat(String(form.discountAmt)) || 0,
                     lines: lines.map(l => ({
                         itemId: l.itemId,
                         description: l.description,
@@ -600,32 +618,93 @@ export default function NewPurchaseOrderPage() {
                         {/* Totals Box */}
                         <div style={SC}>
                             <div style={STitle}><Info size={12} /> {t('ملخص الحسابات')}</div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي البنود')}</span>
-                                    <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{fMoney(subtotal)}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                
+                                {/* إجمالي الأصناف */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
+                                    <span style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي البنود')}</span>
+                                    <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{fMoney(subtotal)}</span>
                                 </div>
 
-                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px' }}>
-                                    <label style={{ ...LS, fontSize: '11px', marginBottom: '6px' }}>{t('نسبة الضريبة %')}</label>
-                                    <div style={{ position: 'relative' }}>
-                                        <input
-                                            type="number"
-                                            value={form.taxRate}
-                                            onChange={e => setForm(f => ({ ...f, taxRate: Math.min(100, Math.max(0, Number(e.target.value) || 0)) }))}
-                                            min="0" max="100" step="1"
-                                            style={{ ...IS, height: '38px', fontSize: '14px', fontFamily: OUTFIT, fontWeight: 600, textAlign: 'center' }}
-                                        />
+                                {/* الخصم */}
+                                <div style={{
+                                    background: C.subtle,
+                                    border: `1px solid ${C.border}`,
+                                    borderRadius: '10px',
+                                    padding: '8px 12px',
+                                    marginTop: '8px'
+                                }}>
+                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span>{t('الخصم')}</span>
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                        <div style={{ position: 'relative' }}>
+                                            <PriceInput
+                                                value={form.discountAmt || 0}
+                                                onChange={val => {
+                                                    setForm(f => ({
+                                                        ...f,
+                                                        discountAmt: val,
+                                                        discountPct: subtotal > 0 ? Number(((val / subtotal) * 100).toFixed(2)) : 0,
+                                                    }));
+                                                }}
+                                                style={{ height: '34px', fontSize: '13px' }}
+                                                textAlign="center"
+                                            />
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
+                                        </div>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="number" min="0" max="100" placeholder="0"
+                                                value={form.discountPct || ''}
+                                                onChange={e => {
+                                                    const pct = parseFloat(e.target.value) || 0;
+                                                    setForm(f => ({
+                                                        ...f,
+                                                        discountPct: pct,
+                                                        discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
+                                                    }));
+                                                }}
+                                                style={{ ...IS, height: '34px', fontSize: '13px', textAlign: 'start' }}
+                                                onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {taxAmount > 0 && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginTop: '4px' }}>
-                                        <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('قيمة الضريبة')}</span>
-                                        <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: '#fbbf24' }}>+{fMoney(taxAmount)}</span>
+                                {/* الضريبة */}
+                                {taxSettings?.enabled && (
+                                    <div style={{ padding: '8px 12px', background: C.subtle, borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                            <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 600 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="number" step="0.01" value={form.taxRate}
+                                                    onChange={e => setForm(f => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
+                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
+                                                    onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                            </div>
+                                            <div style={{ position: 'relative' }}>
+                                                <PriceInput
+                                                    value={taxAmount}
+                                                    onChange={val => {
+                                                        const afterDisc = subtotal - (form.discountAmt || 0);
+                                                        setForm(f => ({
+                                                            ...f,
+                                                            taxRate: afterDisc > 0 ? (val / afterDisc) * 100 : f.taxRate
+                                                        }));
+                                                    }}
+                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 600, color: C.primary }}
+                                                    textAlign="center"
+                                                    disabled
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
 
+                                {/* المجموع النهائي */}
                                 <div style={{
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                                     background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
