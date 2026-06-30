@@ -183,7 +183,7 @@ export function generateA4HTML(
     const tableStyle = 'bordered'; // Hardcoded default
     const tableBorder = '1px solid #999';
     const cellBorder = '1px solid #999';
-    const rowBorder = 'none';
+    const rowBorder = '1px solid #999';
 
     const isA5 = false; // Default A4
     const paperW = '210mm';
@@ -745,6 +745,7 @@ export function generateQuotationHTML(
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
+    const isSaudi = country === 'SA';
 
     const qAddrLabels = {
         region: isBilingual ? 'المنطقة / Region' : 'المنطقة',
@@ -776,7 +777,17 @@ export function generateQuotationHTML(
     const taxAmt = Number(quotation.taxAmount || 0);
     const total = Number(quotation.total || subtotal + taxAmt);
     const date = new Date(quotation.date || new Date()).toLocaleDateString('en-ZA');
-    const quoNum = String(quotation.quotationNumber || 1).padStart(5, '0');
+    const dateISO = new Date(quotation.date || new Date()).toISOString();
+    const quoNum = String(quotation.quotationNumber || quotation.orderNumber || 1).padStart(5, '0');
+
+    // ZATCA QR Code for Saudi Arabia
+    const zatcaQR = isSaudi ? generateZatcaTLV(
+        co.name,
+        co.tax || '000000000000000',
+        dateISO,
+        total.toFixed(2),
+        taxAmt.toFixed(2)
+    ) : '';
 
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
@@ -830,39 +841,67 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
 <body>
 <div class="page">
     <div class="header">
-        <div class="co-block">
-            <div style="text-align:right">
-              ${country === 'EG'
-            ? `<div style="text-align:right;">
+        <div class="logo-block" style="flex:1.2; text-align:right">
+            ${isSaudi
+                ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
                      <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
                      ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
                      ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
                    </div>`
-            : `<div>
-                     <span class="co-name">${co.name}</span>${co.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${co.nameEn}</span>` : ''}
-                   </div>
-                   <div class="co-line">${co.addrLines.map(a => a.value).join(' - ')}</div>
-                   <div class="co-line">
-                       ${co.phone ? `الهاتف: ${co.phone}` : ''}
-                       ${co.tax ? ` ${co.phone ? '| ' : ''}${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong>` : ''}
-                   </div>`
-        }
-            </div>
+                : (country === 'EG'
+                    ? `<div style="text-align:right;">
+                         <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
+                         <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
+                         ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
+                         ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
+                         ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
+                       </div>`
+                    : `<div>
+                         <span class="co-name">${co.name}</span>${co.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${co.nameEn}</span>` : ''}
+                       </div>
+                       <div class="co-line">${co.addrLines.map(a => a.value).join(' - ')}</div>
+                       <div class="co-line">
+                           ${co.phone ? `الهاتف: ${co.phone}` : ''}
+                           ${co.tax ? ` ${co.phone ? '| ' : ''}${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong>` : ''}
+                       </div>`
+                )
+            }
         </div>
         <div class="header-center">
             <div class="inv-title">${title}</div>
             ${isBilingual ? `<div class="inv-title-en">${titleEn}</div>` : ''}
+            ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">عرض سعر ضريبي / Tax Quotation</div>` : ''}
             <div class="inv-num" style="margin-top:6px; font-size:13px;">QUO-${quoNum}</div>
             <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
         </div>
-        <div class="logo-block">
-            ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
+        <div class="co-block" style="flex:1.2; text-align:left">
+            ${isSaudi
+                ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />`
+                : (co.logo ? `<img src="${co.logo}" alt=""/>` : '')
+            }
         </div>
     </div>
 
     <div class="info-wrap">
+        <!-- بيانات البائع -->
+        ${isSaudi ? `
+        <div class="info-box">
+            <div class="info-title">${blInline('من', 'From')}</div>
+            <div class="info-body">
+                <div class="info-row"><span class="ik">${blInline('الشركة', 'Company')}:</span><span class="iv">${co.name}${co.nameEn ? ` / ${co.nameEn}` : ''}</span></div>
+                ${isBilingual
+                    ? co.addrLines.map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')
+                    : co.addrLines.length > 0 ? `<div class="info-row"><span class="ik">العنوان:</span><span class="iv">${co.addrLines.map(a => a.value).join('، ')}</span></div>` : ''
+                }
+                ${co.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">&rlm;${co.phone}</span></div>` : ''}
+                ${co.tax ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No')}:</span><span class="iv">&rlm;${co.tax}</span></div>` : ''}
+                ${co.cr ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R')}:</span><span class="iv">&rlm;${co.cr}</span></div>` : ''}
+            </div>
+        </div>
+        ` : ''}
+
         <div class="info-box">
             <div class="info-title">${blInline('بيانات العميل', 'Customer Info')}</div>
             <div class="info-body">
@@ -870,10 +909,10 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                 ${quotation.customer?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${quotation.customer.phone}</span></div>` : ''}
                 ${quotation.customer?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${quotation.customer.taxNumber}</span></div>` : ''}
                 ${(() => {
-            const parts = [quotation.customer?.addressRegion, quotation.customer?.addressCity, quotation.customer?.addressDistrict, quotation.customer?.addressStreet].filter(Boolean) as string[];
-            if (!parts.length) return '';
-            return `<div class="info-row"><span class="ik">${blInline('العنوان', 'Address')}:</span><span class="iv">${parts.join('، ')}</span></div>`;
-        })()}
+                    const parts = [quotation.customer?.addressRegion, quotation.customer?.addressCity, quotation.customer?.addressDistrict, quotation.customer?.addressStreet].filter(Boolean) as string[];
+                    if (!parts.length) return '';
+                    return `<div class="info-row"><span class="ik">${blInline('العنوان', 'Address')}:</span><span class="iv">${parts.join('، ')}</span></div>`;
+                })()}
             </div>
         </div>
     </div>
@@ -921,7 +960,50 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </tbody>
     </table>
 
-    <div class="summary-wrap">
+    <div class="summary-wrap" style="display: flex; flex-direction: column; align-items: flex-end; width: 100%;">
+        ${isSaudi ? `
+        <table style="width: 340px; display: inline-table; border-collapse: collapse; border: 1.5px solid #333; background: #fff; line-height: 1.4; margin-top: 10px;">
+            <tbody>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">الإجمالي غير شامل الضريبة</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total (Excluding VAT)</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; width: 120px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                ${Number(quotation.discount || 0) > 0 ? `
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">مجموع الخصومات</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Discounts</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${Number(quotation.discount).toLocaleString('en-US')} ${sym}</td>
+                </tr>` : ''}
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">الإجمالي الخاضع للضريبة</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Taxable Amount</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - Number(quotation.discount || 0)).toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                ${taxAmt > 0 ? `
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">مجموع ضريبة القيمة المضافة (${quotation.taxRate}%)</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total VAT</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${taxAmt.toLocaleString('en-US')} ${sym}</td>
+                </tr>` : ''}
+                <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 8px;">
+                        <div style="font-weight:900; color:#111;">إجمالي المبلغ المستحق</div>
+                        <div style="font-weight:900; color:#444; font-size:90%; font-family: sans-serif;">Total Amount Due</div>
+                    </td>
+                    <td style="text-align:center; font-weight:950; font-size:14px; color:#111; border: 1px solid #ccc; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+            </tbody>
+        </table>
+        ` : `
         <div class="totals">
             <div class="t-row">
                 <span>${blInline('المجموع الفرعي', 'Subtotal')}:</span>
@@ -942,6 +1024,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                 <span>${total.toLocaleString('en-US')} ${sym}</span>
             </div>
         </div>
+        `}
     </div>
 
     ${options.terms || quotation.notes ? `
