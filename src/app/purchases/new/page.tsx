@@ -288,6 +288,12 @@ export default function NewPurchasePage() {
     const handleSubmit = async (andPrint = false) => {
         setErrorMsg('');
         setFieldErrors({});
+
+        if (isAllBranches) {
+            setErrorMsg(t('يرجى اختيار فرع محدد من قائمة الفروع أعلى الصفحة أولاً'));
+            return;
+        }
+
         const errors: Record<string, string> = {};
 
         if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد');

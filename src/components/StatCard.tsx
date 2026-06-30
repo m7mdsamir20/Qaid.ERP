@@ -103,13 +103,15 @@ export function StatCardGrid({
     children,
     cols = 3,
     style,
+    ...props
 }: {
     children: React.ReactNode;
     cols?: number;
     style?: React.CSSProperties;
+    [key: string]: any;
 }) {
     return (
-        <div style={{ ...STAT_CARD_GRID(cols), ...style }}>
+        <div style={{ ...STAT_CARD_GRID(cols), ...style }} {...props}>
             {children}
         </div>
     );

@@ -966,7 +966,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </div>
     </div>
 </div>
-${options.noAutoPrint ? '' : '<script>window.onload=()=>{window.print();setTimeout(()=>window.close(),500);};</script>'}
+${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
 

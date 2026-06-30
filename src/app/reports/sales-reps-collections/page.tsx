@@ -277,7 +277,7 @@ export default function SalesRepsCollectionsReportPage() {
                 ) : (
                     <>
                         {/* KPI Cards Row — يستخدم StatCard الموحّد */}
-                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                        <StatCardGrid data-print-include cols={4} style={{ marginBottom: '24px' }}>
                             <StatCard
                                 label={t('إجمالي التحصيلات')}
                                 value={fmt(summary.total)}

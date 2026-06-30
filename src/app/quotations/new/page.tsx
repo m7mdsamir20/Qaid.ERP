@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import ContentSkeleton from '@/components/ContentSkeleton';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -35,6 +35,12 @@ export default function NewQuotationPage() {
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const activeBranchId = (session?.user as any)?.activeBranchId;
+    const allBranches: any[] = (session?.user as any)?.branches || [];
+    const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
+    const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
+    const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
+
     const { symbol: cSymbol } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -232,6 +238,12 @@ export default function NewQuotationPage() {
         setErrorMsg('');
         setFieldErrors({});
 
+        if (isAllBranches) {
+            setErrorMsg(t('يرجى اختيار فرع محدد من قائمة الفروع أعلى الصفحة أولاً'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
         if (lines.length === 0) {
             setFieldErrors(prev => ({ ...prev, entryItemId: t('يجب إضافة صنف واحد على الأقل') }));
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -329,6 +341,27 @@ export default function NewQuotationPage() {
                     icon={FileText}
                     backUrl="/quotations"
                 />
+
+                {isAllBranches && (
+                    <div style={{
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        padding: '14px 20px', marginBottom: '16px',
+                        background: 'rgba(251,191,36,0.08)',
+                        border: '1px solid rgba(251,191,36,0.3)',
+                        borderRadius: '12px',
+                        fontFamily: CAIRO,
+                    }}>
+                        <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
+                        <div>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                                {t('يرجى تحديد فرع أولاً')}
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                                {t('أنت حالياً على وضع "كل الفروع" — يجب اختيار فرع محدد من قائمة الفروع أعلى الصفحة للتمكن من حفظ عرض السعر.')}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {errorMsg && (
                     <div style={{ 

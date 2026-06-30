@@ -347,7 +347,7 @@ export default function SalesRepresentativesReportPage() {
                 ) : (
                     <>
                         {/* KPI Cards Row — يستخدم StatCard الموحّد */}
-                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                        <StatCardGrid data-print-include cols={4} style={{ marginBottom: '24px' }}>
                             <StatCard
                                 label={t('إجمالي مبيعات المناديب')}
                                 value={fmt(totals.sales)}

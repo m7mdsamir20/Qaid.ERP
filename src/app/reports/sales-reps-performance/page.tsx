@@ -223,7 +223,7 @@ export default function SalesRepsPerformanceReportPage() {
                 ) : (
                     <>
                         {/* KPI Cards Row — يستخدم StatCard الموحّد */}
-                        <StatCardGrid cols={4} style={{ marginBottom: '24px' }}>
+                        <StatCardGrid data-print-include cols={4} style={{ marginBottom: '24px' }}>
                             <StatCard
                                 label={t('إجمالي المبيعات')}
                                 value={fmt(totals.sales)}

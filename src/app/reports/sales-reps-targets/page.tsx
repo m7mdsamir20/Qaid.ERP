@@ -235,7 +235,7 @@ export default function SalesRepsTargetsReportPage() {
                 ) : (
                     <>
                         {/* KPI Cards Row — يستخدم StatCard الموحّد */}
-                        <StatCardGrid cols={3} style={{ marginBottom: '24px' }}>
+                        <StatCardGrid data-print-include cols={3} style={{ marginBottom: '24px' }}>
                             <StatCard
                                 label={t('إجمالي المبيعات المستهدفة')}
                                 value={fmt(summary.totalTarget)}

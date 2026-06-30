@@ -1,38 +1,24 @@
 'use client';
+import ContentSkeleton from '@/components/ContentSkeleton';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import PageHeader from '@/components/PageHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useTranslation } from '@/lib/i18n';
+import { ShoppingBag, Plus, Trash2, Package, Info, Loader2, Search, X, ArrowRight, Pencil, AlertCircle, Save, CheckCircle } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
-import {
-    C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, BTN_SUCCESS,
-    focusIn, focusOut,
-} from '@/constants/theme';
-import {
-    ShoppingBag, Plus, Trash2, Package, Info, Loader2, X, Save, CheckCircle,
-} from 'lucide-react';
 
-interface Customer { id: string; name: string; phone?: string; }
+interface Customer { id: string; name: string; phone?: string; balance: number; }
 interface Warehouse { id: string; name: string; }
-interface Item { id: string; code: string; name: string; sellPrice: number; unit?: any; stocks?: any[]; }
+interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; stocks?: any[]; }
 interface SalesRep { id: string; name: string; }
 interface Project { id: string; name: string; projectNumber: string; }
-
-interface OrderLine {
-    itemId: string;
-    itemName: string;
-    unit: string;
-    description: string;
-    quantity: number;
-    price: number;
-    discount: number;
-    total: number;
-    stock: number;
-}
+interface OrderLine { itemId: string; itemName: string; unit: string; quantity: number; price: number; discount: number; total: number; stock: number; description?: string; }
 
 const getUnitName = (u: any) => !u ? '' : typeof u === 'string' ? u : (u.name || u.nameEn || '');
 
@@ -41,11 +27,16 @@ export default function NewSalesOrderPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const { fMoneyJSX } = useCurrency();
-
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isContracting = businessType === 'CONTRACTING';
 
+    const activeBranchId = (session?.user as any)?.activeBranchId;
+    const allBranches: any[] = (session?.user as any)?.branches || [];
+    const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
+    const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
+    const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
+
+    const { symbol: cSymbol, fMoney } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -54,8 +45,29 @@ export default function NewSalesOrderPage() {
 
     const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const clearError = (field: string) => {
+        if (fieldErrors[field]) setFieldErrors(prev => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
+
+    const itemSelectRef = useRef<any>(null);
+    const qtyRef = useRef<HTMLInputElement>(null);
+    const priceRef = useRef<HTMLInputElement>(null);
+
+    const [lines, setLines] = useState<OrderLine[]>([]);
+    const [entryItemId, setEntryItemId] = useState('');
+    const [entryDescription, setEntryDescription] = useState('');
+    const [entryQty, setEntryQty] = useState<number | ''>(1);
+    const [entryPrice, setEntryPrice] = useState<number | ''>(0);
+    const [entryDiscount, setEntryDiscount] = useState<number | ''>(0);
+    const [entryStock, setEntryStock] = useState<number | null>(null);
 
     const [form, setForm] = useState({
         customerId: '',
@@ -69,20 +81,6 @@ export default function NewSalesOrderPage() {
         discount: 0,
     });
 
-    const [lines, setLines] = useState<OrderLine[]>([]);
-
-    // Line entry state
-    const [entryItemId, setEntryItemId] = useState('');
-    const [entryDescription, setEntryDescription] = useState('');
-    const [entryQty, setEntryQty] = useState<number | ''>(1);
-    const [entryPrice, setEntryPrice] = useState<number | ''>(0);
-    const [entryDiscount, setEntryDiscount] = useState<number | ''>(0);
-    const [entryStock, setEntryStock] = useState<number | null>(null);
-
-    const itemSelectRef = useRef<any>(null);
-    const qtyRef = useRef<HTMLInputElement>(null);
-
-    // Totals
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     const discountAmt = parseFloat(String(form.discount)) || 0;
     const afterDiscount = Math.max(0, subtotal - discountAmt);
@@ -100,13 +98,18 @@ export default function NewSalesOrderPage() {
             ]);
             const nextData = await nextR.json();
             setNextNum(nextData.nextNum || 1);
+
             const custData = await custR.json();
             setCustomers(Array.isArray(custData) ? custData : []);
 
             const whData = await whR.json();
             const whs = Array.isArray(whData) ? whData : [];
             setWarehouses(whs);
-            if (whs.length > 0) setForm(f => ({ ...f, warehouseId: whs[0].id }));
+            if (whs.length > 0) {
+                const lastWh = typeof window !== 'undefined' ? localStorage.getItem('last_warehouse_id') : null;
+                const defaultWh = (lastWh && whs.some((w: any) => w.id === lastWh)) ? lastWh : whs[0].id;
+                setForm(f => ({ ...f, warehouseId: defaultWh }));
+            }
 
             const itemData = await itemR.json();
             setItems(Array.isArray(itemData) ? itemData : (itemData.items || []));
@@ -130,17 +133,18 @@ export default function NewSalesOrderPage() {
 
     useEffect(() => { loadData(); }, [loadData]);
 
-    // Auto-set price when item selected
+    // Auto-set price and focus on item selected
     useEffect(() => {
         if (!entryItemId) return;
         const item = items.find(i => i.id === entryItemId);
         if (item) {
-            setEntryPrice(item.sellPrice);
+            setEntryPrice(item.sellPrice || 0);
+            clearError('entryItemId');
             setTimeout(() => { qtyRef.current?.focus(); qtyRef.current?.select(); }, 50);
         }
     }, [entryItemId, items]);
 
-    // Update stock for selected item + warehouse
+    // Update stock for selected item and warehouse
     useEffect(() => {
         if (!entryItemId || !form.warehouseId) { setEntryStock(null); return; }
         const item = items.find(i => i.id === entryItemId);
@@ -154,25 +158,45 @@ export default function NewSalesOrderPage() {
         if (!entryItemId) return;
         const item = items.find(i => i.id === entryItemId);
         if (!item) return;
+
         const qty = Number(entryQty) || 0;
         const price = Number(entryPrice) || 0;
         const disc = Number(entryDiscount) || 0;
-        if (qty <= 0) return;
+
+        if (qty <= 0) {
+            setFieldErrors(prev => ({ ...prev, entryQty: t('الكمية؟') }));
+            return;
+        }
 
         const lineTotal = Math.max(0, qty * price - disc);
         const stock = item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
 
-        setLines(prev => [...prev, {
-            itemId: item.id,
-            itemName: item.name,
-            unit: getUnitName(item.unit),
-            description: entryDescription,
-            quantity: qty,
-            price,
-            discount: disc,
-            total: lineTotal,
-            stock,
-        }]);
+        setLines(prev => {
+            const idx = prev.findIndex(l => l.itemId === entryItemId);
+            if (idx >= 0) {
+                const updated = [...prev];
+                const newQty = updated[idx].quantity + qty;
+                const newDisc = updated[idx].discount + disc;
+                updated[idx] = {
+                    ...updated[idx],
+                    quantity: newQty,
+                    discount: newDisc,
+                    total: Math.max(0, newQty * price - newDisc),
+                };
+                return updated;
+            }
+            return [...prev, {
+                itemId: item.id,
+                itemName: item.name,
+                unit: getUnitName(item.unit),
+                description: entryDescription || undefined,
+                quantity: qty,
+                price,
+                discount: disc,
+                total: lineTotal,
+                stock,
+            }];
+        });
 
         setEntryItemId('');
         setEntryDescription('');
@@ -187,9 +211,40 @@ export default function NewSalesOrderPage() {
         setLines(prev => prev.filter((_, i) => i !== idx));
     };
 
+    const editLine = (idx: number) => {
+        const l = lines[idx];
+        setEntryItemId(l.itemId);
+        setEntryQty(l.quantity);
+        setEntryPrice(l.price);
+        setEntryDiscount(l.discount);
+        setEntryDescription(l.description || '');
+        removeLine(idx);
+        setTimeout(() => { qtyRef.current?.focus(); }, 50);
+    };
+
     const handleSubmit = async (action: 'save' | 'approve') => {
         setErrorMsg('');
-        if (lines.length === 0) { setErrorMsg(t('يرجى إضافة صنف واحد على الأقل')); return; }
+        setFieldErrors({});
+
+        if (isAllBranches) {
+            setErrorMsg(t('يرجى اختيار فرع محدد من قائمة الفروع أعلى الصفحة أولاً'));
+            return;
+        }
+
+        const errors: Record<string, string> = {};
+        if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
+        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            setErrorMsg(t('يرجى استكمال البيانات المطلوبة'));
+            return;
+        }
+
+        if (lines.length === 0) {
+            setErrorMsg(t('يرجى إضافة صنف واحد على الأقل'));
+            return;
+        }
 
         setSubmitting(true);
         try {
@@ -197,13 +252,15 @@ export default function NewSalesOrderPage() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    ...form,
                     customerId: form.customerId || null,
                     warehouseId: form.warehouseId || null,
                     salesRepId: form.salesRepId || null,
                     projectId: form.projectId || null,
                     taxRate: parseFloat(String(form.taxRate)) || 0,
                     discount: parseFloat(String(form.discount)) || 0,
+                    date: form.date,
+                    expectedDeliveryDate: form.expectedDeliveryDate || null,
+                    notes: form.notes || null,
                     lines: lines.map(l => ({
                         itemId: l.itemId,
                         description: l.description || null,
@@ -223,7 +280,6 @@ export default function NewSalesOrderPage() {
 
             const order = await res.json();
 
-            // If approve is requested, send approve action
             if (action === 'approve') {
                 const appRes = await fetch(`/api/sales-orders/${order.id}`, {
                     method: 'PUT',
@@ -244,364 +300,486 @@ export default function NewSalesOrderPage() {
         }
     };
 
-    const fmt = (n: number) => formatNumber(Number(n || 0));
+    const selectedCustomer = customers.find(c => c.id === form.customerId);
 
-    if (loading) {
+    const SC: React.CSSProperties = {
+        background: C.card,
+        border: `1px solid ${C.border}`,
+        borderRadius: '16px',
+        padding: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+    };
+
+    const STitle: React.CSSProperties = {
+        fontSize: '13px', fontWeight: 600,
+        color: C.primary,
+        marginBottom: '16px',
+        display: 'flex', alignItems: 'center', gap: '8px',
+        fontFamily: CAIRO
+    };
+
+    const InlineError = ({ field }: { field: string }) => {
+        if (!fieldErrors[field]) return null;
         return (
-            <DashboardLayout>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px' }}>
-                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-                    <style jsx global>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-                </div>
-            </DashboardLayout>
+            <div style={{
+                position: 'absolute',
+                top: '-32px',
+                insetInlineStart: '4px',
+                fontSize: '11px',
+                color: '#fff',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                zIndex: 100,
+                boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                whiteSpace: 'nowrap',
+                animation: 'inlineErrorPush 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}>
+                <AlertCircle size={12} strokeWidth={3} />
+                {fieldErrors[field]}
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    insetInlineStart: '12px',
+                    width: '8px',
+                    height: '8px',
+                    background: '#b91c1c',
+                    transform: 'rotate(45deg)',
+                    borderRadius: '1px'
+                }} />
+            </div>
         );
-    }
+    };
+
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
                 <PageHeader
                     title={t('أمر بيع جديد')}
-                    subtitle={t('إنشاء أمر بيع جديد للعميل')}
+                    subtitle={t('إنشاء أمر بيع جديد وتخصيصه للفرع والمستودع')}
                     icon={ShoppingBag}
                     backUrl="/sales-orders"
                 />
 
+                {isAllBranches && (
+                    <div style={{
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        padding: '14px 20px', marginBottom: '16px',
+                        background: 'rgba(251,191,36,0.08)',
+                        border: '1px solid rgba(251,191,36,0.3)',
+                        borderRadius: '12px',
+                        fontFamily: CAIRO,
+                    }}>
+                        <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
+                        <div>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                                {t('يرجى تحديد فرع أولاً')}
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                                {t('أنت حالياً على وضع "كل الفروع" — يجب اختيار فرع محدد من قائمة الفروع أعلى الصفحة للتمكن من حفظ أمر البيع.')}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
-
+                    
                     {/* Left Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        
                         {/* Order Info */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: C.primary }}><Info size={12} /> {t('معلومات الأمر')}</div>
-                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                {/* Order Number Badge */}
+                            <div style={{ ...STitle, color: '#256af4' }}><ShoppingBag size={12} /> {t('بيانات أمر البيع')}</div>
+                            <div className="sales-form-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
                                 <div className="mobile-hide">
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('رقم الأمر')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الأمر')}</label>
+                                    </div>
+                                    <div style={{
+                                        height: '42px', borderRadius: '10px',
+                                        background: 'rgba(37, 106, 244,0.08)',
+                                        border: `1px solid ${C.border}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontFamily: OUTFIT, fontWeight: 600,
+                                        fontSize: '13px', color: '#60a5fa',
+                                        letterSpacing: '1px',
+                                        boxSizing: 'border-box'
+                                    }}>
                                         {`SO-${String(nextNum).padStart(5, '0')}`}
                                     </div>
                                 </div>
-                                {/* Customer */}
                                 <div>
-                                    <label style={LS}>{t('العميل')}</label>
-                                    <CustomSelect
-                                        value={form.customerId}
-                                        onChange={v => setForm(f => ({ ...f, customerId: v }))}
-                                        options={customers.map(c => ({ value: c.id, label: c.name, sub: c.phone }))}
-                                        placeholder={t('اختر العميل')}
-                                        icon={Info}
-                                    />
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{isContracting ? t('صاحب المشروع') : t('اسم العميل')}</label>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            value={form.customerId}
+                                            onChange={v => { setForm(f => ({ ...f, customerId: v })); clearError('customerId'); }}
+                                            icon={Search}
+                                            placeholder={t("ابحث واختر...")}
+                                            options={customers.map(c => ({ value: c.id, label: c.name }))}
+                                        />
+                                        <InlineError field="customerId" />
+                                    </div>
+                                    {selectedCustomer && (
+                                        <div style={{
+                                            marginTop: '6px', fontSize: '11px', fontWeight: 700,
+                                            color: selectedCustomer.balance < 0 ? '#fb7185' : selectedCustomer.balance > 0 ? '#4ade80' : '#94a3b8',
+                                            background: selectedCustomer.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : selectedCustomer.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)',
+                                            border: `1px solid ${selectedCustomer.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : selectedCustomer.balance > 0 ? 'rgba(74,222,128,0.22)' : 'var(--border-color)'}`,
+                                            display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '30px', width: 'fit-content'
+                                        }}>
+                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
+                                            {selectedCustomer.balance > 0 ? `${t('عليه لنا:')} ${fMoney(Math.abs(selectedCustomer.balance))}` : selectedCustomer.balance < 0 ? `${t('له عندنا:')} ${fMoney(Math.abs(selectedCustomer.balance))}` : t('متزن')}
+                                        </div>
+                                    )}
                                 </div>
-
-                                {/* Warehouse */}
                                 <div>
-                                    <label style={LS}>{t('المخزن')} <span style={{ color: C.danger }}>*</span></label>
-                                    <CustomSelect
-                                        value={form.warehouseId}
-                                        onChange={v => setForm(f => ({ ...f, warehouseId: v }))}
-                                        options={warehouses.map(w => ({ value: w.id, label: w.name }))}
-                                        placeholder={t('اختر المخزن')}
-                                        icon={Package}
-                                    />
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('المخزن')}</label>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            value={form.warehouseId}
+                                            onChange={v => { setForm(f => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }}
+                                            placeholder={t("اختر المخزن...")}
+                                            options={warehouses.map(w => ({ value: w.id, label: w.name }))}
+                                        />
+                                        <InlineError field="warehouseId" />
+                                    </div>
                                 </div>
-
-                                {/* Date */}
                                 <div>
-                                    <label style={LS}>{t('تاريخ الأمر')} <span style={{ color: C.danger }}>*</span></label>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الأمر')}</label>
+                                    </div>
                                     <input
                                         type="date"
                                         value={form.date}
                                         onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                                        style={IS}
+                                        style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }}
                                         onFocus={focusIn} onBlur={focusOut}
+                                        className="blue-date-icon"
                                     />
                                 </div>
-
-                                {/* Expected Delivery */}
                                 <div>
-                                    <label style={LS}>{t('تاريخ التسليم المتوقع')}</label>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تسليم متوقع')}</label>
+                                    </div>
                                     <input
                                         type="date"
                                         value={form.expectedDeliveryDate}
                                         onChange={e => setForm(f => ({ ...f, expectedDeliveryDate: e.target.value }))}
-                                        style={IS}
+                                        style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
                                         onFocus={focusIn} onBlur={focusOut}
+                                        className="gold-date-icon"
                                     />
                                 </div>
+                            </div>
 
-                                {/* Sales Rep */}
+                            {/* Extra Info (SalesRep & Project) */}
+                            <div className="sales-rep-grid" style={{ marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1.2fr 1.2fr', gap: '10px' }}>
                                 {salesReps.length > 0 && (
                                     <div>
-                                        <label style={LS}>{t('مندوب المبيعات')}</label>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مندوب المبيعات')}</label>
+                                        </div>
                                         <CustomSelect
                                             value={form.salesRepId}
                                             onChange={v => setForm(f => ({ ...f, salesRepId: v }))}
+                                            placeholder={t('بدون مندوب (بيع مباشر)')}
                                             options={salesReps.map(r => ({ value: r.id, label: r.name }))}
-                                            placeholder={t('اختر المندوب')}
                                         />
                                     </div>
                                 )}
-
-                                {/* Project (Contracting only) */}
-                                {isContracting && (
+                                {isContracting && projects.length > 0 && (
                                     <div>
-                                        <label style={LS}>{t('المشروع')}</label>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('المشروع')}</label>
+                                        </div>
                                         <CustomSelect
                                             value={form.projectId}
                                             onChange={v => setForm(f => ({ ...f, projectId: v }))}
-                                            options={projects.map(p => ({ value: p.id, label: p.name, sub: p.projectNumber }))}
-                                            placeholder={t('اختر المشروع')}
+                                            placeholder={t('اختر المشروع...')}
+                                            options={projects.map(p => ({ value: p.id, label: p.name }))}
                                         />
                                     </div>
                                 )}
                             </div>
-
-                            {/* Notes */}
-                            <div style={{ marginTop: '16px' }}>
-                                <label style={LS}>{t('ملاحظات')}</label>
-                                <textarea
-                                    value={form.notes}
-                                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                                    rows={3}
-                                    style={{ ...IS, height: 'auto', padding: '12px 16px', resize: 'vertical' }}
-                                    placeholder={t('ملاحظات إضافية...')}
-                                    onFocus={focusIn} onBlur={focusOut}
-                                />
-                            </div>
                         </div>
 
-                        {/* Lines Section */}
+                        {/* Items Addition Block */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: C.primary }}><Package size={12} /> {t('الأصناف')}</div>
-
-                            {/* Add Line Row */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto auto auto auto', gap: '8px', marginBottom: '16px', alignItems: 'end' }}>
+                            <div style={{ ...STitle, color: '#256af4' }}><Package size={12} /> {t('تفاصيل البنود')}</div>
+                            <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 80px 60px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
                                 <div>
-                                    <label style={{ ...LS, marginBottom: '4px' }}>{t('الصنف')}</label>
-                                    <CustomSelect
-                                        ref={itemSelectRef}
-                                        value={entryItemId}
-                                        onChange={v => setEntryItemId(v)}
-                                        options={items.map(i => ({ value: i.id, label: i.name, sub: i.code }))}
-                                        placeholder={t('اختر صنف')}
-                                    />
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('اسم الصنف')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            ref={itemSelectRef}
+                                            value={entryItemId}
+                                            onChange={v => setEntryItemId(v)}
+                                            icon={Search}
+                                            placeholder={t("اختر الصنف...")}
+                                            options={items.map(i => {
+                                                const s = i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0;
+                                                return {
+                                                    value: i.id,
+                                                    label: i.name,
+                                                    sub: `${i.code} | ${t('المتاح')}: ${s}`
+                                                };
+                                            })}
+                                        />
+                                        <InlineError field="entryItemId" />
+                                    </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, marginBottom: '4px' }}>{t('الكمية')}</label>
-                                    <input
-                                        ref={qtyRef}
-                                        type="number"
-                                        value={entryQty}
-                                        onChange={e => setEntryQty(e.target.value === '' ? '' : Number(e.target.value))}
-                                        style={{ ...IS, width: '80px' }}
-                                        min="0.01" step="0.01"
-                                        onFocus={e => e.target.select()} onBlur={focusOut}
-                                    />
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input
+                                            ref={qtyRef}
+                                            type="number"
+                                            value={entryQty}
+                                            onChange={e => { setEntryQty(e.target.value === '' ? '' : Number(e.target.value)); clearError('entryQty'); }}
+                                            onFocus={(e) => e.currentTarget.select()}
+                                            disabled={!entryItemId}
+                                            style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, textAlign: 'center', fontSize: '15px', fontWeight: 600, fontFamily: OUTFIT }}
+                                        />
+                                        <InlineError field="entryQty" />
+                                    </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, marginBottom: '4px' }}>{t('السعر')}</label>
-                                    <input
-                                        type="number"
-                                        value={entryPrice}
-                                        onChange={e => setEntryPrice(e.target.value === '' ? '' : Number(e.target.value))}
-                                        style={{ ...IS, width: '100px' }}
-                                        min="0" step="0.01"
-                                        onFocus={e => e.target.select()} onBlur={focusOut}
-                                    />
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <PriceInput
+                                            value={entryPrice}
+                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }}
+                                            disabled={!entryItemId}
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '15px', fontWeight: 600 }}
+                                            textAlign="center"
+                                        />
+                                        <InlineError field="entryPrice" />
+                                    </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, marginBottom: '4px' }}>{t('الخصم')}</label>
-                                    <input
-                                        type="number"
-                                        value={entryDiscount}
-                                        onChange={e => setEntryDiscount(e.target.value === '' ? '' : Number(e.target.value))}
-                                        style={{ ...IS, width: '80px' }}
-                                        min="0" step="0.01"
-                                        onFocus={e => e.target.select()} onBlur={focusOut}
-                                    />
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الخصم')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <PriceInput
+                                            value={entryDiscount}
+                                            onChange={val => { setEntryDiscount(val); clearError('entryDiscount'); }}
+                                            disabled={!entryItemId}
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '15px', fontWeight: 600 }}
+                                            textAlign="center"
+                                        />
+                                        <InlineError field="entryDiscount" />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label style={{ ...LS, marginBottom: '4px', opacity: 0 }}>{t('إضافة')}</label>
-                                    {entryStock !== null && (
-                                        <div style={{ fontSize: '11px', color: entryStock > 0 ? C.success : C.danger, marginBottom: '2px', fontFamily: OUTFIT }}>
-                                            {t('المتاح')}: {entryStock}
-                                        </div>
-                                    )}
-                                    <button
-                                        onClick={addLine}
-                                        disabled={!entryItemId || Number(entryQty) <= 0}
-                                        style={{
-                                            height: '42px', padding: '0 16px', borderRadius: '10px',
-                                            background: entryItemId ? C.primary : 'rgba(37,106,244,0.15)',
-                                            color: entryItemId ? '#fff' : C.textMuted,
-                                            border: 'none', cursor: entryItemId ? 'pointer' : 'not-allowed',
-                                            display: 'flex', alignItems: 'center', gap: '6px',
-                                            fontFamily: CAIRO, fontSize: '13px', fontWeight: 600,
-                                        }}
-                                    >
-                                        <Plus size={16} /> {t('إضافة')}
-                                    </button>
-                                </div>
+                                <button
+                                    onClick={addLine}
+                                    disabled={!entryItemId}
+                                    style={{
+                                        height: '38px', borderRadius: '10px', border: 'none',
+                                        background: !entryItemId ? 'rgba(37, 106, 244,0.3)' : C.primary,
+                                        color: '#fff', cursor: !entryItemId ? 'not-allowed' : 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', width: '60px', flexShrink: 0
+                                    }}
+                                >
+                                    <Plus size={22} />
+                                </button>
                             </div>
 
-                            {/* Description row */}
                             {entryItemId && (
-                                <div style={{ marginBottom: '12px' }}>
-                                    <label style={LS}>{t('وصف البند')}</label>
+                                <div style={{ animation: 'slideDown 0.2s ease', marginTop: '14px', marginBottom: '14px' }}>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('وصف اختياري للبند')}</label>
                                     <input
                                         type="text"
                                         value={entryDescription}
                                         onChange={e => setEntryDescription(e.target.value)}
-                                        style={IS}
-                                        placeholder={t('وصف اختياري...')}
+                                        placeholder={t("اكتب وصفاً أو ملاحظات إضافية لهذا البند...")}
+                                        style={{ ...IS, height: '38px', padding: '10px 12px', fontSize: '13px' }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                 </div>
                             )}
 
                             {/* Lines Table */}
-                            {lines.length > 0 && (
-                                <div className="scroll-table" style={{ borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                            <tr>
-                                                {['الصنف', 'الوصف', 'الكمية', 'الوحدة', 'السعر', 'الخصم', 'الإجمالي', ''].map((h, i) => (
-                                                    <th key={i} style={{ padding: '12px 16px', textAlign: 'start', fontSize: '11px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                                                        {t(h)}
-                                                    </th>
-                                                ))}
+                            <div className="scroll-table" style={{ marginTop: '10px', overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                                    <colgroup>
+                                        <col />
+                                        <col style={{ width: '65px' }} />
+                                        <col style={{ width: '60px' }} />
+                                        <col style={{ width: '90px' }} />
+                                        <col style={{ width: '80px' }} />
+                                        <col style={{ width: '95px' }} />
+                                        <col style={{ width: '60px' }} />
+                                    </colgroup>
+                                    <thead>
+                                        <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                                            <th style={{ textAlign: 'start', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الصنف')}</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصم')}</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {lines.map((l, i) => (
+                                            <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                            >
+                                                <td style={{ padding: '12px', overflow: 'hidden' }}>
+                                                    <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.description}</div>}
+                                                </td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap' }}>{l.unit}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '13px', whiteSpace: 'nowrap' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.danger, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{l.discount > 0 ? `-${formatNumber(l.discount)}` : '—'}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.total)}</td>
+                                                <td style={{ padding: '12px' }}>
+                                                    <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
+                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={14} /></button>
+                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={15} /></button>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            {lines.map((line, idx) => (
-                                                <tr key={idx} style={{ borderBottom: idx === lines.length - 1 ? 'none' : `1px solid ${C.border}44` }}>
-                                                    <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px' }}>
-                                                        {line.itemName}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '12px', maxWidth: '140px' }}>
-                                                        {line.description || '—'}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>
-                                                        {line.quantity}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '12px' }}>
-                                                        {line.unit || '—'}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary }}>
-                                                        {fmt(line.price)}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontWeight: 600, color: C.danger, fontSize: '12px' }}>
-                                                        {line.discount > 0 ? `-${fmt(line.discount)}` : '—'}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontWeight: 700, color: C.primary, fontSize: '14px' }}>
-                                                        {fmt(line.total)}
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px' }}>
-                                                        <button
-                                                            onClick={() => removeLine(idx)}
-                                                            style={{ width: '28px', height: '28px', borderRadius: '8px', border: `1px solid ${C.danger}40`, background: 'transparent', color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                                                        >
-                                                            <X size={12} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            )}
+                                        ))}
+                                        {lines.length === 0 && (
+                                            <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px', fontFamily: CAIRO }}>{t('لا توجد بنود مضافة')}</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Right Column */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', position: 'sticky', top: '20px' }}>
-                        {/* Totals */}
+                    {/* Right Column (Totals & Actions) */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        
+                        {/* Totals Box */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: C.primary }}><Info size={12} /> {t('الإجمالي')}</div>
-
+                            <div style={STitle}><Info size={12} /> {t('ملخص الحسابات')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>{t('الإجمالي الفرعي')}</span>
-                                    <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{fmt(subtotal)}</span>
+                                    <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي البنود')}</span>
+                                    <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{fMoney(subtotal)}</span>
                                 </div>
 
-                                {/* Discount */}
-                                <div>
-                                    <label style={{ ...LS, marginBottom: '6px' }}>{t('الخصم الإجمالي')}</label>
-                                    <input
-                                        type="number"
-                                        value={form.discount}
-                                        onChange={e => setForm(f => ({ ...f, discount: Number(e.target.value) || 0 }))}
-                                        style={{ ...IS, width: '100%' }}
-                                        min="0" step="0.01"
-                                        onFocus={focusIn} onBlur={focusOut}
-                                    />
+                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px' }}>
+                                    <label style={{ ...LS, fontSize: '11px', marginBottom: '6px' }}>{t('الخصم الإجمالي')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <PriceInput
+                                            value={form.discount}
+                                            onChange={val => setForm(f => ({ ...f, discount: val }))}
+                                            style={{ height: '38px', fontSize: '14px', fontWeight: 600 }}
+                                        />
+                                    </div>
                                 </div>
 
-                                {/* Tax Rate */}
-                                <div>
-                                    <label style={{ ...LS, marginBottom: '6px' }}>{t('نسبة الضريبة %')}</label>
-                                    <input
-                                        type="number"
-                                        value={form.taxRate}
-                                        onChange={e => setForm(f => ({ ...f, taxRate: Number(e.target.value) || 0 }))}
-                                        style={{ ...IS, width: '100%' }}
-                                        min="0" max="100" step="0.01"
-                                        onFocus={focusIn} onBlur={focusOut}
-                                    />
+                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px' }}>
+                                    <label style={{ ...LS, fontSize: '11px', marginBottom: '6px' }}>{t('نسبة الضريبة %')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input
+                                            type="number"
+                                            value={form.taxRate}
+                                            onChange={e => setForm(f => ({ ...f, taxRate: Math.min(100, Math.max(0, Number(e.target.value) || 0)) }))}
+                                            min="0" max="100" step="1"
+                                            style={{ ...IS, height: '38px', fontSize: '14px', fontFamily: OUTFIT, fontWeight: 600, textAlign: 'center' }}
+                                        />
+                                    </div>
                                 </div>
 
                                 {taxAmount > 0 && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                        <span style={{ color: C.textSecondary }}>{t('الضريبة')} ({form.taxRate}%)</span>
-                                        <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: C.primary }}>+{fmt(taxAmount)}</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginTop: '4px' }}>
+                                        <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('قيمة الضريبة')}</span>
+                                        <span style={{ fontFamily: OUTFIT, fontWeight: 600, color: '#fbbf24' }}>+{fMoney(taxAmount)}</span>
                                     </div>
                                 )}
 
                                 <div style={{
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                    background: `linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))`,
-                                    padding: '12px 16px', borderRadius: '12px',
-                                    border: `1px solid rgba(37,106,244,0.3)`,
+                                    background: 'gradient',
+                                    padding: '12px 14px', borderRadius: '12px',
+                                    border: '1px solid rgba(37,106,244,0.3)',
+                                    marginTop: '8px'
                                 }}>
-                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('الإجمالي الكلي')}</span>
-                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px', fontFamily: OUTFIT }}>{fmt(total)}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '12px', fontFamily: CAIRO }}>{t('المجموع النهائي')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 800, fontSize: '17px', fontFamily: OUTFIT }}>{fMoney(total)}</span>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Error */}
+                        {/* Extra Notes Box */}
+                        <div style={SC}>
+                            <div style={STitle}><Info size={12} /> {t('ملاحظات وشروط')}</div>
+                            <textarea
+                                value={form.notes}
+                                onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                                placeholder={t("اكتب شروط التوريد أو أي ملاحظات أخرى هنا...")}
+                                style={{ ...IS, height: '70px', padding: '10px 12px', fontSize: '13px', lineHeight: '1.5', resize: 'none' }}
+                                onFocus={focusIn} onBlur={focusOut}
+                            />
+                        </div>
+
                         {errorMsg && (
-                            <div style={{ padding: '12px 16px', borderRadius: '10px', background: 'rgba(239,68,68,0.1)', border: `1px solid rgba(239,68,68,0.3)`, color: C.danger, fontSize: '13px', fontFamily: CAIRO }}>
+                            <div style={{
+                                display: 'flex', alignItems: 'center', gap: '10px',
+                                padding: '12px 16px', background: 'rgba(239,68,68,0.1)',
+                                border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px',
+                                color: C.danger, fontSize: '12.5px', fontFamily: CAIRO, fontWeight: 600
+                            }}>
+                                <AlertCircle size={16} style={{ flexShrink: 0 }} />
                                 {errorMsg}
                             </div>
                         )}
 
-                        {/* Actions */}
+                        {/* Actions Button */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <button
                                 onClick={() => handleSubmit('save')}
                                 disabled={submitting}
-                                style={BTN_PRIMARY(false, submitting)}
+                                style={{
+                                    height: '42px', borderRadius: '12px', border: 'none',
+                                    background: C.primary, color: '#fff', cursor: submitting ? 'wait' : 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                    fontSize: '13.5px', fontWeight: 700, fontFamily: CAIRO, width: '100%',
+                                    opacity: submitting ? 0.7 : 1
+                                }}
                             >
-                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={18} />}
+                                {submitting ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                                 {t('حفظ كمسودة')}
                             </button>
                             <button
                                 onClick={() => handleSubmit('approve')}
                                 disabled={submitting}
-                                style={BTN_SUCCESS(false, submitting)}
+                                style={{
+                                    height: '42px', borderRadius: '12px', border: `1px solid rgba(16,185,129,0.3)`,
+                                    background: 'rgba(16,185,129,0.15)', color: '#10b981', cursor: submitting ? 'wait' : 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                    fontSize: '13.5px', fontWeight: 700, fontFamily: CAIRO, width: '100%',
+                                    opacity: submitting ? 0.7 : 1
+                                }}
                             >
-                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={18} />}
-                                {t('اعتماد الأمر')}
+                                {submitting ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle size={16} />}
+                                {t('اعتماد وأمر بيع معتمد')}
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <style jsx global>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
 }

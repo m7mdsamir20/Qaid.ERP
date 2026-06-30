@@ -380,6 +380,12 @@ function NewSalePageInner() {
         const isServicesBusiness = isServices;
         setErrorMsg('');
         setFieldErrors({});
+
+        if (isAllBranches) {
+            setErrorMsg(t('يرجى اختيار فرع محدد من قائمة الفروع أعلى الصفحة أولاً'));
+            return;
+        }
+
         const errors: Record<string, string> = {};
 
         if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
