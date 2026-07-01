@@ -5128,6 +5128,18 @@ export const dictionaries = {
         "أنت حالياً على وضع \"كل الفروع\" — يجب اختيار فرع محدد من قائمة الفروع أعلى الصفحة للتمكن من حفظ أمر البيع.": "You are currently in “All Branches” mode — you must select a specific branch from the list of branches at the top of the page to be able to save the sales order.",
         "بيانات أمر البيع": "Sales order data",
         "اعتماد وأمر بيع معتمد": "Approval and approved sales order",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "المنتجات (بمخزن)": "Products (in stock)",
+        "الخدمات (بدون مخزن)": "Services (without warehouse)",
+        "البريد الإلكتروني غير صحيح، تأكد من الصيغة (example@domain.com)": "Invalid email, check the format (example@domain.com)",
+        "رقم الهاتف غير صحيح، يجب أن يحتوي على 7 أرقام على الأقل": "The phone number is invalid, it must contain at least 7 numbers",
+        "رقم الهاتف غير صحيح": "Invalid phone number",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "مثال: استشارة قانونية، صيانة مكيف...": "Example: legal advice, air conditioning maintenance...",
 }
 };
 

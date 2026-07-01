@@ -69,7 +69,7 @@ export default function ItemsPage() {
     const [printBarcodeItem, setPrintBarcodeItem] = useState<Item | null>(null);
     const [barcodeCopies, setBarcodeCopies] = useState(1);
     const pageSize = 15;
-    const [itemTypeTab, setItemTypeTab] = useState<'all' | 'product' | 'raw'>('all');
+    const [itemTypeTab, setItemTypeTab] = useState<'all' | 'product' | 'raw' | 'service'>('all');
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -299,7 +299,7 @@ export default function ItemsPage() {
 
     if (!isMounted) return null;
 
-    const showQuantitiesAndCosts = companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product');
+    const showQuantitiesAndCosts = itemTypeTab !== 'service' && !(isRestaurant && itemTypeTab === 'product');
 
     const columns: TableColumn[] = [
         {
@@ -311,7 +311,7 @@ export default function ItemsPage() {
             ),
             style: { textAlign: 'center' } as React.CSSProperties
         },
-        ...(companyBusinessType !== 'SERVICES' && usesBarcode ? [{
+        ...(usesBarcode && companyBusinessType !== 'SERVICES' ? [{
             header: t('الباركود'),
             cell: (row: Item) => (
                 <div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>
@@ -321,7 +321,7 @@ export default function ItemsPage() {
             style: { textAlign: 'center' } as React.CSSProperties
         }] : []),
         {
-            header: isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('الصنف'),
+            header: isRestaurant ? t('الصنف') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('الصنف'),
             cell: (row: Item) => (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {(isRestaurant || isRetail) && row.imageUrl && (
@@ -352,7 +352,7 @@ export default function ItemsPage() {
             }
         ] : []),
         {
-            header: companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية') : t('سعر البيع'),
+            header: companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية') : itemTypeTab === 'service' ? t('سعر الخدمة') : t('سعر البيع'),
             type: 'number' as const,
             cell: (row: Item) => fMoneyJSX(row.sellPrice)
         },
@@ -393,22 +393,24 @@ export default function ItemsPage() {
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={isRestaurant ? t("أصناف المنيو") : companyBusinessType === 'SERVICES' ? t("الخدمات") : companyBusinessType === 'CONTRACTING' ? t("المواد والبنود") : t("الأصناف")}
+                    title={isRestaurant ? t("أصناف المنيو") : companyBusinessType === 'CONTRACTING' ? t("المواد والبنود") : t("الأصناف")}
                     subtitle={isRestaurant ? t("إدارة قائمة الأصناف والوجبات المعروضة في المنيو") : companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : companyBusinessType === 'CONTRACTING' ? t("إدارة المواد الخام، البنود الإنشائية، والتحكم في كميات وتكاليف المواقع") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
-                    icon={isRestaurant ? Package : companyBusinessType === 'SERVICES' ? Package : Boxes}
+                    icon={isRestaurant ? Package : Boxes}
                     primaryButton={{
-                        label: isRestaurant ? (itemTypeTab === 'raw' ? t("إضافة مادة خام") : t("إضافة صنف للمنيو")) : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : companyBusinessType === 'CONTRACTING' ? t("إضافة بند / مادة جديدة") : t("إضافة صنف جديد"),
+                        label: isRestaurant ? (itemTypeTab === 'raw' ? t("إضافة مادة خام") : t("إضافة صنف للمنيو")) : companyBusinessType === 'CONTRACTING' ? t("إضافة بند / مادة جديدة") : itemTypeTab === 'service' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
                         onClick: () => {
                             handleOpenModal();
                             if (isRestaurant) {
                                 setForm(prev => ({ ...prev, type: itemTypeTab === 'raw' ? 'raw' : 'product' }));
+                            } else if (companyBusinessType === 'SERVICES') {
+                                setForm(prev => ({ ...prev, type: itemTypeTab === 'service' ? 'service' : 'product' }));
                             }
                         },
                         icon: Plus
                     }}
                 />
 
-                {companyBusinessType?.toUpperCase() !== 'SERVICES' && (
+                {(
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { id: 'all', label: isRestaurant ? (itemTypeTab === 'raw' ? t('إجمالي المواد الخام') : t('إجمالي أصناف المنيو')) : t('إجمالي الأصناف'), val: items.filter(i => !i.parentId && (itemTypeTab === 'all' || i.type === itemTypeTab)).length, icon: Package, color: C.blue, unit: t('صنف') },
@@ -496,7 +498,7 @@ export default function ItemsPage() {
                             </button>
                         )}
                     </div>
-                    {companyBusinessType?.toUpperCase() !== 'SERVICES' && warehouses.length > 1 && (
+                    {warehouses.length > 1 && (
                         <div style={{ width: '220px' }}>
                             <CustomSelect
                                 value={warehouseFilter}
@@ -515,6 +517,14 @@ export default function ItemsPage() {
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
                         <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الوجبات (المنيو)")}</button>
                         <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("المواد الخام (المخزون)")}</button>
+                    </div>
+                )}
+
+                {isRtl && companyBusinessType === 'SERVICES' && (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
+                        <button onClick={() => setItemTypeTab('all')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'all' ? C.primary : 'transparent', color: itemTypeTab === 'all' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الكل")}</button>
+                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("المنتجات (بمخزن)")}</button>
+                        <button onClick={() => setItemTypeTab('service')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'service' ? C.primary : 'transparent', color: itemTypeTab === 'service' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الخدمات (بدون مخزن)")}</button>
                     </div>
                 )}
 
@@ -538,7 +548,7 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={isRestaurant ? (form.type === 'raw' ? (form.id ? t('تعديل مادة خام') : t('إضافة مادة خام')) : (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو'))) : companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
+                    title={isRestaurant ? (form.type === 'raw' ? (form.id ? t('تعديل مادة خام') : t('إضافة مادة خام')) : (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو'))) : itemTypeTab === 'service' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
@@ -546,7 +556,7 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('كود الصنف')}</label>
+                                <label style={LS}>{itemTypeTab === 'service' ? t('كود الخدمة') : companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('كود الصنف')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="text" readOnly disabled value={form.code} style={{ ...IS, color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
@@ -561,8 +571,8 @@ export default function ItemsPage() {
                             )}
 
                             <div>
-                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : companyBusinessType === 'CONTRACTING' ? t("مثال: حديد تسليح، بند حفر...") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : itemTypeTab === 'service' ? t('اسم الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : itemTypeTab === 'service' ? t("مثال: استشارة قانونية، صيانة مكيف...") : companyBusinessType === 'CONTRACTING' ? t("مثال: حديد تسليح، بند حفر...") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
