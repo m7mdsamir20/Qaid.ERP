@@ -47,6 +47,8 @@ function NewSalePageInner() {
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [items, setItems] = useState<Item[]>([]);
+    const [serviceCatalog, setServiceCatalog] = useState<{id: string; name: string; code: string}[]>([]);
+    const [serviceContracts, setServiceContracts] = useState<{id: string; contractNumber: number; type: string; customerId: string | null}[]>([]);
     const [company, setCompany] = useState<CompanyInfo>({});
     const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -89,6 +91,7 @@ function NewSalePageInner() {
         customerId: '', warehouseId: '', discountPct: 0, discountAmt: 0,
         paidAmount: '', paymentType: 'cash' as 'cash' | 'bank' | 'credit',
         treasuryId: '', bankId: '', notes: '', customerPONumber: '',
+        serviceType: '', serviceContractId: '',
         date: new Date().toISOString().split('T')[0],
         taxRate: 0,
         taxAmount: 0,
@@ -123,10 +126,11 @@ function NewSalePageInner() {
 
     const loadData = useCallback(async () => {
         try {
-            const [invR, custR, whR, trR, itemR, coR, repR] = await Promise.all([
+            const [invR, custR, whR, trR, itemR, coR, repR, catR, scR] = await Promise.all([
                 fetch('/api/sales?justNextNum=true'), fetch('/api/customers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
-                fetch('/api/company'), fetch('/api/sales-reps')
+                fetch('/api/company'), fetch('/api/sales-reps'),
+                fetch('/api/service-catalog'), fetch('/api/service-contracts'),
             ]);
             const nextNumData = await invR.json();
             setNextNum(nextNumData.nextNum || 1);
@@ -150,6 +154,8 @@ function NewSalePageInner() {
             setWarehouses(whs); setTreasuries(trs);
             setItems(its);
             setSalesReps(reps);
+            if (catR.ok) setServiceCatalog(await catR.json().catch(() => []));
+            if (scR.ok) setServiceContracts(await scR.json().catch(() => []));
             if (coR.ok) setCompany(await coR.json());
 
             const taxRes = await fetch('/api/settings');
@@ -259,6 +265,8 @@ function NewSalePageInner() {
                     ...f,
                     customerId: wo.customerId || f.customerId,
                     customerPONumber: wo.customerPONumber || f.customerPONumber,
+                    serviceType: wo.type || f.serviceType,
+                    serviceContractId: wo.contractId || f.serviceContractId,
                     notes: wo.notes || '',
                 }));
                 // Set lines from work order materials
@@ -484,6 +492,8 @@ function NewSalePageInner() {
                     bankId: form.paymentType === 'bank' ? form.bankId : undefined,
                     notes: form.notes, attachments,
                     customerPONumber: form.customerPONumber || undefined,
+                    serviceType: form.serviceType || undefined,
+                    serviceContractId: form.serviceContractId || undefined,
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
@@ -585,6 +595,9 @@ function NewSalePageInner() {
     const hasGranularPerms = Object.keys(userPerms).length > 0;
     const salesPerms = userPerms['/sales'] || {};
     const canCreate = isSuperAdminUser || userRole === 'admin' || !hasGranularPerms || !!salesPerms.create;
+    const hasServiceContractsAccess = isSuperAdminUser || userRole === 'admin' || !hasGranularPerms || !!userPerms['/service-contracts']?.view;
+    const hasWorkOrdersAccess = isSuperAdminUser || userRole === 'admin' || !hasGranularPerms || !!userPerms['/work-orders']?.view;
+    const showServiceFields = isServices && (hasServiceContractsAccess || hasWorkOrdersAccess);
 
     if (!canCreate) {
         return (
@@ -769,6 +782,37 @@ function NewSalePageInner() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Service Fields: PO Number + Service Type + Contract */}
+                            {showServiceFields && (
+                                <div style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1.2fr 1.2fr', gap: '10px' }}>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: '6px', display: 'block' }}>{t('رقم طلب الشراء (PO)')}</label>
+                                        <input type="text" value={form.customerPONumber} onChange={e => setForm((f: any) => ({ ...f, customerPONumber: e.target.value }))} style={{ ...IS, fontSize: '13px', fontFamily: OUTFIT, direction: 'ltr' }} placeholder="PO-00001" onFocus={focusIn} onBlur={focusOut} />
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: '6px', display: 'block' }}>{t('نوع الخدمة')}</label>
+                                        {serviceCatalog.length > 0 ? (
+                                            <CustomSelect value={form.serviceType} onChange={v => setForm((f: any) => ({ ...f, serviceType: v }))} options={[{ value: '', label: '— بدون تحديد —' }, ...serviceCatalog.map(s => ({ value: s.name, label: s.name, sub: s.code }))]} placeholder="من الكاتلوج..." />
+                                        ) : (
+                                            <input type="text" value={form.serviceType} onChange={e => setForm((f: any) => ({ ...f, serviceType: e.target.value }))} style={{ ...IS, fontSize: '13px' }} placeholder={t("نوع الخدمة...")} onFocus={focusIn} onBlur={focusOut} />
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: '6px', display: 'block' }}>{t('رقم العقد')}</label>
+                                        <CustomSelect
+                                            value={form.serviceContractId}
+                                            onChange={v => setForm((f: any) => ({ ...f, serviceContractId: v }))}
+                                            placeholder="— بدون عقد —"
+                                            options={[
+                                                { value: '', label: '— بدون عقد —' },
+                                                ...serviceContracts.filter(c => !form.customerId || c.customerId === form.customerId).map(c => ({ value: c.id, label: `SC-${String(c.contractNumber).padStart(5, '0')}`, sub: c.type }))
+                                            ]}
+                                            hideSearch
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Sales Representative Selection - dynamically shown if reps exist */}
                             {salesReps.length > 0 && (
@@ -1025,21 +1069,6 @@ function NewSalePageInner() {
                             )}
                         </div>
 
-                        {/* PO Number — SERVICES only */}
-                        {isServices && (
-                            <div style={SC}>
-                                <label style={{ ...LS, fontSize: '11px' }}>{t('رقم طلب الشراء (PO Number)')}</label>
-                                <input
-                                    type="text"
-                                    value={form.customerPONumber}
-                                    onChange={e => setForm((f: any) => ({ ...f, customerPONumber: e.target.value }))}
-                                    style={{ ...IS, height: '42px', fontSize: '13px' }}
-                                    placeholder="PO-00001"
-                                    onFocus={focusIn} onBlur={focusOut}
-                                    dir="ltr"
-                                />
-                            </div>
-                        )}
 
                         {/* Notes */}
                         <div style={SC}>

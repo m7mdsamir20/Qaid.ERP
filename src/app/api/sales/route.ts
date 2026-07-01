@@ -124,7 +124,7 @@ export const POST = withProtection(async (request, session, body) => {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,
             paidAmount, warehouseId, notes, attachments,
             financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount, projectId,
-            customerPONumber, workOrderId
+            customerPONumber, workOrderId, serviceType, serviceContractId
         } = body;
 
         // Check if the current user is a sales representative
@@ -246,6 +246,8 @@ export const POST = withProtection(async (request, session, body) => {
                 notes: notes || null,
                 attachments: attachments && attachments.length > 0 ? JSON.stringify(attachments) : null,
                 customerPONumber: customerPONumber || null,
+                serviceType: serviceType || null,
+                serviceContractId: serviceContractId || null,
                 warehouseId: warehouseId || null,
                 companyId,
                 customerPrevBalance,

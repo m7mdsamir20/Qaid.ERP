@@ -3,18 +3,11 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
-import { FileText, Save, Search, X, Check } from 'lucide-react';
+import { FileText, Save, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
 
 interface Customer { id: string; name: string; phone: string | null; }
-
-const CONTRACT_TYPES = [
-    { value: 'maintenance', label: 'صيانة' },
-    { value: 'consulting',  label: 'استشارات' },
-    { value: 'development', label: 'تطوير' },
-    { value: 'support',     label: 'دعم فني' },
-];
 
 const BILLING_CYCLES = [
     { value: 'monthly',     label: 'شهري' },
@@ -28,12 +21,12 @@ export default function NewServiceContractPage() {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [customers, setCustomers] = useState<Customer[]>([]);
-
+    const [serviceCatalog, setServiceCatalog] = useState<{id: string; code: string; name: string}[]>([]);
 
     const [form, setForm] = useState({
         customerId: '',
         customerName: '',
-        type: 'maintenance',
+        type: '',
         startDate: '',
         endDate: '',
         contractValue: '',
@@ -44,10 +37,13 @@ export default function NewServiceContractPage() {
     });
 
     useEffect(() => {
-        fetch('/api/customers')
-            .then(r => r.json())
-            .then((data: Customer[]) => setCustomers(Array.isArray(data) ? data : []))
-            .catch(() => setCustomers([]));
+        Promise.all([
+            fetch('/api/customers').then(r => r.ok ? r.json() : []),
+            fetch('/api/service-catalog').then(r => r.ok ? r.json() : []),
+        ]).then(([custData, catalogData]) => {
+            setCustomers(Array.isArray(custData) ? custData : []);
+            setServiceCatalog(Array.isArray(catalogData) ? catalogData : []);
+        }).catch(() => {});
     }, []);
 
 
@@ -135,13 +131,24 @@ export default function NewServiceContractPage() {
                                     {/* Type */}
                                     <div>
                                         <label style={LS}>نوع العقد <span style={{ color: C.danger }}>*</span></label>
-                                        <CustomSelect
-                                            value={form.type}
-                                            onChange={val => setForm(f => ({ ...f, type: val }))}
-                                            options={CONTRACT_TYPES}
-                                            hideSearch={true}
-                                            style={{ width: '100%' }}
-                                        />
+                                        {serviceCatalog.length > 0 ? (
+                                            <CustomSelect
+                                                value={form.type}
+                                                onChange={val => setForm(f => ({ ...f, type: val }))}
+                                                options={serviceCatalog.map(s => ({ value: s.name, label: s.name, sub: s.code }))}
+                                                placeholder="اختر من كاتلوج الخدمات..."
+                                                style={{ width: '100%' }}
+                                            />
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                placeholder="اكتب نوع العقد..."
+                                                value={form.type}
+                                                onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
+                                                style={{ ...inputStyle }}
+                                                onFocus={focusIn} onBlur={focusOut}
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Start Date */}

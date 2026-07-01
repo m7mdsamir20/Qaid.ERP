@@ -5152,6 +5152,11 @@ export const dictionaries = {
         "الخدمة نشطة": "The service is active",
         "حذف الخدمة": "Delete the service",
         "هل أنت متأكد من حذف خدمة": "Are you sure you want to delete the service?",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "رقم طلب الشراء (PO)": "Purchase order (PO) number",
+        "نوع الخدمة...": "Service type...",
 }
 };
 

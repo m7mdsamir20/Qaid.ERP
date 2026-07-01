@@ -750,7 +750,10 @@ model Invoice {
   salesOrder          SalesOrder?     @relation(fields: [salesOrderId], references: [id], onDelete: SetNull)
   // 🔧 Services
   workOrderId         String?
-  workOrder           WorkOrder?      @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  workOrder           WorkOrder?       @relation(fields: [workOrderId], references: [id], onDelete: SetNull)
+  serviceType         String?
+  serviceContractId   String?
+  serviceContract     ServiceContract? @relation("InvoiceServiceContract", fields: [serviceContractId], references: [id], onDelete: SetNull)
   collections         Collection[]
 
   @@index([companyId, type, date])
@@ -1679,6 +1682,7 @@ model ServiceContract {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
+  invoices       Invoice[]   @relation("InvoiceServiceContract")
   customer       Customer?   @relation(fields: [customerId], references: [id])
   company        Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
   workOrders     WorkOrder[]
