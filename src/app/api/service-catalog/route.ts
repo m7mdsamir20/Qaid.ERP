@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
-import { logActivity } from '@/lib/activityLogger';
+import { logActivity } from '@/lib/activityLog';
 
 export const GET = withProtection(async (_req, session) => {
     const companyId = (session.user as any).companyId;
