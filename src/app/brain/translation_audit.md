@@ -1,14 +1,14 @@
 # Translation Audit Report
 
-Generated on: 2026-06-28T05:17:08.880Z
+Generated on: 2026-07-01T06:15:18.608Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4842
-- **Total t() Keys in Code**: 4219
+- **Total Keys in `i18n.tsx`**: 4898
+- **Total t() Keys in Code**: 4253
 - **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 623
-- **Unwrapped Arabic Text Instances**: 3370
+- **Unused Keys in `i18n.tsx`**: 645
+- **Unwrapped Arabic Text Instances**: 3415
 
 ## Unwrapped Arabic Text
 
@@ -128,22 +128,22 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 381: `كل العمليات`
 - Line 388: `التاريخ والوقت`
 - Line 402: `المستخدم`
-- Line 420: `العملية`
-- Line 440: `الصفحة`
-- Line 453: `التفاصيل`
-- Line 464: `عرض`
-- Line 480: `إخفاء التفاصيل`
-- Line 480: `عرض التفاصيل`
-- Line 496: `سجل النشاط`
-- Line 497: `تتبع جميع العمليات والتغييرات في النظام`
-- Line 517: `بحث في التفاصيل`
-- Line 531: `كل الموديولات`
-- Line 542: `كل العمليات`
-- Line 568: `من تاريخ`
-- Line 591: `إلى تاريخ`
-- Line 614: `مسح الفلاتر`
-- Line 625: `إجمالي السجلات`
-- Line 641: `لا توجد سجلات مطابقة للبحث`
+- Line 421: `العملية`
+- Line 441: `الصفحة`
+- Line 455: `التفاصيل`
+- Line 468: `عرض`
+- Line 484: `إخفاء التفاصيل`
+- Line 484: `عرض التفاصيل`
+- Line 500: `سجل النشاط`
+- Line 501: `تتبع جميع العمليات والتغييرات في النظام`
+- Line 521: `بحث في التفاصيل`
+- Line 535: `كل الموديولات`
+- Line 546: `كل العمليات`
+- Line 572: `من تاريخ`
+- Line 595: `إلى تاريخ`
+- Line 619: `مسح الفلاتر`
+- Line 630: `إجمالي السجلات`
+- Line 646: `لا توجد سجلات مطابقة للبحث`
 
 ### [app/api/accounts/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/accounts/route.ts)
 - Line 83: `جميع الحقول مطلوبة`
@@ -1112,8 +1112,8 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/api/purchase-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/route.ts)
 - Line 81: `يرجى تحديد المورد`
 - Line 82: `يرجى إضافة بند واحد على الأقل`
-- Line 147: `أنشأ أمر شراء رقم`
-- Line 147: `للمورد`
+- Line 150: `أنشأ أمر شراء رقم`
+- Line 150: `للمورد`
 
 ### [app/api/purchase-orders/[id]/receive/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-orders/[id]/receive/route.ts)
 - Line 13: `يرجى تحديد الكميات المستلمة`
@@ -1133,10 +1133,10 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 105: `ألغى أمر الشراء رقم`
 - Line 112: `حالة غير مدعومة`
 - Line 117: `لا يمكن تعديل أمر الشراء إلا عندما يكون في حالة مسودة`
-- Line 174: `عدّل أمر الشراء رقم`
-- Line 190: `أمر الشراء غير موجود`
-- Line 192: `لا يمكن حذف أمر الشراء إلا عندما يكون في حالة مسودة`
-- Line 206: `حذف أمر الشراء رقم`
+- Line 181: `عدّل أمر الشراء رقم`
+- Line 197: `أمر الشراء غير موجود`
+- Line 199: `لا يمكن حذف أمر الشراء إلا عندما يكون في حالة مسودة`
+- Line 213: `حذف أمر الشراء رقم`
 
 ### [app/api/purchase-payments/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/purchase-payments/route.ts)
 - Line 26: `المستفيد (المورد/العميل) والخزينة والمبلغ مطلوبون`
@@ -1350,6 +1350,17 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/api/reports/sales-representatives/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-representatives/route.ts)
 - Line 17: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
 - Line 105: `فشل في جلب تقرير المناديب`
+
+### [app/api/reports/sales-reps/collections/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-reps/collections/route.ts)
+- Line 72: `فشل في جلب تقرير تحصيلات المناديب`
+
+### [app/api/reports/sales-reps/performance/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-reps/performance/route.ts)
+- Line 18: `التاريخ من وإلى مطلوبين`
+- Line 25: `تاريخ البدء يجب أن يكون قبل تاريخ الانتهاء`
+- Line 152: `فشل في توليد تقرير الأداء`
+
+### [app/api/reports/sales-reps/targets/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/sales-reps/targets/route.ts)
+- Line 116: `فشل في توليد تقرير أهداف المناديب`
 
 ### [app/api/reports/supplier-statement/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/reports/supplier-statement/route.ts)
 - Line 18: `تاريخ البداية يجب أن يكون قبل تاريخ النهاية`
@@ -1994,51 +2005,58 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 351: `إلغاء`
 
 ### [app/attendance/monthly/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/monthly/page.tsx)
-- Line 56: `حاضر`
-- Line 57: `متأخر`
-- Line 58: `غائب`
-- Line 59: `إجازة`
-- Line 60: `عطلة`
-- Line 63: `يناير`
-- Line 63: `فبراير`
-- Line 63: `مارس`
-- Line 63: `أبريل`
-- Line 63: `مايو`
-- Line 63: `يونيو`
-- Line 63: `يوليو`
-- Line 63: `أغسطس`
-- Line 63: `سبتمبر`
-- Line 63: `أكتوبر`
-- Line 63: `نوفمبر`
-- Line 63: `ديسمبر`
-- Line 136: `كشف الحضور الشهري`
-- Line 137: `عرض جدول الحضور والانصراف لكل موظف خلال الشهر`
-- Line 144: `الشهر`
-- Line 154: `السنة`
-- Line 165: `عرض`
-- Line 183: `جاري التحميل`
-- Line 191: `الموظف`
-- Line 204: `الملخص`
-- Line 221: `انقر للتسجيل`
-- Line 233: `ح`
-- Line 233: `ت`
-- Line 233: `غ`
-- Line 233: `إ`
-- Line 233: `ع`
-- Line 241: `ح`
-- Line 242: `غ`
-- Line 243: `ت`
-- Line 244: `إ`
-- Line 253: `إ.إض`
-- Line 254: `س`
-- Line 264: `الإجماليات`
-- Line 282: `اختر الشهر والسنة لعرض البيانات`
-- Line 291: `تعديل سجل الحضور`
-- Line 294: `الحالة`
-- Line 305: `وقت الحضور`
-- Line 309: `وقت الانصراف`
-- Line 315: `حفظ`
-- Line 318: `إلغاء`
+- Line 57: `حاضر`
+- Line 58: `متأخر`
+- Line 59: `غائب`
+- Line 60: `إجازة`
+- Line 61: `عطلة`
+- Line 64: `يناير`
+- Line 64: `فبراير`
+- Line 64: `مارس`
+- Line 64: `أبريل`
+- Line 64: `مايو`
+- Line 64: `يونيو`
+- Line 64: `يوليو`
+- Line 64: `أغسطس`
+- Line 64: `سبتمبر`
+- Line 64: `أكتوبر`
+- Line 64: `نوفمبر`
+- Line 64: `ديسمبر`
+- Line 137: `كشف الحضور الشهري`
+- Line 138: `عرض جدول الحضور والانصراف لكل موظف خلال الشهر`
+- Line 145: `الشهر`
+- Line 155: `السنة`
+- Line 166: `عرض`
+- Line 184: `جاري التحميل`
+- Line 192: `الموظف`
+- Line 201: `الأحد`
+- Line 202: `الإثنين`
+- Line 203: `الثلاثاء`
+- Line 204: `الأربعاء`
+- Line 205: `الخميس`
+- Line 206: `الجمعة`
+- Line 207: `السبت`
+- Line 218: `الملخص`
+- Line 235: `انقر للتسجيل`
+- Line 247: `ح`
+- Line 247: `ت`
+- Line 247: `غ`
+- Line 247: `إ`
+- Line 247: `ع`
+- Line 255: `ح`
+- Line 256: `غ`
+- Line 257: `ت`
+- Line 258: `إ`
+- Line 267: `إ.إض`
+- Line 268: `س`
+- Line 278: `الإجماليات`
+- Line 296: `اختر الشهر والسنة لعرض البيانات`
+- Line 305: `تعديل سجل الحضور`
+- Line 308: `الحالة`
+- Line 319: `وقت الحضور`
+- Line 323: `وقت الانصراف`
+- Line 329: `حفظ`
+- Line 332: `إلغاء`
 
 ### [app/attendance/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/attendance/page.tsx)
 - Line 33: `حاضر`
@@ -2406,18 +2424,41 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 159: `ديسمبر`
 
 ### [app/reports/attendance-monthly/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-monthly/page.tsx)
-- Line 175: `يناير`
-- Line 175: `فبراير`
-- Line 175: `مارس`
-- Line 175: `أبريل`
-- Line 175: `مايو`
-- Line 175: `يونيو`
-- Line 175: `يوليو`
-- Line 175: `أغسطس`
-- Line 175: `سبتمبر`
-- Line 175: `أكتوبر`
-- Line 175: `نوفمبر`
-- Line 175: `ديسمبر`
+- Line 38: `حاضر`
+- Line 39: `متأخر`
+- Line 40: `غائب`
+- Line 41: `إجازة`
+- Line 42: `عطلة`
+- Line 270: `يناير`
+- Line 270: `فبراير`
+- Line 270: `مارس`
+- Line 270: `أبريل`
+- Line 270: `مايو`
+- Line 270: `يونيو`
+- Line 270: `يوليو`
+- Line 270: `أغسطس`
+- Line 270: `سبتمبر`
+- Line 270: `أكتوبر`
+- Line 270: `نوفمبر`
+- Line 270: `ديسمبر`
+- Line 350: `الأحد`
+- Line 351: `الإثنين`
+- Line 352: `الثلاثاء`
+- Line 353: `الأربعاء`
+- Line 354: `الخميس`
+- Line 355: `الجمعة`
+- Line 356: `السبت`
+- Line 395: `ح`
+- Line 395: `ت`
+- Line 395: `غ`
+- Line 395: `إ`
+- Line 395: `ع`
+- Line 403: `ح`
+- Line 404: `غ`
+- Line 405: `ت`
+- Line 406: `إ`
+- Line 415: `إ.إض`
+- Line 416: `س`
 
 ### [app/reports/attendance-overtime/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/attendance-overtime/page.tsx)
 - Line 159: `يناير`
@@ -2466,15 +2507,6 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 ### [app/sales/[id]/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales/[id]/page.tsx)
 - Line 616: `بنك`
 - Line 616: `خزينة`
-
-### [app/sales-orders/new/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/new/page.tsx)
-- Line 470: `الصنف`
-- Line 470: `الوصف`
-- Line 470: `الكمية`
-- Line 470: `الوحدة`
-- Line 470: `السعر`
-- Line 470: `الخصم`
-- Line 470: `الإجمالي`
 
 ### [app/sales-orders/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-orders/page.tsx)
 - Line 31: `مسودة`
@@ -2623,32 +2655,32 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 126: `المندوب`
 - Line 135: `إجمالي المبيعات`
 - Line 144: `تم تحصيله`
-- Line 153: `أساس الحساب`
-- Line 162: `النسبة`
-- Line 171: `العمولة`
-- Line 180: `الحالة`
-- Line 192: `إجراء`
-- Line 201: `اعتماد`
-- Line 203: `اعتماد`
-- Line 211: `صرف`
-- Line 213: `صرف`
-- Line 231: `العمولات`
-- Line 232: `حساب واعتماد وصرف عمولات مناديب المبيعات`
-- Line 240: `إجمالي المبيعات`
-- Line 246: `إجمالي العمولات`
-- Line 252: `عدد المناديب`
-- Line 254: `مندوب`
-- Line 291: `احسب العمولات`
-- Line 305: `لا توجد عمولات لهذا الشهر`
-- Line 305: `اضغط`
-- Line 305: `احسب العمولات`
-- Line 305: `لبدء الحساب`
-- Line 317: `الإجمالي`
-- Line 328: `صرف العمولة`
-- Line 339: `الخزينة`
-- Line 343: `اختر الخزينة`
-- Line 355: `تأكيد الصرف`
-- Line 358: `إلغاء`
+- Line 154: `أساس الحساب`
+- Line 164: `النسبة`
+- Line 174: `العمولة`
+- Line 183: `الحالة`
+- Line 195: `إجراء`
+- Line 204: `اعتماد`
+- Line 206: `اعتماد`
+- Line 214: `صرف`
+- Line 216: `صرف`
+- Line 234: `العمولات`
+- Line 235: `حساب واعتماد وصرف عمولات مناديب المبيعات`
+- Line 243: `إجمالي المبيعات`
+- Line 249: `إجمالي العمولات`
+- Line 255: `عدد المناديب`
+- Line 257: `مندوب`
+- Line 294: `احسب العمولات`
+- Line 308: `لا توجد عمولات لهذا الشهر`
+- Line 308: `اضغط`
+- Line 308: `احسب العمولات`
+- Line 308: `لبدء الحساب`
+- Line 320: `الإجمالي`
+- Line 331: `صرف العمولة`
+- Line 342: `الخزينة`
+- Line 346: `اختر الخزينة`
+- Line 358: `تأكيد الصرف`
+- Line 361: `إلغاء`
 
 ### [app/sales-reps/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sales-reps/page.tsx)
 - Line 104: `اسم المندوب مطلوب`
@@ -3757,82 +3789,99 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 694: `الختم والتوقيع`
 - Line 730: `ج.م`
 - Line 731: `ج.م`
-- Line 750: `المنطقة`
-- Line 750: `المنطقة`
-- Line 751: `المدينة`
-- Line 751: `المدينة`
-- Line 752: `الحي`
-- Line 752: `الحي`
-- Line 753: `الشارع`
-- Line 753: `الشارع`
-- Line 756: `اسم الشركة`
-- Line 772: `عرض سعر`
-- Line 788: `عرض سعر`
-- Line 839: `الهاتف`
-- Line 840: `رقم ضريبي`
-- Line 841: `سجل تجاري`
-- Line 848: `الهاتف`
-- Line 849: `الرقم الضريبي`
-- Line 867: `بيانات العميل`
-- Line 869: `العميل`
-- Line 869: `عميل نقدي`
-- Line 870: `الهاتف`
-- Line 871: `الرقم الضريبي`
-- Line 875: `العنوان`
-- Line 875: `،`
-- Line 884: `م`
-- Line 885: `الخدمة`
-- Line 885: `الصنف`
-- Line 886: `الوحدة`
-- Line 887: `الكمية`
-- Line 888: `السعر`
-- Line 890: `نسبة الضريبة`
-- Line 891: `قيمة الضريبة`
-- Line 893: `الإجمالي`
-- Line 927: `المجموع الفرعي`
-- Line 932: `الخصم`
-- Line 937: `الضريبة`
-- Line 941: `الإجمالي النهائي`
-- Line 949: `ملاحظات وشروط إضافية`
-- Line 956: `توقيع المستلم`
-- Line 957: `الاسم والتوقيع`
-- Line 960: `شكراً لتعاملكم معنا`
-- Line 963: `توقيع المسؤول`
-- Line 964: `الختم والتوقيع`
-- Line 1004: `اسم الشركة`
-- Line 1019: `مدفوع`
-- Line 1020: `جزئي`
-- Line 1021: `قادم`
-- Line 1022: `متأخر`
-- Line 1023: `ملغى`
-- Line 1033: `جدول أقساط`
-- Line 1100: `الهاتف`
-- Line 1101: `رقم ضريبي`
-- Line 1104: `جدول استحقاق الأقساط`
-- Line 1115: `بيانات العميل والعقد`
-- Line 1117: `العميل`
-- Line 1118: `المنتج`
-- Line 1119: `إجمالي المبلغ`
-- Line 1120: `مبلغ القسط`
-- Line 1128: `كود القسط`
-- Line 1129: `تاريخ الاستحقاق`
-- Line 1130: `مبلغ القسط`
-- Line 1131: `المدفوع`
-- Line 1132: `المتبقي`
-- Line 1133: `الحالة`
-- Line 1139: `متأخر`
-- Line 1159: `توقيع العميل`
-- Line 1160: `الاسم والتوقيع`
-- Line 1163: `شكراً لتعاملكم معنا`
-- Line 1166: `توقيع المسؤول`
-- Line 1167: `الختم والتوقيع`
-- Line 1217: `تاريخ الطباعة`
-- Line 1218: `الفترة`
-- Line 1219: `من`
-- Line 1220: `إلى`
-- Line 1221: `بواسطة`
-- Line 1222: `ملاحظة`
-- Line 1223: `طُبع بواسطة نظام`
+- Line 751: `المنطقة`
+- Line 751: `المنطقة`
+- Line 752: `المدينة`
+- Line 752: `المدينة`
+- Line 753: `الحي`
+- Line 753: `الحي`
+- Line 754: `الشارع`
+- Line 754: `الشارع`
+- Line 757: `اسم الشركة`
+- Line 773: `عرض سعر`
+- Line 799: `عرض سعر`
+- Line 849: `الهاتف`
+- Line 850: `رقم ضريبي`
+- Line 851: `سجل تجاري`
+- Line 857: `الهاتف`
+- Line 858: `رقم ضريبي`
+- Line 859: `سجل تجاري`
+- Line 866: `الهاتف`
+- Line 867: `الرقم الضريبي`
+- Line 875: `عرض سعر ضريبي`
+- Line 888: `بيانات البائع`
+- Line 891: `من`
+- Line 893: `الشركة`
+- Line 896: `العنوان`
+- Line 896: `،`
+- Line 898: `الهاتف`
+- Line 899: `الرقم الضريبي`
+- Line 900: `السجل التجاري`
+- Line 906: `بيانات العميل`
+- Line 908: `العميل`
+- Line 908: `عميل نقدي`
+- Line 909: `الهاتف`
+- Line 910: `الرقم الضريبي`
+- Line 914: `العنوان`
+- Line 914: `،`
+- Line 923: `م`
+- Line 924: `الخدمة`
+- Line 924: `الصنف`
+- Line 925: `الوحدة`
+- Line 926: `الكمية`
+- Line 927: `السعر`
+- Line 929: `نسبة الضريبة`
+- Line 930: `قيمة الضريبة`
+- Line 932: `الإجمالي`
+- Line 969: `الإجمالي غير شامل الضريبة`
+- Line 977: `مجموع الخصومات`
+- Line 984: `الإجمالي الخاضع للضريبة`
+- Line 992: `مجموع ضريبة القيمة المضافة`
+- Line 999: `إجمالي المبلغ المستحق`
+- Line 1009: `المجموع الفرعي`
+- Line 1014: `الخصم`
+- Line 1019: `الضريبة`
+- Line 1023: `الإجمالي النهائي`
+- Line 1032: `ملاحظات وشروط إضافية`
+- Line 1039: `توقيع المستلم`
+- Line 1040: `الاسم والتوقيع`
+- Line 1043: `شكراً لتعاملكم معنا`
+- Line 1046: `توقيع المسؤول`
+- Line 1047: `الختم والتوقيع`
+- Line 1087: `اسم الشركة`
+- Line 1102: `مدفوع`
+- Line 1103: `جزئي`
+- Line 1104: `قادم`
+- Line 1105: `متأخر`
+- Line 1106: `ملغى`
+- Line 1116: `جدول أقساط`
+- Line 1183: `الهاتف`
+- Line 1184: `رقم ضريبي`
+- Line 1187: `جدول استحقاق الأقساط`
+- Line 1198: `بيانات العميل والعقد`
+- Line 1200: `العميل`
+- Line 1201: `المنتج`
+- Line 1202: `إجمالي المبلغ`
+- Line 1203: `مبلغ القسط`
+- Line 1211: `كود القسط`
+- Line 1212: `تاريخ الاستحقاق`
+- Line 1213: `مبلغ القسط`
+- Line 1214: `المدفوع`
+- Line 1215: `المتبقي`
+- Line 1216: `الحالة`
+- Line 1222: `متأخر`
+- Line 1242: `توقيع العميل`
+- Line 1243: `الاسم والتوقيع`
+- Line 1246: `شكراً لتعاملكم معنا`
+- Line 1249: `توقيع المسؤول`
+- Line 1250: `الختم والتوقيع`
+- Line 1300: `تاريخ الطباعة`
+- Line 1301: `الفترة`
+- Line 1302: `من`
+- Line 1303: `إلى`
+- Line 1304: `بواسطة`
+- Line 1305: `ملاحظة`
+- Line 1306: `طُبع بواسطة نظام`
 
 ## Unused Keys in i18n.tsx
 
@@ -4204,7 +4253,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `إغلاق الجلسة`
 - `تسوية الفروقات`
 - `لا توجد جلسات جرد مسجلة`
-- `إجمالي البنود`
 - `بنود الجرد`
 - `جاري تحميل البيانات`
 - `اختر حساباً...`
@@ -4426,7 +4474,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `صافي المبلغ`
 - `نوع الدفع`
 - `نقدي (كاش)`
-- `المتبقي (آجل)`
 - `ديون حديثة`
 - `تنبيه أول`
 - `حذر شديد`
@@ -4445,6 +4492,11 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `الدائنون (لهم)`
 - `فواتير مبيعات`
 - `حدد الفترة الزمنية واضغط "عرض التقرير"`
+- `قم باختيار الفترة ثم اضغط على عرض التقرير`
+- `عرض كشف الحساب`
+- `اختر العميل المعني لعرض تفاصيل حسابه`
+- `استخراج التقرير`
+- `اضغط على زر استخراج التقرير لعرض المديونيات`
 - `عدد النتائج:`
 - `دليل الإحصائيات`
 - `الأصناف التي وصل رصيدها للحد الأدنى.`
@@ -4560,7 +4612,26 @@ Authorization: Bearer <YOUR_API_KEY>
 - `العملاء المرتبطين`
 - `الفواتير المنسوبة`
 - `رمز فريد (مثال: REP01)`
+- `إنشاء أمر شراء جديد وإرساله للمورد`
+- `المشروع (اختياري)`
+- `بدون مشروع`
+- `وصف (اختياري)`
+- `وصف...`
+- `لا توجد أصناف مضافة`
+- `ملخص أمر الشراء`
+- `نسبة الضريبة %`
+- `اعتماد مباشرة`
 - `فواتير خدمات`
+- `إنشاء أمر بيع جديد للعميل`
+- `اختر العميل`
+- `اختر المخزن`
+- `اختر المندوب`
+- `اختر المشروع`
+- `ملاحظات إضافية...`
+- `اختر صنف`
+- `وصف البند`
+- `وصف اختياري...`
+- `الخصم الإجمالي`
 - `فشل تحميل أمر البيع`
 - `جاري تحميل أمر البيع...`
 - `عارض أمر البيع`

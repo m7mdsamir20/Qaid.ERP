@@ -336,7 +336,7 @@ export default function NewPurchaseOrderPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+            <div className="purchase-order-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
                 <PageHeader
                     title={t('أمر شراء جديد')}
                     subtitle={t('إنشاء أمر شراء جديد وتخصيصه للفرع والمستودع')}

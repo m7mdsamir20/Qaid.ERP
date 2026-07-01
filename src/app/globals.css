@@ -1181,13 +1181,18 @@ body[dir="ltr"] select.input {
   }
 
   /* صفحة إضافة صنف في أمر البيع (5 عناصر) */
-  .sales-order-entry-grid,
   .sales-order-page .item-entry-grid {
-    grid-template-columns: 1fr 1fr 1fr auto !important;
+    grid-template-columns: 1fr 1fr !important;
   }
-  .sales-order-entry-grid > div:first-child,
   .sales-order-page .item-entry-grid > div:first-child {
     grid-column: 1 / -1 !important;
+  }
+  .sales-order-page .item-entry-grid > div:nth-child(4) {
+    grid-column: 1 / -1 !important;
+  }
+  .sales-order-page .item-entry-grid > button {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
   }
 
   /* عرض عمود الخصم في الجدول المتجاوب */
