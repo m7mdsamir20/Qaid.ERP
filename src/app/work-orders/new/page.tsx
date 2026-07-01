@@ -143,13 +143,13 @@ function NewWorkOrderForm() {
                 />
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
+                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                             <div style={SC}>
                                 <p style={STitle}><ClipboardList size={14} /> بيانات أمر العمل</p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
                                     <div>
                                         <label style={LS}>نوع الأمر <span style={{ color: C.danger }}>*</span></label>

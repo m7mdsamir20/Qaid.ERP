@@ -24,27 +24,27 @@ const BUSINESS_TYPES = [
     {
         value: "TRADING",
         label: t_s("نشاط تجارة الجملة"),
-        modules: ['sales', 'sales_reps', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
+        modules: ['sales', 'sales_reps', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'fixed_assets', 'reports']
     },
     {
         value: "RETAIL",
         label: t_s("نشاط تجارة التجزئة"),
-        modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports', 'pos', 'barcode']
+        modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'loyalty', 'reports', 'pos', 'barcode']
     },
     {
         value: "SERVICES",
         label: t_s("نشاط خدمات (استشارات، صيانة، إلخ)"),
-        modules: ['sales', 'inventory', 'accounting', 'treasury', 'reports']
+        modules: ['sales', 'services', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'reports']
     },
     {
         value: "RESTAURANTS",
         label: t_s("مطاعم وكافيهات"),
-        modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+        modules: ['sales', 'pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'loyalty', 'reports']
     },
     {
         value: "CONTRACTING",
         label: t_s("مقاولات وإنشاءات"),
-        modules: ['projects', 'subcontractors', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+        modules: ['projects', 'subcontractors', 'site_management', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
 ];
 
@@ -189,34 +189,19 @@ export default function EditCompanyPage() {
 
     const uniqueSections = (() => {
         const map = new Map<string, any>();
-        const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
-        const posFeatures = ['pos', 'barcode'];
-        const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
-        const servicesOnlyFeatures = ['services'];
-        const retailOnlyFeatures = ['loyalty'];
-
         const isRestaurants = form.businessType === 'RESTAURANTS';
         const isRetail = form.businessType === 'RETAIL';
         const isContracting = form.businessType === 'CONTRACTING';
         const isServices = form.businessType === 'SERVICES';
-        const isTrading = form.businessType === 'TRADING';
 
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
-            // يسمح بظهور سجل النشاط في صلاحيات السوبر أدمن لتفعيله لكل شركة حسب الرغبة
 
-            // فلترة حسب نوع النشاط
-            if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
-            if (posFeatures.includes(s.featureKey) && !isRestaurants && !isRetail) return;
-            if (contractingFeatures.includes(s.featureKey) && !isContracting) return;
-            if (servicesOnlyFeatures.includes(s.featureKey) && !isServices) return;
-            if (retailOnlyFeatures.includes(s.featureKey) && !isRetail) return;
-            if (s.featureKey === 'sales_reps' && !isTrading) return; // مناديب المبيعات للجملة فقط
-            if (isRestaurants && ['installments', 'partners', 'sales_reps'].includes(s.featureKey)) return;
-            if (isRetail && ['installments', 'barcode', 'sales_reps'].includes(s.featureKey)) return;
-            if (isContracting && ['installments', 'pos', 'barcode', 'sales_reps'].includes(s.featureKey)) return;
-            if (isServices && ['installments', 'sales_reps'].includes(s.featureKey)) return;
+            // فلتر عام: يُعرض القسم فقط إذا كان featureKey ضمن الـ modules المسموح بها للنشاط
+            const allowedModules = BUSINESS_TYPES.find(b => b.value === form.businessType)?.modules || [];
+            const alwaysAllow = ['dashboard', 'settings', 'activity_log'];
+            if (!alwaysAllow.includes(s.featureKey) && !allowedModules.includes(s.featureKey)) return;
 
             let section = { ...s };
 

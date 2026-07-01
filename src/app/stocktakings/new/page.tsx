@@ -234,7 +234,7 @@ export default function NewStocktakingPage() {
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         
                         {/* Session Header Fields */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                        <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                             <div>
                                 <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ الجرد')} <span style={{ color: C.danger }}>*</span></label>
                                 <input 
@@ -269,7 +269,7 @@ export default function NewStocktakingPage() {
 
                         {/* Stocktaking Table */}
                         {form.warehouseId && (
-                            <div style={TABLE_STYLE.container}>
+                            <div className="table-container" style={TABLE_STYLE.container}>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
@@ -331,7 +331,7 @@ export default function NewStocktakingPage() {
                         </div>
 
                         {/* Action Buttons */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 180px', gap: '16px', marginTop: '10px', borderTop: `1px solid ${C.border}`, paddingTop: '20px' }}>
+                        <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 180px', gap: '16px', marginTop: '10px', borderTop: `1px solid ${C.border}`, paddingTop: '20px' }}>
                             <button type="submit" disabled={isSubmitting || !form.warehouseId} 
                                 style={{ 
                                     ...BTN_PRIMARY(!form.warehouseId, isSubmitting), 

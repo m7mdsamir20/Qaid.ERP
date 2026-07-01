@@ -402,7 +402,7 @@ export default function NewPurchasePage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+            <div className="purchase-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
                 <PageHeader
                     title={t("فاتورة مشتريات جديدة")}
                     subtitle={t("تسجيل مشتريات جديدة وتوريد المخازن وتحديث حسابات الموردين")}
@@ -597,15 +597,26 @@ export default function NewPurchasePage() {
                             </div>
 
                             <div className="table-container">
-                                <table className="table">
+                                <table className="sales-items-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                                    <colgroup>
+                                        <col />
+                                        <col className="col-unit" style={{ width: '65px' }} />
+                                        <col className="col-qty" style={{ width: '60px' }} />
+                                        <col className="col-price" style={{ width: '90px' }} />
+                                        <col className="col-total" style={{ width: '95px' }} />
+                                        <col className="col-actions" style={{ width: '60px' }} />
+                                    </colgroup>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            {[isContracting ? t('المادة / بند العمل') : t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => (
-                                                <th key={i} style={{
-                                                    textAlign: i === 0 ? 'start' : 'center',
-                                                    padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
-                                                }}>{h}</th>
-                                            ))}
+                                            {[isContracting ? t('المادة / بند العمل') : t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, idx) => {
+                                                const classes = ['', 'col-unit', 'col-qty', 'col-price', 'col-total', 'col-actions'];
+                                                return (
+                                                    <th key={idx} className={classes[idx]} style={{
+                                                        textAlign: idx === 0 ? 'start' : 'center',
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO
+                                                    }}>{h}</th>
+                                                );
+                                            })}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -615,11 +626,11 @@ export default function NewPurchasePage() {
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{l.itemName}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
-                                                <td style={{ padding: '12px', }}>
+                                                <td className="col-unit" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                <td className="col-qty" style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td className="col-price" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td className="col-total" style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
+                                                <td className="col-actions" style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>
                                                         <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Trash2 size={16} /></button>
@@ -632,9 +643,12 @@ export default function NewPurchasePage() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {isContracting ? t('المواد/البنود') : t('الأصناف')}</td>
-                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
-                                                <td />
+                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {isContracting ? t('المواد/البنود') : t('الأصناف')}</td>
+                                                <td className="col-unit" />
+                                                <td className="col-qty" />
+                                                <td className="col-price" />
+                                                <td className="col-total" style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
+                                                <td className="col-actions" />
                                             </tr>
                                         </tfoot>
                                     )}

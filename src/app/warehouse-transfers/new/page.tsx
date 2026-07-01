@@ -147,7 +147,7 @@ export default function NewTransferPage() {
                     <form onSubmit={handleSubmit} dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         
                         {/* Session Header Fields */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 1fr) 1fr 1fr 1fr', gap: '16px' }}>
+                        <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 1fr) 1fr 1fr 1fr', gap: '16px' }}>
                             <div>
                                 <label style={{ ...LS, fontSize: '11px' }}>{t('رقم التحويل')}</label>
                                 <div style={{ position: 'relative' }}>
@@ -207,7 +207,7 @@ export default function NewTransferPage() {
                                 </button>
                             </div>
 
-                            <div style={{ ...TABLE_STYLE.container, overflow: 'visible' }}>
+                            <div className="table-container" style={{ ...TABLE_STYLE.container, overflow: 'visible' }}>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>

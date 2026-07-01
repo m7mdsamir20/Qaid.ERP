@@ -102,7 +102,7 @@ export default function NewServiceContractPage() {
                 />
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
+                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
 
                         {/* Main Section */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -110,7 +110,7 @@ export default function NewServiceContractPage() {
                             {/* Customer + Type */}
                             <div style={SC}>
                                 <p style={STitle}><FileText size={14} /> بيانات العقد</p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
 
                                     {/* Customer Select */}
                                     <div>

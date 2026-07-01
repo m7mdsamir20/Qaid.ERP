@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
@@ -152,13 +152,13 @@ export default function WorkOrderDetailPage() {
                     } : undefined}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                         <div style={SC}>
                             <p style={STitle}><ClipboardList size={14} /> تفاصيل أمر العمل</p>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 {[
                                     { label: 'رقم الأمر', value: padded, mono: true },
                                     { label: 'نوع الأمر', value: TYPE_LABELS[order.type] || order.type },

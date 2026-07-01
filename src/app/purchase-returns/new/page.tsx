@@ -316,7 +316,7 @@ export default function NewPurchaseReturnPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div className="purchase-returns-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 <PageHeader
                     title={t("مرتجع مشتريات جديد")}
                     subtitle={t("إرجاع أصناف للمورد وتسوية حسابه المالي والمخزني")}

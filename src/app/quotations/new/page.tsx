@@ -334,7 +334,7 @@ export default function NewQuotationPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px', paddingTop: THEME.header.pt }}>
+            <div className="quotation-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px', paddingTop: THEME.header.pt }}>
                 <PageHeader
                     title={t("إنشاء عرض سعر")}
                     subtitle={t("قم بإنشاء عرض سعر احترافي لعملائك بسهولة وبخطوات سريعة")}

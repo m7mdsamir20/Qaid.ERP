@@ -41,10 +41,10 @@ function Field({ label, required, children }: { label: string; required?: boolea
 }
 
 function Grid2({ children }: { children: React.ReactNode }) {
-    return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>{children}</div>;
+    return <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>{children}</div>;
 }
 function Grid3({ children }: { children: React.ReactNode }) {
-    return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>{children}</div>;
+    return <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>{children}</div>;
 }
 
 /* ══════════════════════════════════════════
@@ -263,7 +263,7 @@ export default function EditEmployeePage() {
                 </div>
 
                 <form onSubmit={submit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
+                    <div className="employee-form-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
 
                         {/* Main Content Area */}
                         <div>
@@ -445,7 +445,13 @@ export default function EditEmployeePage() {
                     </div>
                 </form>
             </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg) } }
+                @media (max-width: 768px) {
+                    .employee-form-layout { grid-template-columns: 1fr !important; }
+                    .form-sidebar { position: static !important; order: 2; }
+                }
+            `}</style>
         </DashboardLayout>
     );
 }

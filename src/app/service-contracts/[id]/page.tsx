@@ -136,14 +136,14 @@ export default function ServiceContractDetailPage() {
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px' }}>
                     {/* Left: Details + Work Orders */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                         {/* Contract Info */}
                         <div style={SC}>
                             <p style={STitle}><FileText size={14} /> تفاصيل العقد</p>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                 {[
                                     { label: 'رقم العقد', value: padded, mono: true },
                                     { label: 'العميل', value: contract.customer?.name || '—' },

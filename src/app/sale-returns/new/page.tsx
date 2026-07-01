@@ -334,7 +334,7 @@ export default function NewReturnPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div className="sale-returns-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 <PageHeader
                     title={isServices ? t("مرتجع خدمات جديد") : t("مرتجع مبيعات جديد")}
                     subtitle={isServices ? t("إلغاء خدمات تم فوترتها مسبقاً وتسوية حساب العميل") : t("إرجاع أصناف من العميل وتسوية حسابه المالي والمخزني")}
