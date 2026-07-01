@@ -61,12 +61,22 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; color: string; b
 
 function fmtDate(d: string | null) {
     if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
 }
 
 function fmtDateTime(d: string | null) {
     if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    const hh = String(dt.getHours()).padStart(2, '0');
+    const min = String(dt.getMinutes()).padStart(2, '0');
+    return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
 }
 
 function fmtNum(n: number) {
@@ -156,6 +166,7 @@ export default function WorkOrderDetailPage() {
                     title={padded}
                     subtitle={`${TYPE_LABELS[order.type] || order.type} — ${order.customer?.name || 'بدون عميل'}`}
                     icon={ClipboardList}
+                    backUrl="/work-orders"
                     primaryButton={isEditable ? {
                         label: 'تعديل أمر العمل',
                         onClick: () => router.push(`/work-orders/${id}/edit`),

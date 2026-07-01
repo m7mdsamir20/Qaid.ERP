@@ -52,7 +52,11 @@ const WO_STATUS_BADGE: Record<string, { label: string; color: string }> = {
 
 function fmtDate(d: string | null) {
     if (!d) return '—';
-    return new Date(d).toLocaleDateString('en-ZA', { year: 'numeric', month: 'short', day: 'numeric' });
+    const dt = new Date(d);
+    const dd = String(dt.getDate()).padStart(2, '0');
+    const mm = String(dt.getMonth() + 1).padStart(2, '0');
+    const yyyy = dt.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
 }
 
 function fmtNum(n: number) {
@@ -129,6 +133,7 @@ export default function ServiceContractDetailPage() {
                     title={padded}
                     subtitle={`عقد ${TYPE_LABELS[contract.type] || contract.type} — ${contract.customer?.name || 'بدون عميل'}`}
                     icon={FileText}
+                    backUrl="/service-contracts"
                     primaryButton={{
                         label: 'إنشاء أمر عمل',
                         onClick: () => router.push(`/work-orders/new?contractId=${contract.id}&customerId=${contract.customer?.id || ''}`),
@@ -246,16 +251,30 @@ export default function ServiceContractDetailPage() {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {contract.status === 'draft' && (
-                                    <button
-                                        onClick={() => changeStatus('active')}
-                                        disabled={statusLoading}
-                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '42px', borderRadius: '10px', border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.1)', color: '#4ade80', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}
-                                    >
-                                        <CheckCircle size={15} /> تفعيل العقد
-                                    </button>
+                                    <>
+                                        <div style={{ padding: '10px 12px', borderRadius: '10px', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', marginBottom: '4px' }}>
+                                            <p style={{ margin: 0, fontSize: '11px', color: '#fbbf24', lineHeight: 1.7, fontFamily: CAIRO }}>
+                                                📋 العقد في مرحلة المسودة — راجع التفاصيل مع العميل ثم اضغط <strong>«تفعيل العقد»</strong> لبدء العمل به رسمياً.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => changeStatus('active')}
+                                            disabled={statusLoading}
+                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '42px', borderRadius: '10px', border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.1)', color: '#4ade80', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}
+                                        >
+                                            <CheckCircle size={15} /> تفعيل العقد
+                                        </button>
+                                    </>
                                 )}
                                 {contract.status === 'active' && (
                                     <>
+                                        <button
+                                            onClick={() => changeStatus('completed')}
+                                            disabled={statusLoading}
+                                            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '42px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}
+                                        >
+                                            <CheckCircle size={15} /> تحديد كمكتمل
+                                        </button>
                                         <button
                                             onClick={() => changeStatus('expired')}
                                             disabled={statusLoading}
@@ -272,7 +291,7 @@ export default function ServiceContractDetailPage() {
                                         </button>
                                     </>
                                 )}
-                                {(contract.status === 'expired' || contract.status === 'cancelled') && (
+                                {(contract.status === 'expired' || contract.status === 'cancelled' || contract.status === 'completed') && (
                                     <button
                                         onClick={() => changeStatus('active')}
                                         disabled={statusLoading}
