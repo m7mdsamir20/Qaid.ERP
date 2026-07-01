@@ -127,12 +127,6 @@ export default function NewCompanyPage() {
         }
     }, [session, status, router]);
 
-    // مزامنة كود هاتف الشركة مع الدولة المختارة
-    useEffect(() => {
-        const detected = PHONE_CODES.find(p => p.code === form.countryCode);
-        if (detected) { setCompanyPhoneCode(detected); setAdminPhoneCode(detected); }
-    }, [form.countryCode]);
-
     const [form, setForm] = useState({
         // الشركة
         name: '', nameEn: '', phone: '', email: '', address: '', businessType: 'TRADING', countryCode: 'EG',
@@ -171,6 +165,12 @@ export default function NewCompanyPage() {
     useEffect(() => {
         setForm(f => ({ ...f, features: buildDefaultFeatures(f.businessType) }));
     }, [form.businessType]);
+
+    // مزامنة كود هاتف الشركة مع الدولة المختارة
+    useEffect(() => {
+        const detected = PHONE_CODES.find(p => p.code === form.countryCode);
+        if (detected) { setCompanyPhoneCode(detected); setAdminPhoneCode(detected); }
+    }, [form.countryCode]);
 
     /* ─── Helpers ─── */
     const updatePlan = (plan: string) => {
