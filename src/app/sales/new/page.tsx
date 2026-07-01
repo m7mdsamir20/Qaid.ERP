@@ -57,6 +57,8 @@ function NewSalePageInner() {
     const searchParams = useSearchParams();
     const quotationId = searchParams.get('quotationId');
     const [fromQuotation, setFromQuotation] = useState<any>(null);
+    const workOrderId = searchParams.get('workOrderId');
+    const [fromWorkOrder, setFromWorkOrder] = useState<any>(null);
 
 
     const itemSelectRef = useRef<any>(null);
@@ -243,6 +245,42 @@ function NewSalePageInner() {
             .catch(() => { });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [quotationId, loading]);
+
+    // Prefill from work order if workOrderId param is present
+    useEffect(() => {
+        if (!workOrderId || loading) return;
+        fetch(`/api/work-orders/${workOrderId}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(wo => {
+                if (!wo) return;
+                setFromWorkOrder(wo);
+                // Set customer and notes
+                setForm((f: any) => ({
+                    ...f,
+                    customerId: wo.customerId || f.customerId,
+                    customerPONumber: wo.customerPONumber || f.customerPONumber,
+                    notes: wo.notes || '',
+                }));
+                // Set lines from work order materials
+                if (wo.materials?.length) {
+                    setLines(wo.materials.map((m: any) => ({
+                        itemId: m.itemId,
+                        itemCode: m.item?.code || '',
+                        itemName: m.item?.name,
+                        unit: m.unit || m.item?.unit?.name || '',
+                        quantity: m.quantity,
+                        price: m.unitPrice || m.item?.sellPrice || 0,
+                        total: m.total,
+                        stock: 99999,
+                        description: m.description || '',
+                        taxRate: 0,
+                        taxAmount: 0,
+                    })));
+                }
+            })
+            .catch(() => { });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [workOrderId, loading]);
 
     useEffect(() => {
         if (!entryItemId || !form.warehouseId) { setEntryStock(null); return; }
@@ -450,6 +488,7 @@ function NewSalePageInner() {
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
                     salesRepresentativeId: form.salesRepresentativeId || undefined,
+                    workOrderId: workOrderId || undefined,
                     lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price), description: l.description })),
                 }),
             });
@@ -571,7 +610,7 @@ function NewSalePageInner() {
                     title={isServices ? t("فاتورة خدمة جديدة") : t("فاتورة مبيعات جديدة")}
                     subtitle={isServices ? t("إصدار فاتورة لخدمة مقدمة وتحصيل قيمتها") : t("إنشاء فاتورة مبيعات جديدة وحفظها في النظام")}
                     icon={Receipt}
-                    backUrl="/sales"
+                    backUrl={workOrderId ? `/work-orders/${workOrderId}` : "/sales"}
                 />
 
                 {/* ── Branch Warning ── */}

@@ -1,11 +1,11 @@
 'use client';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, SC, STitle, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
-import { ClipboardList, Save, Search, X, Package } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { ClipboardList, Save, Search, X, Package, Loader2 } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
 
 interface Customer { id: string; name: string; }
 interface ServiceContract { id: string; contractNumber: number; type: string; customerId: string | null; }
@@ -26,26 +26,32 @@ const PRIORITIES = [
     { value: 'urgent', label: 'عاجلة' },
 ];
 
-export default function NewWorkOrderPage() {
-    return <Suspense><NewWorkOrderForm /></Suspense>;
-}
+const STATUS_OPTIONS = [
+    { value: 'new',         label: 'جديد' },
+    { value: 'assigned',    label: 'مُسنَد' },
+    { value: 'in_progress', label: 'قيد التنفيذ' },
+    { value: 'completed',   label: 'مكتمل' },
+    { value: 'cancelled',   label: 'ملغى' },
+];
 
-function NewWorkOrderForm() {
+export default function EditWorkOrderPage() {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const presetContractId = searchParams.get('contractId') || '';
-    const presetCustomerId = searchParams.get('customerId') || '';
+    const params = useParams();
+    const id = params.id as string;
 
+    const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
+    
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [contracts, setContracts] = useState<ServiceContract[]>([]);
     const [employees, setEmployees] = useState<Employee[]>([]);
+    const [items, setItems] = useState<any[]>([]);
+    
     const [customerSearch, setCustomerSearch] = useState('');
     const [showCustomerList, setShowCustomerList] = useState(false);
 
     interface MaterialLine { itemId: string; name: string; code: string; quantity: number; unitPrice: number; total: number; unit: string; }
-    const [items, setItems] = useState<any[]>([]);
     const [lines, setLines] = useState<MaterialLine[]>([]);
     const [itemSelectId, setItemSelectId] = useState('');
     const [itemQty, setItemQty] = useState<number | ''>(1);
@@ -54,38 +60,81 @@ function NewWorkOrderForm() {
     const [form, setForm] = useState({
         type: 'maintenance',
         priority: 'normal',
-        customerId: presetCustomerId,
+        status: 'new',
+        customerId: '',
         customerName: '',
-        contractId: presetContractId,
+        contractId: '',
         customerPONumber: '',
         assignedTo: '',
         scheduledDate: '',
         description: '',
         notes: '',
+        resolution: '',
     });
 
     useEffect(() => {
+        setLoading(true);
         Promise.all([
+            fetch(`/api/work-orders/${id}`).then(r => r.ok ? r.json() : null),
             fetch('/api/customers?take=1000').then(r => r.ok ? r.json() : []),
             fetch('/api/service-contracts').then(r => r.ok ? r.json() : []),
             fetch('/api/employees?take=1000').then(r => r.ok ? r.json() : []),
             fetch('/api/items?all=true').then(r => r.ok ? r.json() : []),
-        ]).then(([custData, contractData, empData, itemData]) => {
+        ]).then(([wo, custData, contractData, empData, itemData]) => {
+            if (!wo) {
+                setError('تعذر تحميل بيانات أمر العمل');
+                setLoading(false);
+                return;
+            }
+
             const custList: Customer[] = Array.isArray(custData) ? custData : (custData.data || []);
             const contractList: ServiceContract[] = Array.isArray(contractData) ? contractData : [];
             const empList: Employee[] = Array.isArray(empData) ? empData : (empData.data || []);
             const itemList: any[] = Array.isArray(itemData) ? itemData : [];
+            
             setCustomers(custList);
             setContracts(contractList);
             setEmployees(empList);
             setItems(itemList);
 
-            if (presetCustomerId) {
-                const found = custList.find((c: Customer) => c.id === presetCustomerId);
-                if (found) setCustomerSearch(found.name);
+            setForm({
+                type: wo.type,
+                priority: wo.priority,
+                status: wo.status,
+                customerId: wo.customerId || '',
+                customerName: wo.customer?.name || '',
+                contractId: wo.contractId || '',
+                customerPONumber: wo.customerPONumber || '',
+                assignedTo: wo.assignedTo || '',
+                scheduledDate: wo.scheduledDate ? wo.scheduledDate.split('T')[0] : '',
+                description: wo.description || '',
+                notes: wo.notes || '',
+                resolution: wo.resolution || '',
+            });
+
+            if (wo.customer) {
+                setCustomerSearch(wo.customer.name);
             }
-        }).catch(console.error);
-    }, [presetCustomerId]);
+
+            if (wo.materials?.length) {
+                setLines(wo.materials.map((m: any) => ({
+                    itemId: m.itemId,
+                    name: m.item?.name || '',
+                    code: m.item?.code || '',
+                    quantity: m.quantity,
+                    unitPrice: m.unitPrice,
+                    total: m.total,
+                    unit: m.unit || m.item?.unit?.name || '',
+                })));
+            }
+
+            setLoading(false);
+        }).catch(err => {
+            console.error(err);
+            setError('خطأ أثناء تحميل البيانات');
+            setLoading(false);
+        });
+    }, [id]);
 
     const filteredCustomers = customers.filter(c =>
         c.name.toLowerCase().includes(customerSearch.toLowerCase())
@@ -151,12 +200,13 @@ function NewWorkOrderForm() {
         }
         setSaving(true);
         try {
-            const res = await fetch('/api/work-orders', {
-                method: 'POST',
+            const res = await fetch(`/api/work-orders/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     type: form.type,
                     priority: form.priority,
+                    status: form.status,
                     customerId: form.customerId || null,
                     contractId: form.contractId || null,
                     customerPONumber: form.customerPONumber || null,
@@ -164,6 +214,7 @@ function NewWorkOrderForm() {
                     scheduledDate: form.scheduledDate || null,
                     description: form.description,
                     notes: form.notes || null,
+                    resolution: form.resolution || null,
                     materials: lines.map(l => ({
                         itemId: l.itemId,
                         quantity: l.quantity,
@@ -173,10 +224,10 @@ function NewWorkOrderForm() {
                 }),
             });
             if (res.ok) {
-                router.push('/work-orders');
+                router.push(`/work-orders/${id}`);
             } else {
                 const data = await res.json();
-                setError(data.error || 'فشل في حفظ أمر العمل');
+                setError(data.error || 'فشل في حفظ التعديلات');
             }
         } catch {
             setError('خطأ في الاتصال بالسيرفر');
@@ -185,14 +236,24 @@ function NewWorkOrderForm() {
         }
     };
 
+    if (loading) {
+        return (
+            <DashboardLayout>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     return (
         <DashboardLayout>
             <div dir="rtl" style={{ paddingBottom: '60px', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="أمر عمل جديد"
-                    subtitle="إنشاء أمر عمل جديد"
+                    title="تعديل أمر العمل"
+                    subtitle="تحديث تفاصيل أمر العمل والقطع والحلول"
                     icon={ClipboardList}
-                    backUrl="/work-orders"
+                    backUrl={`/work-orders/${id}`}
                 />
 
                 <form onSubmit={handleSubmit}>
@@ -313,7 +374,7 @@ function NewWorkOrderForm() {
                             </div>
 
                             <div style={SC}>
-                                <p style={STitle}>الوصف والملاحظات</p>
+                                <p style={STitle}>الوصف والتفاصيل</p>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                     <div>
                                         <label style={LS}>الوصف <span style={{ color: C.danger }}>*</span></label>
@@ -325,6 +386,17 @@ function NewWorkOrderForm() {
                                             style={{ ...IS, height: 'auto', padding: '12px 16px', resize: 'vertical' } as React.CSSProperties}
                                             onFocus={focusIn} onBlur={focusOut}
                                             required
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={LS}>الحل والإجراء المتخذ (Resolution)</label>
+                                        <textarea
+                                            value={form.resolution}
+                                            onChange={e => setForm(f => ({ ...f, resolution: e.target.value }))}
+                                            placeholder="اكتب ما تم إنجازه أو خطوات حل المشكلة..."
+                                            rows={4}
+                                            style={{ ...IS, height: 'auto', padding: '12px 16px', resize: 'vertical' } as React.CSSProperties}
+                                            onFocus={focusIn} onBlur={focusOut}
                                         />
                                     </div>
                                     <div>
@@ -436,38 +508,34 @@ function NewWorkOrderForm() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                             <div style={SC}>
-                                <p style={STitle}>حفظ أمر العمل</p>
+                                <p style={STitle}>حفظ التغييرات</p>
                                 {error && (
                                     <div style={{ padding: '12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.22)', borderRadius: '10px', color: '#ef4444', fontSize: '13px', marginBottom: '14px', fontFamily: CAIRO }}>
                                         {error}
                                     </div>
                                 )}
-                                <button type="submit" disabled={saving} style={BTN_PRIMARY(false, saving)}>
+
+                                <div>
+                                    <label style={LS}>حالة أمر العمل</label>
+                                    <CustomSelect
+                                        value={form.status}
+                                        onChange={val => setForm(f => ({ ...f, status: val }))}
+                                        options={STATUS_OPTIONS}
+                                        hideSearch
+                                    />
+                                </div>
+
+                                <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), marginTop: '16px' }}>
                                     <Save size={16} />
-                                    {saving ? 'جاري الحفظ...' : 'حفظ أمر العمل'}
+                                    {saving ? 'جاري الحفظ...' : 'حفظ التعديلات'}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => router.back()}
                                     style={{ width: '100%', height: '42px', marginTop: '10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}
                                 >
-                                    إلغاء
+                                    إلغاء التعديل
                                 </button>
-                            </div>
-
-                            <div style={SC}>
-                                <p style={STitle}>معلومات</p>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    {[
-                                        { label: 'الحالة الابتدائية', value: 'جديد (سيتغير إلى مُسنَد عند تحديد موظف)' },
-                                        { label: 'القسم', value: 'الخدمات' },
-                                    ].map((item, i) => (
-                                        <div key={i} style={{ padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: `1px solid ${C.border}` }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px', fontWeight: 700 }}>{item.label}</div>
-                                            <div style={{ fontSize: '12px', color: C.textSecondary }}>{item.value}</div>
-                                        </div>
-                                    ))}
-                                </div>
                             </div>
                         </div>
                     </div>

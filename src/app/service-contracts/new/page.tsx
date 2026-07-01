@@ -99,6 +99,7 @@ export default function NewServiceContractPage() {
                     title="عقد خدمة جديد"
                     subtitle="إنشاء عقد خدمة جديد مع العميل"
                     icon={FileText}
+                    backUrl="/service-contracts"
                 />
 
                 <form onSubmit={handleSubmit}>

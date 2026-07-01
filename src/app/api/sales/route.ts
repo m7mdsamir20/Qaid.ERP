@@ -124,7 +124,7 @@ export const POST = withProtection(async (request, session, body) => {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,
             paidAmount, warehouseId, notes, attachments,
             financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount, projectId,
-            customerPONumber
+            customerPONumber, workOrderId
         } = body;
 
         // Check if the current user is a sales representative
@@ -231,6 +231,7 @@ export const POST = withProtection(async (request, session, body) => {
                 date: new Date(),
                 customerId: customerId || null,
                 supplierId: supplierId || null,
+                workOrderId: workOrderId || null,
                 subtotal,
                 discount: discount || 0,
                 taxRate: taxRate || 0,
@@ -325,6 +326,13 @@ export const POST = withProtection(async (request, session, body) => {
                 await tx.supplier.update({
                     where: { id: supplierId, companyId },
                     data: { balance: { decrement: remaining } }, // البيع للمورد ينقص حقه عندنا (موجب يقل)
+                });
+            }
+
+            if (workOrderId) {
+                await tx.workOrder.update({
+                    where: { id: workOrderId, companyId },
+                    data: { status: 'invoiced' }
                 });
             }
 

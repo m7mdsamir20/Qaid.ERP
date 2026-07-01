@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, SC, STitle, TABLE_STYLE } from '@/constants/theme';
-import { ClipboardList, Loader2, Play, CheckCircle, XCircle, Edit3, Package } from 'lucide-react';
+import { ClipboardList, Loader2, Play, CheckCircle, XCircle, Edit3, Package, Receipt } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 
 interface Material {
@@ -55,6 +55,7 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; color: string; b
     assigned:    { label: 'مُسنَد',      bg: 'rgba(37,106,244,0.12)',  color: '#256af4', border: 'rgba(37,106,244,0.22)'  },
     in_progress: { label: 'قيد التنفيذ', bg: 'rgba(251,191,36,0.12)', color: '#fbbf24', border: 'rgba(251,191,36,0.22)'  },
     completed:   { label: 'مكتمل',       bg: 'rgba(74,222,128,0.12)', color: '#4ade80', border: 'rgba(74,222,128,0.22)'  },
+    invoiced:    { label: 'تمت الفوترة',  bg: 'rgba(16,185,129,0.12)', color: '#10b981', border: 'rgba(16,185,129,0.22)'  },
     cancelled:   { label: 'ملغى',        bg: 'rgba(239,68,68,0.12)',  color: '#ef4444', border: 'rgba(239,68,68,0.22)'   },
 };
 
@@ -135,7 +136,7 @@ export default function WorkOrderDetailPage() {
     const padded = `WO-${String(order.orderNumber).padStart(5, '0')}`;
     const statusBadge = STATUS_BADGE[order.status] || STATUS_BADGE.new;
     const priorityBadge = PRIORITY_BADGE[order.priority] || PRIORITY_BADGE.normal;
-    const isEditable = order.status === 'new' || order.status === 'assigned';
+    const isEditable = order.status !== 'completed' && order.status !== 'invoiced' && order.status !== 'cancelled';
     const materialsTotal = order.materials.reduce((sum, m) => sum + m.total, 0);
 
     return (
@@ -299,9 +300,17 @@ export default function WorkOrderDetailPage() {
                                         <XCircle size={15} /> إلغاء أمر العمل
                                     </button>
                                 )}
-                                {(order.status === 'completed' || order.status === 'cancelled') && (
+                                {order.status === 'completed' && (
+                                    <button
+                                        onClick={() => router.push(`/sales/new?businessType=SERVICES&workOrderId=${order.id}`)}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '42px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: CAIRO }}
+                                    >
+                                        <Receipt size={15} /> تحويل إلى فاتورة خدمات
+                                    </button>
+                                )}
+                                {(order.status === 'completed' || order.status === 'invoiced' || order.status === 'cancelled') && (
                                     <div style={{ textAlign: 'center', padding: '12px', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>
-                                        {order.status === 'completed' ? 'تم إتمام أمر العمل بنجاح' : 'تم إلغاء أمر العمل'}
+                                        {order.status === 'completed' ? 'تم إتمام أمر العمل بنجاح' : order.status === 'invoiced' ? 'تمت فوترة أمر العمل بنجاح' : 'تم إلغاء أمر العمل'}
                                     </div>
                                 )}
                             </div>
