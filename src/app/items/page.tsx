@@ -141,15 +141,18 @@ export default function ItemsPage() {
             });
             setEditingId(item.id);
         } else {
-            let nextNum = 1;
-            if (items.length > 0) {
-                const nums = items.map(i => {
-                    const match = i.code.match(/ITEM-(\d+)/);
-                    return match ? parseInt(match[1]) : 0;
-                });
-                nextNum = Math.max(...nums, 0) + 1;
-            }
-            const nextCode = String(nextNum).padStart(4, '0');
+            const typePrefix = itemTypeTab === 'service' ? 'SRV' : itemTypeTab === 'raw' ? 'RAW' : 'PRD';
+            const relevantItems = items.filter(i =>
+                itemTypeTab === 'service' ? i.type === 'service' :
+                itemTypeTab === 'raw' ? i.type === 'raw' :
+                (i.type === 'product' || !i.type)
+            );
+            const nums = relevantItems.map(i => {
+                const match = i.code.match(/(\d+)$/);
+                return match ? parseInt(match[1]) : 0;
+            });
+            const nextNum = Math.max(...nums, 0) + 1;
+            const nextCode = `${typePrefix}-${String(nextNum).padStart(3, '0')}`;
             const autoBarcode = companyBusinessType === 'RETAIL' ? Math.floor(100000000000 + Math.random() * 900000000000).toString() : '';
 
             setForm({
@@ -641,7 +644,7 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('تصنيف الخدمة') : companyBusinessType === 'CONTRACTING' ? t('تصنيف المواد والبنود') : t('التصنيف')}</label>
+                                <label style={LS}>{(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? t('تصنيف الخدمة') : companyBusinessType === 'CONTRACTING' ? t('تصنيف المواد والبنود') : t('التصنيف')}</label>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <div style={{ flex: 1 }}>
                                         <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={companyBusinessType === 'CONTRACTING' ? t("اختر تصنيف البند...") : t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
@@ -655,7 +658,7 @@ export default function ItemsPage() {
                                     </button>
                                 </div>
                             </div>
-                            {companyBusinessType === 'SERVICES' ? (
+                            {(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? (
                                 <div>
                                     <label style={LS}>{t('حالة الخدمة')}</label>
                                     <CustomSelect
@@ -686,7 +689,7 @@ export default function ItemsPage() {
                             )}
                         </div>
 
-                        {companyBusinessType === 'SERVICES' ? (
+                        {(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? (
                             <div>
                                 <label style={LS}>{t('وصف الخدمة')}</label>
                                 <textarea
@@ -726,7 +729,7 @@ export default function ItemsPage() {
 
                                 {/* Row 2: Sell Price and Variable Price Toggle (only for products) */}
                                 {form.type === 'product' && (
-                                    <div style={{ display: 'grid', gridTemplateColumns: companyBusinessType === 'CONTRACTING' ? '1fr' : '1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'RETAIL' || companyBusinessType === 'RESTAURANTS') ? '1fr 1fr' : '1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
                                         <div>
                                             <label style={LS}>{companyBusinessType === 'CONTRACTING' ? t('التكلفة التقديرية (سعر البيع للعميل)') : t('سعر البيع')}</label>
                                             <div style={{ position: 'relative', opacity: form.isPriceVariable ? 0.5 : 1, transition: '0.2s' }}>
@@ -734,7 +737,7 @@ export default function ItemsPage() {
                                                 <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
-                                        {companyBusinessType !== 'CONTRACTING' && (
+                                        {(companyBusinessType === 'RETAIL' || companyBusinessType === 'RESTAURANTS') && (
                                             <div style={{ display: 'flex', alignItems: 'center', height: '38px', marginTop: '18px' }}>
                                                 <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
                                                     <div style={{ position: 'relative', width: '22px', height: '22px' }}>
@@ -753,7 +756,7 @@ export default function ItemsPage() {
                                     </div>
                                 )}
                                 
-                                {form.type === 'product' && companyBusinessType !== 'CONTRACTING' && companyBusinessType !== 'TRADING' && (
+                                {form.type === 'product' && companyBusinessType !== 'CONTRACTING' && companyBusinessType !== 'TRADING' && companyBusinessType !== 'SERVICES' && (
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
                                         <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span><Boxes size={14} style={{ marginInlineEnd: '6px' }}/> {t('أنواع ومقاسات الصنف (اختياري)')}</span>
@@ -958,8 +961,8 @@ export default function ItemsPage() {
                         )}
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
-                            <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : companyBusinessType === 'CONTRACTING' ? (form.id ? t('حفظ التعديلات') : t('إضافة البند/المادة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
+                            <button type="submit" disabled={isSubmitting || (itemTypeTab !== 'service' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (itemTypeTab !== 'service' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' && itemTypeTab === 'service' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : companyBusinessType === 'CONTRACTING' ? (form.id ? t('حفظ التعديلات') : t('إضافة البند/المادة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
                         </div>

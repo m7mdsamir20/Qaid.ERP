@@ -5140,6 +5140,18 @@ export const dictionaries = {
 
         // --- Auto-synced Keys (Missing in Code) ---
         "مثال: استشارة قانونية، صيانة مكيف...": "Example: legal advice, air conditioning maintenance...",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "كتالوج الخدمات": "Services catalog",
+        "لا توجد خدمات مضافة بعد": "There are no services added yet",
+        "مثال: صيانة مكيف، استشارة قانونية...": "Example: air conditioning maintenance, legal advice...",
+        "السعر الافتراضي": "Default price",
+        "مثال: ساعة، زيارة، مشروع": "Example: hour, visit, project",
+        "وصف مختصر للخدمة...": "Brief description of the service...",
+        "الخدمة نشطة": "The service is active",
+        "حذف الخدمة": "Delete the service",
+        "هل أنت متأكد من حذف خدمة": "Are you sure you want to delete the service?",
 }
 };
 

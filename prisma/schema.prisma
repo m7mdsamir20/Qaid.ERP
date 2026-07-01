@@ -106,6 +106,7 @@ model Company {
   // 📋 Activity Log
   activityLogs            ActivityLog[]
   // 🔧 Services
+  serviceCatalog          ServiceCatalog[]
   serviceContracts        ServiceContract[]
   workOrders              WorkOrder[]
   // 🎁 Loyalty (Retail)
@@ -1643,6 +1644,21 @@ model ActivityLog {
 // ═══════════════════════════════════════════════════════
 // 🔧  الخدمات (Services Module)
 // ═══════════════════════════════════════════════════════
+
+model ServiceCatalog {
+  id          String   @id @default(cuid())
+  code        String
+  name        String
+  description String?
+  isActive    Boolean  @default(true)
+  companyId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([code, companyId])
+  @@index([companyId])
+}
 
 model ServiceContract {
   id             String      @id @default(cuid())
