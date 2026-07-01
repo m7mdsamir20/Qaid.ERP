@@ -60,12 +60,26 @@ export default function RegisterPage() {
     const [showConfirmPass, setShowConfirmPass] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [phoneError, setPhoneError] = useState('');
+
+    const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email.trim());
+    const isValidPhone = (phone: string) => phone.replace(/\D/g, '').length >= 7;
     const dropdownRef = useRef<HTMLDivElement>(null);
     const businessTypeRef = useRef<HTMLDivElement>(null);
 
     const filteredCountries = COUNTRIES.filter(c =>
         t(c.name).includes(countrySearch) || c.dial.includes(countrySearch)
     );
+
+    // اكتشاف الدولة تلقائياً من المنطقة الزمنية
+    useEffect(() => {
+        try {
+            const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const detected = COUNTRIES.find(c => c.timezone === tz);
+            if (detected) setSelectedCountry(detected);
+        } catch {}
+    }, []);
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -85,6 +99,18 @@ export default function RegisterPage() {
 
         if (form.password !== form.confirmPassword) {
             setError(t('كلمتا المرور غير متطابقتين، يرجى التأكد'));
+            setLoading(false);
+            return;
+        }
+
+        if (form.email && !isValidEmail(form.email)) {
+            setEmailError(t('البريد الإلكتروني غير صحيح، تأكد من الصيغة (example@domain.com)'));
+            setLoading(false);
+            return;
+        }
+
+        if (form.phone && !isValidPhone(form.phone)) {
+            setPhoneError(t('رقم الهاتف غير صحيح، يجب أن يحتوي على 7 أرقام على الأقل'));
             setLoading(false);
             return;
         }
@@ -307,18 +333,33 @@ export default function RegisterPage() {
                                     name="phone"
                                     type="tel" required
                                     value={form.phone}
-                                    onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
+                                    onChange={e => { setForm({ ...form, phone: e.target.value.replace(/\D/g, '') }); setPhoneError(''); }}
                                     placeholder={getCountryPlaceholders(selectedCountry.code).phone}
-                                    style={{ ...IS, height: '50px', flex: 1, direction: 'ltr', textAlign: 'left' }}
+                                    style={{ ...IS, height: '50px', flex: 1, direction: 'ltr', textAlign: 'left', borderColor: phoneError ? '#ef4444' : undefined }}
                                     onFocus={focusIn}
-                                    onBlur={focusOut}
+                                    onBlur={e => { focusOut(e); if (e.target.value && !isValidPhone(e.target.value)) setPhoneError(t('رقم الهاتف غير صحيح')); }}
                                     spellCheck={false}
                                     autoComplete="tel"
                                 />
                             </div>
+                            {phoneError && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{phoneError}</span>}
                         </div>
 
-                        {F(t('البريد الإلكتروني'), 'email', 'email@example.com', 'email')}
+                        <div>
+                            <label style={LS}>{t('البريد الإلكتروني')}</label>
+                            <input
+                                type="email" required
+                                value={form.email}
+                                onChange={e => { setForm({ ...form, email: e.target.value }); setEmailError(''); }}
+                                onBlur={e => { focusOut(e); if (e.target.value && !isValidEmail(e.target.value)) setEmailError(t('البريد الإلكتروني غير صحيح، تأكد من الصيغة (example@domain.com)')); }}
+                                placeholder="email@example.com"
+                                style={{ ...IS, height: '50px', direction: 'ltr', borderColor: emailError ? '#ef4444' : undefined }}
+                                onFocus={focusIn}
+                                spellCheck={false}
+                                autoComplete="email"
+                            />
+                            {emailError && <span style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', display: 'block' }}>{emailError}</span>}
+                        </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                             {F(t('اسم الشركة / النشاط'), 'companyName', t('مثلاً: شركة الحلول التقنية'))}

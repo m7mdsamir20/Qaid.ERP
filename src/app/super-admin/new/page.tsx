@@ -35,7 +35,7 @@ const BUSINESS_TYPES = [
     {
         value: "SERVICES",
         label: t("نشاط خدمات (استشارات، صيانة، إلخ)"),
-        modules: ['sales', 'services', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'reports']
+        modules: ['sales', 'services', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'reports']
     },
     {
         value: "RESTAURANTS",
@@ -69,6 +69,26 @@ const COUNTRIES = [
     { value: 'MA', label: t('🇲🇦 المغرب') },
 ];
 
+const PHONE_CODES = [
+    { code: 'EG', dial: '+20',  flag: '🇪🇬', name: 'مصر' },
+    { code: 'SA', dial: '+966', flag: '🇸🇦', name: 'السعودية' },
+    { code: 'AE', dial: '+971', flag: '🇦🇪', name: 'الإمارات' },
+    { code: 'KW', dial: '+965', flag: '🇰🇼', name: 'الكويت' },
+    { code: 'QA', dial: '+974', flag: '🇶🇦', name: 'قطر' },
+    { code: 'BH', dial: '+973', flag: '🇧🇭', name: 'البحرين' },
+    { code: 'OM', dial: '+968', flag: '🇴🇲', name: 'عُمان' },
+    { code: 'JO', dial: '+962', flag: '🇯🇴', name: 'الأردن' },
+    { code: 'LB', dial: '+961', flag: '🇱🇧', name: 'لبنان' },
+    { code: 'IQ', dial: '+964', flag: '🇮🇶', name: 'العراق' },
+    { code: 'SY', dial: '+963', flag: '🇸🇾', name: 'سوريا' },
+    { code: 'YE', dial: '+967', flag: '🇾🇪', name: 'اليمن' },
+    { code: 'LY', dial: '+218', flag: '🇱🇾', name: 'ليبيا' },
+    { code: 'TN', dial: '+216', flag: '🇹🇳', name: 'تونس' },
+    { code: 'DZ', dial: '+213', flag: '🇩🇿', name: 'الجزائر' },
+    { code: 'MA', dial: '+212', flag: '🇲🇦', name: 'المغرب' },
+    { code: 'SD', dial: '+249', flag: '🇸🇩', name: 'السودان' },
+];
+
 // بناء features لكل الأقسام المتاحة من navSections (بغض النظر عن نوع النشاط)
 const buildAllFeatures = (): Record<string, string[]> => {
     const map = new Map<string, string[]>();
@@ -93,6 +113,8 @@ export default function NewCompanyPage() {
     const [step, setStep] = useState(1); // 1: شركة, 2: مدير, 3: اشتراك, 4: صلاحيات
     const [submitting, setSubmitting] = useState(false);
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+    const [companyPhoneCode, setCompanyPhoneCode] = useState(PHONE_CODES[0]);
+    const [adminPhoneCode, setAdminPhoneCode] = useState(PHONE_CODES[0]);
 
     useEffect(() => {
         if (status === 'loading') return;
@@ -104,6 +126,12 @@ export default function NewCompanyPage() {
             router.push('/');
         }
     }, [session, status, router]);
+
+    // مزامنة كود هاتف الشركة مع الدولة المختارة
+    useEffect(() => {
+        const detected = PHONE_CODES.find(p => p.code === form.countryCode);
+        if (detected) { setCompanyPhoneCode(detected); setAdminPhoneCode(detected); }
+    }, [form.countryCode]);
 
     const [form, setForm] = useState({
         // الشركة
@@ -411,10 +439,16 @@ export default function NewCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t("رقم هاتف الشركة")}</label>
-                                <input type="tel" placeholder="01XXXXXXXXX"
-                                    value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                                    onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone"
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                                <div style={{ display: 'flex', gap: '6px' }}>
+                                    <select value={companyPhoneCode.code} onChange={e => { const c = PHONE_CODES.find(p => p.code === e.target.value); if (c) setCompanyPhoneCode(c); }}
+                                        style={{ height: '48px', padding: '0 8px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', fontFamily: OUTFIT, flexShrink: 0 }}>
+                                        {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.dial}</option>)}
+                                    </select>
+                                    <input type="tel" placeholder="1XXXXXXXXX"
+                                        value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                                        onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone"
+                                        style={{ ...IS, direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT, flex: 1 }} />
+                                </div>
                             </div>
                             <div>
                                 <label style={LS}>{t("البريد الإلكتروني للشركة")}</label>
@@ -498,10 +532,16 @@ export default function NewCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t("رقم هاتف المدير")}</label>
-                                <input type="tel" placeholder="01XXXXXXXXX"
-                                    value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))}
-                                    onFocus={focusIn} onBlur={focusOut} autoComplete="tel"
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                                <div style={{ display: 'flex', gap: '6px' }}>
+                                    <select value={adminPhoneCode.code} onChange={e => { const c = PHONE_CODES.find(p => p.code === e.target.value); if (c) setAdminPhoneCode(c); }}
+                                        style={{ height: '48px', padding: '0 8px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', fontFamily: OUTFIT, flexShrink: 0 }}>
+                                        {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.dial}</option>)}
+                                    </select>
+                                    <input type="tel" placeholder="1XXXXXXXXX"
+                                        value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value.replace(/\D/g, '') }))}
+                                        onFocus={focusIn} onBlur={focusOut} autoComplete="tel"
+                                        style={{ ...IS, direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT, flex: 1 }} />
+                                </div>
                             </div>
                             <div>
                                 <label style={LS}>{t("كلمة المرور")} <span style={{ color: C.danger }}>*</span></label>
