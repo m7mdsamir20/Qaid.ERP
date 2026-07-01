@@ -82,6 +82,8 @@ export default function WorkOrderDetailPage() {
     const [loading, setLoading] = useState(true);
     const [statusLoading, setStatusLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showCompleteModal, setShowCompleteModal] = useState(false);
+    const [resolutionText, setResolutionText] = useState('');
 
     const fetchOrder = useCallback(async () => {
         setLoading(true);
@@ -98,18 +100,26 @@ export default function WorkOrderDetailPage() {
 
     useEffect(() => { fetchOrder(); }, [fetchOrder]);
 
-    const changeStatus = async (status: string) => {
+    const changeStatus = async (status: string, resolution?: string) => {
         setStatusLoading(true);
         try {
+            const body: Record<string, string> = { status };
+            if (resolution) body.resolution = resolution;
             const res = await fetch(`/api/work-orders/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status }),
+                body: JSON.stringify(body),
             });
             if (res.ok) fetchOrder();
         } finally {
             setStatusLoading(false);
         }
+    };
+
+    const handleComplete = async () => {
+        await changeStatus('completed', resolutionText || undefined);
+        setShowCompleteModal(false);
+        setResolutionText('');
     };
 
     if (loading) {
@@ -284,7 +294,7 @@ export default function WorkOrderDetailPage() {
                                 )}
                                 {order.status === 'in_progress' && (
                                     <button
-                                        onClick={() => changeStatus('completed')}
+                                        onClick={() => setShowCompleteModal(true)}
                                         disabled={statusLoading}
                                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', height: '42px', borderRadius: '10px', border: '1px solid rgba(74,222,128,0.3)', background: 'rgba(74,222,128,0.1)', color: '#4ade80', fontWeight: 700, fontSize: '13px', cursor: statusLoading ? 'not-allowed' : 'pointer', fontFamily: CAIRO, opacity: statusLoading ? 0.6 : 1 }}
                                     >
@@ -358,6 +368,44 @@ export default function WorkOrderDetailPage() {
                 </div>
             </div>
             <style jsx global>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+
+            {showCompleteModal && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }} onClick={() => setShowCompleteModal(false)}>
+                    <div dir="rtl" style={{ background: C.card, borderRadius: '16px', border: `1px solid ${C.border}`, padding: '28px', width: '100%', maxWidth: '480px', boxShadow: '0 20px 60px rgba(0,0,0,0.4)', fontFamily: CAIRO }} onClick={e => e.stopPropagation()}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                            <CheckCircle size={20} color="#4ade80" />
+                            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary }}>إتمام أمر العمل</h3>
+                        </div>
+                        <p style={{ margin: '0 0 20px', fontSize: '13px', color: C.textMuted }}>أدخل ملخص ما تم إنجازه قبل إغلاق الأمر (اختياري)</p>
+
+                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginBottom: '8px' }}>الحل والإجراء المتخذ</label>
+                        <textarea
+                            value={resolutionText}
+                            onChange={e => setResolutionText(e.target.value)}
+                            placeholder="مثال: تم استبدال المضخة وتنظيف الفلاتر واختبار النظام. يعمل بشكل طبيعي."
+                            rows={4}
+                            style={{ width: '100%', padding: '12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
+                        />
+
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                            <button
+                                onClick={handleComplete}
+                                disabled={statusLoading}
+                                style={{ flex: 1, height: '44px', borderRadius: '10px', border: '1px solid rgba(74,222,128,0.4)', background: 'rgba(74,222,128,0.12)', color: '#4ade80', fontWeight: 700, fontSize: '14px', cursor: statusLoading ? 'not-allowed' : 'pointer', fontFamily: CAIRO, opacity: statusLoading ? 0.6 : 1 }}
+                            >
+                                {statusLoading ? 'جاري الحفظ...' : 'تأكيد الإتمام'}
+                            </button>
+                            <button
+                                onClick={() => { setShowCompleteModal(false); setResolutionText(''); }}
+                                disabled={statusLoading}
+                                style={{ flex: 1, height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: CAIRO }}
+                            >
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </DashboardLayout>
     );
 }
