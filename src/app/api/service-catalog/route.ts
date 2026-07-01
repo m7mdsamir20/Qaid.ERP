@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
-import { logActivity } from '@/lib/activityLog';
+import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (_req, session) => {
     const companyId = (session.user as any).companyId;
@@ -12,7 +12,7 @@ export const GET = withProtection(async (_req, session) => {
     return NextResponse.json(items);
 });
 
-export const POST = withProtection(async (_req, session, body) => {
+export const POST = withProtection(async (req, session, body) => {
     const companyId = (session.user as any).companyId;
     const { name, description } = body;
 
@@ -25,6 +25,6 @@ export const POST = withProtection(async (_req, session, body) => {
         data: { code, name, description: description || null, companyId },
     });
 
-    await logActivity({ session, module: 'service_catalog', action: 'create', entityId: item.id, description: `إضافة خدمة: ${name}` });
+    await logActivity({ ...extractLogContext(session, req), module: 'service_catalog', action: 'create', entityId: item.id, description: `إضافة خدمة: ${name}` });
     return NextResponse.json(item, { status: 201 });
 });
