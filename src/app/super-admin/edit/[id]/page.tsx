@@ -255,9 +255,12 @@ export default function EditCompanyPage() {
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = t("الخدمات");
-                    section.links = section.links.filter((l: any) => !['/warehouses', '/stocktakings', '/warehouse-transfers'].includes(l.id)).map((l: any) => {
+                    section.links = section.links.map((l: any) => {
                         if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
                         if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
+                        if (l.id === '/warehouses') return { ...l, label: t("مخازن الخدمات") };
+                        if (l.id === '/stocktakings') return { ...l, label: t("جرد الخدمات") };
+                        if (l.id === '/warehouse-transfers') return { ...l, label: t("تحويل المخزون") };
                         return l;
                     });
                 }
@@ -276,7 +279,7 @@ export default function EditCompanyPage() {
                     section.links = section.links.filter((l: any) => l.id !== '/coupons');
                 }
                 if (section.featureKey === 'reports') {
-                    section.links = section.links.filter((l: any) => l.id !== 'reports-restaurant');
+                    section.links = section.links.filter((l: any) => !['reports-restaurant', 'reports-services'].includes(l.id));
                 }
             }
 
@@ -295,10 +298,12 @@ export default function EditCompanyPage() {
                 }
                 if (section.featureKey === 'purchases') section.title = t("المشتريات والموردين");
                 if (section.featureKey === 'reports') {
-                    section.links = section.links.map((l: any) => {
-                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
-                        return l;
-                    });
+                    section.links = section.links
+                        .filter((l: any) => l.id !== 'reports-services')
+                        .map((l: any) => {
+                            if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
+                            return l;
+                        });
                 }
             }
 

@@ -313,6 +313,7 @@ export const navSections = [
             { id: 'reports-hr', href: '/reports', label: 'تقارير الموظفين' },
             { id: 'reports-installments', href: '/reports/installments', label: 'تقارير الأقساط' },
             { id: 'reports-restaurant', href: '/restaurant/reports', label: 'تقارير المطعم' },
+            { id: 'reports-services', href: '/reports?tab=services', label: 'تقارير الخدمات' },
         ],
     },
     {

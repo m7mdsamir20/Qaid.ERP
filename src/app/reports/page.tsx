@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck, UserCheck, HandCoins, Target } from 'lucide-react';
+import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck, UserCheck, HandCoins, Target, FileCheck, Wrench } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 
@@ -124,6 +124,10 @@ function ReportsHubPageInner() {
             { title: isContracting ? t('سجل حركات المواد والعهدة') : isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isContracting ? t('سجل شامل لعمليات صرف وتوريد وتحويل المواد بين المخازن والمواقع') : isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#256af4', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
             { title: isContracting ? t('حركة بند / مادة') : isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isContracting ? t('مراقبة الصادر والوارد لبند أو مادة معينة بكافة المواقع') : isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
             ...(!isServices ? [{ title: isContracting ? t('مواد تحت الحد الأدنى') : t('أصناف تحت الحد الأدنى'), description: isContracting ? t('تنبيهات بنود المواد التي تجاوزت حد إعادة الطلب لتفادي توقف العمل') : t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as const, requiredPages: ['/items'] }] : []),
+        ],
+        'services': [
+            { title: t('تقرير عقود الخدمة'), description: t('ملخص عقود الخدمة النشطة والمنتهية وقيمها والعقود القاربة الانتهاء'), href: '/reports/service-contracts-report', icon: FileCheck, color: '#22c55e', status: 'new', requiredPages: ['/service-contracts'] },
+            { title: t('تقرير أوامر العمل'), description: t('متابعة أوامر العمل حسب الحالة والأولوية والفنيين المُسندين إليهم'), href: '/reports/work-orders-report', icon: Wrench, color: '#8b5cf6', status: 'new', requiredPages: ['/work-orders'] },
         ],
         'restaurant': [
             { title: t('تقرير وصفات الطبخ (المنيو)'), description: t('عرض جميع الوجبات والمكونات وحساب التكلفة التقديرية وهامش الربح'), href: '/reports/recipes-report', icon: BookOpen, color: '#f43f5e', status: 'ready', requiredPages: ['/items'] },
@@ -262,6 +266,13 @@ function ReportsHubPageInner() {
             icon: BookOpen,
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
+        }] : []),
+        ...(businessType === 'SERVICES' ? [{
+            key: 'services',
+            label: t('تقارير الخدمات'),
+            icon: FileCheck,
+            requiredFeatures: ['services'],
+            requiredPages: ['/service-contracts', '/work-orders']
         }] : []),
         ...(businessType === 'TRADING' ? [{
             key: 'sales_reps',

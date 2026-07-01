@@ -1,14 +1,14 @@
 # Translation Audit Report
 
-Generated on: 2026-07-01T09:20:10.916Z
+Generated on: 2026-07-01T10:07:50.268Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4915
-- **Total t() Keys in Code**: 4267
+- **Total Keys in `i18n.tsx`**: 4922
+- **Total t() Keys in Code**: 4274
 - **Missing Keys (Auto-merged)**: 0
 - **Unused Keys in `i18n.tsx`**: 648
-- **Unwrapped Arabic Text Instances**: 3530
+- **Unwrapped Arabic Text Instances**: 3626
 
 ## Unwrapped Arabic Text
 
@@ -1510,36 +1510,36 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 167: `الكمية المتاحة غير كافية للصنف`
 - Line 167: `المتاح`
 - Line 189: `لا يمكن إصدار الفاتورة: السنة المالية الحالية مغلقة أو غير موجودة`
-- Line 304: `فاتورة مبيعات رقم`
-- Line 348: `إيرادات الخدمات`
-- Line 349: `خدمات`
-- Line 352: `إيرادات المبيعات`
-- Line 353: `مبيعات`
-- Line 363: `ذمم`
-- Line 364: `عملاء`
-- Line 365: `مدينون`
-- Line 375: `ضريبة القيمة المضافة المحصلة`
-- Line 376: `ضريبة`
-- Line 404: `مبلغ مقبوض`
-- Line 404: `فاتورة`
-- Line 414: `ذمم عميل`
-- Line 414: `فاتورة`
-- Line 423: `فاتورة مبيعات رقم`
-- Line 432: `ضريبة القيمة المضافة`
-- Line 432: `فاتورة`
-- Line 443: `مخزون`
-- Line 444: `بضاعة`
-- Line 445: `بضائع`
-- Line 455: `تكلفة`
-- Line 457: `البضاعة المباعة`
-- Line 477: `تكلفة بضاعة مباعة`
-- Line 477: `فاتورة`
-- Line 483: `تكلفة بضاعة مباعة`
-- Line 483: `فاتورة`
-- Line 496: `قيد فاتورة مبيعات رقم`
-- Line 532: `أنشأ فاتورة مبيعات رقم`
-- Line 532: `للعميل`
-- Line 539: `فشل في إنشاء فاتورة المبيعات`
+- Line 306: `فاتورة مبيعات رقم`
+- Line 350: `إيرادات الخدمات`
+- Line 351: `خدمات`
+- Line 354: `إيرادات المبيعات`
+- Line 355: `مبيعات`
+- Line 365: `ذمم`
+- Line 366: `عملاء`
+- Line 367: `مدينون`
+- Line 377: `ضريبة القيمة المضافة المحصلة`
+- Line 378: `ضريبة`
+- Line 406: `مبلغ مقبوض`
+- Line 406: `فاتورة`
+- Line 416: `ذمم عميل`
+- Line 416: `فاتورة`
+- Line 425: `فاتورة مبيعات رقم`
+- Line 434: `ضريبة القيمة المضافة`
+- Line 434: `فاتورة`
+- Line 445: `مخزون`
+- Line 446: `بضاعة`
+- Line 447: `بضائع`
+- Line 457: `تكلفة`
+- Line 459: `البضاعة المباعة`
+- Line 479: `تكلفة بضاعة مباعة`
+- Line 479: `فاتورة`
+- Line 485: `تكلفة بضاعة مباعة`
+- Line 485: `فاتورة`
+- Line 498: `قيد فاتورة مبيعات رقم`
+- Line 534: `أنشأ فاتورة مبيعات رقم`
+- Line 534: `للعميل`
+- Line 541: `فشل في إنشاء فاتورة المبيعات`
 
 ### [app/api/sales/[id]/approve/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/sales/[id]/approve/route.ts)
 - Line 25: `ليس لديك صلاحية الاعتماد`
@@ -2505,6 +2505,105 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 186: `نوفمبر`
 - Line 186: `ديسمبر`
 
+### [app/reports/service-contracts-report/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/service-contracts-report/page.tsx)
+- Line 30: `مسودة`
+- Line 31: `نشط`
+- Line 32: `منتهي`
+- Line 33: `ملغي`
+- Line 34: `موقوف`
+- Line 38: `شهري`
+- Line 39: `ربع سنوي`
+- Line 40: `نصف سنوي`
+- Line 41: `سنوي`
+- Line 87: `رقم العقد`
+- Line 95: `العميل`
+- Line 99: `نوع الخدمة`
+- Line 103: `الحالة`
+- Line 114: `تاريخ البداية`
+- Line 118: `تاريخ الانتهاء`
+- Line 126: `يوم`
+- Line 132: `الدورية`
+- Line 136: `قيمة العقد`
+- Line 159: `رقم العقد`
+- Line 159: `العميل`
+- Line 159: `نوع الخدمة`
+- Line 159: `الحالة`
+- Line 160: `تاريخ البداية`
+- Line 160: `تاريخ الانتهاء`
+- Line 160: `الدورية`
+- Line 160: `القيمة`
+- Line 163: `الإجمالي`
+- Line 172: `تقرير عقود الخدمة`
+- Line 173: `ملخص عقود الخدمة`
+- Line 173: `الحالة، القيم، والعقود القاربة الانتهاء`
+- Line 178: `تقرير عقود الخدمة`
+- Line 187: `بحث برقم العقد أو العميل أو النوع`
+- Line 196: `كل الحالات`
+- Line 197: `نشط`
+- Line 198: `مسودة`
+- Line 199: `منتهي`
+- Line 200: `ملغي`
+- Line 201: `موقوف`
+- Line 210: `كل أنواع الخدمات`
+- Line 211: `نوع الخدمة`
+- Line 219: `إجمالي العقود`
+- Line 220: `عقود نشطة`
+- Line 221: `تنتهي خلال 30 يوم`
+- Line 222: `إجمالي القيم`
+- Line 231: `لا توجد عقود تطابق الفلتر المحدد`
+
+### [app/reports/work-orders-report/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/work-orders-report/page.tsx)
+- Line 27: `جديد`
+- Line 28: `مُسند`
+- Line 29: `جاري`
+- Line 30: `مكتمل`
+- Line 31: `ملغي`
+- Line 32: `موقوف`
+- Line 36: `منخفض`
+- Line 37: `عادي`
+- Line 38: `عالي`
+- Line 39: `عاجل`
+- Line 91: `رقم الأمر`
+- Line 99: `العميل`
+- Line 103: `النوع`
+- Line 107: `الأولوية`
+- Line 118: `الحالة`
+- Line 129: `المُسند إليه`
+- Line 133: `التاريخ المجدول`
+- Line 139: `العقد`
+- Line 150: `تقرير أوامر العمل`
+- Line 151: `متابعة أوامر العمل حسب الحالة والأولوية والمُسند إليه`
+- Line 160: `تقرير أوامر العمل`
+- Line 162: `رقم الأمر`
+- Line 162: `العميل`
+- Line 162: `النوع`
+- Line 162: `الأولوية`
+- Line 162: `الحالة`
+- Line 162: `المُسند إليه`
+- Line 162: `التاريخ المجدول`
+- Line 174: `بحث برقم الأمر أو العميل أو النوع`
+- Line 184: `كل الحالات`
+- Line 185: `جديد`
+- Line 186: `مُسند`
+- Line 187: `جاري`
+- Line 188: `مكتمل`
+- Line 189: `موقوف`
+- Line 190: `ملغي`
+- Line 196: `كل الأولويات`
+- Line 197: `منخفض`
+- Line 198: `عادي`
+- Line 199: `عالي`
+- Line 200: `عاجل`
+- Line 206: `كل الأنواع`
+- Line 207: `نوع الخدمة`
+- Line 214: `إجمالي الأوامر`
+- Line 215: `جديد / مُسند`
+- Line 216: `جاري التنفيذ`
+- Line 217: `مكتملة`
+- Line 224: `يوجد`
+- Line 224: `أمر عمل عاجل لم يُنجز بعد`
+- Line 234: `لا توجد أوامر عمل تطابق الفلتر المحدد`
+
 ### [app/sale-returns/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sale-returns/page.tsx)
 - Line 157: `فشل التحميل`
 
@@ -3453,16 +3552,17 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 313: `تقارير الموظفين`
 - Line 314: `تقارير الأقساط`
 - Line 315: `تقارير المطعم`
-- Line 319: `سجل النشاط`
-- Line 325: `سجل النشاط`
-- Line 329: `إعدادات النظام`
-- Line 335: `بيانات الشركة`
-- Line 336: `الإعدادات العامة`
-- Line 337: `الإشعارات`
-- Line 338: `المستخدمين والصلاحيات`
-- Line 339: `الاشتراك والخطة`
-- Line 340: `الربط البرمجي`
-- Line 341: `قواعد البيانات`
+- Line 316: `تقارير الخدمات`
+- Line 320: `سجل النشاط`
+- Line 326: `سجل النشاط`
+- Line 330: `إعدادات النظام`
+- Line 336: `بيانات الشركة`
+- Line 337: `الإعدادات العامة`
+- Line 338: `الإشعارات`
+- Line 339: `المستخدمين والصلاحيات`
+- Line 340: `الاشتراك والخطة`
+- Line 341: `الربط البرمجي`
+- Line 342: `قواعد البيانات`
 
 ### [lib/addressConfig.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/lib/addressConfig.ts)
 - Line 17: `المحافظة`

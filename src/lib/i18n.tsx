@@ -5157,6 +5157,19 @@ export const dictionaries = {
         // --- Auto-synced Keys (Missing in Code) ---
         "رقم طلب الشراء (PO)": "Purchase order (PO) number",
         "نوع الخدمة...": "Service type...",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "مخازن الخدمات": "Service stores",
+        "جرد الخدمات": "Inventory of services",
+        "تحويل المخزون": "Inventory transfer",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "تقرير عقود الخدمة": "Service contracts report",
+        "ملخص عقود الخدمة النشطة والمنتهية وقيمها والعقود القاربة الانتهاء": "Summary of active and expired service contracts, their values, and contracts that are about to expire",
+        "تقرير أوامر العمل": "Work orders report",
+        "متابعة أوامر العمل حسب الحالة والأولوية والفنيين المُسندين إليهم": "Follow up on work orders according to status, priority, and the technicians assigned to them",
 }
 };
 
