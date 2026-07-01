@@ -126,6 +126,21 @@ export default function ItemsPage() {
         return int.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + (dec !== undefined ? '.' + dec : '');
     };
 
+    const getNextCode = (t: string) => {
+        const typePrefix = t === 'service' ? 'SRV' : t === 'raw' ? 'RAW' : 'PRD';
+        const relevantItems = items.filter(i =>
+            t === 'service' ? i.type === 'service' :
+            t === 'raw' ? i.type === 'raw' :
+            (i.type === 'product' || !i.type)
+        );
+        const nums = relevantItems.map(i => {
+            const match = i.code.match(/(\d+)$/);
+            return match ? parseInt(match[1]) : 0;
+        });
+        const nextNum = Math.max(...nums, 0) + 1;
+        return `${typePrefix}-${String(nextNum).padStart(3, '0')}`;
+    };
+
     const handleOpenModal = (item?: Item & { barcode?: string, imageUrl?: string }) => {
         if (item) {
             setForm({
@@ -141,25 +156,15 @@ export default function ItemsPage() {
             });
             setEditingId(item.id);
         } else {
-            const typePrefix = itemTypeTab === 'service' ? 'SRV' : itemTypeTab === 'raw' ? 'RAW' : 'PRD';
-            const relevantItems = items.filter(i =>
-                itemTypeTab === 'service' ? i.type === 'service' :
-                itemTypeTab === 'raw' ? i.type === 'raw' :
-                (i.type === 'product' || !i.type)
-            );
-            const nums = relevantItems.map(i => {
-                const match = i.code.match(/(\d+)$/);
-                return match ? parseInt(match[1]) : 0;
-            });
-            const nextNum = Math.max(...nums, 0) + 1;
-            const nextCode = `${typePrefix}-${String(nextNum).padStart(3, '0')}`;
+            const autoType = itemTypeTab === 'service' ? 'service' : itemTypeTab === 'raw' ? 'raw' : 'product';
+            const nextCode = getNextCode(autoType);
             const autoBarcode = companyBusinessType === 'RETAIL' ? Math.floor(100000000000 + Math.random() * 900000000000).toString() : '';
 
             setForm({
                 id: '', code: nextCode, barcode: autoBarcode, imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
-                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, isPriceVariable: false, variants: [], recipeItems: []
+                initialQuantity: 0, status: 'active', type: autoType, isPosEligible: true, isPriceVariable: false, variants: [], recipeItems: []
             });
             setEditingId(null);
         }
@@ -501,6 +506,22 @@ export default function ItemsPage() {
                             </button>
                         )}
                     </div>
+
+                    {isRtl && isRestaurant && (
+                        <div style={{ display: 'flex', gap: '8px', background: C.inputBg, padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}`, flexShrink: 0, height: '42px', alignItems: 'center' }}>
+                            <button type="button" onClick={() => setItemTypeTab('product')} style={{ padding: '6px 14px', borderRadius: '6px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '12px', transition: 'all 0.2s', height: '32px' }}>{t("الوجبات (المنيو)")}</button>
+                            <button type="button" onClick={() => setItemTypeTab('raw')} style={{ padding: '6px 14px', borderRadius: '6px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '12px', transition: 'all 0.2s', height: '32px' }}>{t("المواد الخام (المخزون)")}</button>
+                        </div>
+                    )}
+
+                    {isRtl && companyBusinessType === 'SERVICES' && (
+                        <div style={{ display: 'flex', gap: '8px', background: C.inputBg, padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}`, flexShrink: 0, height: '42px', alignItems: 'center' }}>
+                            <button type="button" onClick={() => setItemTypeTab('all')} style={{ padding: '6px 14px', borderRadius: '6px', background: itemTypeTab === 'all' ? C.primary : 'transparent', color: itemTypeTab === 'all' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '12px', transition: 'all 0.2s', height: '32px' }}>{t("الكل")}</button>
+                            <button type="button" onClick={() => setItemTypeTab('product')} style={{ padding: '6px 14px', borderRadius: '6px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '12px', transition: 'all 0.2s', height: '32px' }}>{t("المنتجات (بمخزن)")}</button>
+                            <button type="button" onClick={() => setItemTypeTab('service')} style={{ padding: '6px 14px', borderRadius: '6px', background: itemTypeTab === 'service' ? C.primary : 'transparent', color: itemTypeTab === 'service' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '12px', transition: 'all 0.2s', height: '32px' }}>{t("الخدمات (بدون مخزن)")}</button>
+                        </div>
+                    )}
+
                     {warehouses.length > 1 && (
                         <div style={{ width: '220px' }}>
                             <CustomSelect
@@ -515,21 +536,6 @@ export default function ItemsPage() {
                         </div>
                     )}
                 </div>
-
-                {isRtl && isRestaurant && (
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
-                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الوجبات (المنيو)")}</button>
-                        <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("المواد الخام (المخزون)")}</button>
-                    </div>
-                )}
-
-                {isRtl && companyBusinessType === 'SERVICES' && (
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
-                        <button onClick={() => setItemTypeTab('all')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'all' ? C.primary : 'transparent', color: itemTypeTab === 'all' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الكل")}</button>
-                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("المنتجات (بمخزن)")}</button>
-                        <button onClick={() => setItemTypeTab('service')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'service' ? C.primary : 'transparent', color: itemTypeTab === 'service' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>{t("الخدمات (بدون مخزن)")}</button>
-                    </div>
-                )}
 
                 {loading ? (
                     <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.textSecondary }}>
@@ -551,22 +557,37 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={isRestaurant ? (form.type === 'raw' ? (form.id ? t('تعديل مادة خام') : t('إضافة مادة خام')) : (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو'))) : itemTypeTab === 'service' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
+                    title={isRestaurant ? (form.type === 'raw' ? (form.id ? t('تعديل مادة خام') : t('إضافة مادة خام')) : (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو'))) : form.type === 'service' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
+                        {companyBusinessType === 'SERVICES' && (
+                            <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', background: C.inputBg, padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}`, width: 'fit-content', opacity: form.id ? 0.7 : 1 }}>
+                                <button type="button" disabled={!!form.id} onClick={() => {
+                                    setForm(f => ({ ...f, type: 'product', code: getNextCode('product') }));
+                                }} style={{ padding: '8px 20px', borderRadius: '8px', background: form.type === 'product' ? C.primary : 'transparent', color: form.type === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: form.id ? 'not-allowed' : 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>
+                                    {t("المنتجات (بمخزن)")}
+                                </button>
+                                <button type="button" disabled={!!form.id} onClick={() => {
+                                    setForm(f => ({ ...f, type: 'service', code: getNextCode('service') }));
+                                }} style={{ padding: '8px 20px', borderRadius: '8px', background: form.type === 'service' ? C.primary : 'transparent', color: form.type === 'service' ? '#fff' : C.textSecondary, border: 'none', cursor: form.id ? 'not-allowed' : 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>
+                                    {t("الخدمات (بدون مخزن)")}
+                                </button>
+                            </div>
+                        )}
+
+                        <div style={{ display: 'grid', gridTemplateColumns: (form.type === 'service' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{itemTypeTab === 'service' ? t('كود الخدمة') : companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('كود الصنف')}</label>
+                                <label style={LS}>{form.type === 'service' ? t('كود الخدمة') : companyBusinessType === 'CONTRACTING' ? t('كود البند/المادة') : t('كود الصنف')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="text" readOnly disabled value={form.code} style={{ ...IS, color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
                                 </div>
                             </div>
 
-                            {companyBusinessType !== 'SERVICES' && usesBarcode && (
+                            {form.type !== 'service' && usesBarcode && (
                                 <div>
                                     <label style={LS}>{t('الباركود الإضافي')}</label>
                                     <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
@@ -574,8 +595,8 @@ export default function ItemsPage() {
                             )}
 
                             <div>
-                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : itemTypeTab === 'service' ? t('اسم الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : itemTypeTab === 'service' ? t("مثال: استشارة قانونية، صيانة مكيف...") : companyBusinessType === 'CONTRACTING' ? t("مثال: حديد تسليح، بند حفر...") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : form.type === 'service' ? t('اسم الخدمة') : companyBusinessType === 'CONTRACTING' ? t('المادة / بند العمل') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : form.type === 'service' ? t("مثال: استشارة قانونية، صيانة مكيف...") : companyBusinessType === 'CONTRACTING' ? t("مثال: حديد تسليح، بند حفر...") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
@@ -644,7 +665,7 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? t('تصنيف الخدمة') : companyBusinessType === 'CONTRACTING' ? t('تصنيف المواد والبنود') : t('التصنيف')}</label>
+                                <label style={LS}>{(companyBusinessType === 'SERVICES' && form.type === 'service') ? t('تصنيف الخدمة') : companyBusinessType === 'CONTRACTING' ? t('تصنيف المواد والبنود') : t('التصنيف')}</label>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <div style={{ flex: 1 }}>
                                         <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={companyBusinessType === 'CONTRACTING' ? t("اختر تصنيف البند...") : t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
@@ -658,7 +679,7 @@ export default function ItemsPage() {
                                     </button>
                                 </div>
                             </div>
-                            {(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? (
+                            {(companyBusinessType === 'SERVICES' && form.type === 'service') ? (
                                 <div>
                                     <label style={LS}>{t('حالة الخدمة')}</label>
                                     <CustomSelect
@@ -689,7 +710,7 @@ export default function ItemsPage() {
                             )}
                         </div>
 
-                        {(companyBusinessType === 'SERVICES' && itemTypeTab === 'service') ? (
+                        {(companyBusinessType === 'SERVICES' && form.type === 'service') ? (
                             <div>
                                 <label style={LS}>{t('وصف الخدمة')}</label>
                                 <textarea

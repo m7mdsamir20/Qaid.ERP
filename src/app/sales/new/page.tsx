@@ -19,7 +19,7 @@ import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
 interface Treasury { id: string; name: string; type: string; balance: number; }
-interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; stocks?: any[]; }
+interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; stocks?: any[]; type?: string; }
 interface InvoiceLine { itemId: string; itemCode: string; itemName: string; unit: string; quantity: number; price: number; total: number; stock: number; description?: string; taxRate?: number; taxAmount?: number; }
 
 // Using global theme constants instead of local variables
@@ -334,11 +334,12 @@ function NewSalePageInner() {
         const item = items.find(i => i.id === entryItemId);
         if (!item) return;
 
-        // ✅ تخطي فحص المخزون في حالة نشاط الخدمات
-        const stock = isServices ? 999999 : (item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0);
+        // ✅ تخطي فحص المخزون للخدمات فقط
+        const isServiceItem = item.type === 'service';
+        const stock = isServiceItem ? 999999 : (item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0);
         const qty = Number(entryQty);
 
-        if (!isServices) {
+        if (!isServiceItem) {
             if (stock <= 0) {
                 setFieldErrors(prev => ({ ...prev, entryItemId: t('ليس لديك رصيد من هذا الصنف') }));
                 return;
@@ -358,7 +359,7 @@ function NewSalePageInner() {
             if (idx >= 0) {
                 const updated = [...prev];
                 const newQty = updated[idx].quantity + qty;
-                if (!isServices && newQty > stock) {
+                if (!isServiceItem && newQty > stock) {
                     setFieldErrors(prevE => ({ ...prevE, entryQty: `${t('تجاوز المتاح')} (${stock})` }));
                     return prev;
                 }
@@ -449,10 +450,10 @@ function NewSalePageInner() {
         }
 
         // Final Stock Validation
-        if (!isServicesBusiness) {
-            for (const line of lines) {
-                const item = items.find(i => i.id === line.itemId);
-                const available = item?.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
+        for (const line of lines) {
+            const item = items.find(i => i.id === line.itemId);
+            if (item && item.type !== 'service') {
+                const available = item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
                 if (line.quantity > available) {
                     setErrorMsg(`${t('خطأ: الصنف')} (${line.itemName}) ${t('لم يعد متوفراً بالكمية المطلوبة. المتاح:')} ${available}`);
                     return;
@@ -883,7 +884,8 @@ function NewSalePageInner() {
                                                 });
                                             } : undefined}
                                             options={items.map(i => {
-                                                const s = isServices ? null : (i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0);
+                                                const isServiceItem = i.type === 'service';
+                                                const s = isServiceItem ? null : (i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0);
                                                 return {
                                                     value: i.id,
                                                     label: i.name,

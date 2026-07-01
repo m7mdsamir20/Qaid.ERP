@@ -149,7 +149,6 @@ export const navSections = [
         icon: Wrench,
         featureKey: 'services',
         links: [
-            { id: '/service-catalog', href: '/service-catalog', label: 'كتالوج الخدمات' },
             { id: '/service-contracts', href: '/service-contracts', label: 'عقود الخدمة' },
             { id: '/work-orders', href: '/work-orders', label: 'أوامر العمل' },
         ],
@@ -224,6 +223,7 @@ export const navSections = [
             { id: '/units', href: '/units', label: 'الوحدات' },
             { id: '/categories', href: '/categories', label: 'التصنيفات' },
             { id: '/items', href: '/items', label: 'الأصناف' },
+            { id: '/service-catalog', href: '/service-catalog', label: 'كتالوج الخدمات' },
             { id: '/warehouses', href: '/warehouses', label: 'المخازن' },
             { id: '/stocktakings', href: '/stocktakings', label: 'جرد المخازن', hasApprove: true },
             { id: '/warehouse-transfers', href: '/warehouse-transfers', label: 'التحويل بين المخازن', hasApprove: true },

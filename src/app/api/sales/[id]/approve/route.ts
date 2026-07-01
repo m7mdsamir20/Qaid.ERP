@@ -50,7 +50,7 @@ export const POST = withProtection(async (request, session, body, context) => {
         const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
 
         // 2. Stock Check (prevent negative stock on approval)
-        if (!isServices && invoice.warehouseId) {
+        if (invoice.warehouseId) {
             const itemIds = invoice.lines.map(l => l.itemId);
             const stocks = await prisma.stock.findMany({
                 where: { itemId: { in: itemIds }, warehouseId: invoice.warehouseId },
@@ -59,11 +59,14 @@ export const POST = withProtection(async (request, session, body, context) => {
             const stockMap = Object.fromEntries(stocks.map(s => [s.itemId, s.quantity]));
 
             for (const line of invoice.lines) {
-                const available = stockMap[line.itemId] ?? 0;
-                if (available < Number(line.quantity)) {
-                    return NextResponse.json({
-                        error: `الكمية المتاحة في المخزن غير كافية للصنف "${line.item.name}". المتاح: ${available}`
-                    }, { status: 400 });
+                // Only validate stock for items that are NOT services (i.e. products, raw materials, etc.)
+                if (line.item.type !== 'service') {
+                    const available = stockMap[line.itemId] ?? 0;
+                    if (available < Number(line.quantity)) {
+                        return NextResponse.json({
+                            error: `الكمية المتاحة في المخزن غير كافية للصنف "${line.item.name}". المتاح: ${available}`
+                        }, { status: 400 });
+                    }
                 }
             }
         }
@@ -110,27 +113,30 @@ export const POST = withProtection(async (request, session, body, context) => {
             });
 
             // B. Update stock and movements
-            if (!isServices && invoice.warehouseId) {
-                await Promise.all([
-                    ...invoice.lines.map((line: any) => tx.stock.upsert({
-                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId: invoice.warehouseId! } },
-                        update: { quantity: { decrement: line.quantity } },
-                        create: { itemId: line.itemId, warehouseId: invoice.warehouseId!, quantity: -line.quantity },
-                    })),
-                    ...invoice.lines.map((line: any) => tx.stockMovement.create({
-                        data: {
-                            type: 'out',
-                            date: new Date(),
-                            itemId: line.itemId,
-                            warehouseId: invoice.warehouseId!,
-                            quantity: -line.quantity,
-                            reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                            notes: `اعتماد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                            companyId,
-                            invoiceId: invoice.id,
-                        },
-                    })),
-                ]);
+            if (invoice.warehouseId) {
+                const stockLines = invoice.lines.filter((line: any) => line.item.type !== 'service');
+                if (stockLines.length > 0) {
+                    await Promise.all([
+                        ...stockLines.map((line: any) => tx.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: line.itemId, warehouseId: invoice.warehouseId! } },
+                            update: { quantity: { decrement: line.quantity } },
+                            create: { itemId: line.itemId, warehouseId: invoice.warehouseId!, quantity: -line.quantity },
+                        })),
+                        ...stockLines.map((line: any) => tx.stockMovement.create({
+                            data: {
+                                type: 'out',
+                                date: new Date(),
+                                itemId: line.itemId,
+                                warehouseId: invoice.warehouseId!,
+                                quantity: -line.quantity,
+                                reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                notes: `اعتماد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                companyId,
+                                invoiceId: invoice.id,
+                            },
+                        })),
+                    ]);
+                }
             }
 
             // C. Update selling prices of items

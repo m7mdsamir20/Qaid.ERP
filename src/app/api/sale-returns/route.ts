@@ -101,26 +101,36 @@ export const POST = withProtection(async (request, session, body) => {
             });
 
             if (warehouseId) {
-                for (const line of lines) {
-                    await tx.stock.upsert({
-                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
-                        update: { quantity: { increment: line.quantity } },
-                        create: { itemId: line.itemId, warehouseId, quantity: line.quantity },
-                    });
+                const itemIds = lines.map((l: any) => l.itemId);
+                const dbItems = await tx.item.findMany({
+                    where: { id: { in: itemIds } },
+                    select: { id: true, type: true }
+                });
+                const itemTypeMap = Object.fromEntries(dbItems.map(i => [i.id, i.type]));
 
-                    await tx.stockMovement.create({
-                        data: {
-                            type: 'return_in',
-                            date: new Date(),
-                            itemId: line.itemId,
-                            warehouseId: warehouseId,
-                            quantity: line.quantity,
-                            reference: `SRET-${invoiceNumber}`,
-                            notes: `مرتجع مبيعات رقم ${invoiceNumber}`,
-                            companyId,
-                            invoiceId: invoice.id
-                        } as any
-                    });
+                for (const line of lines) {
+                    const itemType = itemTypeMap[line.itemId];
+                    if (itemType !== 'service') {
+                        await tx.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
+                            update: { quantity: { increment: line.quantity } },
+                            create: { itemId: line.itemId, warehouseId, quantity: line.quantity },
+                        });
+
+                        await tx.stockMovement.create({
+                            data: {
+                                type: 'return_in',
+                                date: new Date(),
+                                itemId: line.itemId,
+                                warehouseId: warehouseId,
+                                quantity: line.quantity,
+                                reference: `SRET-${invoiceNumber}`,
+                                notes: `مرتجع مبيعات رقم ${invoiceNumber}`,
+                                companyId,
+                                invoiceId: invoice.id
+                            } as any
+                        });
+                    }
                 }
             }
 

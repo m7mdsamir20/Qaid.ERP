@@ -45,6 +45,14 @@ export const POST = withProtection(async (request, session, body) => {
 
         const paymentMethod = treasuryId ? 'cash' : (bankId ? 'bank' : 'credit');
 
+        // Load item types to distinguish products from services
+        const lineItemIds = lines.map((l: any) => l.itemId);
+        const dbItems = await prisma.item.findMany({
+            where: { id: { in: lineItemIds }, companyId },
+            select: { id: true, type: true }
+        });
+        const itemTypeMap = Object.fromEntries(dbItems.map(i => [i.id, i.type]));
+
         const result = await prisma.$transaction(async (tx) => {
             const lastInvoice = await tx.invoice.findFirst({
                 where: { type: 'purchase_return', companyId },
@@ -119,7 +127,9 @@ export const POST = withProtection(async (request, session, body) => {
             });
 
             if (warehouseId) {
-                for (const line of lines) {
+                // خصم المخزون فقط للمنتجات المادية (ليست خدمات)
+                const productLines = lines.filter((l: any) => itemTypeMap[l.itemId] !== 'service');
+                for (const line of productLines) {
                     await tx.stock.upsert({
                         where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
                         update: { quantity: { decrement: line.quantity } },

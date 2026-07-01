@@ -168,6 +168,7 @@ export default function Sidebar({
                         if (l.id === '/stocktakings') return { ...l, label: t("جرد الخدمات") };
                         if (l.id === '/warehouse-transfers') return { ...l, label: t("تحويل المخزون") };
                         if (l.id === '/units') return { ...l, label: t("الوحدات") };
+                        if (l.id === '/service-catalog') return { ...l, label: t("كتالوج الخدمات") };
                         return l;
                     });
                 }
@@ -178,6 +179,13 @@ export default function Sidebar({
                 if (section.featureKey === 'sales') {
                     section.links = section.links?.filter((l: any) => l.id !== '/coupons');
                 }
+            }
+
+            if (businessType !== 'SERVICES') {
+                if (section.featureKey === 'inventory') {
+                    section.links = section.links?.filter((l: any) => l.id !== '/service-catalog');
+                }
+                if (section.featureKey === 'services') return null;
             }
 
             if (businessType === 'RETAIL') {

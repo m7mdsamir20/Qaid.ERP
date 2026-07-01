@@ -104,8 +104,8 @@ export const POST = withProtection(async (request, session, body) => {
                 },
             });
 
-            // If warehouse is provided, initialize stock record
-            if (body.warehouseId) {
+            // If warehouse is provided and item is not a service, initialize stock record
+            if (body.type !== 'service' && body.warehouseId) {
                 const initialQty = parseFloat(body.initialQuantity) || 0;
                 await tx.stock.create({
                     data: {

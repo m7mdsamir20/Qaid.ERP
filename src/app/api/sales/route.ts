@@ -127,6 +127,14 @@ export const POST = withProtection(async (request, session, body) => {
             customerPONumber, workOrderId, serviceType, serviceContractId
         } = body;
 
+        // Load items details to verify types
+        const itemIds = lines.map((l: any) => l.itemId);
+        const dbItems = await prisma.item.findMany({
+            where: { id: { in: itemIds }, companyId },
+            select: { id: true, name: true, type: true }
+        });
+        const itemMap = Object.fromEntries(dbItems.map(i => [i.id, i]));
+
         // Check if the current user is a sales representative
         const userRep = await prisma.salesRepresentative.findFirst({
             where: { userId: user.id, companyId, isActive: true }
@@ -146,26 +154,22 @@ export const POST = withProtection(async (request, session, body) => {
         const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
 
         // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط إذا كانت الفاتورة معتمدة وليست قيد الاعتماد)
-        if (status !== 'pending' && !isServices && warehouseId) {
-            const itemIds = lines.map((l: any) => l.itemId);
-            const [stocks, itemNames] = await Promise.all([
-                prisma.stock.findMany({
-                    where: { itemId: { in: itemIds }, warehouseId },
-                    select: { itemId: true, quantity: true }
-                }),
-                prisma.item.findMany({
-                    where: { id: { in: itemIds } },
-                    select: { id: true, name: true }
-                })
-            ]);
+        // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط إذا كانت الفاتورة معتمدة وليست قيد الاعتماد)
+        if (status !== 'pending' && warehouseId) {
+            const stocks = await prisma.stock.findMany({
+                where: { itemId: { in: itemIds }, warehouseId },
+                select: { itemId: true, quantity: true }
+            });
             const stockMap = Object.fromEntries(stocks.map(s => [s.itemId, s.quantity]));
-            const nameMap = Object.fromEntries(itemNames.map(i => [i.id, i.name]));
             for (const line of lines) {
-                const available = stockMap[line.itemId] ?? 0;
-                if (available < Number(line.quantity)) {
-                    return NextResponse.json({
-                        error: `الكمية المتاحة غير كافية للصنف "${nameMap[line.itemId] || line.itemId}". المتاح: ${available}`
-                    }, { status: 400 });
+                const item = itemMap[line.itemId];
+                if (item && item.type !== 'service') {
+                    const available = stockMap[line.itemId] ?? 0;
+                    if (available < Number(line.quantity)) {
+                        return NextResponse.json({
+                            error: `الكمية المتاحة غير كافية للصنف "${item.name}". المتاح: ${available}`
+                        }, { status: 400 });
+                    }
                 }
             }
         }
@@ -286,29 +290,31 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             // 2. تحديث المخزون بشكل متوازي بدل sequential
-            if (!isServices && warehouseId) {
-                await Promise.all([
-                    // stock upserts كلها في وقت واحد
-                    ...lines.map((line: any) => tx.stock.upsert({
-                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
-                        update: { quantity: { decrement: line.quantity } },
-                        create: { itemId: line.itemId, warehouseId, quantity: -line.quantity },
-                    })),
-                    // stock movements
-                    ...lines.map((line: any) => tx.stockMovement.create({
-                        data: {
-                            type: 'out',
-                            date: new Date(),
-                            itemId: line.itemId,
-                            warehouseId,
-                            quantity: -line.quantity,
-                            reference: `SAL-${String(invoiceNumber).padStart(5, '0')}`,
-                            notes: `فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
-                            companyId,
-                            invoiceId: invoice.id,
-                        },
-                    })),
-                ]);
+            // 2. تحديث المخزون للمنتجات فقط (وليس الخدمات)
+            if (warehouseId) {
+                const stockLines = lines.filter((line: any) => itemMap[line.itemId]?.type !== 'service');
+                if (stockLines.length > 0) {
+                    await Promise.all([
+                        ...stockLines.map((line: any) => tx.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
+                            update: { quantity: { decrement: line.quantity } },
+                            create: { itemId: line.itemId, warehouseId, quantity: -line.quantity },
+                        })),
+                        ...stockLines.map((line: any) => tx.stockMovement.create({
+                            data: {
+                                type: 'out',
+                                date: new Date(),
+                                itemId: line.itemId,
+                                warehouseId,
+                                quantity: -line.quantity,
+                                reference: `SAL-${String(invoiceNumber).padStart(5, '0')}`,
+                                notes: `فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
+                                companyId,
+                                invoiceId: invoice.id,
+                            },
+                        })),
+                    ]);
+                }
             }
 
             // Update item selling prices to the latest price used in the invoice
