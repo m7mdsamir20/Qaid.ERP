@@ -1,14 +1,22 @@
 # Translation Audit Report
 
-Generated on: 2026-07-01T10:07:50.268Z
+Generated on: 2026-07-01T11:37:56.556Z
 
 ## Summary
 
-- **Total Keys in `i18n.tsx`**: 4922
-- **Total t() Keys in Code**: 4274
-- **Missing Keys (Auto-merged)**: 0
-- **Unused Keys in `i18n.tsx`**: 648
-- **Unwrapped Arabic Text Instances**: 3626
+- **Total Keys in `i18n.tsx`**: 4955
+- **Total t() Keys in Code**: 4309
+- **Missing Keys (Auto-merged)**: 1
+- **Unused Keys in `i18n.tsx`**: 647
+- **Unwrapped Arabic Text Instances**: 3550
+
+## Missing Keys (Auto-merged)
+
+These keys were found in `t()` calls in the code but were missing from `i18n.tsx`. They have been automatically added to `i18n.tsx`'s `dictionaries.en` so they can be translated.
+
+| Arabic Key | Auto-translated / Placeholder |
+| --- | --- |
+| `عقد` | `*عقد*` |
 
 ## Unwrapped Arabic Text
 
@@ -1694,9 +1702,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 20: `تعديل خدمة`
 
 ### [app/api/service-contracts/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/service-contracts/route.ts)
-- Line 38: `البيانات الأساسية مطلوبة (النوع، تاريخ البداية، قيمة العقد`
-- Line 75: `أنشأ عقد خدمة رقم`
-- Line 81: `فشل في إنشاء عقد الخدمة`
+- Line 48: `البيانات الأساسية مطلوبة (النوع، تاريخ البداية، قيمة العقد`
+- Line 86: `أنشأ عقد خدمة رقم`
+- Line 92: `فشل في إنشاء عقد الخدمة`
 
 ### [app/api/service-contracts/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/service-contracts/[id]/route.ts)
 - Line 23: `عقد الخدمة غير موجود`
@@ -1928,9 +1936,9 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 173: `فشل في حذف المخزن. ربما يكون مرتبطاً بعمليات أخرى`
 
 ### [app/api/work-orders/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/work-orders/route.ts)
-- Line 53: `البيانات الأساسية مطلوبة (النوع، الوصف`
-- Line 104: `أنشأ أمر عمل رقم`
-- Line 110: `فشل في إنشاء أمر العمل`
+- Line 63: `البيانات الأساسية مطلوبة (النوع، الوصف`
+- Line 115: `أنشأ أمر عمل رقم`
+- Line 121: `فشل في إنشاء أمر العمل`
 
 ### [app/api/work-orders/[id]/route.ts](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/api/work-orders/[id]/route.ts)
 - Line 22: `أمر العمل غير موجود`
@@ -2506,103 +2514,27 @@ These are raw Arabic strings found in code files that are NOT wrapped in a `t()`
 - Line 186: `ديسمبر`
 
 ### [app/reports/service-contracts-report/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/service-contracts-report/page.tsx)
-- Line 30: `مسودة`
-- Line 31: `نشط`
-- Line 32: `منتهي`
-- Line 33: `ملغي`
-- Line 34: `موقوف`
-- Line 38: `شهري`
-- Line 39: `ربع سنوي`
-- Line 40: `نصف سنوي`
-- Line 41: `سنوي`
-- Line 87: `رقم العقد`
-- Line 95: `العميل`
-- Line 99: `نوع الخدمة`
-- Line 103: `الحالة`
-- Line 114: `تاريخ البداية`
-- Line 118: `تاريخ الانتهاء`
-- Line 126: `يوم`
-- Line 132: `الدورية`
-- Line 136: `قيمة العقد`
-- Line 159: `رقم العقد`
-- Line 159: `العميل`
-- Line 159: `نوع الخدمة`
-- Line 159: `الحالة`
-- Line 160: `تاريخ البداية`
-- Line 160: `تاريخ الانتهاء`
-- Line 160: `الدورية`
-- Line 160: `القيمة`
-- Line 163: `الإجمالي`
-- Line 172: `تقرير عقود الخدمة`
-- Line 173: `ملخص عقود الخدمة`
-- Line 173: `الحالة، القيم، والعقود القاربة الانتهاء`
-- Line 178: `تقرير عقود الخدمة`
-- Line 187: `بحث برقم العقد أو العميل أو النوع`
-- Line 196: `كل الحالات`
-- Line 197: `نشط`
-- Line 198: `مسودة`
-- Line 199: `منتهي`
-- Line 200: `ملغي`
-- Line 201: `موقوف`
-- Line 210: `كل أنواع الخدمات`
-- Line 211: `نوع الخدمة`
-- Line 219: `إجمالي العقود`
-- Line 220: `عقود نشطة`
-- Line 221: `تنتهي خلال 30 يوم`
-- Line 222: `إجمالي القيم`
-- Line 231: `لا توجد عقود تطابق الفلتر المحدد`
+- Line 178: `رقم العقد`
+- Line 178: `العميل`
+- Line 178: `نوع الخدمة`
+- Line 178: `الحالة`
+- Line 179: `تاريخ البداية`
+- Line 179: `تاريخ الانتهاء`
+- Line 179: `الدورية`
+- Line 179: `القيمة`
+- Line 182: `الإجمالي`
+- Line 201: `تقرير عقود الخدمة`
 
 ### [app/reports/work-orders-report/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/reports/work-orders-report/page.tsx)
-- Line 27: `جديد`
-- Line 28: `مُسند`
-- Line 29: `جاري`
-- Line 30: `مكتمل`
-- Line 31: `ملغي`
-- Line 32: `موقوف`
-- Line 36: `منخفض`
-- Line 37: `عادي`
-- Line 38: `عالي`
-- Line 39: `عاجل`
-- Line 91: `رقم الأمر`
-- Line 99: `العميل`
-- Line 103: `النوع`
-- Line 107: `الأولوية`
-- Line 118: `الحالة`
-- Line 129: `المُسند إليه`
-- Line 133: `التاريخ المجدول`
-- Line 139: `العقد`
-- Line 150: `تقرير أوامر العمل`
-- Line 151: `متابعة أوامر العمل حسب الحالة والأولوية والمُسند إليه`
-- Line 160: `تقرير أوامر العمل`
-- Line 162: `رقم الأمر`
-- Line 162: `العميل`
-- Line 162: `النوع`
-- Line 162: `الأولوية`
-- Line 162: `الحالة`
-- Line 162: `المُسند إليه`
-- Line 162: `التاريخ المجدول`
-- Line 174: `بحث برقم الأمر أو العميل أو النوع`
-- Line 184: `كل الحالات`
-- Line 185: `جديد`
-- Line 186: `مُسند`
-- Line 187: `جاري`
-- Line 188: `مكتمل`
-- Line 189: `موقوف`
-- Line 190: `ملغي`
-- Line 196: `كل الأولويات`
-- Line 197: `منخفض`
-- Line 198: `عادي`
-- Line 199: `عالي`
-- Line 200: `عاجل`
-- Line 206: `كل الأنواع`
-- Line 207: `نوع الخدمة`
-- Line 214: `إجمالي الأوامر`
-- Line 215: `جديد / مُسند`
-- Line 216: `جاري التنفيذ`
-- Line 217: `مكتملة`
-- Line 224: `يوجد`
-- Line 224: `أمر عمل عاجل لم يُنجز بعد`
-- Line 234: `لا توجد أوامر عمل تطابق الفلتر المحدد`
+- Line 185: `تقرير أوامر العمل`
+- Line 186: `تقرير أوامر العمل`
+- Line 188: `رقم الأمر`
+- Line 188: `العميل`
+- Line 188: `النوع`
+- Line 188: `الأولوية`
+- Line 188: `الحالة`
+- Line 188: `المُسند إليه`
+- Line 188: `التاريخ المجدول`
 
 ### [app/sale-returns/page.tsx](file:///c:/Users/pc203/OneDrive/Desktop/Projects/erp-app/src/app/sale-returns/page.tsx)
 - Line 157: `فشل التحميل`
@@ -4562,7 +4494,6 @@ These keys exist in `i18n.tsx` but were not found in any `t()` calls. They can p
 - `مرفوض`
 - `موافق عليه`
 - `لم يبدأ`
-- `جاري`
 - `أدخل قيمة...`
 - `أدخل وصفاً...`
 - `اكتب هنا...`

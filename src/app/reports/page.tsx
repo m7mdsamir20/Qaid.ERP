@@ -68,13 +68,14 @@ function ReportsHubPageInner() {
     })();
 
     const hasPageAccess = (pageId: string, featureKey?: string): boolean => {
-        // الفترة التجريبية: كل الصفحات متاحة
-        if (isTrial) return true;
         // 1. تحقق من الـ subscription (يطبق على الجميع بما فيهم السوبر أدمن)
-        if (hasSubscription && featureKey) {
+        if (hasSubscription && featureKey && Object.keys(enabledFeatures).length > 0) {
             const pagesInSub = enabledFeatures[featureKey] || [];
             if (!pagesInSub.includes(pageId)) return false;
         }
+
+        // الفترة التجريبية (إذا لم يتم تخصيص اشتراك مسبق): كل الصفحات متاحة
+        if (isTrial && Object.keys(enabledFeatures).length === 0) return true;
 
         if (isSuperAdmin) return true;
 

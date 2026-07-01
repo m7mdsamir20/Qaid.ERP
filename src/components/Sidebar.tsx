@@ -161,9 +161,13 @@ export default function Sidebar({
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = t("الخدمات");
-                    section.links = section.links?.filter((l: any) => !['/warehouses', '/stocktakings', '/warehouse-transfers'].includes(l.id)).map((l: any) => {
+                    section.links = section.links?.map((l: any) => {
                         if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
                         if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
+                        if (l.id === '/warehouses') return { ...l, label: t("مخازن الخدمات") };
+                        if (l.id === '/stocktakings') return { ...l, label: t("جرد الخدمات") };
+                        if (l.id === '/warehouse-transfers') return { ...l, label: t("تحويل المخزون") };
+                        if (l.id === '/units') return { ...l, label: t("الوحدات") };
                         return l;
                     });
                 }

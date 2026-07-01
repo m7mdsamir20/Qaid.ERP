@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -14,6 +15,7 @@ export const GET = withProtection(async (request, session) => {
         const priority = searchParams.get('priority');
         const dateFrom = searchParams.get('dateFrom');
         const dateTo = searchParams.get('dateTo');
+        const branchId = searchParams.get('branchId');
 
         const where: any = { companyId };
         if (status) where.status = status;
@@ -24,7 +26,14 @@ export const GET = withProtection(async (request, session) => {
         if (dateFrom || dateTo) {
             where.scheduledDate = {};
             if (dateFrom) where.scheduledDate.gte = new Date(dateFrom);
-            if (dateTo) where.scheduledDate.lte = new Date(dateTo);
+            if (dateTo) where.scheduledDate.lte = new Date(dateTo + 'T23:59:59');
+        }
+
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
+        } else {
+            const bf = getBranchFilter(session);
+            if (bf.branchId) where.branchId = bf.branchId;
         }
 
         const workOrders = await prisma.workOrder.findMany({
@@ -47,6 +56,7 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const activeBranchId = (session.user as any).activeBranchId;
         const { customerId, contractId, customerPONumber, assignedTo, type, priority, scheduledDate, description, notes, materials } = body;
 
         if (!type || !description) {
@@ -75,6 +85,7 @@ export const POST = withProtection(async (request, session, body) => {
                 description,
                 notes: notes || null,
                 companyId,
+                branchId: (activeBranchId && activeBranchId !== 'all') ? activeBranchId : null,
                 materials: materials && materials.length > 0 ? {
                     create: materials.map((m: any) => ({
                         itemId: m.itemId,

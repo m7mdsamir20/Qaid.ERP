@@ -5170,6 +5170,52 @@ export const dictionaries = {
         "ملخص عقود الخدمة النشطة والمنتهية وقيمها والعقود القاربة الانتهاء": "Summary of active and expired service contracts, their values, and contracts that are about to expire",
         "تقرير أوامر العمل": "Work orders report",
         "متابعة أوامر العمل حسب الحالة والأولوية والفنيين المُسندين إليهم": "Follow up on work orders according to status, priority, and the technicians assigned to them",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "جديد": "New",
+        "مُسند": "Supported",
+        "منخفض": "Low",
+        "عادي": "Normal",
+        "عالي": "High",
+        "عاجل": "Urgent",
+        "الأولوية": "Priority",
+        "المُسند إليه": "assigned to him",
+        "التاريخ المجدول": "Scheduled date",
+        "العقد": "Contract",
+        "متابعة أوامر العمل حسب الحالة والأولوية والمُسند إليه": "Follow up on work orders according to status, priority and assignee",
+        "بحث برقم الأمر أو العميل أو النوع...": "Search by order number, customer, type...",
+        "كل الأولويات": "All priorities",
+        "كل الأنواع": "All types",
+        "لا توجد أوامر عمل": "There are no work orders",
+        "برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل أوامر العمل.": "Please select another time period or modify your search criteria to view work order details.",
+        "إجمالي الأوامر": "Total orders",
+        "جديد / مُسند": "New/Assigned",
+        "يوجد": "There is",
+        "أمر عمل عاجل لم يُنجز بعد": "An urgent work order has not yet been completed",
+        "لا توجد أوامر عمل تطابق الفلتر المحدد": "There are no work orders matching the specified filter",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "الدورية": "Periodicity",
+        "ملخص عقود الخدمة — الحالة، القيم، والعقود القاربة الانتهاء": "Summary of service contracts — status, values, and contracts nearing completion",
+        "بحث برقم العقد أو العميل أو النوع...": "Search by contract number, customer, type...",
+        "كل أنواع الخدمات": "All kinds of services",
+        "لا توجد عقود خدمة": "There are no service contracts",
+        "برجاء تعديل معايير البحث لعرض تفاصيل عقود الخدمة.": "Please modify your search criteria to view details of service contracts.",
+        "إجمالي العقود": "Total contracts",
+        "عقود نشطة": "Active contracts",
+        "تنتهي خلال 30 يوم": "Expires in 30 days",
+        "إجمالي القيم": "Total values",
+        "لا توجد عقود تطابق الفلتر المحدد": "There are no contracts matching the selected filter",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "أمر": "commander",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "عقد": "a contract",
 }
 };
 
