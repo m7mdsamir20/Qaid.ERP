@@ -139,7 +139,7 @@ export default function ServiceCatalogPage() {
                     </div>
                 )}
 
-                <Pagination currentPage={currentPage} totalItems={filtered.length} pageSize={pageSize} onPageChange={setCurrentPage} />
+                <Pagination currentPage={currentPage} total={filtered.length} pageSize={pageSize} onPageChange={setCurrentPage} />
 
                 {/* Add/Edit Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')} icon={form.id ? Pencil : Plus} maxWidth="520px">
