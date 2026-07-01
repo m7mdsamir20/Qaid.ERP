@@ -378,7 +378,7 @@ export default function NewSalesOrderPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+            <div className="sales-order-page" dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
                 <PageHeader
                     title={t('أمر بيع جديد')}
                     subtitle={t('إنشاء أمر بيع جديد وتخصيصه للفرع والمستودع')}
@@ -631,25 +631,25 @@ export default function NewSalesOrderPage() {
 
                             {/* Lines Table */}
                             <div className="scroll-table" style={{ marginTop: '10px', overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                                <table className="sales-items-table" style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                                     <colgroup>
                                         <col />
-                                        <col style={{ width: '65px' }} />
-                                        <col style={{ width: '60px' }} />
-                                        <col style={{ width: '90px' }} />
-                                        <col style={{ width: '80px' }} />
-                                        <col style={{ width: '95px' }} />
-                                        <col style={{ width: '60px' }} />
+                                        <col className="col-unit" style={{ width: '65px' }} />
+                                        <col className="col-qty" style={{ width: '60px' }} />
+                                        <col className="col-price" style={{ width: '90px' }} />
+                                        <col className="col-discount" style={{ width: '80px' }} />
+                                        <col className="col-total" style={{ width: '95px' }} />
+                                        <col className="col-actions" style={{ width: '60px' }} />
                                     </colgroup>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ textAlign: 'start', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الصنف')}</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الوحدة')}</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('السعر')}</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصم')}</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
-                                            <th></th>
+                                            <th className="col-unit" style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                            <th className="col-qty" style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th className="col-price" style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th className="col-discount" style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصم')}</th>
+                                            <th className="col-total" style={{ textAlign: 'center', padding: '12px', fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
+                                            <th className="col-actions"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -662,12 +662,12 @@ export default function NewSalesOrderPage() {
                                                     <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.itemName}</div>
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.description}</div>}
                                                 </td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap' }}>{l.unit}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '13px', whiteSpace: 'nowrap' }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.price)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.danger, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{l.discount > 0 ? `-${formatNumber(l.discount)}` : '—'}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.total)}</td>
-                                                <td style={{ padding: '12px' }}>
+                                                <td className="col-unit" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap' }}>{l.unit}</td>
+                                                <td className="col-qty" style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '13px', whiteSpace: 'nowrap' }}>{formatNumber(l.quantity)}</td>
+                                                <td className="col-price" style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.price)}</td>
+                                                <td className="col-discount" style={{ padding: '12px', textAlign: 'center', color: C.danger, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{l.discount > 0 ? `-${formatNumber(l.discount)}` : '—'}</td>
+                                                <td className="col-total" style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT, whiteSpace: 'nowrap' }}>{formatNumber(l.total)}</td>
+                                                <td className="col-actions" style={{ padding: '12px' }}>
                                                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={14} /></button>
                                                         <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={15} /></button>

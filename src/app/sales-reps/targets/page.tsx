@@ -227,7 +227,7 @@ export default function TargetsPage() {
                             border: `1px solid ${C.teal}40`,
                             color: C.teal,
                             cursor: isCopying ? 'not-allowed' : 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                             fontSize: '13px', fontWeight: 700, fontFamily: CAIRO,
                             transition: 'all 0.2s',
                             opacity: isCopying ? 0.6 : 1,

@@ -1179,6 +1179,21 @@ body[dir="ltr"] select.input {
   .sales-items-table .col-actions {
     width: 56px !important;
   }
+
+  /* صفحة إضافة صنف في أمر البيع (5 عناصر) */
+  .sales-order-entry-grid,
+  .sales-order-page .item-entry-grid {
+    grid-template-columns: 1fr 1fr 1fr auto !important;
+  }
+  .sales-order-entry-grid > div:first-child,
+  .sales-order-page .item-entry-grid > div:first-child {
+    grid-column: 1 / -1 !important;
+  }
+
+  /* عرض عمود الخصم في الجدول المتجاوب */
+  .sales-items-table .col-discount {
+    width: 70px !important;
+  }
 }
 
 @media (max-width: 480px) {

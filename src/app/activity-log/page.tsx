@@ -439,6 +439,7 @@ export default function ActivityLogPage() {
         },
         {
             header: 'الصفحة',
+            className: 'mobile-hide',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <span style={{
@@ -452,6 +453,7 @@ export default function ActivityLogPage() {
         },
         {
             header: 'التفاصيل',
+            className: 'mobile-hide',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <span
@@ -547,9 +549,9 @@ export default function ActivityLogPage() {
                     </div>
 
                     {/* Date range — grouped with explicit gap from adjacent filters */}
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginInlineStart: '6px' }}>
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', marginInlineStart: '6px' }}>
                         {/* Date From */}
-                        <div style={{ position: 'relative' }}>
+                        <div className="date-input-wrapper" style={{ position: 'relative' }}>
                             <Calendar
                                 size={14}
                                 style={{
@@ -562,7 +564,7 @@ export default function ActivityLogPage() {
                                 value={dateFrom}
                                 onChange={e => setDateFrom(e.target.value)}
                                 style={{
-                                    ...IS, width: '150px', height: '42px',
+                                    ...IS, width: '100%', height: '42px',
                                     paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
                                 }}
                                 onFocus={focusIn}
@@ -572,7 +574,7 @@ export default function ActivityLogPage() {
                         </div>
 
                         {/* Date To */}
-                        <div style={{ position: 'relative' }}>
+                        <div className="date-input-wrapper" style={{ position: 'relative' }}>
                             <Calendar
                                 size={14}
                                 style={{
@@ -585,7 +587,7 @@ export default function ActivityLogPage() {
                                 value={dateTo}
                                 onChange={e => setDateTo(e.target.value)}
                                 style={{
-                                    ...IS, width: '150px', height: '42px',
+                                    ...IS, width: '100%', height: '42px',
                                     paddingInlineStart: '32px', fontSize: '12px', borderRadius: '10px',
                                 }}
                                 onFocus={focusIn}
@@ -598,6 +600,7 @@ export default function ActivityLogPage() {
                     {/* Clear filters */}
                     {(search || actionFilter || moduleFilter || dateFrom || dateTo || userFilter) && (
                         <button
+                            className="mobile-full"
                             onClick={() => {
                                 setSearch('');
                                 setActionFilter('');
@@ -652,6 +655,7 @@ export default function ActivityLogPage() {
                                         {columns.map((col, idx) => (
                                             <th
                                                 key={idx}
+                                                className={col.className}
                                                 style={{
                                                     ...TABLE_STYLE.th(idx === 0, false),
                                                     ...(col.style || {}),
@@ -679,6 +683,7 @@ export default function ActivityLogPage() {
                                                     {columns.map((col, colIdx) => (
                                                         <td
                                                             key={colIdx}
+                                                            className={col.className}
                                                             style={{
                                                                 ...TABLE_STYLE.td(colIdx === 0, false),
                                                                 ...(col.style || {}),

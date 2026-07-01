@@ -142,6 +142,7 @@ export default function CommissionsPage() {
         },
         {
             header: 'تم تحصيله',
+            className: 'mobile-hide',
             type: 'number',
             cell: (row: Commission) => (
                 <span style={{ fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.textPrimary }}>
@@ -151,6 +152,7 @@ export default function CommissionsPage() {
         },
         {
             header: 'أساس الحساب',
+            className: 'mobile-hide',
             type: 'number',
             cell: (row: Commission) => (
                 <span style={{ fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.teal }}>
@@ -160,6 +162,7 @@ export default function CommissionsPage() {
         },
         {
             header: 'النسبة',
+            className: 'mobile-hide',
             type: 'number',
             cell: (row: Commission) => (
                 <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '13px', color: C.warning }}>
@@ -284,7 +287,7 @@ export default function CommissionsPage() {
                             background: isCalculating ? `${C.primary}40` : C.primary,
                             color: '#fff', fontWeight: 700, fontSize: '13px',
                             cursor: isCalculating ? 'not-allowed' : 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO
                         }}
                     >
                         {isCalculating ? <Loader2 size={16} style={{ animation: 'spin 1.2s linear infinite' }} /> : <Calculator size={16} />}
