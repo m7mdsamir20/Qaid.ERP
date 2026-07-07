@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import crypto from 'crypto';
 
 // GET: list API keys for the company
@@ -21,9 +21,13 @@ export const GET = withProtection(async (request, session) => {
                 createdAt: true,
             }
         });
-        return NextResponse.json(keys);
+        const maskedKeys = keys.map((k: any) => ({
+            ...k,
+            key: k.key.substring(0, 20) + '...' + k.key.slice(-4),
+        }));
+        return NextResponse.json(maskedKeys);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireAdmin: true });
 
@@ -37,19 +41,22 @@ export const POST = withProtection(async (request, session, body) => {
         // Generate a secure API key: qaid_live_<random>
         const rawKey = crypto.randomBytes(32).toString('hex');
         const apiKey = `qaid_live_${rawKey}`;
+        // Store SHA-256 hash; return raw key once for the user to copy
+        const keyHash = crypto.createHash('sha256').update(apiKey).digest('hex');
 
         const created = await prisma.apiKey.create({
             data: {
                 name,
-                key: apiKey,
+                key: keyHash,
                 permissions,
                 companyId,
             }
         });
 
-        return NextResponse.json(created);
+        // Return the raw key in the response (only time it will be shown)
+        return NextResponse.json({ ...created, key: apiKey });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireAdmin: true });
 
@@ -69,7 +76,7 @@ export const PUT = withProtection(async (request, session, body) => {
 
         return NextResponse.json(updated);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireAdmin: true });
 
@@ -87,6 +94,6 @@ export const DELETE = withProtection(async (request, session) => {
         await prisma.apiKey.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireAdmin: true });

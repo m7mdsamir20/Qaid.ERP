@@ -35,31 +35,37 @@ export const POST = withProtection(async (request, session) => {
         if (settings.lowStock?.enabled) {
             const isRestaurants = company.businessType === 'RESTAURANTS';
             const items = await prisma.item.findMany({
-                where: { 
-                    companyId, 
+                where: {
+                    companyId,
                     minLimit: { gt: 0 },
                     ...(isRestaurants ? { type: 'raw' } : { type: { not: 'service' } })
                 },
-                include: {
-                    stocks: true,
-                },
+                include: { stocks: true },
             });
+
+            // Fetch all recent low_stock notifications at once to avoid N+1
+            const recentLowStockNotifs = await prisma.notification.findMany({
+                where: { companyId, type: 'low_stock' },
+                orderBy: { createdAt: 'desc' },
+                take: 200,
+            });
+            const lowStockMap = new Map<string, typeof recentLowStockNotifs[0]>();
+            for (const n of recentLowStockNotifs) {
+                const match = recentLowStockNotifs.find(x => x.msg.includes(n.msg.split(' — ')[0]) && !lowStockMap.has(n.msg.split(' — ')[0]));
+                if (match) lowStockMap.set(match.msg.split(' — ')[0], match);
+            }
 
             for (const item of items) {
                 const totalQty = item.stocks.reduce((s, st) => s + st.quantity, 0);
                 if (totalQty <= (item.minLimit || 0)) {
-                    const lastNotif = await prisma.notification.findFirst({
-                        where: { companyId, type: 'low_stock', msg: { contains: item.name } },
-                        orderBy: { createdAt: 'desc' }
-                    });
-                    
-                    const shouldCreate = !lastNotif || 
-                        (!lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 30)) || 
+                    const lastNotif = recentLowStockNotifs.find(n => n.msg.includes(item.name));
+                    const shouldCreate = !lastNotif ||
+                        (!lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 30)) ||
                         (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
-                    
+
                     if (shouldCreate) {
                         newNotifications.push({
-                            companyId, 
+                            companyId,
                             type: 'low_stock',
                             priority: totalQty === 0 ? 'high' : 'medium',
                             msg: totalQty === 0
@@ -84,20 +90,23 @@ export const POST = withProtection(async (request, session) => {
                 take: 10,
             });
 
+            // Fetch all recent overdue_payment notifications at once to avoid N+1
+            const recentOverdueNotifs = await prisma.notification.findMany({
+                where: { companyId, type: 'overdue_payment' },
+                orderBy: { createdAt: 'desc' },
+                take: 50,
+            });
+
             for (const inst of overdueInstallments) {
                 const customerName = inst.plan?.customer?.name || '';
-                const lastNotif = await prisma.notification.findFirst({
-                    where: { companyId, type: 'overdue_payment', msg: { contains: customerName } },
-                    orderBy: { createdAt: 'desc' }
-                });
-                
-                const shouldCreate = !lastNotif || 
-                        (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
+                const lastNotif = recentOverdueNotifs.find(n => n.msg.includes(customerName));
+                const shouldCreate = !lastNotif ||
+                    (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
 
                 if (shouldCreate && customerName) {
                     const days = Math.ceil((now.getTime() - new Date(inst.dueDate).getTime()) / (1000 * 60 * 60 * 24));
                     newNotifications.push({
-                        companyId, 
+                        companyId,
                         type: 'overdue_payment',
                         priority: days > 7 ? 'high' : 'medium',
                         msg: `قسط متأخر ${days} يوم — ${customerName} (${(inst.remaining || 0).toLocaleString('en-US')} ج.م)`,
@@ -112,6 +121,7 @@ export const POST = withProtection(async (request, session) => {
             const unpaidInvoices = await prisma.invoice.findMany({
                 where: { companyId, type: 'sale', remaining: { gt: 0 } },
                 select: { remaining: true, date: true, dueDate: true },
+                take: 500, // prevent unbounded query on large datasets
             });
 
             const buckets = { warning: { count: 0, total: 0 }, critical: { count: 0, total: 0 } };

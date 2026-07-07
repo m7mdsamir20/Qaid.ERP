@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 // رفع حد الوقت لـ 60 ثانية على Vercel لأن الحذف الكامل يحتاج وقت
 export const maxDuration = 60;
@@ -37,7 +37,6 @@ export const PUT = withProtection(async (request, session, body, context) => {
             plan, startDate, endDate, maxUsers, maxBranches, features, notes 
         } = body;
 
-        console.log(`[ERP-SYNC] Updating Company: ${id}`);
 
         // 1. Update Company & User
         await prisma.$transaction(async (tx) => {
@@ -107,7 +106,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
 
     } catch (error: any) {
         console.error("[ERP-SYNC] Error:", error);
-        return NextResponse.json({ error: 'فشل التحديث', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل التحديث' }, { status: 500 });
     }
 }, { requireSuperAdmin: true });
 
@@ -200,7 +199,7 @@ export const DELETE = withProtection(async (request, session, body, context) => 
 
     } catch (error: any) {
         console.error("[DELETE-COMPANY] Error:", error);
-        return NextResponse.json({ error: 'فشل حذف الشركة', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل حذف الشركة' }, { status: 500 });
     }
 }, { requireSuperAdmin: true });
 

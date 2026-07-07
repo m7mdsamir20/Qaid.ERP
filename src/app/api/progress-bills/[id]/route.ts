@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, body, context) => {
@@ -20,7 +20,7 @@ export const GET = withProtection(async (request, session, body, context) => {
 
         return NextResponse.json(bill);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -80,7 +80,7 @@ export const PATCH = withProtection(async (request, session, body, context) => {
 
         return NextResponse.json(updated);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -98,6 +98,6 @@ export const DELETE = withProtection(async (request, session, body, context) => 
         await prisma.progressBill.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

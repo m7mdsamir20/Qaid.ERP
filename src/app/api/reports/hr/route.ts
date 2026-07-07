@@ -6,9 +6,8 @@
  * VERSION: 1.0.2 (HR & ATTENDANCE REBUILD)
  */
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
+import { withProtection } from '@/lib/apiHandler';
 
 interface AdvanceRecord {
     id: string;
@@ -19,13 +18,9 @@ interface AdvanceRecord {
     status: 'paid' | 'partial' | 'active';
 }
 
-export async function GET(req: Request) {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const companyId = session.user.companyId;
-    if (!companyId) return NextResponse.json({ error: 'Company context is required' }, { status: 400 });
-    const { searchParams } = new URL(req.url);
+export const GET = withProtection(async (request, session) => {
+    const companyId = (session.user as any).companyId;
+    const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
 
     try {
@@ -88,7 +83,7 @@ export async function GET(req: Request) {
                         const totalAdvances = emp.advances.reduce((sum, a) => sum + a.amount, 0);
                         const paidAmount = emp.payrolls.reduce((sum, p) => sum + p.advances, 0);
                         const remaining = totalAdvances - paidAmount;
-                        
+
                         if (totalAdvances === 0) return null;
 
                         return {
@@ -379,4 +374,4 @@ export async function GET(req: Request) {
         console.error('HR report error:', error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
-}
+});

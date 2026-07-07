@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -317,8 +317,7 @@ export const POST = withProtection(async (request, session, body, context) => {
 
                 await tx.journalEntry.create({
                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                         entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                         date:            new Date(),
                         description:     `صرف رواتب شهر ${payroll.month}/${payroll.year}`,
@@ -387,7 +386,7 @@ export const POST = withProtection(async (request, session, body, context) => {
         return NextResponse.json({ error: "إجراء غير صالح" }, { status: 400 });
     } catch (e: any) {
         console.error(e);
-        return NextResponse.json({ error: e.message || "فشل في اعتماد المسير" }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') || "فشل في اعتماد المسير" }, { status: 500 });
     }
 });
 
@@ -419,6 +418,6 @@ export const DELETE = withProtection(async (request, session, body, context) => 
 
         return NextResponse.json({ success: true });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message || "فشل حذف المسير" }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') || "فشل حذف المسير" }, { status: 500 });
     }
 });

@@ -1,7 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
+import bcrypt from 'bcryptjs';
+import { randomInt } from 'crypto';
+
+const COUNTRY_NAMES_AR: Record<string, string> = {
+    EG: 'جمهورية مصر العربية',
+    SA: 'المملكة العربية السعودية',
+    AE: 'الإمارات العربية المتحدة',
+    KW: 'الكويت',
+    QA: 'قطر',
+    BH: 'البحرين',
+    OM: 'سلطنة عُمان',
+    JO: 'الأردن',
+    IQ: 'العراق',
+    LY: 'ليبيا',
+    TN: 'تونس',
+    DZ: 'الجزائر',
+    MA: 'المغرب',
+    SD: 'السودان',
+    YE: 'اليمن',
+    SY: 'سوريا',
+    LB: 'لبنان',
+    PS: 'فلسطين',
+};
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -12,15 +35,30 @@ export const POST = withProtection(async (request, session, body) => {
         }
 
         const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return NextResponse.json({ error: 'المستخدم غير موجود' }, { status: 404 });
+        if (!user) return NextResponse.json({ success: true }); // Don't reveal whether email exists
 
-        // Generate 6-digit OTP
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        // Load company for white-label branding
+        const company = user.companyId
+            ? await prisma.company.findUnique({
+                where: { id: user.companyId },
+                select: { name: true, addressCity: true, countryCode: true },
+              })
+            : null;
 
-        // Save OTP to user record
+        const brandName   = company?.name || 'نظام ERP';
+        const brandCity   = company?.addressCity || '';
+        const countryCode = company?.countryCode || 'EG';
+        const brandCountry = COUNTRY_NAMES_AR[countryCode] || countryCode;
+        const brandLocation = [brandCity, brandCountry].filter(Boolean).join('، ');
+
+        // Generate cryptographically secure 6-digit OTP
+        const otp = randomInt(100000, 1000000).toString();
+        const otpHash = await bcrypt.hash(otp, 8);
+        const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
         await prisma.user.update({
             where: { id: user.id },
-            data: { otp }
+            data: { otp: otpHash, otpExpiresAt }
         });
 
         // Email Transporter Config
@@ -39,9 +77,9 @@ export const POST = withProtection(async (request, session, body) => {
         const logoUrl = `${origin}/logo-system.png`;
 
         await transporter.sendMail({
-            from: `"قيد ERP" <${process.env.SMTP_USER}>`,
+            from: `"${brandName}" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: 'كود التحقق - قيد ERP',
+            subject: `كود التحقق - ${brandName}`,
             html: `
                 <!DOCTYPE html>
                 <html lang="ar" dir="rtl">
@@ -55,36 +93,35 @@ export const POST = withProtection(async (request, session, body) => {
                         .content { padding: 40px; text-align: center; }
                         .title { color: #1e293b; font-size: 24px; font-weight: 800; margin-bottom: 16px; margin-top: 0; }
                         .description { color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
-                        .otp-box { background: #f8fafc; border: 2px dashed #0f172a; border-radius: 16px; padding: 24px 0; margin-bottom: 32px; position: relative; }
+                        .otp-box { background: #f8fafc; border: 2px dashed #0f172a; border-radius: 16px; padding: 24px 0; margin-bottom: 32px; }
                         .otp-code { font-size: 48px; font-weight: 900; letter-spacing: 12px; color: #0f172a; font-family: 'Courier New', Courier, monospace; display: block; margin: 0; }
-                        .otp-label { color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: block; }
+                        .otp-label { color: #94a3b8; font-size: 12px; font-weight: 700; margin-bottom: 8px; display: block; }
                         .warning { color: #ef4444; font-size: 13px; font-weight: 600; margin-bottom: 24px; }
                         .footer { background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #f1f5f9; }
                         .footer-text { color: #94a3b8; font-size: 12px; margin: 0; }
-                        .btn { background: #0f172a; color: #ffffff !important; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 700; display: inline-block; margin-top: 10px; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
                         <div class="header">
-                            <img src="${logoUrl}" alt="قيد ERP" class="logo">
+                            <img src="${logoUrl}" alt="${brandName}" class="logo">
                         </div>
                         <div class="content">
-                            <h1 class="title">مرحباً بك في قيد ERP</h1>
+                            <h1 class="title">مرحباً بك في ${brandName}</h1>
                             <p class="description">لقد طلبت كود التحقق لتسجيل الدخول أو إثبات الهوية. يرجى استخدام الكود التالي لإتمام العملية:</p>
-                            
+
                             <div class="otp-box">
                                 <span class="otp-label">كود التحقق الخاص بك هو:</span>
                                 <span class="otp-code">${otp}</span>
                             </div>
 
                             <p class="warning">صلاحية هذا الكود هي 10 دقائق فقط. لا تقم بمشاركة هذا الكود مع أي شخص.</p>
-                            
+
                             <p style="color: #475569; font-size: 14px; margin-bottom: 0;">إذا لم تطلب هذا الكود، فيمكنك تجاهل هذا البريد بأمان.</p>
                         </div>
                         <div class="footer">
-                            <p class="footer-text">© ${new Date().getFullYear()} قيد ERP - نظام إدارة الموارد المتكاملة</p>
-                            <p class="footer-text" style="margin-top: 8px;">مقر العمل - القاهرة، جمهورية مصر العربية</p>
+                            <p class="footer-text">© ${new Date().getFullYear()} ${brandName} - نظام إدارة الموارد المتكاملة</p>
+                            ${brandLocation ? `<p class="footer-text" style="margin-top: 8px;">${brandLocation}</p>` : ''}
                         </div>
                     </div>
                 </body>
@@ -95,6 +132,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error('OTP error:', error);
-        return NextResponse.json({ error: 'فشل إرسال الكود: ' + (error.message || 'خطأ غير معروف') }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل إرسال الكود') }, { status: 500 });
     }
 }, { isPublic: true, limit: 5, windowMs: 60 * 1000 }); // Strict rate limit for OTP

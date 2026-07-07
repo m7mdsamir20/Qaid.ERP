@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -42,6 +42,8 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'لا توجد منتجات' }, { status: 400 });
 
         const total         = parseFloat(totalAmount);
+        if (isNaN(total) || total <= 0)
+            return NextResponse.json({ error: 'المبلغ الإجمالي يجب أن يكون رقماً موجباً' }, { status: 400 });
         const down          = parseFloat(downPayment)  || 0;
         const rate          = parseFloat(interestRate) || 0;
         const taxRate       = parseFloat(taxR) || 0;
@@ -70,6 +72,9 @@ export const POST = withProtection(async (request, session, body) => {
         
         const productName = cart.map((i: any) => `${i.name} (${i.quantity})`).join(', ');
 
+        const customerExists = await prisma.customer.findFirst({ where: { id: customerId, companyId } });
+        if (!customerExists) return NextResponse.json({ error: 'العميل غير موجود' }, { status: 404 });
+
         const result = await prisma.$transaction(async (tx) => {
             
             // 1. Create hidden Invoice for the installment plan
@@ -97,8 +102,7 @@ export const POST = withProtection(async (request, session, body) => {
                     remaining: remaining,
                     notes: notes || `فاتورة مرتبطة بخطة تقسيط رقم ${planNumber}`,
                     companyId,
-                    // @ts-ignore
-                    branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                    branchId: body?.branchId || null,
                     lines: {
                         create: cart.map((item: any) => ({
                             itemId: item.id,
@@ -147,7 +151,7 @@ export const POST = withProtection(async (request, session, body) => {
                 let totalCost = 0;
 
                 for (const item of cart) {
-                    const dbItem = await tx.item.findUnique({ where: { id: item.id }, select: { costPrice: true, id: true } });
+                    const dbItem = await tx.item.findFirst({ where: { id: item.id, companyId }, select: { costPrice: true, id: true } });
                     if (dbItem) {
                         const itemCost = (dbItem.costPrice || 0) * item.quantity;
                         totalCost += itemCost;
@@ -181,8 +185,7 @@ export const POST = withProtection(async (request, session, body) => {
                     const lastEntry = await tx.journalEntry.findFirst({ where: { companyId }, orderBy: { entryNumber: 'desc' }, select: { entryNumber: true } });
                     await tx.journalEntry.create({
                         data: {
-                            // @ts-ignore
-                            branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                            branchId: body?.branchId || null,
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: new Date(),
                             description: `إثبات تكلفة بضاعة مباعة لخطة التقسيط ${planNumber}`,
@@ -203,9 +206,9 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             }
 
-            // 4. Update customer balance with Principal + Interest 
+            // 4. Update customer balance with Principal + Interest
             await tx.customer.update({
-                where: { id: customerId },
+                where: { id: customerId, companyId },
                 data:  { balance: { increment: grandTotal } },
             });
 
@@ -281,8 +284,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                            // @ts-ignore
-                            branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                            branchId: body?.branchId || null,
                             entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                             date:            new Date(),
                             description:     `إثبات خطة تقسيط رقم ${planNumber} للعميل ${(await tx.customer.findUnique({ where: { id: customerId }, select: { name: true } }))?.name || ''}`,
@@ -357,8 +359,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                             await tx.journalEntry.create({
                                 data: {
-                                    // @ts-ignore
-                                    branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                    branchId: body?.branchId || null,
                                     entryNumber:     (lastEntry2?.entryNumber || 0) + 1,
                                     date:            new Date(),
                                     description:     `دفعة مقدمة لخطة تقسيط ${planNumber}`,
@@ -397,7 +398,7 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
         console.error('Create Installment Error:', error);
-        return NextResponse.json({ error: error.message || 'حدث خطأ غير متوقع' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ غير متوقع') }, { status: 500 });
     }
 });
 

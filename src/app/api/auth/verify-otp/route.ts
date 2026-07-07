@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import bcrypt from 'bcryptjs';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -16,17 +17,23 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'المستخدم غير موجود' }, { status: 404 });
         }
 
-        // تحقق مما إذا كان الكود المدخل يطابق الكود المحفوظ في قاعدة البيانات
-        if (!user.otp || user.otp !== otp) {
+        // تحقق من صلاحية الكود
+        if (!user.otp || !user.otpExpiresAt || user.otpExpiresAt < new Date()) {
+            return NextResponse.json({ error: 'انتهت صلاحية كود التحقق، يرجى طلب كود جديد' }, { status: 400 });
+        }
+
+        const isOtpValid = await bcrypt.compare(otp, user.otp);
+        if (!isOtpValid) {
             return NextResponse.json({ error: 'كود التحقق غير صحيح، يرجى المحاولة مرة أخرى' }, { status: 400 });
         }
 
         // تحديث حالة المستخدم لتأكيد الحساب ومسح الكود المستخدم
         await prisma.user.update({
             where: { id: user.id },
-            data: { 
-                isPhoneVerified: true, // نستخدم هذا الحقل لتأكيد الحساب (إيميل/هاتف)
-                otp: null              // مسح الكود لمنع استخدامه مرة أخرى
+            data: {
+                isPhoneVerified: true,
+                otp: null,
+                otpExpiresAt: null
             }
         });
 

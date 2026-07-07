@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
@@ -38,6 +38,7 @@ export const POST = withProtection(async (request, session, body) => {
         const financialYear = await prisma.financialYear.findFirst({
             where: { companyId, isOpen: true },
         });
+        if (!financialYear) return NextResponse.json({ error: 'لا توجد سنة مالية مفتوحة. يرجى فتح سنة مالية أولاً' }, { status: 400 });
 
         const paymentMethod = treasuryId ? 'cash' : (bankId ? 'bank' : 'credit');
 
@@ -51,7 +52,8 @@ export const POST = withProtection(async (request, session, body) => {
             
             // Snapshot Balance
             const customerSnapshot = await tx.customer.findUnique({ where: { id: customerId, companyId }, select: { balance: true } });
-            const customerPrevBalance = customerSnapshot?.balance || 0;
+            if (!customerSnapshot) throw new Error('العميل غير موجود أو لا ينتمي لهذه الشركة');
+            const customerPrevBalance = customerSnapshot.balance;
             const customerNewBalance = customerPrevBalance - remaining;
 
             const lastEntry = financialYear ? await tx.journalEntry.findFirst({
@@ -135,7 +137,7 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             await tx.customer.update({
-                where: { id: customerId },
+                where: { id: customerId, companyId },
                 data: { balance: { decrement: remaining } },
             });
 
@@ -294,8 +296,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: branchId || null,
                             entryNumber, date: new Date(),
                             description: `قيد مرتجع مبيعات رقم ${invoiceNumber}`,
                             reference: `SRET-${invoiceNumber}`,
@@ -310,8 +311,11 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             if (paidAmount > 0 && effectiveTreasuryId) {
-                const treasury = await tx.treasury.findUnique({ where: { id: effectiveTreasuryId } });
-                if (!treasury || treasury.balance < paidAmount) {
+                const treasury = await tx.treasury.findUnique({ where: { id: effectiveTreasuryId, companyId } });
+                if (!treasury) {
+                    throw new Error("الخزينة غير موجودة أو لا تنتمي لشركتك");
+                }
+                if (treasury.balance < paidAmount) {
                     throw new Error("رصيد الخزينة/البنك غير كافٍ لرد المبلغ نقداً");
                 }
                 await tx.treasury.update({
@@ -338,6 +342,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
         console.error('Sale return error:', error);
-        return NextResponse.json({ error: error.message || 'فشل في إنشاء مرتجع المبيعات' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في إنشاء مرتجع المبيعات') }, { status: 500 });
     }
 });

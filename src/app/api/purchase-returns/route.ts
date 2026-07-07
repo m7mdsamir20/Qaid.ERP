@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
@@ -278,8 +278,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber, date: new Date(),
                             description: `قيد مرتجع مشتريات رقم ${invoiceNumber}`,
                             reference: getInvoiceRef(invoiceNumber, 'purchase_return'),
@@ -311,6 +310,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
         console.error('Purchase return error:', error);
-        return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات' }, { status: 500 });
     }
 });

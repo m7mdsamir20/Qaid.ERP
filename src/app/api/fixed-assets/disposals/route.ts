@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -150,8 +150,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const entry = await tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                     entryNumber,
                     date: new Date(disposalDate),
                     description: `استبعاد أصل ثابت — ${asset.name} — ${reason}`,
@@ -190,6 +189,6 @@ export const POST = withProtection(async (request, session, body) => {
 
     } catch (error: any) {
         console.error('Disposal error:', error);
-        return NextResponse.json({ error: 'فشل تسجيل الاستبعاد: ' + error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل تسجيل الاستبعاد' }, { status: 500 });
     }
 });

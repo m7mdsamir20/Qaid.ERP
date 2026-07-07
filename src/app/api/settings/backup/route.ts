@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const maxDuration = 60;
 
@@ -127,7 +127,7 @@ export const GET = withProtection(async (request, session) => {
         console.error("Backup Export Error:", error);
         return NextResponse.json({ error: 'فشل التصدير' }, { status: 500 });
     }
-});
+}, { requireAdmin: true });
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -210,15 +210,36 @@ export const POST = withProtection(async (request, session, body) => {
             companyId,
         }));
 
-        // ⑨ Invoices (بدون lines - يتم تجاهل الـ lines لتجنب تعقيد العلاقات)
+        // ⑨ Invoices — explicit field allowlist prevents mass assignment
         results.invoices = 0;
         if (d.invoices?.length) {
             for (const inv of d.invoices) {
-                const { lines, ...invData } = inv;
+                const safeInv = {
+                    id: inv.id,
+                    invoiceNumber: inv.invoiceNumber,
+                    type: inv.type,
+                    date: new Date(inv.date),
+                    dueDate: inv.dueDate ? new Date(inv.dueDate) : null,
+                    total: inv.total || 0,
+                    subtotal: inv.subtotal || 0,
+                    discount: inv.discount || 0,
+                    taxAmount: inv.taxAmount || 0,
+                    paidAmount: inv.paidAmount || 0,
+                    remaining: inv.remaining || 0,
+                    status: inv.status || 'approved',
+                    paymentMethod: inv.paymentMethod || null,
+                    notes: inv.notes || null,
+                    customerId: inv.customerId || null,
+                    supplierId: inv.supplierId || null,
+                    branchId: inv.branchId || null,
+                    warehouseId: inv.warehouseId || null,
+                    financialYearId: inv.financialYearId || null,
+                    companyId,
+                };
                 await (prisma as any).invoice.upsert({
                     where: { id: inv.id },
-                    update: { ...invData, date: new Date(inv.date), companyId },
-                    create: { ...invData, date: new Date(inv.date), companyId },
+                    update: safeInv,
+                    create: safeInv,
                 }).catch(() => {});
                 results.invoices++;
             }
@@ -234,6 +255,6 @@ export const POST = withProtection(async (request, session, body) => {
 
     } catch (error: any) {
         console.error("Backup Import Error:", error);
-        return NextResponse.json({ error: 'فشل استيراد النسخة: ' + error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل استيراد النسخة الاحتياطية') }, { status: 500 });
     }
 }, { requireAdmin: true });

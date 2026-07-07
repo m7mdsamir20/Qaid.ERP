@@ -36,6 +36,9 @@ async function getBrowser() {
     return cachedBrowser;
 }
 
+// Matches private/loopback IP ranges to block SSRF via Puppeteer
+const PRIVATE_IP_RE = /^https?:\/\/(127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|169\.254\.|localhost|::1)/i;
+
 export const POST = withProtection(async (request, session) => {
     try {
         const body = await request.json();
@@ -45,13 +48,27 @@ export const POST = withProtection(async (request, session) => {
             return NextResponse.json({ error: 'HTML content is required' }, { status: 400 });
         }
 
+        // Strip <script> tags to prevent JavaScript execution inside Chromium
+        const sanitizedHtml = (html as string).replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi, '');
+
         const browser = await getBrowser();
         const page = await browser.newPage();
-        
+
+        // Block requests to private/internal IP ranges (SSRF prevention)
+        await page.setRequestInterception(true);
+        page.on('request', (req: any) => {
+            const url = req.url();
+            if (PRIVATE_IP_RE.test(url) || url.startsWith('file://')) {
+                req.abort();
+            } else {
+                req.continue();
+            }
+        });
+
         // Use a reasonable viewport to ensure proper scaling
         await page.setViewport({ width: 1200, height: 800 });
-        
-        await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
+
+        await page.setContent(sanitizedHtml, { waitUntil: 'load', timeout: 30000 });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfOptions: any = {

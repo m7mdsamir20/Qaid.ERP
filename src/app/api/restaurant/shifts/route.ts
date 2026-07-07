@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 // GET: list shifts (with optional status filter)
 export const GET = withProtection(async (request, session) => {
@@ -18,7 +18,7 @@ export const GET = withProtection(async (request, session) => {
         });
         return NextResponse.json(shifts);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -49,7 +49,7 @@ export const POST = withProtection(async (request, session, body) => {
         });
         return NextResponse.json(shift, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -132,8 +132,7 @@ export const PUT = withProtection(async (request, session, body) => {
 
                     await prisma.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber,
                             date: new Date(),
                             description: `قيد مبيعات وردية رقم ${body.id.slice(-5)}`,
@@ -152,6 +151,6 @@ export const PUT = withProtection(async (request, session, body) => {
 
         return NextResponse.json({ success: true, totalSales, totalOrders, difference, cancelledCount });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

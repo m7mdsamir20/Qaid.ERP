@@ -21,6 +21,7 @@ export default function NewPurchasePaymentPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
+    const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const [partners, setPartners] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -94,7 +95,7 @@ export default function NewPurchasePaymentPage() {
                 const saved = await res.json();
                 if (andPrint) {
                     const { printHtmlViaIframe } = await import('@/lib/printDirectly');
-                    const html = buildPayVoucherHtml(saved, selectedPartner, nextNum, form, cSymbol, t);
+                    const html = buildPayVoucherHtml(saved, selectedPartner, nextNum, form, cSymbol, t, session?.user);
                     printHtmlViaIframe(html, () => router.push('/purchase-payments'));
                 } else {
                     router.push('/purchase-payments');
@@ -353,14 +354,16 @@ export default function NewPurchasePaymentPage() {
     );
 }
 
-function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any): string {
+function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any, user?: any): string {
     const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const amount = formatNumber(voucher.amount || 0);
     const COMPANY = {
-        name: t('شركة النور للتجارة'), nameEn: 'Al-Nour Trading Company',
-        address: t('القاهرة، مصر - شارع التحرير، عمارة 12'),
-        phone: '01000000000  |  01100000000',
-        email: 'info@alnour.com', tax: '123-456-789', logo: '',
+        name: user?.companyName || '',
+        address: user?.address || '',
+        phone: user?.phone || '',
+        email: user?.email || '',
+        tax: user?.taxNumber || '',
+        logo: user?.companyLogo || '',
     };
 
     // Calculate Balance After for Print

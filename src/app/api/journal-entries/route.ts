@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
@@ -57,7 +57,17 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'لا توجد سنة مالية مفتوحة لهذا التاريخ' }, { status: 400 });
         }
 
-        // 4. Create transaction (entry number generated inside to prevent race conditions)
+        // 4. Validate all accountIds belong to this company
+        const accountIds = body.lines.map((line: any) => line.accountId).filter(Boolean);
+        const validAccounts = await prisma.account.findMany({
+            where: { id: { in: accountIds }, companyId },
+            select: { id: true },
+        });
+        if (validAccounts.length !== accountIds.length) {
+            return NextResponse.json({ error: 'بعض الحسابات غير صالحة أو لا تنتمي للشركة' }, { status: 400 });
+        }
+
+        // 5. Create transaction (entry number generated inside to prevent race conditions)
         const entry = await prisma.$transaction(async (tx) => {
             const lastEntry = await tx.journalEntry.findFirst({
                 where: { financialYearId: financialYear.id },
@@ -67,8 +77,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const newEntry = await tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                     entryNumber: nextEntryNumber,
                     date: new Date(body.date),
                     description: body.description || null,

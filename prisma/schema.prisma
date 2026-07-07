@@ -205,6 +205,7 @@ model User {
   role            String   @default("user")
   status          String   @default("active")
   otp             String?
+  otpExpiresAt    DateTime?
   isPhoneVerified Boolean  @default(false)
   roleId          String?
   companyId       String?
@@ -232,6 +233,9 @@ model Notification {
   link      String?
   createdAt DateTime @default(now())
   company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, type])
+  @@index([companyId, read, createdAt])
 }
 
 model PrinterSetting {
@@ -635,6 +639,9 @@ model Customer {
   customerPoints   CustomerPoints[]
   pointsTransactions PointsTransaction[]
   collections      Collection[]
+
+  @@index([companyId])
+  @@index([companyId, name])
 }
 
 model Supplier {
@@ -656,6 +663,8 @@ model Supplier {
   company         Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   vouchers        Voucher[]
   purchaseOrders  PurchaseOrder[]
+
+  @@index([companyId])
 }
 
 model Treasury {
@@ -830,6 +839,8 @@ model Employee {
   leaveRequests      LeaveRequest[]
   leaveBalances      LeaveBalance[]
   assignedWorkOrders WorkOrder[]
+
+  @@index([companyId, status])
 }
 
 model Advance {
@@ -847,6 +858,8 @@ model Advance {
   treasury         Treasury? @relation(fields: [treasuryId], references: [id])
   employee         Employee  @relation(fields: [employeeId], references: [id])
   company          Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, employeeId])
 }
 
 model Deduction {
@@ -861,6 +874,8 @@ model Deduction {
   createdAt      DateTime @default(now())
   employee       Employee @relation(fields: [employeeId], references: [id])
   company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId, employeeId])
 }
 
 model Payroll {
@@ -880,6 +895,8 @@ model Payroll {
   company         Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   branch          Branch?       @relation(fields: [branchId], references: [id])
   lines           PayrollLine[]
+
+  @@index([companyId, year, month])
 }
 
 model PayrollLine {
@@ -949,6 +966,7 @@ model InstallmentPlan {
   invoice           Invoice?      @relation(fields: [invoiceId], references: [id])
 
   @@unique([planNumber, companyId])
+  @@index([companyId, status])
 }
 
 model Installment {
@@ -971,6 +989,7 @@ model Installment {
   plan          InstallmentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
 
   @@unique([planId, installmentNo])
+  @@index([companyId, status, dueDate])
 }
 
 model Subscription {
@@ -1599,6 +1618,7 @@ model LeaveBalance {
   company    Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 
   @@unique([employeeId, year, type])
+  @@index([companyId, year])
 }
 
 model OfficialHoliday {

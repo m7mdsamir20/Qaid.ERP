@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -38,7 +38,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             // --- Handler for FROM entity ---
             if (fromType === 'customer') {
-                const entity = await tx.customer.findUnique({ where: { id: fromId } });
+                const entity = await tx.customer.findFirst({ where: { id: fromId, companyId } });
                 if (!entity) throw new Error("العميل (المحول منه) غير موجود");
                 fromAccountName = entity.name;
                 await tx.customer.update({ where: { id: fromId }, data: { balance: { decrement: value } } });
@@ -55,7 +55,7 @@ export const POST = withProtection(async (request, session, body) => {
                 if (!acc) throw new Error("حساب العملاء غير موجود");
                 fromMainAccountId = acc.id;
             } else if (fromType === 'supplier') {
-                const entity = await tx.supplier.findUnique({ where: { id: fromId } });
+                const entity = await tx.supplier.findFirst({ where: { id: fromId, companyId } });
                 if (!entity) throw new Error("المورد (المحول منه) غير موجود");
                 fromAccountName = entity.name;
                 await tx.supplier.update({ where: { id: fromId }, data: { balance: { decrement: value } } });
@@ -72,11 +72,11 @@ export const POST = withProtection(async (request, session, body) => {
                 if (!acc) throw new Error("حساب الموردين غير موجود");
                 fromMainAccountId = acc.id;
             } else if (fromType === 'bank') {
-                const entity = await tx.treasury.findUnique({ where: { id: fromId } });
+                const entity = await tx.treasury.findFirst({ where: { id: fromId, companyId } });
                 if (!entity) throw new Error("البنك (المحول منه) غير موجود");
                 fromAccountName = entity.name;
                 await tx.treasury.update({ where: { id: fromId }, data: { balance: { decrement: value } } });
-                const treas = await tx.treasury.findUnique({ where: { id: fromId }, select: { accountId: true } });
+                const treas = await tx.treasury.findFirst({ where: { id: fromId, companyId }, select: { accountId: true } });
                 if (!treas?.accountId) throw new Error("حساب الخزينة/البنك غير مرتبط");
                 fromMainAccountId = treas.accountId;
 
@@ -99,7 +99,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             // --- Handler for TO entity ---
             if (toType === 'customer') {
-                const entity = await tx.customer.findUnique({ where: { id: toId } });
+                const entity = await tx.customer.findFirst({ where: { id: toId, companyId } });
                 if (!entity) throw new Error("العميل (المحول إليه) غير موجود");
                 toAccountName = entity.name;
                 await tx.customer.update({ where: { id: toId }, data: { balance: { increment: value } } });
@@ -116,7 +116,7 @@ export const POST = withProtection(async (request, session, body) => {
                 if (!acc) throw new Error("حساب العملاء غير موجود");
                 toMainAccountId = acc.id;
             } else if (toType === 'supplier') {
-                const entity = await tx.supplier.findUnique({ where: { id: toId } });
+                const entity = await tx.supplier.findFirst({ where: { id: toId, companyId } });
                 if (!entity) throw new Error("المورد (المحول إليه) غير موجود");
                 toAccountName = entity.name;
                 await tx.supplier.update({ where: { id: toId }, data: { balance: { increment: value } } });
@@ -133,11 +133,11 @@ export const POST = withProtection(async (request, session, body) => {
                 if (!acc) throw new Error("حساب الموردين غير موجود");
                 toMainAccountId = acc.id;
             } else if (toType === 'bank') {
-                const entity = await tx.treasury.findUnique({ where: { id: toId } });
+                const entity = await tx.treasury.findFirst({ where: { id: toId, companyId } });
                 if (!entity) throw new Error("البنك (المحول إليه) غير موجود");
                 toAccountName = entity.name;
                 await tx.treasury.update({ where: { id: toId }, data: { balance: { increment: value } } });
-                const treas = await tx.treasury.findUnique({ where: { id: toId }, select: { accountId: true } });
+                const treas = await tx.treasury.findFirst({ where: { id: toId, companyId }, select: { accountId: true } });
                 if (!treas?.accountId) throw new Error("حساب الخزينة/البنك غير مرتبط");
                 toMainAccountId = treas.accountId;
 
@@ -171,8 +171,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const entry = await tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                     entryNumber,
                     date: date ? new Date(date) : new Date(),
                     description: `تسوية شاملة: حوالة من ${fromEntityStr} إلى ${toEntityStr} - ${notes || ''}`,
@@ -211,7 +210,7 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
         console.error('Comprehensive Settlement error:', error);
-        return NextResponse.json({ error: error.message || 'فشل في تنفيذ العملية' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في تنفيذ العملية') }, { status: 500 });
     }
 });
 
@@ -290,6 +289,6 @@ export const GET = withProtection(async (request, session) => {
 
         return NextResponse.json(results);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في جلب البيانات') }, { status: 500 });
     }
 });

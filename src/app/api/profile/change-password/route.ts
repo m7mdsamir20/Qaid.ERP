@@ -8,6 +8,10 @@ export const POST = withProtection(async (request, session, body) => {
         const userId = (session.user as any).id;
         const { oldPassword, newPassword } = body;
 
+        if (!newPassword || newPassword.length < 8) {
+            return NextResponse.json({ error: 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل' }, { status: 400 });
+        }
+
         const user = await prisma.user.findUnique({
             where: { id: userId }
         });

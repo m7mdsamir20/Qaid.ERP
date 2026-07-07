@@ -15,7 +15,11 @@ async function main() {
         return;
     }
 
-    const hashedPassword = await bcrypt.hash('12345678', 10);
+    const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+    if (!adminPassword) {
+        throw new Error('SEED_ADMIN_PASSWORD environment variable must be set before running seed.');
+    }
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
 
     // Seed default company first
     const company = await prisma.company.upsert({

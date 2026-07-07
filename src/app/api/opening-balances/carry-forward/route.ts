@@ -47,7 +47,8 @@ export const POST = withProtection(async (request, session, body) => {
                     where: {
                         journalEntry: {
                             financialYearId: previousYear.id,
-                            isPosted: true
+                            isPosted: true,
+                            referenceType: { not: 'closing' }  // exclude closing entries
                         }
                     }
                 }
@@ -112,4 +113,4 @@ export const POST = withProtection(async (request, session, body) => {
         console.error('CARRY_FORWARD_ERROR:', e);
         return NextResponse.json({ error: 'فشل في عملية الترحيل' }, { status: 500 });
     }
-});
+}, { requireAdmin: true });

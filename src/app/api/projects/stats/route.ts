@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -234,6 +234,6 @@ export const GET = withProtection(async (request, session) => {
 
     } catch (error: any) {
         console.error("[Projects Stats API Error]:", error);
-        return NextResponse.json({ error: error.message || "فشل في معالجة إحصائيات المشاريع" }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') || "فشل في معالجة إحصائيات المشاريع" }, { status: 500 });
     }
 });

@@ -6,6 +6,7 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const { financialYearId, period, lines } = body;
+        const branchId = (session!.user as any).branchId || null;
 
         if (!financialYearId || !lines?.length)
             return NextResponse.json({ error: 'بيانات ناقصة' }, { status: 400 });
@@ -36,8 +37,7 @@ export const POST = withProtection(async (request, session, body) => {
                 // إنشاء القيد المحاسبي
                 const entry = await tx.journalEntry.create({
                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                    branchId,
                         entryNumber,
                         date:           new Date(),
                         description:    `إهلاك ${period} — ${financialYear.name}`,
@@ -104,4 +104,4 @@ export const POST = withProtection(async (request, session, body) => {
         console.error('Depreciation register error:', error);
         return NextResponse.json({ error: 'فشل تسجيل الإهلاك' }, { status: 500 });
     }
-});
+}, { requireAdmin: true });

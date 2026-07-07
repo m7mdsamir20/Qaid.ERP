@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -82,6 +82,6 @@ export const POST = withProtection(async (request, session, body) => {
         if (error.code === 'P2002') {
             return NextResponse.json({ error: 'رمز مركز التكلفة موجود بالفعل' }, { status: 400 });
         }
-        return NextResponse.json({ error: error.message || 'فشل في إنشاء مركز التكلفة' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في إنشاء مركز التكلفة') }, { status: 500 });
     }
 });

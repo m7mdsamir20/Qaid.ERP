@@ -60,10 +60,16 @@ export const POST = withProtection(async (request, session, body) => {
             const stock = await prisma.stock.findUnique({
                 where: { itemId_warehouseId: { itemId: line.itemId, warehouseId: fromWarehouseId } }
             });
-            const item = await prisma.item.findUnique({ where: { id: line.itemId }, select: { name: true } });
+            const item = await prisma.item.findFirst({ where: { id: line.itemId, companyId }, select: { name: true } });
+            if (!item) {
+                return NextResponse.json(
+                    { error: `الصنف ${line.itemId} غير موجود أو لا ينتمي لهذه الشركة` },
+                    { status: 400 }
+                );
+            }
             if (!stock || stock.quantity < Number(line.quantity)) {
                 return NextResponse.json({
-                    error: `الكمية المتاحة غير كافية للصنف "${item?.name || line.itemId}". المتاح: ${stock?.quantity ?? 0}`
+                    error: `الكمية المتاحة غير كافية للصنف "${item.name}". المتاح: ${stock?.quantity ?? 0}`
                 }, { status: 400 });
             }
         }
@@ -135,5 +141,80 @@ export const POST = withProtection(async (request, session, body) => {
     } catch (error) {
         console.error('Transfer error:', error);
         return NextResponse.json({ error: 'فشل في إنشاء التحويل المخزني' }, { status: 500 });
+    }
+});
+
+export const DELETE = withProtection(async (request, session) => {
+    try {
+        const companyId = (session!.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) return NextResponse.json({ error: 'معرف التحويل مطلوب' }, { status: 400 });
+
+        const transfer = await prisma.warehouseTransfer.findFirst({
+            where: { id, companyId },
+            include: { lines: true },
+        });
+        if (!transfer) return NextResponse.json({ error: 'التحويل المخزني غير موجود' }, { status: 404 });
+
+        if (transfer.status === 'approved') {
+            return NextResponse.json({ error: 'لا يمكن حذف تحويل معتمد' }, { status: 400 });
+        }
+
+        await prisma.$transaction(async (tx: any) => {
+            // Reverse stock changes only for pending transfers (stock was moved on creation)
+            if (transfer.status === 'pending') {
+                for (const line of transfer.lines) {
+                    // Restore quantity to source warehouse
+                    await tx.stock.upsert({
+                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId: transfer.fromWarehouseId } },
+                        update: { quantity: { increment: line.quantity } },
+                        create: { itemId: line.itemId, warehouseId: transfer.fromWarehouseId, quantity: line.quantity },
+                    });
+
+                    // Deduct quantity from destination warehouse
+                    await tx.stock.upsert({
+                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId: transfer.toWarehouseId } },
+                        update: { quantity: { decrement: line.quantity } },
+                        create: { itemId: line.itemId, warehouseId: transfer.toWarehouseId, quantity: -line.quantity },
+                    });
+
+                    const ref = `DEL-${transfer.code || transfer.id}`;
+                    await tx.stockMovement.create({
+                        data: {
+                            type: 'transfer',
+                            date: new Date(),
+                            itemId: line.itemId,
+                            warehouseId: transfer.fromWarehouseId,
+                            quantity: line.quantity,
+                            reference: ref,
+                            notes: `عكس تحويل مخزني محذوف ${transfer.code || ''}`,
+                            companyId,
+                        },
+                    });
+                    await tx.stockMovement.create({
+                        data: {
+                            type: 'transfer',
+                            date: new Date(),
+                            itemId: line.itemId,
+                            warehouseId: transfer.toWarehouseId,
+                            quantity: -line.quantity,
+                            reference: ref,
+                            notes: `عكس تحويل مخزني محذوف ${transfer.code || ''}`,
+                            companyId,
+                        },
+                    });
+                }
+            }
+
+            // WarehouseTransferLine has onDelete: Cascade — lines auto-delete with the transfer
+            await tx.warehouseTransfer.delete({ where: { id } });
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('DELETE Transfer error:', error);
+        return NextResponse.json({ error: 'فشل في حذف التحويل المخزني' }, { status: 500 });
     }
 });

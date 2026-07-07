@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
@@ -216,7 +216,7 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (e: any) {
         console.error("Payroll Generation Error:", e);
-        return NextResponse.json({ error: "حدث خطأ أثناء إصدار المسير: " + (e.message || "Unknown error") }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ أثناء إصدار المسير') }, { status: 500 });
     }
 
-});
+}, { requireAdmin: true });

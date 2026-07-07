@@ -225,6 +225,7 @@ function MetaChip({ label, value, mono }: { label: string; value: string; mono?:
 }
 
 function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
+    const { t } = useTranslation();
     return (
         <tr>
             <td colSpan={6} style={{ padding: '0', borderBottom: `1px solid ${C.border}` }}>
@@ -245,8 +246,8 @@ function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
 
                     {/* Meta info */}
                     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '12px', color: C.textSecondary }}>
-                        <MetaChip label="الصفحة" value={MODULE_LABELS[log.module] || log.module.replace(/-|_/g, ' ')} />
-                        {log.entityRef && <MetaChip label="المرجع" value={toWesternNumerals(log.entityRef)} />}
+                        <MetaChip label={t('الصفحة')} value={t(MODULE_LABELS[log.module] || log.module.replace(/-|_/g, ' '))} />
+                        {log.entityRef && <MetaChip label={t('المرجع')} value={toWesternNumerals(log.entityRef)} />}
                         {log.ipAddress && <MetaChip label="IP" value={log.ipAddress} mono />}
                     </div>
 
@@ -261,7 +262,7 @@ function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
                             {log.oldData && (
                                 <div>
                                     <div style={{ fontSize: '11px', fontWeight: 700, color: '#ef4444', marginBottom: '6px' }}>
-                                        قبل التغيير
+                                        {t('قبل التغيير')}
                                     </div>
                                     {renderDataFields(log.oldData, '#ef4444')}
                                 </div>
@@ -269,7 +270,7 @@ function ExpandedDetail({ log }: { log: ActivityLogEntry }) {
                             {log.newData && (
                                 <div>
                                     <div style={{ fontSize: '11px', fontWeight: 700, color: '#22c55e', marginBottom: '6px' }}>
-                                        بعد التغيير
+                                        {t('بعد التغيير')}
                                     </div>
                                     {renderDataFields(log.newData, '#22c55e')}
                                 </div>
@@ -373,19 +374,19 @@ export default function ActivityLogPage() {
     });
 
     const moduleOptions = [
-        { value: '', label: 'كل الموديولات' },
-        ...uniqueModules.map(k => ({ value: k, label: MODULE_LABELS[k] })),
+        { value: '', label: t('كل الموديولات') },
+        ...uniqueModules.map(k => ({ value: k, label: t(MODULE_LABELS[k]) })),
     ];
 
     const actionOptions = [
-        { value: '', label: 'كل العمليات' },
-        ...Object.entries(ACTION_LABELS).map(([k, v]) => ({ value: k, label: v.label })),
+        { value: '', label: t('كل العمليات') },
+        ...Object.entries(ACTION_LABELS).map(([k, v]) => ({ value: k, label: t(v.label) })),
     ];
 
     /* Table columns */
     const columns: TableColumn[] = [
         {
-            header: 'التاريخ والوقت',
+            header: t('التاريخ والوقت'),
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
@@ -399,7 +400,7 @@ export default function ActivityLogPage() {
             ),
         },
         {
-            header: 'المستخدم',
+            header: t('المستخدم'),
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -418,7 +419,7 @@ export default function ActivityLogPage() {
             ),
         },
         {
-            header: 'العملية',
+            header: t('العملية'),
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => {
                 const info = ACTION_LABELS[row.action] || { label: row.action, color: C.textSecondary };
@@ -432,13 +433,13 @@ export default function ActivityLogPage() {
                         whiteSpace: 'nowrap',
                     }}>
                         <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                        {info.label}
+                        {t(info.label)}
                     </div>
                 );
             },
         },
         {
-            header: 'الصفحة',
+            header: t('الصفحة'),
             className: 'mobile-hide',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
@@ -447,12 +448,12 @@ export default function ActivityLogPage() {
                     padding: '3px 8px', background: 'rgba(255,255,255,0.04)',
                     border: `1px solid ${C.border}`, borderRadius: '6px',
                 }}>
-                    {MODULE_LABELS[row.module] || row.module}
+                    {t(MODULE_LABELS[row.module] || row.module)}
                 </span>
             ),
         },
         {
-            header: 'التفاصيل',
+            header: t('التفاصيل'),
             className: 'mobile-hide',
             style: { textAlign: 'center' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => (
@@ -465,7 +466,7 @@ export default function ActivityLogPage() {
             ),
         },
         {
-            header: 'عرض',
+            header: t('عرض'),
             style: { textAlign: 'center', width: '60px' } as React.CSSProperties,
             cell: (row: ActivityLogEntry) => {
                 const isExpanded = expandedRows.has(row.id);
@@ -481,7 +482,7 @@ export default function ActivityLogPage() {
                                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 transition: 'all 0.15s',
                             }}
-                            title={isExpanded ? 'إخفاء التفاصيل' : 'عرض التفاصيل'}
+                            title={isExpanded ? t('إخفاء التفاصيل') : t('عرض التفاصيل')}
                         >
                             {isExpanded ? <EyeOff size={14} /> : <Eye size={14} />}
                         </button>
@@ -497,8 +498,8 @@ export default function ActivityLogPage() {
 
                 {/* Header */}
                 <PageHeader
-                    title="سجل النشاط"
-                    subtitle="تتبع جميع العمليات والتغييرات في النظام"
+                    title={t('سجل النشاط')}
+                    subtitle={t('تتبع جميع العمليات والتغييرات في النظام')}
                     icon={History}
                 />
 
@@ -518,7 +519,7 @@ export default function ActivityLogPage() {
                         />
                         <input
                             type="text"
-                            placeholder="بحث في التفاصيل..."
+                            placeholder={t('بحث في التفاصيل...')}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{ ...IS, paddingInlineStart: '38px', height: '42px', fontSize: '13px', borderRadius: '10px' }}
@@ -532,7 +533,7 @@ export default function ActivityLogPage() {
                         <CustomSelect
                             value={moduleFilter}
                             onChange={setModuleFilter}
-                            placeholder="كل الموديولات"
+                            placeholder={t('كل الموديولات')}
                             icon={Filter}
                             options={moduleOptions}
                         />
@@ -543,7 +544,7 @@ export default function ActivityLogPage() {
                         <CustomSelect
                             value={actionFilter}
                             onChange={setActionFilter}
-                            placeholder="كل العمليات"
+                            placeholder={t('كل العمليات')}
                             options={actionOptions}
                         />
                     </div>
@@ -569,7 +570,7 @@ export default function ActivityLogPage() {
                                 }}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
-                                title="من تاريخ"
+                                title={t('من تاريخ')}
                             />
                         </div>
 
@@ -592,7 +593,7 @@ export default function ActivityLogPage() {
                                 }}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
-                                title="إلى تاريخ"
+                                title={t('إلى تاريخ')}
                             />
                         </div>
                     </div>
@@ -616,7 +617,7 @@ export default function ActivityLogPage() {
                                 fontFamily: CAIRO, whiteSpace: 'nowrap',
                             }}
                         >
-                            مسح الفلاتر
+                            {t('مسح الفلاتر')}
                         </button>
                     )}
                 </div>
@@ -627,7 +628,7 @@ export default function ActivityLogPage() {
                         fontSize: '12px', color: C.textMuted, fontFamily: CAIRO,
                         marginBottom: '10px', fontWeight: 500,
                     }}>
-                        إجمالي السجلات:{' '}
+                        {t('إجمالي السجلات:')}{' '}
                         <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary }}>{total.toLocaleString()}</span>
                     </div>
                 )}
@@ -643,7 +644,7 @@ export default function ActivityLogPage() {
                         padding: '60px 20px', gap: '12px',
                     }}>
                         <p style={{ fontSize: '14px', color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>
-                            لا توجد سجلات مطابقة للبحث
+                            {t('لا توجد سجلات مطابقة للبحث')}
                         </p>
                     </div>
                 ) : (

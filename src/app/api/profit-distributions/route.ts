@@ -35,12 +35,13 @@ export const GET = withProtection(async (request, session) => {
     } catch {
         return NextResponse.json([], { status: 500 });
     }
-});
+}, { requireAdmin: true });
 
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const { totalAmount, period, date, notes, lines, treasuryId } = body;
+        const branchId = (session!.user as any).branchId || null;
 
         if (!totalAmount || !lines?.length) return NextResponse.json({ error: 'البيانات ناقصة' }, { status: 400 });
 
@@ -139,8 +140,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                         await tx.journalEntry.create({
                             data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId,
                                 entryNumber: (lastEntry?.entryNumber || 0) + 1,
                                 date: txDate,
                                 description: entryDescription,
@@ -167,4 +167,4 @@ export const POST = withProtection(async (request, session, body) => {
         console.error(e);
         return NextResponse.json({ error: 'فشل توزيع الأرباح' }, { status: 500 });
     }
-});
+}, { requireAdmin: true });

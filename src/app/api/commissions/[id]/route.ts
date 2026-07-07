@@ -57,10 +57,13 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
             return NextResponse.json({ error: 'يرجى تحديد الخزينة' }, { status: 400 });
         }
 
+        const treasuryExists = await (prisma as any).treasury.findFirst({ where: { id: treasuryId, companyId } });
+        if (!treasuryExists) return NextResponse.json({ error: 'الخزينة غير موجودة' }, { status: 404 });
+
         const updated = await prisma.$transaction(async (tx) => {
             // Deduct from treasury
             await (tx as any).treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data: { balance: { decrement: commission.commissionAmount } },
             });
 

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -16,7 +16,7 @@ export const GET = withProtection(async (request, session) => {
         });
         return NextResponse.json(drivers);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -34,7 +34,7 @@ export const POST = withProtection(async (request, session) => {
         });
         return NextResponse.json(driver);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -44,8 +44,8 @@ export const PUT = withProtection(async (request, session) => {
         const data = await request.json();
         
         // Ensure ownership
-        const existing = await prisma.driver.findUnique({ where: { id: data.id } });
-        if (!existing || existing.companyId !== companyId) {
+        const existing = await prisma.driver.findUnique({ where: { id: data.id, companyId } });
+        if (!existing) {
             return NextResponse.json({ error: 'Not found' }, { status: 404 });
         }
 
@@ -59,7 +59,7 @@ export const PUT = withProtection(async (request, session) => {
         });
         return NextResponse.json(driver);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -71,14 +71,14 @@ export const DELETE = withProtection(async (request, session) => {
         
         if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 });
 
-        const existing = await prisma.driver.findUnique({ where: { id } });
-        if (!existing || existing.companyId !== companyId) {
+        const existing = await prisma.driver.findUnique({ where: { id, companyId } });
+        if (!existing) {
             return NextResponse.json({ error: 'Not found' }, { status: 404 });
         }
 
         await prisma.driver.delete({ where: { id } });
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

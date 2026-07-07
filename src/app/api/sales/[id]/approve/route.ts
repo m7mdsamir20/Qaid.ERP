@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const POST = withProtection(async (request, session, body, context) => {
@@ -356,6 +356,6 @@ export const POST = withProtection(async (request, session, body, context) => {
         return NextResponse.json(approvedInvoice);
     } catch (error: any) {
         console.error('Invoice approval error:', error);
-        return NextResponse.json({ error: 'فشل في اعتماد الفاتورة: ' + (error.message || '') }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في اعتماد الفاتورة' }, { status: 500 });
     }
 });

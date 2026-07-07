@@ -28,10 +28,9 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
             if (!hasApprove) return NextResponse.json({ error: 'ليس لديك صلاحية الاعتماد' }, { status: 403 });
         }
 
-        const stocktaking = await prisma.stocktaking.findUnique({ where: { id } });
+        const stocktaking = await prisma.stocktaking.findUnique({ where: { id, companyId } });
 
         if (!stocktaking) return NextResponse.json({ error: 'غير موجود' }, { status: 404 });
-        if (stocktaking.companyId !== companyId) return NextResponse.json({ error: 'غير مصرح' }, { status: 403 });
         if (stocktaking.status !== 'draft') {
             return NextResponse.json({ error: 'لا يمكن اعتماد جرد غير مسودة' }, { status: 400 });
         }
@@ -70,14 +69,11 @@ export const DELETE = withProtection(async (request, session, body, { params }) 
         const { id } = await params;
 
         const stocktaking = await prisma.stocktaking.findUnique({
-            where: { id: id }
+            where: { id: id, companyId }
         });
 
         if (!stocktaking) {
             return NextResponse.json({ error: "غير موجود" }, { status: 404 });
-        }
-        if (stocktaking.companyId !== companyId) {
-            return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
         }
         if (stocktaking.status !== 'draft') {
             return NextResponse.json({ error: "لا يمكن إزالة جرد معتمد" }, { status: 400 });

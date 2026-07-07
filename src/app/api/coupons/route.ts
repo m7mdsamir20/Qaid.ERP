@@ -32,8 +32,16 @@ export const POST = withProtection(async (request, session) => {
 
         const coupon = await prisma.coupon.create({
             data: {
-                ...body,
-                companyId
+                code: body.code,
+                type: body.type,
+                value: parseFloat(body.value) || 0,
+                maxDiscountAmount: body.maxDiscountAmount ? parseFloat(body.maxDiscountAmount) : null,
+                minOrderValue: body.minOrderValue ? parseFloat(body.minOrderValue) : null,
+                startDate: body.startDate ? new Date(body.startDate) : null,
+                endDate: body.endDate ? new Date(body.endDate) : null,
+                usageLimit: body.usageLimit ? parseInt(body.usageLimit) : null,
+                isActive: body.isActive !== undefined ? Boolean(body.isActive) : true,
+                companyId,
             }
         });
 

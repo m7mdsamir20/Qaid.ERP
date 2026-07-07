@@ -1,34 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { withProtection } from '@/lib/apiHandler';
 
-export async function GET(req: NextRequest) {
+export const GET = withProtection(async (request: NextRequest, session) => {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session?.user?.companyId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        const companyId = session.user.companyId;
+        const companyId = (session.user as any).companyId;
 
-        const url = new URL(req.url);
+        const url = new URL(request.url);
         const from = url.searchParams.get('from');
         const to = url.searchParams.get('to');
         const branchId = url.searchParams.get('branchId');
 
-        // Look for StockMovements representing waste (usually manual out adjustment with a reference to waste)
-        // We will assume 'type: out' and notes or reference containing keywords like هالك, تالف, waste, spoilage, or type = 'waste' if added in future.
-        let whereClause: any = { 
+        let whereClause: any = {
             companyId,
-            type: 'out', // Only outgoing adjustments
+            type: 'out',
             OR: [
                 { notes: { contains: 'هالك' } },
                 { notes: { contains: 'تالف' } },
                 { notes: { contains: 'waste', mode: 'insensitive' } },
                 { notes: { contains: 'spoilage', mode: 'insensitive' } },
                 { reference: { contains: 'waste', mode: 'insensitive' } },
-                { type: 'waste' } // Just in case a specific type is used in the future
+                { type: 'waste' }
             ]
         };
-        
+
         if (from || to) {
             whereClause.date = {};
             if (from) whereClause.date.gte = new Date(from);
@@ -38,7 +33,7 @@ export async function GET(req: NextRequest) {
                 whereClause.date.lte = toDate;
             }
         }
-        
+
         if (branchId && branchId !== 'all') {
             whereClause.warehouse = { branchId: branchId };
         }
@@ -52,7 +47,6 @@ export async function GET(req: NextRequest) {
             orderBy: { date: 'desc' }
         });
 
-        // Calculate total estimated loss
         const totalLoss = movements.reduce((sum: number, m: any) => sum + ((m.quantity * (m.unitPrice || 0))), 0);
 
         return NextResponse.json({
@@ -63,4 +57,4 @@ export async function GET(req: NextRequest) {
         console.error(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
-}
+});

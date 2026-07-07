@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const PUT = withProtection(async (request, session, body, { params }) => {
     try {
@@ -119,6 +119,6 @@ export const DELETE = withProtection(async (request, session, body, { params }) 
         return NextResponse.json({ success: true });
     } catch (e: any) {
         console.error("DELETE Treasury Error:", e);
-        return NextResponse.json({ error: "فشل في عملية الحذف: " + (e.message || "") }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'فشل في عملية الحذف') }, { status: 500 });
     }
 });

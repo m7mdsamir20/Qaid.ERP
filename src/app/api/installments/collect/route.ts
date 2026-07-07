@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -11,14 +11,20 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'بيانات ناقصة' }, { status: 400 });
 
         const paid = parseFloat(paidAmount);
+        if (isNaN(paid) || paid <= 0)
+            return NextResponse.json({ error: 'المبلغ يجب أن يكون رقماً موجباً' }, { status: 400 });
 
-        const installment = await prisma.installment.findUnique({
-            where:   { id: installmentId },
+        const installment = await prisma.installment.findFirst({
+            where:   { id: installmentId, companyId },
             include: { plan: { include: { customer: true } } },
         });
 
         if (!installment)
             return NextResponse.json({ error: 'القسط غير موجود' }, { status: 404 });
+
+        const treasuryCheck = await prisma.treasury.findFirst({ where: { id: treasuryId, companyId } });
+        if (!treasuryCheck)
+            return NextResponse.json({ error: 'الخزينة غير موجودة' }, { status: 404 });
         if (installment.status === 'paid')
             return NextResponse.json({ error: 'القسط مدفوع بالفعل' }, { status: 400 });
         if (paid > (installment.remaining + 0.05))
@@ -172,8 +178,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             await tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                     entryNumber:     (lastEntry?.entryNumber || 0) + 1,
                     date:            new Date(),
                     description:     `تحصيل قسط ${installment.installmentNo} من ${installment.plan.customer.name}`,
@@ -193,6 +198,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result);
     } catch (error: any) {
         console.error(error);
-        return NextResponse.json({ error: 'فشل في تحصيل القسط', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في تحصيل القسط') }, { status: 500 });
     }
 });

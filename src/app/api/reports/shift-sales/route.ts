@@ -1,21 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { withProtection } from '@/lib/apiHandler';
 
-export async function GET(req: NextRequest) {
+export const GET = withProtection(async (request: NextRequest, session) => {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session?.user?.companyId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        const companyId = session.user.companyId;
+        const companyId = (session.user as any).companyId;
 
-        const url = new URL(req.url);
+        const url = new URL(request.url);
         const from = url.searchParams.get('from');
         const to = url.searchParams.get('to');
         const branchId = url.searchParams.get('branchId');
 
         let whereClause: any = { companyId };
-        
+
         if (from || to) {
             whereClause.openedAt = {};
             if (from) whereClause.openedAt.gte = new Date(from);
@@ -25,7 +22,7 @@ export async function GET(req: NextRequest) {
                 whereClause.openedAt.lte = toDate;
             }
         }
-        
+
         if (branchId && branchId !== 'all') {
             whereClause.branchId = branchId;
         }
@@ -54,4 +51,4 @@ export async function GET(req: NextRequest) {
         console.error(error);
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
-}
+});

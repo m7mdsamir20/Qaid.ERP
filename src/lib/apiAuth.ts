@@ -18,14 +18,23 @@ export async function requireAuth(request?: NextRequest) {
     // التحقق من انتهاء الاشتراك / الفترة التجريبية
     if (sub && !isSuperAdmin) {
         const isExpired = new Date(sub.endDate).getTime() < Date.now();
-        if ((isExpired || !sub.isActive) && request?.method !== 'GET') {
-            return {
-                error: NextResponse.json({
-                    error: 'لقد انتهت صلاحية الاشتراك أو الفترة التجريبية. يرجى تجديد الاشتراك للاستمرار.',
-                    code: 'SUBSCRIPTION_EXPIRED'
-                }, { status: 402 }),
-                session: null
-            };
+        if (isExpired || !sub.isActive) {
+            const daysSinceExpiry = sub.endDate
+                ? Math.floor((Date.now() - new Date(sub.endDate).getTime()) / (1000 * 60 * 60 * 24))
+                : 0;
+
+            if (request?.method !== 'GET' || daysSinceExpiry > 7) {
+                const errorMsg = request?.method !== 'GET'
+                    ? 'لقد انتهت صلاحية الاشتراك أو الفترة التجريبية. يرجى تجديد الاشتراك للاستمرار.'
+                    : 'انتهت صلاحية اشتراكك. يرجى التجديد للوصول إلى بياناتك.';
+                return {
+                    error: NextResponse.json({
+                        error: errorMsg,
+                        code: 'SUBSCRIPTION_EXPIRED'
+                    }, { status: 402 }),
+                    session: null
+                };
+            }
         }
     }
 

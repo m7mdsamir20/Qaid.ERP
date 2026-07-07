@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import fs from 'fs';
 import path from 'path';
 
@@ -23,9 +23,9 @@ export const GET = withProtection(async (request, session) => {
             },
         });
     } catch (e: any) {
-        return NextResponse.json({ error: "Backup failed: " + e.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'Backup failed') }, { status: 500 });
     }
-}, { requireAdmin: true });
+}, { requireSuperAdmin: true });
 
 export const POST = withProtection(async (request, session) => {
     try {
@@ -55,6 +55,6 @@ export const POST = withProtection(async (request, session) => {
 
         return NextResponse.json({ success: true, message: "تم استرداد البيانات بنجاح. يرجى تحديث الصفحة." });
     } catch (e: any) {
-        return NextResponse.json({ error: "Restore failed: " + e.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'Restore failed') }, { status: 500 });
     }
-}, { requireAdmin: true });
+}, { requireSuperAdmin: true });

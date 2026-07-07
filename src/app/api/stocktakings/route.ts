@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { generateNextCode } from '@/lib/autoId';
@@ -168,8 +168,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 });
                                 await tx.journalEntry.create({
                                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                                         entryNumber: (lastEntry?.entryNumber || 0) + 1,
                                         date: date ? new Date(date) : new Date(),
                                         description: `تسوية جرد ${code}`,

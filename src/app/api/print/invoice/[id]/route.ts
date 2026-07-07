@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request: NextRequest, session, body, context) => {
     try {
@@ -53,6 +53,6 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
 
         return NextResponse.json({ invoice, company: companyWithBranch });
     } catch (error: any) {
-        return NextResponse.json({ error: 'فشل جلب البيانات', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل جلب البيانات' }, { status: 500 });
     }
 });

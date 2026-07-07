@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,7 +47,7 @@ export const GET = withProtection(async (request, session) => {
         });
         return NextResponse.json(orders);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -414,8 +414,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await prisma.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber,
                             date: new Date(),
                             description: `قيد مبيعات كاشير - طلب #${orderNumber}`,
@@ -526,7 +525,7 @@ export const POST = withProtection(async (request, session, body) => {
 
         return NextResponse.json(order, { status: 201 });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -606,8 +605,7 @@ export const PUT = withProtection(async (request, session, body) => {
                         });
                         await prisma.journalEntry.create({
                             data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                                 entryNumber: (lastEntry?.entryNumber ?? 0) + 1,
                                 date: new Date(),
                                 description: `تحصيل فاتورة آجل كاشير - طلب #${order.orderNumber}`,
@@ -658,7 +656,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 // 2. Deduct from treasury (refund cash to customer)
                 if (treasuryId && refundAmount > 0) {
                     await tx.treasury.update({
-                        where: { id: treasuryId },
+                        where: { id: treasuryId, companyId },
                         data: { balance: { decrement: refundAmount } }
                     });
                 }
@@ -833,7 +831,7 @@ export const PUT = withProtection(async (request, session, body) => {
 
         // Add cancel reason to notes if provided
         if (body.cancelReason) {
-            const currentOrder = await prisma.posOrder.findUnique({ where: { id: body.id } });
+            const currentOrder = await prisma.posOrder.findFirst({ where: { id: body.id, companyId } });
             if (currentOrder) {
                 const newNotes = currentOrder.notes ? `${currentOrder.notes}\n[السبب: ${body.cancelReason}]` : `[السبب: ${body.cancelReason}]`;
                 await prisma.posOrder.update({
@@ -884,8 +882,7 @@ export const PUT = withProtection(async (request, session, body) => {
                         if (revenueAccount && recAccount) {
                             await prisma.journalEntry.create({
                                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                                     entryNumber,
                                     date: new Date(),
                                     description: `عكس قيد مبيعات - إلغاء طلب #${cancelledOrder.orderNumber} (رفض استلام)`,
@@ -1017,6 +1014,33 @@ export const PUT = withProtection(async (request, session, body) => {
 
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
+    }
+});
+
+// DELETE: permanently remove a cancelled or pending order
+export const DELETE = withProtection(async (request, session) => {
+    try {
+        const companyId = (session!.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) return NextResponse.json({ error: 'معرف الطلب مطلوب' }, { status: 400 });
+
+        const order = await prisma.posOrder.findUnique({ where: { id } });
+        if (!order || order.companyId !== companyId) {
+            return NextResponse.json({ error: 'الطلب غير موجود' }, { status: 404 });
+        }
+
+        if (order.status !== 'cancelled' && order.status !== 'pending') {
+            return NextResponse.json({ error: 'لا يمكن حذف طلب مكتمل' }, { status: 400 });
+        }
+
+        // PosOrderLine and PosPayment have onDelete: Cascade — they auto-delete with the order
+        await prisma.posOrder.delete({ where: { id } });
+
+        return NextResponse.json({ success: true });
+    } catch (error: any) {
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

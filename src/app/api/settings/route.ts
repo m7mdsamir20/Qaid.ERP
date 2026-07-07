@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import bcrypt from "bcryptjs";
 import { unlink } from 'fs/promises';
 import path from 'path';
@@ -8,8 +8,11 @@ import path from 'path';
 export const GET = withProtection(async (request, session) => {
     try {
         const user = session.user as any;
-        if (!user || (!user.companyId && user.role !== 'superadmin' && !user.isSuperAdmin)) {
+        if (!user || !user.companyId) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        if (user.role !== 'admin' && !user.isSuperAdmin) {
+            return NextResponse.json({ error: "هذا الإجراء يتطلب صلاحيات المدير" }, { status: 403 });
         }
         const companyId = user.companyId;
 
@@ -191,7 +194,9 @@ export const PUT = withProtection(async (request, session, body) => {
         if (action === 'update_user_status') {
             if (data.userId === user.id) return NextResponse.json({ error: "لا يمكنك تغيير حالتك" }, { status: 400 });
             const updated = await prisma.user.update({
-                where: { id: data.userId, companyId }, data: { status: data.status }
+                where: { id: data.userId, companyId },
+                data: { status: data.status },
+                select: { id: true, name: true, username: true, email: true, phone: true, role: true, status: true, gender: true, avatar: true, branchId: true, allowedBranches: true }
             });
             return NextResponse.json(updated);
         }
@@ -202,10 +207,11 @@ export const PUT = withProtection(async (request, session, body) => {
             return NextResponse.json({ success: true });
         } else if (action === 'update_user_full') {
             const { userId, name, username, email, phone, roleId, status, customPermissions, password } = data;
+            const safeRoleId = ['admin', 'user'].includes(roleId) ? roleId : 'user';
 
             const allowedBranchesArr: string[] = data.allowedBranches || [];
             const updateData: any = {
-                name, username, email, phone, role: roleId, status,
+                name, username, email, phone, role: safeRoleId, status,
                 branchId: data.branchId || null,
                 allowedBranches: allowedBranchesArr.length > 0 ? JSON.stringify(allowedBranchesArr) : null,
             };
@@ -213,7 +219,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 updateData.password = await bcrypt.hash(password, 10);
             }
 
-            if (roleId !== 'admin') {
+            if (safeRoleId !== 'admin') {
                 const roleName = `صلاحيات - ${username}`;
                 const permsStr = JSON.stringify(customPermissions || {});
 
@@ -250,21 +256,24 @@ export const PUT = withProtection(async (request, session, body) => {
         return NextResponse.json({ error: "إجراء غير معروف" }, { status: 400 });
     } catch (e: any) {
         console.error("PUT Settings Error:", e);
-        return NextResponse.json({ error: "فشل الحفظ: " + (e.message || "خطأ غير متوقع") }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, "فشل الحفظ") }, { status: 500 });
     }
 });
 
 export const POST = withProtection(async (request, session, body) => {
     try {
         const user = session.user as any;
-        if (!user || (!user.companyId && user.role !== 'superadmin' && !user.isSuperAdmin)) {
+        if (!user || (!user.companyId && !user.isSuperAdmin)) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        if (user.role !== 'admin' && !user.isSuperAdmin) {
+            return NextResponse.json({ error: "هذا الإجراء يتطلب صلاحيات المدير" }, { status: 403 });
         }
         const companyId = user.companyId;
         const { action, data } = body;
 
         if (action === 'create_user') {
-            const existing = await prisma.user.findUnique({ where: { username: data.username } });
+            const existing = await prisma.user.findFirst({ where: { username: data.username, companyId } });
             if (existing) return NextResponse.json({ error: "اسم المستخدم موجود مسبقاً" }, { status: 400 });
 
             const currentUser = await prisma.user.findUnique({
@@ -296,7 +305,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const hashedPassword = await bcrypt.hash(data.password, 10);
             let assignedRoleId = null;
-            let assignedRoleStr = data.roleId || 'user';
+            let assignedRoleStr = ['admin', 'user'].includes(data.roleId) ? data.roleId : 'user';
 
             if (assignedRoleStr !== 'admin') {
                 const roleName = `صلاحيات - ${data.username}`;
@@ -324,6 +333,19 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             }
 
+            // Check subscription user limit
+            const subscription = await prisma.subscription.findFirst({
+                where: { companyId, status: 'active' }
+            });
+            if (subscription?.maxUsers) {
+                const currentUserCount = await prisma.user.count({ where: { companyId } });
+                if (currentUserCount >= subscription.maxUsers) {
+                    return NextResponse.json({
+                        error: `لقد وصلت للحد الأقصى من المستخدمين (${subscription.maxUsers}). يرجى ترقية خطة الاشتراك.`
+                    }, { status: 403 });
+                }
+            }
+
             const allowedBranchesArr: string[] = data.allowedBranches || [];
             const newUser = await prisma.user.create({
                 data: {
@@ -334,7 +356,8 @@ export const POST = withProtection(async (request, session, body) => {
                     branchId: data.branchId || null,
                     allowedBranches: allowedBranchesArr.length > 0 ? JSON.stringify(allowedBranchesArr) : null,
                     isPhoneVerified: true
-                } as any
+                } as any,
+                select: { id: true, name: true, username: true, email: true, phone: true, role: true, status: true, gender: true, avatar: true, branchId: true, allowedBranches: true }
             });
             return NextResponse.json(newUser, { status: 201 });
         }
@@ -350,7 +373,7 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json({ error: "إجراء غير معروف" }, { status: 400 });
     } catch (e: any) {
         console.error("POST Settings Error:", e);
-        return NextResponse.json({ error: "فشل الإضافة: " + (e.message || "خطأ غير متوقع") }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, "فشل الإضافة") }, { status: 500 });
     }
 });
 
@@ -359,6 +382,9 @@ export const DELETE = withProtection(async (request, session, body) => {
         const user = session.user as any;
         if (!user || (!user.companyId && !user.isSuperAdmin && user.role !== 'superadmin')) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        if (user.companyId && user.role !== 'admin' && !user.isSuperAdmin) {
+            return NextResponse.json({ error: "هذا الإجراء يتطلب صلاحيات المدير" }, { status: 403 });
         }
 
         const companyId = user.companyId;
@@ -379,6 +405,6 @@ export const DELETE = withProtection(async (request, session, body) => {
         return NextResponse.json({ error: "الإجراء غير معروف أو غير مصرح به" }, { status: 400 });
     } catch (e: any) {
         console.error("DELETE Settings Error:", e);
-        return NextResponse.json({ error: "فشل الحذف: " + (e.message || "خطأ غير متوقع") }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, "فشل الحذف") }, { status: 500 });
     }
 });

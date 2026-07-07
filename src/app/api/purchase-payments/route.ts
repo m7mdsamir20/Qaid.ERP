@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -13,7 +13,7 @@ export const GET = withProtection(async (request, session) => {
         });
         return NextResponse.json(vouchers);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -106,8 +106,7 @@ export const POST = withProtection(async (request, session, body) => {
                 const partnerName = supplierId ? (voucher.supplier?.name || 'مورد') : (voucher.customer?.name || 'عميل');
                 await tx.journalEntry.create({
                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                         entryNumber,
                         date:           new Date(date || new Date()),
                         description:    `سند صرف رقم PMT-${String(voucherNumber).padStart(5,'0')} — ${description || 'دفعية للمورد'}`,
@@ -142,6 +141,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result, { status: 201 });
     } catch (error: any) {
         console.error('Purchase payment error:', error);
-        return NextResponse.json({ error: 'فشل في إنشاء سند الصرف', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في إنشاء سند الصرف' }, { status: 500 });
     }
 });

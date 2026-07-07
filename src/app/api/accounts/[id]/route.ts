@@ -33,7 +33,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
 
         if (body.parentId) {
             await prisma.account.update({
-                where: { id: body.parentId },
+                where: { id: body.parentId, companyId: (session.user as any).companyId },
                 data: { isParent: true },
             });
         }

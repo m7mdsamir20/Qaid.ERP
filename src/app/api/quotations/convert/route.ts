@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
@@ -273,8 +273,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                 await tx.journalEntry.create({
                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                         entryNumber,
                         date:            new Date(),
                         description:     `قيد فاتورة محولة من عرض سعر رقم ${quotation.quotationNumber}`,

@@ -241,7 +241,7 @@ export default function VerifyPage() {
                 <div style={{ marginTop: '32px', textAlign: 'center' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6, justifyContent: 'center' }}>
                         <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, color: '#fff' }}>{t('ق')}</div>
-                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('النظام المحاسبي المتكامل')}</span>
                     </div>
                 </div>
             </div>

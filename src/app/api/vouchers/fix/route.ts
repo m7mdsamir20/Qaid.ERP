@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -23,6 +23,6 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ success: true, message: "تمت إعادة ترقيم السندات بنجاح" });
     } catch (e: any) {
         console.error("Voucher Fix API Error:", e);
-        return NextResponse.json({ success: false, error: e.message }, { status: 500 });
+        return NextResponse.json({ success: false, error: safeErrorMsg(e, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireAdmin: true });

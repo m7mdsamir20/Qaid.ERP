@@ -80,7 +80,7 @@ export const PATCH = withProtection(async (request: NextRequest, session: any, b
         const updated = await prisma.$transaction(async (tx) => {
             // Update treasury balance
             await (tx as any).treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data: { balance: { increment: collection.amount } },
             });
 

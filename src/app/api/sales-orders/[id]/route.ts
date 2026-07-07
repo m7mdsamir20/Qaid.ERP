@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, body, context) => {
@@ -29,7 +29,7 @@ export const GET = withProtection(async (request, session, body, context) => {
         return NextResponse.json(order);
     } catch (error: any) {
         console.error('GET /api/sales-orders/[id] Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -191,7 +191,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
         return NextResponse.json(updated);
     } catch (error: any) {
         console.error('PUT /api/sales-orders/[id] Error:', error);
-        return NextResponse.json({ error: 'فشل في تحديث أمر البيع', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في تحديث أمر البيع' }, { status: 500 });
     }
 });
 
@@ -232,6 +232,6 @@ export const DELETE = withProtection(async (request, session, body, context) => 
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error('DELETE /api/sales-orders/[id] Error:', error);
-        return NextResponse.json({ error: 'فشل في حذف أمر البيع', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في حذف أمر البيع' }, { status: 500 });
     }
 });

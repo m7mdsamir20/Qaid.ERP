@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -109,8 +109,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber,
                             date: new Date(date),
                             description: `سلفة موظف — ${employee.name}`,
@@ -135,6 +134,6 @@ export const POST = withProtection(async (request, session, body) => {
 
         return NextResponse.json(result, { status: 201 });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message || "فشل في تسجيل سلفة الموظف" }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') || "فشل في تسجيل سلفة الموظف" }, { status: 500 });
     }
 });

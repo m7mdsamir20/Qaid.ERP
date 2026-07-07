@@ -2,6 +2,7 @@ import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import { rateLimit } from "./rateLimit";
 
 
 export const authOptions: AuthOptions = {
@@ -12,9 +13,22 @@ export const authOptions: AuthOptions = {
                 username: { label: "اسم المستخدم", type: "text" },
                 password: { label: "كلمة المرور", type: "password" }
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
                 if (!credentials?.username || !credentials?.password) {
                     throw new Error("بيانات الدخول غير مكتملة");
+                }
+
+                // Rate limit login attempts: 10 tries per 15 minutes per IP
+                const ip = (req?.headers?.['x-forwarded-for'] as string)?.split(',')[0]?.trim()
+                    || (req?.headers?.['x-real-ip'] as string)
+                    || 'unknown';
+                const { allowed, retryAfter } = rateLimit(`${ip}:login`, {
+                    max: 10,
+                    windowMs: 15 * 60 * 1000,
+                    blockMs: 15 * 60 * 1000,
+                });
+                if (!allowed) {
+                    throw new Error(`تم تجاوز عدد محاولات تسجيل الدخول المسموح به. يرجى المحاولة بعد ${retryAfter} ثانية`);
                 }
 
                 // جلب بيانات المستخدم الكاملة مرة واحدة فقط عند تسجيل الدخول
@@ -133,8 +147,8 @@ export const authOptions: AuthOptions = {
                 if (u.countryCode) token.countryCode = u.countryCode;
             }
 
-            // sync مع قاعدة البيانات باستمرار عند كل عملية تحديث 
-            const SYNC_INTERVAL = 5 * 60 * 1000; // 5 دقائق بدلاً من 0 لمنع تعارض الكوكيز
+            // sync مع قاعدة البيانات كل 5 دقائق لضمان تطبيق تغييرات الصلاحيات بسرعة
+            const SYNC_INTERVAL = 5 * 60 * 1000;
             const shouldSync = !user && token.id && (trigger === "update" || !token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
 
             if (shouldSync) {

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session) => {
@@ -145,8 +145,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             const newEntry = await tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                     entryNumber: nextEntryNumber,
                     date: new Date(date),
                     description: notes || 'مصروفات أخرى',
@@ -190,6 +189,144 @@ export const POST = withProtection(async (request, session, body) => {
 
         return NextResponse.json(entry, { status: 201 });
     } catch (err: any) {
-        return NextResponse.json({ error: err.message || 'فشل في حفظ العملية' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(err, 'حدث خطأ في الخادم') }, { status: 500 });
+    }
+});
+
+export const PUT = withProtection(async (request, session, body) => {
+    try {
+        const companyId = (session!.user as any).companyId;
+        const { id, date, amount, accountId, notes, treasuryId, costCenterId } = body;
+
+        if (!id) return NextResponse.json({ error: 'معرف المصروف مطلوب' }, { status: 400 });
+        if (!date || !amount || !accountId || !treasuryId) {
+            return NextResponse.json({ error: 'البيانات غير مكتملة' }, { status: 400 });
+        }
+
+        const existing = await prisma.journalEntry.findFirst({
+            where: { id, companyId, referenceType: 'other_expense' },
+            include: { lines: true },
+        });
+        if (!existing) return NextResponse.json({ error: 'المصروف غير موجود' }, { status: 404 });
+
+        const numAmount = Number(amount);
+        const oldAmount = (existing.lines as any[]).find((l: any) => l.debit > 0)?.debit || 0;
+        const oldTreasuryId = existing.referenceId;
+
+        await prisma.$transaction(async (tx: any) => {
+            // 1. Restore old treasury balance (reverse original deduction)
+            if (oldTreasuryId) {
+                await tx.treasury.update({
+                    where: { id: oldTreasuryId },
+                    data: { balance: { increment: oldAmount } },
+                });
+            }
+
+            // 2. Validate new treasury has enough balance and deduct
+            const newTreasury = await tx.treasury.findUnique({ where: { id: treasuryId, companyId } });
+            if (!newTreasury || newTreasury.balance < numAmount) {
+                throw new Error('رصيد الخزينة/البنك غير كافٍ لإتمام العملية');
+            }
+            await tx.treasury.update({
+                where: { id: treasuryId },
+                data: { balance: { decrement: numAmount } },
+            });
+
+            // 3. Find credit account for the new treasury (same priority as POST)
+            let creditAccount = newTreasury.accountId
+                ? await tx.account.findUnique({ where: { id: newTreasury.accountId } })
+                : null;
+            if (!creditAccount) {
+                creditAccount = await tx.account.findFirst({
+                    where: { companyId, name: newTreasury.name, accountCategory: 'detail' },
+                });
+            }
+            if (!creditAccount) {
+                creditAccount = await tx.account.findFirst({
+                    where: {
+                        companyId,
+                        name: { contains: newTreasury.name },
+                        type: 'asset',
+                        accountCategory: 'detail',
+                    },
+                });
+            }
+            if (!creditAccount) {
+                throw new Error('الخزينة غير مرتبطة بحساب محاسبي — يرجى ربط الخزينة بحساب من إعدادات الخزن والبنوك.');
+            }
+
+            // 4. Replace lines and update the journal entry
+            await tx.journalEntry.update({
+                where: { id },
+                data: {
+                    date: new Date(date),
+                    description: notes || 'مصروفات أخرى',
+                    referenceId: treasuryId,
+                    lines: {
+                        deleteMany: {},
+                        create: [
+                            {
+                                accountId,
+                                debit: numAmount,
+                                credit: 0,
+                                description: notes || 'مصروفات أخرى',
+                                costCenterId: costCenterId || null,
+                            },
+                            {
+                                accountId: creditAccount.id,
+                                debit: 0,
+                                credit: numAmount,
+                                description: notes || 'مصروفات أخرى',
+                            },
+                        ],
+                    },
+                },
+            });
+        });
+
+        const updated = await prisma.journalEntry.findUnique({
+            where: { id },
+            include: { lines: { include: { account: true, costCenter: true } } },
+        });
+        return NextResponse.json(updated);
+    } catch (err: any) {
+        console.error('PUT Expenses Error:', err);
+        return NextResponse.json({ error: safeErrorMsg(err, 'حدث خطأ في الخادم') }, { status: 500 });
+    }
+});
+
+export const DELETE = withProtection(async (request, session) => {
+    try {
+        const companyId = (session!.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) return NextResponse.json({ error: 'معرف المصروف مطلوب' }, { status: 400 });
+
+        const existing = await prisma.journalEntry.findFirst({
+            where: { id, companyId, referenceType: 'other_expense' },
+            include: { lines: true },
+        });
+        if (!existing) return NextResponse.json({ error: 'المصروف غير موجود' }, { status: 404 });
+
+        const amount = (existing.lines as any[]).find((l: any) => l.debit > 0)?.debit || 0;
+        const treasuryId = existing.referenceId;
+
+        await prisma.$transaction(async (tx: any) => {
+            // Restore treasury balance before deleting
+            if (treasuryId) {
+                await tx.treasury.update({
+                    where: { id: treasuryId },
+                    data: { balance: { increment: amount } },
+                });
+            }
+            // JournalEntryLine has onDelete: Cascade — no manual line deletion needed
+            await tx.journalEntry.delete({ where: { id } });
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (err: any) {
+        console.error('DELETE Expenses Error:', err);
+        return NextResponse.json({ error: safeErrorMsg(err, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

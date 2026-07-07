@@ -3,6 +3,46 @@ import { requireAuth } from './apiAuth';
 import { rateLimit, getRateLimitKey } from './rateLimit';
 import { sanitizeObject } from './sanitize';
 
+/** Returns safe error message — hides internals in production */
+export function safeErrorMsg(e: any, fallback: string): string {
+    if (process.env.NODE_ENV === 'development') return e?.message || fallback;
+    return fallback;
+}
+
+// ─── RBAC helpers ──────────────────────────────────────────────────────────────
+
+/** API path segment → permission module key (for non-obvious mappings) */
+const API_SEGMENT_TO_MODULE: Record<string, string> = {
+    'vouchers': '/receipts',
+    'debt-settlement': '/settlements',
+    'profit-distributions': '/profit-distribution',
+    'collections': '/sales-reps/collections',
+    'commissions': '/sales-reps/commissions',
+    'targets': '/sales-reps/targets',
+    'drivers': '/restaurant/drivers',
+};
+
+function deriveModule(pathname: string): string | null {
+    const match = pathname.match(/^\/api\/([^/]+)/);
+    if (!match) return null;
+    const seg = match[1];
+    return API_SEGMENT_TO_MODULE[seg] ?? ('/' + seg);
+}
+
+function deriveAction(method: string, pathname: string): string {
+    if (method === 'POST' && pathname.endsWith('/approve')) return 'approve';
+    switch (method) {
+        case 'GET':    return 'view';
+        case 'POST':   return 'create';
+        case 'PUT':
+        case 'PATCH':
+        case 'DELETE': return 'editDelete';
+        default:       return 'view';
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 type Handler = (req: NextRequest, session?: any, body?: any, context?: any) => Promise<NextResponse>;
 
 export function withProtection(handler: Handler, options: {
@@ -12,19 +52,19 @@ export function withProtection(handler: Handler, options: {
     windowMs?: number,
     sanitize?: boolean,
     isPublic?: boolean,
-    cache?: number, // ثواني للـ browser cache على GET requests
+    cache?: number,
 } = {}) {
     return async (request: NextRequest, context: any) => {
         // 1. Rate Limiting
         const limitKey = getRateLimitKey(request);
-        const { allowed, retryAfter } = rateLimit(limitKey, { 
-            max: options.limit || 200, 
-            windowMs: options.windowMs || 60 * 1000 
+        const { allowed, retryAfter } = rateLimit(limitKey, {
+            max: options.limit || 200,
+            windowMs: options.windowMs || 60 * 1000
         });
 
         if (!allowed) {
             return NextResponse.json(
-                { error: `نطالب بالهدوء قليلاً. يرجى المحاولة بعد ${retryAfter} ثانية` }, 
+                { error: `نطالب بالهدوء قليلاً. يرجى المحاولة بعد ${retryAfter} ثانية` },
                 { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
             );
         }
@@ -51,9 +91,33 @@ export function withProtection(handler: Handler, options: {
                     return NextResponse.json({ error: 'هذا الإجراء يتطلب صلاحيات المدير' }, { status: 403 });
                 }
             }
+
+            // 5. RBAC — custom-role permission check
+            // Runs for non-admin users who have a custom permissions object.
+            // Deny-by-default: if a module is in the permissions object, the action must be explicitly allowed.
+            // If the module is absent from the object, access is also denied (least-privilege).
+            if (!options.requireAdmin && !options.requireSuperAdmin) {
+                const userPerms: Record<string, any> = user?.permissions || {};
+                const isAdmin = user?.role === 'admin' || !!user?.isSuperAdmin;
+
+                if (!isAdmin && Object.keys(userPerms).length > 0) {
+                    const module = deriveModule(request.nextUrl.pathname);
+                    if (module) {
+                        const modulePerms = userPerms[module];
+                        const action = deriveAction(request.method, request.nextUrl.pathname);
+                        // Deny if module is absent from permissions OR action is not allowed
+                        if (modulePerms === undefined || !modulePerms[action]) {
+                            return NextResponse.json(
+                                { error: 'ليس لديك صلاحية هذه العملية' },
+                                { status: 403 }
+                            );
+                        }
+                    }
+                }
+            }
         }
 
-        // 5. Body Sanitization (for POST/PUT/PATCH/DELETE)
+        // 6. Body Sanitization (for POST/PUT/PATCH/DELETE)
         let sanitizedBody = undefined;
         const contentType = request.headers.get('content-type');
         if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method) && 
@@ -69,7 +133,7 @@ export function withProtection(handler: Handler, options: {
             }
         }
 
-        // 6. Run actual handler
+        // 7. Run actual handler
         try {
             const response = await handler(request, session, sanitizedBody, context);
             // إضافة cache header للـ GET requests لو محدد

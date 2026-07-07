@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const GET = withProtection(async (request, session, body, { params }) => {
@@ -105,8 +105,7 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
                 if (currentYear) {
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: advance.date,
                             description: `سلفة موظف — ${advance.employee?.name}`,
@@ -176,7 +175,7 @@ export const PATCH = withProtection(async (request, session, body, { params }) =
 
     } catch (e: any) {
         return NextResponse.json({ 
-            error: e.message || "فشل في تحديث السلفة" 
+            error: safeErrorMsg(e, 'حدث خطأ في الخادم') || "فشل في تحديث السلفة" 
         }, { status: 500 });
     }
 });
@@ -208,6 +207,6 @@ export const DELETE = withProtection(async (request, session, body, { params }) 
 
     } catch (e: any) {
         console.error(e);
-        return NextResponse.json({ error: e.message || 'فشل في حذف السلفة' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

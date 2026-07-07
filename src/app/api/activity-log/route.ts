@@ -7,6 +7,7 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
         const user = session.user as any;
         const companyId = user.companyId;
         const isSuperAdmin = !!user.isSuperAdmin;
+        const isAdmin = user.role === 'admin' || isSuperAdmin;
 
         const { searchParams } = new URL(request.url);
         const page     = Math.max(1, parseInt(searchParams.get('page')  || '1', 10));
@@ -69,8 +70,7 @@ export const GET = withProtection(async (request: NextRequest, session: any) => 
                     entityId: true,
                     entityRef: true,
                     description: true,
-                    oldData: true,
-                    newData: true,
+                    ...(isAdmin ? { oldData: true, newData: true } : {}),
                     ipAddress: true,
                     userAgent: true,
                     companyId: true,

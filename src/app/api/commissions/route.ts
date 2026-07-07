@@ -137,3 +137,29 @@ export const POST = withProtection(async (request: NextRequest, session: any, bo
 
     return NextResponse.json(calculated, { status: 201 });
 });
+
+export const DELETE = withProtection(async (request: NextRequest, session: any) => {
+    try {
+        const companyId = (session.user as any).companyId;
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get('id');
+
+        if (!id) return NextResponse.json({ error: 'معرف العمولة مطلوب' }, { status: 400 });
+
+        const commission = await (prisma as any).commissionPayment.findFirst({
+            where: { id, companyId },
+        });
+        if (!commission) return NextResponse.json({ error: 'العمولة غير موجودة' }, { status: 404 });
+
+        if (commission.status === 'paid') {
+            return NextResponse.json({ error: 'لا يمكن حذف عمولة مدفوعة' }, { status: 400 });
+        }
+
+        await (prisma as any).commissionPayment.delete({ where: { id } });
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('DELETE /api/commissions Error:', error);
+        return NextResponse.json({ error: 'فشل في حذف العمولة' }, { status: 500 });
+    }
+});

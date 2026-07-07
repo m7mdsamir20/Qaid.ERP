@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
 export const POST = withProtection(async (request, session, body, context) => {
@@ -126,6 +126,6 @@ export const POST = withProtection(async (request, session, body, context) => {
         return NextResponse.json(updated);
     } catch (error: any) {
         console.error('POST /api/sales-orders/[id]/deliver Error:', error);
-        return NextResponse.json({ error: 'فشل في تسجيل التسليم', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في تسجيل التسليم' }, { status: 500 });
     }
 });

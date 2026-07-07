@@ -102,7 +102,7 @@ export const DELETE = withProtection(async (request, session, body, context) => 
             }, { status: 400 });
         }
 
-        const repToDelete = await prisma.salesRepresentative.findUnique({ where: { id }, select: { name: true } });
+        const repToDelete = await prisma.salesRepresentative.findFirst({ where: { id, companyId }, select: { name: true } });
 
         await prisma.salesRepresentative.delete({
             where: { id, companyId }

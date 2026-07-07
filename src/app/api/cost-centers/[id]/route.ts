@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -106,7 +106,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
         return NextResponse.json(updated);
     } catch (error: any) {
         console.error('PUT Cost Center Error:', error);
-        return NextResponse.json({ error: error.message || 'Failed to update cost center' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'Failed to update cost center') }, { status: 500 });
     }
 });
 

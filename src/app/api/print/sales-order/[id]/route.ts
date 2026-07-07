@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request: NextRequest, session, body, context) => {
     try {
@@ -42,7 +42,7 @@ export const GET = withProtection(async (request: NextRequest, session, body, co
 
         return NextResponse.json({ order, company });
     } catch (error: any) {
-        if (request.url.includes('html=1')) return new NextResponse(`<h2>خطأ: ${error.message}</h2>`, { status: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
-        return NextResponse.json({ error: 'فشل جلب البيانات', details: error.message }, { status: 500 });
+        if (request.url.includes('html=1')) return new NextResponse(`<h2>خطأ: ${safeErrorMsg(error, "خطأ في الخادم")}</h2>`, { status: 500, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+        return NextResponse.json({ error: 'فشل جلب البيانات' }, { status: 500 });
     }
 });

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { generateNextCode } from '@/lib/autoId';
 
 export const GET = withProtection(async (request, session) => {
@@ -17,7 +17,7 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json(categories);
     } catch (error: any) {
         console.error("GET /api/categories Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { cache: 30 });
 
@@ -44,7 +44,7 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(category, { status: 201 });
     } catch (error: any) {
         console.error("POST /api/categories Error:", error);
-        return NextResponse.json({ error: 'فشل في إنشاء المجموعة', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في إنشاء المجموعة' }, { status: 500 });
     }
 });
 
@@ -64,7 +64,7 @@ export const PUT = withProtection(async (request, session, body) => {
         if (category.count === 0) return NextResponse.json({ error: 'Category not found' }, { status: 404 });
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: 'فشل في التحديث', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في التحديث' }, { status: 500 });
     }
 });
 
@@ -86,6 +86,6 @@ export const DELETE = withProtection(async (request, session) => {
         
         return NextResponse.json({ success: true });
     } catch (error: any) {
-        return NextResponse.json({ error: 'الفشل في الحذف', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'الفشل في الحذف' }, { status: 500 });
     }
 });

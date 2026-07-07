@@ -58,7 +58,10 @@ export const GET = withProtection(async (request, session) => {
         // ① تحديد السنة المالية للحصول على نطاق التواريخ والأرصدة الافتتاحية
         let currentYear = null;
         if (financialYearId) {
-            currentYear = await prisma.financialYear.findUnique({ where: { id: financialYearId } });
+            currentYear = await prisma.financialYear.findUnique({ where: { id: financialYearId, companyId } });
+            if (!currentYear) {
+                return NextResponse.json({ error: 'السنة المالية غير موجودة' }, { status: 404 });
+            }
         } else {
             currentYear = await prisma.financialYear.findFirst({
                 where: { companyId, isOpen: true },

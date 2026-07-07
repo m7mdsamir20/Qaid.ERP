@@ -1,13 +1,26 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { rateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: Request) {
     try {
+        // Rate-limit public QR-code endpoint by IP
+        const ip = (request.headers.get('x-forwarded-for') ?? '').split(',')[0].trim() || 'unknown';
+        const { allowed, retryAfter } = rateLimit(`menu-order:${ip}`, { max: 30, windowMs: 60 * 1000 });
+        if (!allowed) {
+            return NextResponse.json({ error: 'طلبات كثيرة، حاول لاحقاً' }, { status: 429, headers: { 'Retry-After': retryAfter.toString() } });
+        }
+
         const body = await request.json();
         const { companyId, tableId, items } = body;
 
         if (!companyId || !items || !Array.isArray(items) || items.length === 0) {
             return NextResponse.json({ error: 'Missing data' }, { status: 400 });
+        }
+
+        const company = await prisma.company.findUnique({ where: { id: companyId }, select: { id: true } });
+        if (!company) {
+            return NextResponse.json({ error: 'Invalid company' }, { status: 404 });
         }
 
         const resolvedLines: any[] = [];
@@ -20,7 +33,7 @@ export async function POST(request: Request) {
             });
             if (item) {
                 itemName = line.itemName || item.name;
-                unitPrice = line.price || item.sellPrice || 0;
+                unitPrice = item.sellPrice || 0;
             } else {
                 continue;
             }

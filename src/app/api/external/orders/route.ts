@@ -1,5 +1,17 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { safeErrorMsg } from '@/lib/apiHandler';
+import { rateLimit } from '@/lib/rateLimit';
+import crypto from 'crypto';
+
+function hashApiKey(key: string): string {
+    return crypto.createHash('sha256').update(key).digest('hex');
+}
+
+function getClientKey(request: Request): string {
+    return request.headers.get('x-api-key') || request.headers.get('x-forwarded-for') || 'unknown';
+}
 
 /**
  * PUBLIC External Orders API
@@ -26,6 +38,15 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(request: Request) {
     try {
+        // Rate limit: 60 requests per minute per API key
+        const { allowed, retryAfter } = rateLimit(getClientKey(request), { max: 60, windowMs: 60 * 1000 });
+        if (!allowed) {
+            return NextResponse.json(
+                { error: `تجاوزت الحد المسموح. يرجى المحاولة بعد ${retryAfter} ثانية` },
+                { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
+            );
+        }
+
         // 1. Validate API Key
         const apiKey = request.headers.get('x-api-key');
         if (!apiKey) {
@@ -35,7 +56,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const keyRecord = await prisma.apiKey.findUnique({ where: { key: apiKey } });
+        const keyRecord = await prisma.apiKey.findUnique({ where: { key: hashApiKey(apiKey) } });
 
         if (!keyRecord) {
             return NextResponse.json({ error: 'مفتاح API غير صالح' }, { status: 401 });
@@ -164,7 +185,7 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error('External Order API Error:', error);
         return NextResponse.json(
-            { error: 'حدث خطأ أثناء معالجة الطلب', details: error.message },
+            { error: 'حدث خطأ أثناء معالجة الطلب' },
             { status: 500 }
         );
     }
@@ -176,12 +197,21 @@ export async function POST(request: Request) {
  */
 export async function GET(request: Request) {
     try {
+        // Rate limit: 60 requests per minute per API key
+        const { allowed, retryAfter } = rateLimit(getClientKey(request), { max: 60, windowMs: 60 * 1000 });
+        if (!allowed) {
+            return NextResponse.json(
+                { error: `تجاوزت الحد المسموح. يرجى المحاولة بعد ${retryAfter} ثانية` },
+                { status: 429, headers: { 'Retry-After': retryAfter.toString() } }
+            );
+        }
+
         const apiKey = request.headers.get('x-api-key');
         if (!apiKey) {
             return NextResponse.json({ error: 'مفتاح API مطلوب' }, { status: 401 });
         }
 
-        const keyRecord = await prisma.apiKey.findUnique({ where: { key: apiKey } });
+        const keyRecord = await prisma.apiKey.findUnique({ where: { key: hashApiKey(apiKey) } });
         if (!keyRecord || !keyRecord.isActive) {
             return NextResponse.json({ error: 'مفتاح API غير صالح أو معطّل' }, { status: 401 });
         }
@@ -214,6 +244,6 @@ export async function GET(request: Request) {
 
         return NextResponse.json({ items });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }

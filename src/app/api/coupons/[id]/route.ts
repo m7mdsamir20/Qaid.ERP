@@ -18,9 +18,20 @@ export const PUT = withProtection(async (request, session, { params }) => {
             }
         }
 
+        const updateData: any = {};
+        if (body.code !== undefined) updateData.code = body.code;
+        if (body.type !== undefined) updateData.type = body.type;
+        if (body.value !== undefined) updateData.value = parseFloat(body.value);
+        if (body.maxDiscountAmount !== undefined) updateData.maxDiscountAmount = body.maxDiscountAmount ? parseFloat(body.maxDiscountAmount) : null;
+        if (body.minOrderValue !== undefined) updateData.minOrderValue = body.minOrderValue ? parseFloat(body.minOrderValue) : null;
+        if (body.startDate !== undefined) updateData.startDate = body.startDate ? new Date(body.startDate) : null;
+        if (body.endDate !== undefined) updateData.endDate = body.endDate ? new Date(body.endDate) : null;
+        if (body.usageLimit !== undefined) updateData.usageLimit = body.usageLimit ? parseInt(body.usageLimit) : null;
+        if (body.isActive !== undefined) updateData.isActive = Boolean(body.isActive);
+
         const coupon = await prisma.coupon.updateMany({
             where: { id, companyId },
-            data: body
+            data: updateData
         });
 
         return NextResponse.json(coupon);

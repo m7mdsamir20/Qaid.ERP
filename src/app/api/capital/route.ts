@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -28,7 +28,7 @@ export const GET = withProtection(async (request, session) => {
             })),
         })));
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -37,9 +37,12 @@ export const POST = withProtection(async (request, session, body) => {
         const companyId = (session.user as any).companyId;
 
         const { partnerId, type, amount, date, notes, treasuryId } = body;
+        const branchId = (session!.user as any).branchId || null;
         if (!partnerId || !amount) return NextResponse.json({ error: 'البيانات ناقصة' }, { status: 400 });
 
         const amountNum = parseFloat(amount);
+        if (isNaN(amountNum) || amountNum <= 0)
+            return NextResponse.json({ error: 'المبلغ يجب أن يكون رقماً موجباً' }, { status: 400 });
         const txType = type === 'increase' ? 'capital_increase' : 'capital_decrease';
         const capitalDelta = type === 'increase' ? amountNum : -amountNum;
         const txDate = new Date(date || new Date());
@@ -49,6 +52,10 @@ export const POST = withProtection(async (request, session, body) => {
         });
 
         await prisma.$transaction(async (tx) => {
+            // تحقق من ملكية الشريك للشركة
+            const partner = await tx.partner.findFirst({ where: { id: partnerId, companyId } });
+            if (!partner) throw new Error('الشريك غير موجود أو غير مصرح');
+
             // ① سجّل معاملة الشريك
             await tx.partnerTransaction.create({
                 data: { type: txType, amount: amountNum, date: txDate, notes: notes || null, partnerId, companyId },
@@ -111,8 +118,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId,
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: txDate,
                             description: `${isIncrease ? 'زيادة' : 'تخفيض'} رأس مال الشريك ${partner?.name || ''}`,
@@ -145,6 +151,6 @@ export const POST = withProtection(async (request, session, body) => {
 
         return NextResponse.json({ success: true }, { status: 201 });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(e, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });

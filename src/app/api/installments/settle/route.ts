@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -11,20 +11,25 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'بيانات ناقصة' }, { status: 400 });
 
         const amountToPay = parseFloat(paidAmount);
+        if (isNaN(amountToPay) || amountToPay <= 0)
+            return NextResponse.json({ error: 'المبلغ يجب أن يكون رقماً موجباً' }, { status: 400 });
 
         // Fetch the plan and unsettled installments
-        const plan = await prisma.installmentPlan.findUnique({
-            where: { id: planId },
-            include: { 
-                installments: { 
+        const plan = await prisma.installmentPlan.findFirst({
+            where: { id: planId, companyId },
+            include: {
+                installments: {
                     where: { status: { not: 'paid' } },
-                    orderBy: { installmentNo: 'asc' } 
+                    orderBy: { installmentNo: 'asc' }
                 },
                 customer: true
             }
         });
 
         if (!plan) return NextResponse.json({ error: 'الخطة غير موجودة' }, { status: 404 });
+
+        const treasuryCheck = await prisma.treasury.findFirst({ where: { id: treasuryId, companyId } });
+        if (!treasuryCheck) return NextResponse.json({ error: 'الخزينة غير موجودة' }, { status: 404 });
         if (plan.status !== 'active') return NextResponse.json({ error: 'الخطة غير نشطة' }, { status: 400 });
 
         const currentYear = await prisma.financialYear.findFirst({
@@ -133,8 +138,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                 await tx.journalEntry.create({
                     data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                         entryNumber: (lastEntry?.entryNumber || 0) + 1,
                         date: new Date(),
                         description: `تكييش خطة تقسيط #${plan.planNumber} للعميل ${plan.customer.name}`,
@@ -154,6 +158,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(result);
     } catch (error: any) {
         console.error(error);
-        return NextResponse.json({ error: 'فشل في تكييش الخطة', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'فشل في تكييش الخطة') }, { status: 500 });
     }
 });

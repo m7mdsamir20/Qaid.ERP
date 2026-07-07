@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 // POST /api/admin/fix-branches
 // ينشئ فرع رئيسي لكل شركة مش عندها فروع
@@ -42,6 +42,6 @@ export const POST = withProtection(async (request, session) => {
 
         return NextResponse.json({ success: true, results });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 }, { requireSuperAdmin: true });

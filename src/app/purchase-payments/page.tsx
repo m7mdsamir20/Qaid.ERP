@@ -70,11 +70,14 @@ export default function PurchasePaymentsPage() {
     const printPayVoucher = (voucher: any, supplier: any, voucherNumber: number, form: any) => {
         const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const amount = formatNumber(voucher.amount || 0);
+        const u = session?.user as any;
         const COMPANY = {
-            name: t("شركة النور للتجارة"), nameEn: 'Al-Nour Trading Company',
-            address: t("القاهرة، مصر - شارع التحرير، عمارة 12"),
-            phone: '01000000000  |  01100000000',
-            email: 'info@alnour.com', tax: '123-456-789', logo: '',
+            name: u?.companyName || '',
+            address: u?.address || '',
+            phone: u?.phone || '',
+            email: u?.email || '',
+            tax: u?.taxNumber || '',
+            logo: u?.companyLogo || '',
         };
 
         const html = `<!DOCTYPE html>

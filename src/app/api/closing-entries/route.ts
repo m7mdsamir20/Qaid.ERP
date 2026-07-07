@@ -6,6 +6,7 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const { financialYearId, targetAccountId } = body;
+        const branchId = (session!.user as any).branchId || null;
 
         if (!financialYearId) {
             return NextResponse.json({ error: "Financial Year ID is required" }, { status: 400 });
@@ -102,8 +103,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             return tx.journalEntry.create({
                 data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId,
                     entryNumber: nextEntryNumber,
                     date: new Date(year.endDate),
                     description: `قيود إقفال الحسابات الختامية للسنة المالية ${year.name}`,
@@ -132,7 +132,7 @@ export const POST = withProtection(async (request, session, body) => {
         console.error("Closing Execution Error:", error);
         return NextResponse.json({ error: "فشل تنفيذ عملية الإقفال" }, { status: 500 });
     }
-});
+}, { requireAdmin: true });
 
 export const DELETE = withProtection(async (request, session) => {
     try {
@@ -168,4 +168,4 @@ export const DELETE = withProtection(async (request, session) => {
         console.error("Undo Closing Error:", error);
         return NextResponse.json({ error: "فشل إلغاء عملية الإقفال" }, { status: 500 });
     }
-});
+}, { requireAdmin: true });

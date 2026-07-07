@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 export const GET = withProtection(async (request, session) => {
     try {
         const userId = (session.user as any).id;
-        
+
         // جلب الصلاحية مباشرة من قاعدة البيانات لضمان المزامنة الفورية
         const user = await (prisma as any).user.findUnique({
             where: { id: userId },
@@ -16,4 +16,4 @@ export const GET = withProtection(async (request, session) => {
     } catch {
         return NextResponse.json({ authorized: false });
     }
-});
+}, { requireSuperAdmin: true });

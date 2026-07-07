@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 
@@ -61,7 +61,7 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ orders, total, page, limit });
     } catch (error: any) {
         console.error('GET /api/sales-orders Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(error, 'حدث خطأ في الخادم') }, { status: 500 });
     }
 });
 
@@ -160,6 +160,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json(order, { status: 201 });
     } catch (error: any) {
         console.error('POST /api/sales-orders Error:', error);
-        return NextResponse.json({ error: 'فشل في إنشاء أمر البيع', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل في إنشاء أمر البيع' }, { status: 500 });
     }
 });

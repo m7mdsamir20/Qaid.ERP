@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -161,8 +161,7 @@ export const POST = withProtection(async (request, session, body) => {
 
                     await tx.journalEntry.create({
                         data: {
-                                // @ts-ignore
-                                branchId: typeof branchId !== 'undefined' ? branchId : (typeof body !== 'undefined' && body?.branchId ? body.branchId : undefined),
+                                branchId: body?.branchId || null,
                             entryNumber: (lastEntry?.entryNumber || 0) + 1,
                             date: new Date(),
                             description: `إلغاء خطة تقسيط #${plan.planNumber} - ${plan.customer.name}`,
@@ -181,6 +180,6 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json({ success: true, message: "تم إلغاء خطة التقسيط بنجاح وتم عكس القيود المحاسبية" });
     } catch (error: any) {
         console.error("Installment Cancel API Error:", error);
-        return NextResponse.json({ error: 'فشل الإلغاء', details: error.message }, { status: 500 });
+        return NextResponse.json({ error: 'فشل الإلغاء' }, { status: 500 });
     }
 });

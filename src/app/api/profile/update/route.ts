@@ -1,11 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
         const userId = (session.user as any).id;
         const { name, email, phone, gender, avatar } = body;
+
+        if (email) {
+            const taken = await prisma.user.findFirst({ where: { email, id: { not: userId } } });
+            if (taken) return NextResponse.json({ error: 'البريد الإلكتروني مستخدم بالفعل' }, { status: 400 });
+        }
 
         await prisma.user.update({
             where: { id: userId },
@@ -30,6 +35,6 @@ export const POST = withProtection(async (request, session, body) => {
         });
     } catch (error: any) {
         console.error("Profile Update Error Detailed:", error);
-        return NextResponse.json({ error: "فشل تحديث البيانات: " + error.message }, { status: 500 });
+        return NextResponse.json({ error: "فشل تحديث البيانات" }, { status: 500 });
     }
 });
