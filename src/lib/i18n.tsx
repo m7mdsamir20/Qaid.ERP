@@ -81,7 +81,6 @@ export const dictionaries = {
         "طلبات المواد": "Material Requests",
         "المشاريع": "Projects",
         "الإعدادات": "Settings",
-        "تسجيل الدخول": "Login",
         "التحصيلات": "Collections",
         "المصروفات": "Expenses",
         "السلف": "Advances",
