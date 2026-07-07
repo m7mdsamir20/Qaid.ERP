@@ -335,7 +335,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             // Check subscription user limit
             const subscription = await prisma.subscription.findFirst({
-                where: { companyId, status: 'active' }
+                where: { companyId, isActive: true }
             });
             if (subscription?.maxUsers) {
                 const currentUserCount = await prisma.user.count({ where: { companyId } });
