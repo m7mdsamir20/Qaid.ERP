@@ -359,6 +359,7 @@ function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number,
     const amount = formatNumber(voucher.amount || 0);
     const COMPANY = {
         name: user?.companyName || '',
+        nameEn: user?.companyNameEn || '',
         address: user?.address || '',
         phone: user?.phone || '',
         email: user?.email || '',

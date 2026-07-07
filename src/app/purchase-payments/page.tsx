@@ -73,6 +73,7 @@ export default function PurchasePaymentsPage() {
         const u = session?.user as any;
         const COMPANY = {
             name: u?.companyName || '',
+            nameEn: u?.companyNameEn || '',
             address: u?.address || '',
             phone: u?.phone || '',
             email: u?.email || '',
