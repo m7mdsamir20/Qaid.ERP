@@ -108,7 +108,7 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             const treasury = await tx.treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data: { balance: { decrement: numAmount } }
             });
 
@@ -217,7 +217,7 @@ export const PUT = withProtection(async (request, session, body) => {
             // 1. Restore old treasury balance (reverse original deduction)
             if (oldTreasuryId) {
                 await tx.treasury.update({
-                    where: { id: oldTreasuryId },
+                    where: { id: oldTreasuryId, companyId },
                     data: { balance: { increment: oldAmount } },
                 });
             }
@@ -228,7 +228,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 throw new Error('رصيد الخزينة/البنك غير كافٍ لإتمام العملية');
             }
             await tx.treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data: { balance: { decrement: numAmount } },
             });
 
@@ -316,7 +316,7 @@ export const DELETE = withProtection(async (request, session) => {
             // Restore treasury balance before deleting
             if (treasuryId) {
                 await tx.treasury.update({
-                    where: { id: treasuryId },
+                    where: { id: treasuryId, companyId },
                     data: { balance: { increment: amount } },
                 });
             }

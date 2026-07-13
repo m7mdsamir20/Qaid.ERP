@@ -71,17 +71,17 @@ export const POST = withProtection(async (request, session, body) => {
 
             // ③ تحديث الخزينة
             const treasury = await tx.treasury.findUnique({
-                where:  { id: treasuryId },
+                where:  { id: treasuryId, companyId },
                 select: { accountId: true, balance: true },
             });
             await tx.treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data:  { balance: { increment: paid } },
             });
 
             // ④ تحديث رصيد العميل
             await tx.customer.update({
-                where: { id: installment.plan.customerId },
+                where: { id: installment.plan.customerId, companyId },
                 data:  { balance: { decrement: paid } },
             });
 

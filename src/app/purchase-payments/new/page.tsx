@@ -354,6 +354,10 @@ export default function NewPurchasePaymentPage() {
     );
 }
 
+function escapeHtml(str: string): string {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
 function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string, t: any, user?: any): string {
     const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     const amount = formatNumber(voucher.amount || 0);
@@ -411,12 +415,12 @@ function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number,
 <div class="page">
   <div class="header">
     <div class="logo-area">
-      <div class="logo-box">${COMPANY.logo ? `<img src="${COMPANY.logo}" style="width:100%;height:100%;object-fit:contain"/>` : COMPANY.name.charAt(0)}</div>
+      <div class="logo-box">${COMPANY.logo ? `<img src="${escapeHtml(COMPANY.logo)}" style="width:100%;height:100%;object-fit:contain"/>` : escapeHtml(COMPANY.name).charAt(0)}</div>
       <div class="company-info">
-        <h1>${COMPANY.name}</h1>
-        <p style="color:#64748b;font-size:10px">${COMPANY.nameEn}</p>
-        <p>${COMPANY.phone}</p>
-        <p>${COMPANY.email}</p>
+        <h1>${escapeHtml(COMPANY.name)}</h1>
+        <p style="color:#64748b;font-size:10px">${escapeHtml(COMPANY.nameEn)}</p>
+        <p>${escapeHtml(COMPANY.phone)}</p>
+        <p>${escapeHtml(COMPANY.email)}</p>
       </div>
     </div>
     <div class="badge-area">
@@ -428,13 +432,13 @@ function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number,
   <div class="amount-box">
     <div class="amount-label">${t('المبلغ المصروف')}</div>
     <div class="amount-value">${amount} ${cSymbol}</div>
-    ${form.description ? `<div class="amount-words">${form.description}</div>` : ''}
+    ${form.description ? `<div class="amount-words">${escapeHtml(form.description)}</div>` : ''}
   </div>
   <div class="meta-grid">
     <div class="meta-card">
       <div class="title">${t('بيانات المستفيد')}</div>
-      <div class="ml"><span class="mk">${t('الاسم')}</span><span class="mv">${supplier?.name || '—'}</span></div>
-      ${supplier?.phone ? `<div class="ml"><span class="mk">${t('الهاتف')}</span><span class="mv">${supplier.phone}</span></div>` : ''}
+      <div class="ml"><span class="mk">${t('الاسم')}</span><span class="mv">${escapeHtml(supplier?.name || '—')}</span></div>
+      ${supplier?.phone ? `<div class="ml"><span class="mk">${t('الهاتف')}</span><span class="mv">${escapeHtml(supplier.phone)}</span></div>` : ''}
       <div class="ml">
         <span class="mk">${t('الرصيد بعد السند')}</span>
         <span class="mv" style="color:${(isCust ? nextBal < 0 : nextBal > 0) ? '#dc2626' : '#166534'}">
@@ -447,12 +451,12 @@ function buildPayVoucherHtml(voucher: any, supplier: any, voucherNumber: number,
       <div class="ml"><span class="mk">${t('رقم السند')}</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
       <div class="ml"><span class="mk">${t('التاريخ')}</span><span class="mv">${date}</span></div>
       <div class="ml"><span class="mk">${t('طريقة الدفع')}</span><span class="mv">${form.paymentType === 'cash' ? t('نقدي') : t('تحويل بنكي')}</span></div>
-      <div class="ml"><span class="mk">${t('الخزينة')}</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
+      <div class="ml"><span class="mk">${t('الخزينة')}</span><span class="mv">${escapeHtml(voucher.treasury?.name || '—')}</span></div>
     </div>
   </div>
   <div class="footer">
     <div class="sig"><div class="sl">${t('توقيع المستفيد')}</div><div class="ss">${t('الاسم والتوقيع')}</div></div>
-    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#256af4;font-weight:700">${t('سند رسمي معتمد')}</span></div>
+    <div class="cf"><strong>${escapeHtml(COMPANY.name)}</strong><br/>${escapeHtml(COMPANY.address)}<br/><span style="color:#256af4;font-weight:700">${t('سند رسمي معتمد')}</span></div>
     <div class="sig"><div class="sl">${t('توقيع المُصرِف')}</div><div class="ss">${t('الاسم والتوقيع')}</div></div>
   </div>
 </div>

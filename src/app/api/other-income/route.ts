@@ -173,7 +173,7 @@ export const PUT = withProtection(async (request, session, body) => {
             const newTreasury = await tx.treasury.findUnique({ where: { id: treasuryId, companyId } });
             if (!newTreasury) throw new Error('الخزينة غير موجودة');
             await tx.treasury.update({
-                where: { id: treasuryId },
+                where: { id: treasuryId, companyId },
                 data: { balance: { increment: numAmount } },
             });
 
@@ -256,7 +256,7 @@ export const DELETE = withProtection(async (request, session) => {
             // Reverse the income: decrement the treasury balance
             if (treasuryId) {
                 await tx.treasury.update({
-                    where: { id: treasuryId },
+                    where: { id: treasuryId, companyId },
                     data: { balance: { decrement: amount } },
                 });
             }

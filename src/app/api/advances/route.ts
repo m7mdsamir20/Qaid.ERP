@@ -76,7 +76,7 @@ export const POST = withProtection(async (request, session, body) => {
             if (body.treasuryId && financialYear) {
                 // خصم من الخزينة
                 await tx.treasury.update({
-                    where: { id: body.treasuryId },
+                    where: { id: body.treasuryId, companyId },
                     data: { balance: { decrement: numAmount } }
                 });
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { withProtection } from '@/lib/apiHandler';
+import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const maxDuration = 60;
 
@@ -67,8 +67,9 @@ export const POST = withProtection(async (request, session) => {
 
         // Use a reasonable viewport to ensure proper scaling
         await page.setViewport({ width: 1200, height: 800 });
+        await page.setJavaScriptEnabled(false);
 
-        await page.setContent(sanitizedHtml, { waitUntil: 'load', timeout: 30000 });
+        await page.setContent(sanitizedHtml, { waitUntil: 'domcontentloaded', timeout: 30000 });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfOptions: any = {
@@ -103,6 +104,6 @@ export const POST = withProtection(async (request, session) => {
         });
     } catch (err: any) {
         console.error('[PDF GENERATE] Error:', err?.message);
-        return NextResponse.json({ error: err?.message || 'فشل توليد PDF' }, { status: 500 });
+        return NextResponse.json({ error: safeErrorMsg(err, 'فشل توليد PDF') }, { status: 500 });
     }
 }, { sanitize: false });

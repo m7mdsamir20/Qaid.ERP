@@ -89,7 +89,6 @@ export const PUT = withProtection(async (request, session, body) => {
                         const oldFilename = currentCompany.logo.replace('/uploads/', '');
                         const oldFilepath = path.join(process.cwd(), 'public', 'uploads', oldFilename);
                         await unlink(oldFilepath);
-                        console.log(`Deleted old logo file: ${oldFilepath}`);
                     }
                 } catch (err) {
                     console.error("Failed to delete orphaned logo file:", err);

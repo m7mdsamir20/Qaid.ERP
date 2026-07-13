@@ -61,7 +61,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             // ③ Decrease customer balance by remaining amount
             await tx.customer.update({
-                where: { id: plan.customerId },
+                where: { id: plan.customerId, companyId },
                 data: { balance: { decrement: remainingOnCustomer } },
             });
 
@@ -148,12 +148,12 @@ export const POST = withProtection(async (request, session, body) => {
                             );
 
                             await tx.treasury.update({
-                                where: { id: refundTreasuryId },
+                                where: { id: refundTreasuryId, companyId },
                                 data: { balance: { decrement: totalPaid } },
                             });
 
                             await tx.customer.update({
-                                where: { id: plan.customerId },
+                                where: { id: plan.customerId, companyId },
                                 data: { balance: { decrement: totalPaid } },
                             });
                         }

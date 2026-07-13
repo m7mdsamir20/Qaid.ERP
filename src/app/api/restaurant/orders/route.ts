@@ -152,7 +152,7 @@ export const POST = withProtection(async (request, session, body) => {
             if (existingCust) {
                 finalCustomerId = existingCust.id;
                 if (!existingCust.addressCity && body.deliveryAddress) {
-                    await prisma.customer.update({ where: { id: existingCust.id }, data: { addressCity: body.deliveryAddress } });
+                    await prisma.customer.update({ where: { id: existingCust.id, companyId }, data: { addressCity: body.deliveryAddress } });
                 }
                 if (!body.deliveryName) body.deliveryName = existingCust.name;
             } else {

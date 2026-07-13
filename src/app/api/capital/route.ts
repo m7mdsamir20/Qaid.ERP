@@ -63,7 +63,7 @@ export const POST = withProtection(async (request, session, body) => {
 
             // ② حدّث رأس مال الشريك
             await tx.partner.update({
-                where: { id: partnerId },
+                where: { id: partnerId, companyId },
                 data: { capital: { increment: capitalDelta } },
             });
 
@@ -74,7 +74,7 @@ export const POST = withProtection(async (request, session, body) => {
                 if (type === 'increase' && treasury.balance + amountNum < 0)
                     throw new Error('رصيد الخزينة غير كافٍ');
                 await tx.treasury.update({
-                    where: { id: treasuryId },
+                    where: { id: treasuryId, companyId },
                     data: { balance: { increment: type === 'increase' ? amountNum : -amountNum } },
                 });
             }
