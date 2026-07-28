@@ -412,10 +412,7 @@ tbody tr:nth-child(even){background: #fff;}
         ${invoice.customerPONumber ? `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${invoice.customerPONumber}</div>` : ''}
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
-        ${hasValidTax
-            ? generateQRSVG(zatcaQR, 80, 80)
-            : (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : '')
-        }
+        ${hasValidTax ? generateQRSVG(zatcaQR, 80, 80) : ''}
     </div>
 </div>
 
@@ -988,10 +985,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
             <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
         </div>
         <div class="co-block" style="flex:1.2; text-align:left">
-            ${hasValidTax
-                ? generateQRSVG(zatcaQR, 80, 80)
-                : (co.logo ? `<img src="${co.logo}" alt=""/>` : '')
-            }
+            ${hasValidTax ? generateQRSVG(zatcaQR, 80, 80) : ''}
         </div>
     </div>
 

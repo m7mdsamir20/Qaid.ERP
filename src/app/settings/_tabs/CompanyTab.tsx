@@ -279,7 +279,7 @@ export default function CompanyTab({
                                     {isEditMode ? (
                                         <input
                                             placeholder={f.placeholder}
-                                            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: OUTFIT }}
+                                            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: f.dir as any, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: OUTFIT }}
                                             value={String((companyForm as any)[f.key] || '').replace(/,/g, '')}
                                             onChange={e => {
                                                 const cleaned = e.target.value.replace(/,/g, '');
@@ -287,7 +287,7 @@ export default function CompanyTab({
                                             }}
                                         />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: OUTFIT }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: OUTFIT }}>
                                             {String((companyForm as any)[f.key] || '').replace(/,/g, '') || t('لم يُضف بعد')}
                                         </div>
                                     )}
