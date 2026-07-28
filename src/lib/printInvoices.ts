@@ -1,4 +1,5 @@
 import { getCurrencySymbol, formatMoney } from './currency';
+import QRCode from 'qrcode';
 
 export interface CompanyInfo {
     name?: string;
@@ -75,6 +76,27 @@ export function generateZatcaTLV(sellerName: string, vatNumber: string, timestam
     let binary = '';
     result.forEach(byte => binary += String.fromCharCode(byte));
     return btoa(binary);
+}
+
+export function generateQRSVG(data: string, width = 80, height = 80): string {
+    if (!data) return '';
+    try {
+        const qr = QRCode.create(data);
+        const size = qr.modules.size;
+        const dataArr = qr.modules.data;
+        let rects = '';
+        for (let r = 0; r < size; r++) {
+            for (let c = 0; c < size; c++) {
+                if (dataArr[r * size + c]) {
+                    rects += `<rect x="${c}" y="${r}" width="1.02" height="1.02" fill="#000000"/>`;
+                }
+            }
+        }
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${width}" height="${height}" style="width:${width}px;height:${height}px;display:inline-block;"><rect width="${size}" height="${size}" fill="#ffffff"/>${rects}</svg>`;
+    } catch (e) {
+        console.error('Failed to generate QR SVG:', e);
+        return '';
+    }
 }
 
 // ═══════════════════════════════════════════════
@@ -250,13 +272,14 @@ export function generateA4HTML(
     const invoiceTaxAmount = Number(invoice.taxAmount || 0);
     const taxInclusive = invoice.taxInclusive || false;
 
-    // ZATCA QR Code for Saudi Arabia (only if tax number exists)
+    // ZATCA QR Code for Saudi Arabia (only if country is SA and valid tax number exists)
     const totalTaxAmount = invoiceTaxAmount > 0 ? invoiceTaxAmount
         : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-    const hasValidTax = !!(isSaudi && co.tax && co.tax.trim());
+    const cleanTaxNumber = (co.tax || '').replace(/,/g, '').trim();
+    const hasValidTax = !!(isSaudi && cleanTaxNumber.length > 0);
     const zatcaQR = hasValidTax ? generateZatcaTLV(
         co.name,
-        co.tax!,
+        cleanTaxNumber,
         dateISO,
         total.toFixed(2),
         totalTaxAmount.toFixed(2)
@@ -390,7 +413,7 @@ tbody tr:nth-child(even){background: #fff;}
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
         ${hasValidTax
-            ? `<canvas id="zatca-qr" width="80" height="80" style="width:80px;height:80px;display:inline-block;" data-qr="${zatcaQR}"></canvas>`
+            ? generateQRSVG(zatcaQR, 80, 80)
             : (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : '')
         }
     </div>
@@ -631,7 +654,6 @@ tbody tr:nth-child(even){background: #fff;}
         </div>
     </div>
 </div>
-${hasValidTax ? ZATCA_QR_INLINE_SCRIPT : ''}
 ${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
 window.onload = () => { setTimeout(() => window.print(), 500); };
@@ -867,11 +889,12 @@ export function generateQuotationHTML(
     const dateISO = new Date(quotation.date || new Date()).toISOString();
     const quoNum = String(quotation.quotationNumber || quotation.orderNumber || 1).padStart(5, '0');
 
-    // ZATCA QR Code for Saudi Arabia (only if tax number exists)
-    const hasValidTax = !!(isSaudi && co.tax && co.tax.trim());
+    // ZATCA QR Code for Saudi Arabia (only if country is SA and valid tax number exists)
+    const cleanTaxNumber = (co.tax || '').replace(/,/g, '').trim();
+    const hasValidTax = !!(isSaudi && cleanTaxNumber.length > 0);
     const zatcaQR = hasValidTax ? generateZatcaTLV(
         co.name,
-        co.tax!,
+        cleanTaxNumber,
         dateISO,
         total.toFixed(2),
         taxAmt.toFixed(2)
@@ -966,7 +989,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </div>
         <div class="co-block" style="flex:1.2; text-align:left">
             ${hasValidTax
-                ? `<canvas id="zatca-qr" width="80" height="80" style="width:80px;height:80px;display:inline-block;" data-qr="${zatcaQR}"></canvas>`
+                ? generateQRSVG(zatcaQR, 80, 80)
                 : (co.logo ? `<img src="${co.logo}" alt=""/>` : '')
             }
         </div>
@@ -1137,7 +1160,6 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </div>
     </div>
 </div>
-${hasValidTax ? ZATCA_QR_INLINE_SCRIPT : ''}
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;

@@ -9,7 +9,7 @@ import DataTable from '@/components/DataTable';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
-import { generateZatcaTLV, ZATCA_QR_INLINE_SCRIPT } from '@/lib/printInvoices';
+import { generateZatcaTLV, generateQRSVG } from '@/lib/printInvoices';
 
 const t = (s: string) => s;
 
@@ -373,17 +373,16 @@ export default function OrdersHistoryPage() {
                     ${footerHtml}
                 </div>
 
-                ${(orderData.company?.countryCode === 'SA' && orderData.company?.taxNumber && orderData.company.taxNumber.trim()) ? `
+                ${(orderData.company?.countryCode === 'SA' && (orderData.company?.taxNumber || '').replace(/,/g, '').trim().length > 0) ? `
                 <div style="text-align: center; margin-top: 15px;">
-                    <canvas id="zatca-qr" width="120" height="120" style="width: 120px; height: 120px; display: inline-block;" data-qr="${generateZatcaTLV(
+                    ${generateQRSVG(generateZatcaTLV(
                         orderData.company.name || '',
-                        orderData.company.taxNumber.trim(),
+                        orderData.company.taxNumber.replace(/,/g, '').trim(),
                         new Date(orderData.createdAt || Date.now()).toISOString(),
                         finalTotal.toFixed(2),
                         orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
-                    )}"></canvas>
+                    ), 120, 120)}
                 </div>
-                ${ZATCA_QR_INLINE_SCRIPT}
                 ` : ''}
             </body>
             </html>

@@ -1,6 +1,6 @@
 'use client';
 import { useTranslation } from '@/lib/i18n';
-import { BTN_DANGER, C, CAIRO } from '@/constants/theme';
+import { BTN_DANGER, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { AlignRight, Building2, FileText, Globe, Loader2, Mail, MapPin, Percent, Phone, Shield, Trash2, UploadCloud } from 'lucide-react';
 import { TabHeader } from './shared';
 import { getCountryPlaceholders } from '@/lib/placeholders';
@@ -277,9 +277,19 @@ export default function CompanyTab({
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit',  padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input
+                                            placeholder={f.placeholder}
+                                            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: 'inherit', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: OUTFIT }}
+                                            value={String((companyForm as any)[f.key] || '').replace(/,/g, '')}
+                                            onChange={e => {
+                                                const cleaned = e.target.value.replace(/,/g, '');
+                                                setCompanyForm((p: any) => ({ ...p, [f.key]: cleaned }));
+                                            }}
+                                        />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'inherit', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: OUTFIT }}>
+                                            {String((companyForm as any)[f.key] || '').replace(/,/g, '') || t('لم يُضف بعد')}
+                                        </div>
                                     )}
                                 </div>
                             </div>
