@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
@@ -78,7 +78,7 @@ export const POST = withProtection(async (request, session, body) => {
                 data: {
                     invoiceNumber,
                     type: 'sale',
-                    date: new Date(),
+                    date: body.date ? new Date(body.date) : (quotation.date ? new Date(quotation.date) : new Date()),
                     customerId: quotation.customerId,
                     subtotal: quotation.subtotal,
                     discount: quotation.discount,

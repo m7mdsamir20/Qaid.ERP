@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
@@ -229,10 +229,11 @@ export const POST = withProtection(async (request, session, body) => {
             const entryNumber = (lastEntry?.entryNumber || 0) + 1;
 
             // 1. Create the invoice
+            const invoiceDate = body.date ? new Date(body.date) : new Date();
             const invoiceData: any = {
                 invoiceNumber,
                 type: 'sale',
-                date: new Date(),
+                date: invoiceDate,
                 customerId: customerId || null,
                 supplierId: supplierId || null,
                 workOrderId: workOrderId || null,
@@ -303,7 +304,7 @@ export const POST = withProtection(async (request, session, body) => {
                         ...stockLines.map((line: any) => tx.stockMovement.create({
                             data: {
                                 type: 'out',
-                                date: new Date(),
+                                date: invoiceDate,
                                 itemId: line.itemId,
                                 warehouseId,
                                 quantity: -line.quantity,
@@ -499,7 +500,7 @@ export const POST = withProtection(async (request, session, body) => {
                             data: {
                                 branchId: body?.branchId || null,
                                 entryNumber,
-                                date: new Date(),
+                                date: invoiceDate,
                                 description: `قيد فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
                                 reference: `SAL-${String(invoiceNumber).padStart(5, '0')}`,
                                 referenceType: 'invoice',

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
@@ -125,7 +125,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         ...stockLines.map((line: any) => tx.stockMovement.create({
                             data: {
                                 type: 'out',
-                                date: new Date(),
+                                date: invoice.date ? new Date(invoice.date) : new Date(),
                                 itemId: line.itemId,
                                 warehouseId: invoice.warehouseId!,
                                 quantity: -line.quantity,
@@ -312,7 +312,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         data: {
                             branchId: invoice.branchId,
                             entryNumber,
-                            date: new Date(),
+                            date: invoice.date ? new Date(invoice.date) : new Date(),
                             description: `اعتماد قيد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
                             reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
                             referenceType: 'invoice',

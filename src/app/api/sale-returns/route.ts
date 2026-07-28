@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
@@ -63,10 +63,11 @@ export const POST = withProtection(async (request, session, body) => {
             }) : null;
             const entryNumber = (lastEntry?.entryNumber || 0) + 1;
 
+            const returnDate = body.date ? new Date(body.date) : new Date();
             const invoiceData: any = {
                 invoiceNumber,
                 type: 'sale_return',
-                date: new Date(),
+                date: returnDate,
                 customerId,
                 originalInvoiceId,
                 subtotal,
@@ -122,7 +123,7 @@ export const POST = withProtection(async (request, session, body) => {
                         await tx.stockMovement.create({
                             data: {
                                 type: 'return_in',
-                                date: new Date(),
+                                date: returnDate,
                                 itemId: line.itemId,
                                 warehouseId: warehouseId,
                                 quantity: line.quantity,
@@ -297,7 +298,7 @@ export const POST = withProtection(async (request, session, body) => {
                     await tx.journalEntry.create({
                         data: {
                                 branchId: branchId || null,
-                            entryNumber, date: new Date(),
+                            entryNumber, date: returnDate,
                             description: `قيد مرتجع مبيعات رقم ${invoiceNumber}`,
                             reference: `SRET-${invoiceNumber}`,
                             referenceType: 'invoice',

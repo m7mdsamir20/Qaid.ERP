@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
@@ -189,7 +189,7 @@ export const POST = withProtection(async (request, session, body) => {
                         await tx.journalEntry.create({
                             data: {
                                 branchId: body?.branchId || null,
-                                entryNumber, date: new Date(),
+                                entryNumber, date: date ? new Date(date) : new Date(),
                                 description: `سند قبض رقم RCP-${String(voucherNumber).padStart(5, '0')}`,
                                 reference: `RCP-${String(voucherNumber).padStart(5, '0')}`,
                                 referenceType: 'receipt', referenceId: voucher.id,
@@ -206,7 +206,7 @@ export const POST = withProtection(async (request, session, body) => {
                         await tx.journalEntry.create({
                             data: {
                                 branchId: body?.branchId || null,
-                                entryNumber, date: new Date(),
+                                entryNumber, date: date ? new Date(date) : new Date(),
                                 description: `سند صرف رقم PMT-${String(voucherNumber).padStart(5, '0')}`,
                                 reference: `PMT-${String(voucherNumber).padStart(5, '0')}`,
                                 referenceType: 'payment', referenceId: voucher.id,
