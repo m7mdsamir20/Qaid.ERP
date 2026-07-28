@@ -78,6 +78,91 @@ export function generateZatcaTLV(sellerName: string, vatNumber: string, timestam
 }
 
 // ═══════════════════════════════════════════════
+//  Inline QR Code Script (no external API)
+//  Draws a QR code on <canvas id="zatca-qr"> from its data-qr attribute
+// ═══════════════════════════════════════════════
+export const ZATCA_QR_INLINE_SCRIPT = `
+<script>
+(function(){
+  // Minimal QR Code generator (alphanumeric/byte mode, error correction L)
+  // Based on qr.js - MIT license - condensed for inline use
+  function generateQR(data){
+    var PAD0=0xEC,PAD1=0x11;
+    function _getUTF8Length(s){var l=0;for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);if(c<=0x7F)l++;else if(c<=0x7FF)l+=2;else if(c<=0xFFFF)l+=3;else l+=4;}return l;}
+    var QRMode={MODE_8BIT_BYTE:4};
+    var QRErrorCorrectLevel={L:1};
+    function QR8BitByte(d){this.data=d;}
+    QR8BitByte.prototype={getLength:function(){return _getUTF8Length(this.data);},write:function(buf){for(var i=0;i<this.data.length;i++){var c=this.data.charCodeAt(i);if(c<=0x7F){buf.put(c,8);}else if(c<=0x7FF){buf.put(0xC0|(c>>6),8);buf.put(0x80|(c&0x3F),8);}else if(c<=0xFFFF){buf.put(0xE0|(c>>12),8);buf.put(0x80|((c>>6)&0x3F),8);buf.put(0x80|(c&0x3F),8);}}}};
+    function QRBitBuffer(){this.buffer=[];this.length=0;}
+    QRBitBuffer.prototype={get:function(i){return((this.buffer[Math.floor(i/8)]>>>(7-i%8))&1)==1;},put:function(n,l){for(var i=0;i<l;i++)this.putBit(((n>>>(l-i-1))&1)==1);},getLengthInBits:function(){return this.length;},putBit:function(b){if(this.length%8==0)this.buffer.push(0);if(b)this.buffer[Math.floor(this.length/8)]|=(0x80>>>(this.length%8));this.length++;}};
+    function QRPolynomial(n,s){if(typeof n.length=='undefined')throw n.length+'/'+s;var o=0;while(o<n.length&&n[o]==0)o++;this.num=new Array(n.length-o+s);for(var i=0;i<n.length-o;i++)this.num[i]=n[i+o];}
+    QRPolynomial.prototype={get:function(i){return this.num[i];},getLength:function(){return this.num.length;},multiply:function(e){var n=new Array(this.getLength()+e.getLength()-1);for(var i=0;i<this.getLength();i++)for(var j=0;j<e.getLength();j++)n[i+j]^=QRMath.gexp(QRMath.glog(this.get(i))+QRMath.glog(e.get(j)));return new QRPolynomial(n,0);},mod:function(e){if(this.getLength()-e.getLength()<0)return this;var r=QRMath.glog(this.get(0))-QRMath.glog(e.get(0));var n=new Array(this.getLength());for(var i=0;i<this.getLength();i++)n[i]=this.get(i);for(var i=0;i<e.getLength();i++)n[i]^=QRMath.gexp(QRMath.glog(e.get(i))+r);return new QRPolynomial(n,0).mod(e);}};
+    var QRMath={glog:function(n){if(n<1)throw'glog('+n+')';return QRMath.LOG_TABLE[n];},gexp:function(n){while(n<0)n+=255;while(n>=256)n-=255;return QRMath.EXP_TABLE[n];},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)};
+    for(var i=0;i<8;i++)QRMath.EXP_TABLE[i]=1<<i;
+    for(var i=8;i<256;i++)QRMath.EXP_TABLE[i]=QRMath.EXP_TABLE[i-4]^QRMath.EXP_TABLE[i-5]^QRMath.EXP_TABLE[i-6]^QRMath.EXP_TABLE[i-8];
+    for(var i=0;i<255;i++)QRMath.LOG_TABLE[QRMath.EXP_TABLE[i]]=i;
+    var QRUtil={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:(1<<10)|(1<<8)|(1<<5)|(1<<4)|(1<<2)|(1<<1)|(1<<0),G18:(1<<12)|(1<<11)|(1<<10)|(1<<9)|(1<<8)|(1<<5)|(1<<2)|(1<<0),G15_MASK:(1<<14)|(1<<12)|(1<<10)|(1<<4)|(1<<1),getBCHTypeInfo:function(d){var d2=d<<10;while(QRUtil.getBCHDigit(d2)-QRUtil.getBCHDigit(QRUtil.G15)>=0)d2^=(QRUtil.G15<<(QRUtil.getBCHDigit(d2)-QRUtil.getBCHDigit(QRUtil.G15)));return((d<<10)|d2)^QRUtil.G15_MASK;},getBCHTypeNumber:function(d){var d2=d<<12;while(QRUtil.getBCHDigit(d2)-QRUtil.getBCHDigit(QRUtil.G18)>=0)d2^=(QRUtil.G18<<(QRUtil.getBCHDigit(d2)-QRUtil.getBCHDigit(QRUtil.G18)));return(d<<12)|d2;},getBCHDigit:function(d){var digit=0;while(d!=0){digit++;d>>>=1;}return digit;},getPatternPosition:function(t){return QRUtil.PATTERN_POSITION_TABLE[t-1];},getMask:function(m,i,j){switch(m){case 0:return(i+j)%2==0;case 1:return i%2==0;case 2:return j%3==0;case 3:return(i+j)%3==0;case 4:return(Math.floor(i/2)+Math.floor(j/3))%2==0;case 5:return(i*j)%2+(i*j)%3==0;case 6:return((i*j)%2+(i*j)%3)%2==0;case 7:return((i*j)%3+(i+j)%2)%2==0;default:throw'bad mask:'+m;}},getErrorCorrectPolynomial:function(l){var a=new QRPolynomial([1],0);for(var i=0;i<l;i++)a=a.multiply(new QRPolynomial([1,QRMath.gexp(i)],0));return a;},getLengthInBits:function(mode,type){return(type>=1&&type<=9)?8:(type<=26)?16:16;},getLostPoint:function(qr){var mc=qr.getModuleCount(),lp=0;for(var r=0;r<mc;r++)for(var c=0;c<mc;c++){var sameCount=0,dark=qr.isDark(r,c);for(var dr=-1;dr<=1;dr++){if(r+dr<0||mc<=r+dr)continue;for(var dc=-1;dc<=1;dc++){if(c+dc<0||mc<=c+dc)continue;if(dr==0&&dc==0)continue;if(dark==qr.isDark(r+dr,c+dc))sameCount++;}}if(sameCount>5)lp+=(3+sameCount-5);}for(var r=0;r<mc-1;r++)for(var c=0;c<mc-1;c++){var count=0;if(qr.isDark(r,c))count++;if(qr.isDark(r+1,c))count++;if(qr.isDark(r,c+1))count++;if(qr.isDark(r+1,c+1))count++;if(count==0||count==4)lp+=3;}for(var r=0;r<mc;r++)for(var c=0;c<mc-6;c++)if(qr.isDark(r,c)&&!qr.isDark(r,c+1)&&qr.isDark(r,c+2)&&qr.isDark(r,c+3)&&qr.isDark(r,c+4)&&!qr.isDark(r,c+5)&&qr.isDark(r,c+6))lp+=40;for(var c=0;c<mc;c++)for(var r=0;r<mc-6;r++)if(qr.isDark(r,c)&&!qr.isDark(r+1,c)&&qr.isDark(r+2,c)&&qr.isDark(r+3,c)&&qr.isDark(r+4,c)&&!qr.isDark(r+5,c)&&qr.isDark(r+6,c))lp+=40;var dc=0;for(var c=0;c<mc;c++)for(var r=0;r<mc;r++)if(qr.isDark(r,c))dc++;var ratio=Math.abs(100*dc/mc/mc-50)/5;lp+=ratio*10;return lp;}};
+    var RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]];
+    function QRRSBlock(tc,dc){this.totalCount=tc;this.dataCount=dc;}
+    QRRSBlock.getRSBlocks=function(t,e){var rsBlock=RS_BLOCK_TABLE[(t-1)*4+(e==1?0:e==0?1:e==3?2:3)];if(!rsBlock)throw'bad rs block @ typeNumber:'+t+'/errorCorrectLevel:'+e;var length=rsBlock.length/3,list=[];for(var i=0;i<length;i++){var count=rsBlock[i*3+0],totalCount=rsBlock[i*3+1],dataCount=rsBlock[i*3+2];for(var j=0;j<count;j++)list.push(new QRRSBlock(totalCount,dataCount));}return list;};
+    function QRCodeModel(typeNumber,errorCorrectLevel){this.typeNumber=typeNumber;this.errorCorrectLevel=errorCorrectLevel;this.modules=null;this.moduleCount=0;this.dataCache=null;this.dataList=[];}
+    QRCodeModel.prototype={addData:function(d){this.dataList.push(new QR8BitByte(d));this.dataCache=null;},isDark:function(r,c){if(r<0||this.moduleCount<=r||c<0||this.moduleCount<=c)throw r+','+c;return this.modules[r][c];},getModuleCount:function(){return this.moduleCount;},make:function(){this.makeImpl(false,this.getBestMaskPattern());},makeImpl:function(test,maskPattern){this.moduleCount=this.typeNumber*4+17;this.modules=new Array(this.moduleCount);for(var r=0;r<this.moduleCount;r++){this.modules[r]=new Array(this.moduleCount);for(var c=0;c<this.moduleCount;c++)this.modules[r][c]=null;}this.setupPositionProbePattern(0,0);this.setupPositionProbePattern(this.moduleCount-7,0);this.setupPositionProbePattern(0,this.moduleCount-7);this.setupPositionAdjustPattern();this.setupTimingPattern();this.setupTypeInfo(test,maskPattern);if(this.typeNumber>=7)this.setupTypeNumber(test);if(this.dataCache==null)this.dataCache=QRCodeModel.createData(this.typeNumber,this.errorCorrectLevel,this.dataList);this.mapData(this.dataCache,maskPattern);},setupPositionProbePattern:function(row,col){for(var r=-1;r<=7;r++){if(row+r<=-1||this.moduleCount<=row+r)continue;for(var c=-1;c<=7;c++){if(col+c<=-1||this.moduleCount<=col+c)continue;if((0<=r&&r<=6&&(c==0||c==6))||(0<=c&&c<=6&&(r==0||r==6))||(2<=r&&r<=4&&2<=c&&c<=4))this.modules[row+r][col+c]=true;else this.modules[row+r][col+c]=false;}}},getBestMaskPattern:function(){var minLostPoint=0,pattern=0;for(var i=0;i<8;i++){this.makeImpl(true,i);var lostPoint=QRUtil.getLostPoint(this);if(i==0||minLostPoint>lostPoint){minLostPoint=lostPoint;pattern=i;}}return pattern;},setupTimingPattern:function(){for(var r=8;r<this.moduleCount-8;r++){if(this.modules[r][6]!=null)continue;this.modules[r][6]=(r%2==0);}for(var c=8;c<this.moduleCount-8;c++){if(this.modules[6][c]!=null)continue;this.modules[6][c]=(c%2==0);}},setupPositionAdjustPattern:function(){var pos=QRUtil.getPatternPosition(this.typeNumber);for(var i=0;i<pos.length;i++)for(var j=0;j<pos.length;j++){var row=pos[i],col=pos[j];if(this.modules[row][col]!=null)continue;for(var r=-2;r<=2;r++)for(var c=-2;c<=2;c++)if(r==-2||r==2||c==-2||c==2||(r==0&&c==0))this.modules[row+r][col+c]=true;else this.modules[row+r][col+c]=false;}},setupTypeNumber:function(test){var bits=QRUtil.getBCHTypeNumber(this.typeNumber);for(var i=0;i<18;i++){var mod=(!test&&((bits>>i)&1)==1);this.modules[Math.floor(i/3)][i%3+this.moduleCount-8-3]=mod;}for(var i=0;i<18;i++){var mod=(!test&&((bits>>i)&1)==1);this.modules[i%3+this.moduleCount-8-3][Math.floor(i/3)]=mod;}},setupTypeInfo:function(test,maskPattern){var data=(1<<3)|maskPattern;var bits=QRUtil.getBCHTypeInfo(data);for(var i=0;i<15;i++){var mod=(!test&&((bits>>i)&1)==1);if(i<6)this.modules[i][8]=mod;else if(i<8)this.modules[i+1][8]=mod;else this.modules[this.moduleCount-15+i][8]=mod;}for(var i=0;i<15;i++){var mod=(!test&&((bits>>i)&1)==1);if(i<8)this.modules[8][this.moduleCount-i-1]=mod;else if(i<9)this.modules[8][15-i-1+1]=mod;else this.modules[8][15-i-1]=mod;}this.modules[this.moduleCount-8][8]=(!test);},mapData:function(data,maskPattern){var inc=-1,row=this.moduleCount-1,bitIndex=7,byteIndex=0;for(var col=this.moduleCount-1;col>0;col-=2){if(col==6)col--;while(true){for(var c=0;c<2;c++){if(this.modules[row][col-c]==null){var dark=false;if(byteIndex<data.length)dark=(((data[byteIndex]>>>bitIndex)&1)==1);if(QRUtil.getMask(maskPattern,row,col-c))dark=!dark;this.modules[row][col-c]=dark;bitIndex--;if(bitIndex==-1){byteIndex++;bitIndex=7;}}}row+=inc;if(row<0||this.moduleCount<=row){row-=inc;inc=-inc;break;}}}}};
+    QRCodeModel.createData=function(typeNumber,errorCorrectLevel,dataList){var rsBlocks=QRRSBlock.getRSBlocks(typeNumber,errorCorrectLevel);var buffer=new QRBitBuffer();for(var i=0;i<dataList.length;i++){var data=dataList[i];buffer.put(QRMode.MODE_8BIT_BYTE,4);buffer.put(data.getLength(),QRUtil.getLengthInBits(QRMode.MODE_8BIT_BYTE,typeNumber));data.write(buffer);}var totalDataCount=0;for(var i=0;i<rsBlocks.length;i++)totalDataCount+=rsBlocks[i].dataCount;if(buffer.getLengthInBits()>totalDataCount*8)throw'code length overflow.('+buffer.getLengthInBits()+'>'+totalDataCount*8+')';if(buffer.getLengthInBits()+4<=totalDataCount*8)buffer.put(0,4);while(buffer.getLengthInBits()%8!=0)buffer.putBit(false);while(true){if(buffer.getLengthInBits()>=totalDataCount*8)break;buffer.put(PAD0,8);if(buffer.getLengthInBits()>=totalDataCount*8)break;buffer.put(PAD1,8);}return QRCodeModel.createBytes(buffer,rsBlocks);};
+    QRCodeModel.createBytes=function(buffer,rsBlocks){var offset=0,maxDcCount=0,maxEcCount=0,dcdata=new Array(rsBlocks.length),ecdata=new Array(rsBlocks.length);for(var r=0;r<rsBlocks.length;r++){var dcCount=rsBlocks[r].dataCount,ecCount=rsBlocks[r].totalCount-dcCount;maxDcCount=Math.max(maxDcCount,dcCount);maxEcCount=Math.max(maxEcCount,ecCount);dcdata[r]=new Array(dcCount);for(var i=0;i<dcdata[r].length;i++)dcdata[r][i]=0xff&buffer.buffer[i+offset];offset+=dcCount;var rsPoly=QRUtil.getErrorCorrectPolynomial(ecCount);var rawPoly=new QRPolynomial(dcdata[r],rsPoly.getLength()-1);var modPoly=rawPoly.mod(rsPoly);ecdata[r]=new Array(rsPoly.getLength()-1);for(var i=0;i<ecdata[r].length;i++){var modIndex=i+modPoly.getLength()-ecdata[r].length;ecdata[r][i]=(modIndex>=0)?modPoly.get(modIndex):0;}}var totalCodeCount=0;for(var i=0;i<rsBlocks.length;i++)totalCodeCount+=rsBlocks[i].totalCount;var data=new Array(totalCodeCount);var index=0;for(var i=0;i<maxDcCount;i++)for(var r=0;r<rsBlocks.length;r++)if(i<dcdata[r].length)data[index++]=dcdata[r][i];for(var i=0;i<maxEcCount;i++)for(var r=0;r<rsBlocks.length;r++)if(i<ecdata[r].length)data[index++]=ecdata[r][i];return data;};
+
+    // Find appropriate type number for the data
+    function getTypeNumber(data) {
+      for (var t = 1; t <= 40; t++) {
+        try {
+          var qr = new QRCodeModel(t, QRErrorCorrectLevel.L);
+          qr.addData(data);
+          qr.make();
+          return t;
+        } catch (e) { continue; }
+      }
+      return 10;
+    }
+
+    // Draw QR on canvas
+    var canvas = document.getElementById('zatca-qr');
+    if (canvas) {
+      var qrData = canvas.getAttribute('data-qr');
+      if (qrData) {
+        try {
+          var typeNum = getTypeNumber(qrData);
+          var qr = new QRCodeModel(typeNum, QRErrorCorrectLevel.L);
+          qr.addData(qrData);
+          qr.make();
+          var mc = qr.getModuleCount();
+          var size = 80;
+          var cellSize = size / mc;
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, size, size);
+          ctx.fillStyle = '#000000';
+          for (var r = 0; r < mc; r++) {
+            for (var c = 0; c < mc; c++) {
+              if (qr.isDark(r, c)) {
+                ctx.fillRect(c * cellSize, r * cellSize, cellSize + 0.5, cellSize + 0.5);
+              }
+            }
+          }
+        } catch (e) {
+          // Fallback: show text
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0,0,80,80);
+          ctx.fillStyle = '#999';
+          ctx.font = '10px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('QR Error', 40, 44);
+        }
+      }
+    }
+})();
+<\\/script>`;
+
+// ═══════════════════════════════════════════════
 //  A4 INVOICE (مبيعات / مشتريات / مرتجعات)
 // ═══════════════════════════════════════════════
 export function generateA4HTML(
@@ -165,12 +250,13 @@ export function generateA4HTML(
     const invoiceTaxAmount = Number(invoice.taxAmount || 0);
     const taxInclusive = invoice.taxInclusive || false;
 
-    // ZATCA QR Code for Saudi Arabia
+    // ZATCA QR Code for Saudi Arabia (only if tax number exists)
     const totalTaxAmount = invoiceTaxAmount > 0 ? invoiceTaxAmount
         : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-    const zatcaQR = isSaudi ? generateZatcaTLV(
+    const hasValidTax = !!(isSaudi && co.tax && co.tax.trim());
+    const zatcaQR = hasValidTax ? generateZatcaTLV(
         co.name,
-        co.tax || '000000000000000',
+        co.tax!,
         dateISO,
         total.toFixed(2),
         totalTaxAmount.toFixed(2)
@@ -303,8 +389,8 @@ tbody tr:nth-child(even){background: #fff;}
         ${invoice.customerPONumber ? `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${invoice.customerPONumber}</div>` : ''}
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
-        ${isSaudi
-            ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />`
+        ${hasValidTax
+            ? `<canvas id="zatca-qr" width="80" height="80" style="width:80px;height:80px;display:inline-block;" data-qr="${zatcaQR}"></canvas>`
             : (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : '')
         }
     </div>
@@ -545,6 +631,7 @@ tbody tr:nth-child(even){background: #fff;}
         </div>
     </div>
 </div>
+${hasValidTax ? ZATCA_QR_INLINE_SCRIPT : ''}
 ${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
 window.onload = () => { setTimeout(() => window.print(), 500); };
@@ -780,10 +867,11 @@ export function generateQuotationHTML(
     const dateISO = new Date(quotation.date || new Date()).toISOString();
     const quoNum = String(quotation.quotationNumber || quotation.orderNumber || 1).padStart(5, '0');
 
-    // ZATCA QR Code for Saudi Arabia
-    const zatcaQR = isSaudi ? generateZatcaTLV(
+    // ZATCA QR Code for Saudi Arabia (only if tax number exists)
+    const hasValidTax = !!(isSaudi && co.tax && co.tax.trim());
+    const zatcaQR = hasValidTax ? generateZatcaTLV(
         co.name,
-        co.tax || '000000000000000',
+        co.tax!,
         dateISO,
         total.toFixed(2),
         taxAmt.toFixed(2)
@@ -877,8 +965,8 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
             <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
         </div>
         <div class="co-block" style="flex:1.2; text-align:left">
-            ${isSaudi
-                ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />`
+            ${hasValidTax
+                ? `<canvas id="zatca-qr" width="80" height="80" style="width:80px;height:80px;display:inline-block;" data-qr="${zatcaQR}"></canvas>`
                 : (co.logo ? `<img src="${co.logo}" alt=""/>` : '')
             }
         </div>
@@ -1049,6 +1137,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </div>
     </div>
 </div>
+${hasValidTax ? ZATCA_QR_INLINE_SCRIPT : ''}
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;

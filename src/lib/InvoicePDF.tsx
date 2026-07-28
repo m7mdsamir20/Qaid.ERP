@@ -192,7 +192,8 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
     const prefix            = isServicesLine ? 'SRV' : (PREFIXES[type] || 'INV');
 
     // ZATCA QR (Saudi)
-    const zatcaQR = isSaudi ? generateZatcaTLV(company?.name || '', company?.taxNumber || '000000000000000', dateISO, total.toFixed(2), displayTax.toFixed(2)) : '';
+    const hasValidTax = !!(isSaudi && company?.taxNumber && company.taxNumber.trim());
+    const zatcaQR = hasValidTax ? generateZatcaTLV(company?.name || '', company.taxNumber!.trim(), dateISO, total.toFixed(2), displayTax.toFixed(2)) : '';
     const qrUrl   = zatcaQR ? `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}` : '';
 
     // Balance — mirrors HTML logic exactly

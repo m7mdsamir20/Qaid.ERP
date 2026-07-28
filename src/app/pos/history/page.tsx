@@ -9,7 +9,7 @@ import DataTable from '@/components/DataTable';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
-import { generateZatcaTLV } from '@/lib/printInvoices';
+import { generateZatcaTLV, ZATCA_QR_INLINE_SCRIPT } from '@/lib/printInvoices';
 
 const t = (s: string) => s;
 
@@ -373,16 +373,17 @@ export default function OrdersHistoryPage() {
                     ${footerHtml}
                 </div>
 
-                ${orderData.company?.countryCode === 'SA' ? `
+                ${(orderData.company?.countryCode === 'SA' && orderData.company?.taxNumber && orderData.company.taxNumber.trim()) ? `
                 <div style="text-align: center; margin-top: 15px;">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(generateZatcaTLV(
-                orderData.company.name || '',
-                orderData.company.taxNumber || '000000000000000',
-                new Date(orderData.createdAt || Date.now()).toISOString(),
-                finalTotal.toFixed(2),
-                orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
-            ))}" style="width: 120px; height: 120px; display: inline-block;" alt="ZATCA QR" />
+                    <canvas id="zatca-qr" width="120" height="120" style="width: 120px; height: 120px; display: inline-block;" data-qr="${generateZatcaTLV(
+                        orderData.company.name || '',
+                        orderData.company.taxNumber.trim(),
+                        new Date(orderData.createdAt || Date.now()).toISOString(),
+                        finalTotal.toFixed(2),
+                        orderData.taxAmount ? Number(orderData.taxAmount).toFixed(2) : '0.00'
+                    )}"></canvas>
                 </div>
+                ${ZATCA_QR_INLINE_SCRIPT}
                 ` : ''}
             </body>
             </html>
