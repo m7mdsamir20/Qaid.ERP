@@ -557,7 +557,7 @@ function SettingsContent() {
                 setCompany(data.company);
                 setUsers(data.users || []);
                 if (data.company) {
-                    const cForm = { name: data.company.name || '', nameEn: data.company.nameEn || '', phone: data.company.phone || '', email: data.company.email || '', addressRegion: data.company.addressRegion || '', addressCity: data.company.addressCity || '', addressDistrict: data.company.addressDistrict || '', addressStreet: data.company.addressStreet || '', taxNumber: (data.company.taxNumber || '').replace(/,/g, ''), commercialRegister: (data.company.commercialRegister || '').replace(/,/g, ''), website: data.company.website || '', logo: data.company.logo || '' };
+                    const cForm = { name: data.company.name || '', nameEn: data.company.nameEn || '', phone: (data.company.phone || '').replace(/,/g, ''), email: data.company.email || '', addressRegion: data.company.addressRegion || '', addressCity: data.company.addressCity || '', addressDistrict: data.company.addressDistrict || '', addressStreet: data.company.addressStreet || '', taxNumber: (data.company.taxNumber || '').replace(/,/g, ''), commercialRegister: (data.company.commercialRegister || '').replace(/,/g, ''), website: data.company.website || '', logo: data.company.logo || '' };
 
                     const standardCurrencies = ['EGP', 'SAR', 'AED', 'KWD', 'USD', 'QAR', 'BHD', 'OMR', 'JOD', 'LYD', 'IQD', 'TRY', 'EUR', 'GBP', 'LBP', 'SYP', 'YER', 'TND', 'DZD', 'MAD', 'SDG'];
                     const isCustom = data.company.currency && !standardCurrencies.includes(data.company.currency);

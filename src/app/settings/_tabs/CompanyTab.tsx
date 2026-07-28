@@ -200,7 +200,7 @@ export default function CompanyTab({
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: ph.phone },
+                            { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: ph.phone, isNumber: true },
                             { label: t('البريد الإلكتروني'), key: 'email', dir: 'ltr', icon: <Mail size={15} />, placeholder: 'info@company.com' },
                             { label: t('الموقع الإلكتروني'), key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
                         ].map((f, i, arr) => (
@@ -211,9 +211,19 @@ export default function CompanyTab({
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: f.dir as any,  padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input
+                                            placeholder={f.placeholder}
+                                            style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, direction: f.dir as any, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: f.isNumber ? OUTFIT : CAIRO }}
+                                            value={f.isNumber ? String((companyForm as any)[f.key] || '').replace(/,/g, '') : (companyForm as any)[f.key]}
+                                            onChange={e => {
+                                                const val = f.isNumber ? e.target.value.replace(/,/g, '') : e.target.value;
+                                                setCompanyForm((p: any) => ({ ...p, [f.key]: val }));
+                                            }}
+                                        />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: f.isNumber ? OUTFIT : CAIRO }}>
+                                            {f.isNumber ? (String((companyForm as any)[f.key] || '').replace(/,/g, '') || t('لم يُضف بعد')) : ((companyForm as any)[f.key] || t('لم يُضف بعد'))}
+                                        </div>
                                     )}
                                 </div>
                             </div>
