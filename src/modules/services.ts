@@ -20,6 +20,7 @@ const services: ActivityModule = {
         EXCLUSIVE_PAGES.coupons,
         EXCLUSIVE_PAGES.restaurantReports,
         EXCLUSIVE_PAGES.installmentReports,
+        EXCLUSIVE_PAGES.salesRepsReports,
         // ملحوظة: /service-catalog و reports-services ظاهرين هنا عمداً
     ],
 
@@ -37,6 +38,12 @@ const services: ActivityModule = {
         '/stocktakings': t_s('جرد الخدمات'),
         '/warehouse-transfers': t_s('تحويل المخزون'),
         // /units و /service-catalog أسماءهم الأصلية مناسبة للخدمات أصلاً
+
+        // تابات التقارير — لولا التخصيص ده كان هيبقى في تابين اسمهم
+        // "تقارير الخدمات" في نفس الصفحة
+        'reports-sales-purchases': t_s('الخدمات والمشتريات'),
+        'reports-inventory': t_s('تقارير الخدمات'),
+        'reports-services': t_s('عقود الخدمة وأوامر العمل'),
     },
 
     terms: {

@@ -25,6 +25,7 @@ const restaurants: ActivityModule = {
         EXCLUSIVE_PAGES.serviceCatalog,
         EXCLUSIVE_PAGES.servicesReports,
         EXCLUSIVE_PAGES.installmentReports,
+        EXCLUSIVE_PAGES.salesRepsReports,
         '/settlements',
         // دورة الفواتير التقليدية مستبدلة بالكاشير
         '/quotations',

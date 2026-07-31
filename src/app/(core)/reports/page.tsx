@@ -10,6 +10,7 @@ import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, Shoppin
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 import { useActivity } from '@/modules/useActivity';
+import { activityPageLabel, activitySectionTitle } from '@/modules';
 
 /* ── Report Link Types ── */
 interface ReportLink {
@@ -40,7 +41,7 @@ function ReportsHubPageInner() {
     const { data: session } = useSession();
     const router = useRouter();
 
-    const { key: businessType, isServices, isContracting } = useActivity();
+    const { activity, key: businessType, isServices, isContracting } = useActivity();
 
     const userPermissions = session?.user?.permissions || {};
     const isAdmin = session?.user?.role === 'admin' || session?.user?.isSuperAdmin;
@@ -200,39 +201,50 @@ function ReportsHubPageInner() {
         ],
     };
 
+    /**
+     * اسم التاب — من نفس المصدر اللي بيبني تاب الصلاحيات في السوبر أدمن،
+     * عشان الاسم اللي بتشوفه هناك يبقى هو نفسه اللي هنا بالظبط.
+     * الاحتياطي بييجي من navigation.ts.
+     */
+    const tabLabel = (key: string, fallback: string) =>
+        t(activityPageLabel(activity, `reports-${key}`, fallback));
+
     const TABS: ModuleTab[] = [
-        { 
-            key: 'financial', 
-            label: t('التقارير المالية'), 
+        {
+            key: 'financial',
+            label: tabLabel('financial', 'التقارير المالية'),
             icon: Wallet,
             requiredFeatures: ['accounting'],
             requiredPages: ['/accounts']
         },
-        { 
-            key: 'sales-purchases', 
+        {
+            key: 'sales-purchases',
             label: (() => {
-                const salesLabel = isContracting ? t('الأعمال والمبيعات') : isServices ? t('الخدمات') : t('المبيعات');
+                const full = tabLabel('sales-purchases', 'المبيعات والمشتريات');
                 const canSeeSales = hasPageAccess('/sales', 'sales');
                 const canSeePurchases = hasPageAccess('/purchases', 'purchases');
-                if (canSeeSales && canSeePurchases) return `${salesLabel} ${t('والمشتريات')}`;
-                if (canSeeSales) return salesLabel;
+                // لو المستخدم شايف الاتنين → الاسم الكامل زي ما هو في الصلاحيات
+                if (canSeeSales && canSeePurchases) return full;
+                // لو شايف واحد بس → نضيّق الاسم عشان مايبقاش مضلل
+                if (canSeeSales) return t(activitySectionTitle(activity, 'sales', 'المبيعات'));
                 if (canSeePurchases) return t('المشتريات');
-                return isContracting ? t('الأعمال والمبيعات والمشتريات') : isServices ? t('تقارير الخدمات') : t('تقارير المبيعات');
+                return full;
             })(),
             icon: ShoppingCart,
             requiredFeatures: ['sales', 'purchases']
         },
-        { 
-            key: 'inventory', 
-            label: isContracting ? t('تقارير المواد والمواقع') : isServices ? t('تقارير الخدمات') : t('تقارير المخزون'), 
+        {
+            key: 'inventory',
+            label: tabLabel('inventory', 'تقارير المخزون'),
             icon: isServices ? Layers : Package,
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
         },
-        { 
-            key: 'partners', 
+        {
+            key: 'partners',
             label: (() => {
-                if (hasCustomers && hasSuppliers) return isContracting ? t('أصحاب المشاريع والموردين') : t('العملاء والموردين');
+                const full = tabLabel('partners', 'العملاء والموردين');
+                if (hasCustomers && hasSuppliers) return full;
                 if (hasCustomers) return isContracting ? t('تقارير أصحاب المشاريع') : t('تقارير العملاء');
                 return t('تقارير الموردين');
             })(),
@@ -241,42 +253,42 @@ function ReportsHubPageInner() {
         },
         { 
             key: 'treasury-bank', 
-            label: t('الخزن والبنوك'), 
+            label: tabLabel('treasury-bank', 'الخزن والبنوك'),
             icon: Landmark,
             requiredFeatures: ['treasury'],
             requiredPages: ['/treasuries']
         },
         { 
             key: 'hr', 
-            label: t('تقارير الموظفين'), 
+            label: tabLabel('hr', 'تقارير الموظفين'),
             icon: Users,
             requiredFeatures: ['hr'],
             requiredPages: ['/employees']
         },
         { 
             key: 'installments', 
-            label: t('تقارير الأقساط'), 
+            label: tabLabel('installments', 'تقارير الأقساط'),
             icon: CreditCard,
             requiredFeatures: ['installments'],
             requiredPages: ['/installments']
         },
         ...(businessType === 'RESTAURANTS' ? [{
             key: 'restaurant',
-            label: t('تقارير المطعم والمطبخ'),
+            label: tabLabel('restaurant', 'تقارير المطعم'),
             icon: BookOpen,
             requiredFeatures: ['inventory'],
             requiredPages: ['/items']
         }] : []),
         ...(businessType === 'SERVICES' ? [{
             key: 'services',
-            label: t('تقارير الخدمات'),
+            label: tabLabel('services', 'تقارير الخدمات'),
             icon: FileCheck,
             requiredFeatures: ['services'],
             requiredPages: ['/service-contracts', '/work-orders']
         }] : []),
         ...(businessType === 'TRADING' ? [{
             key: 'sales_reps',
-            label: t('تقارير المناديب'),
+            label: tabLabel('sales_reps', 'تقارير المناديب'),
             icon: UserCheck,
             requiredFeatures: ['sales_reps'],
             requiredPages: ['/sales-reps']

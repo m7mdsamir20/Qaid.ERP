@@ -35,6 +35,8 @@ export const EXCLUSIVE_PAGES = {
     servicesReports: 'reports-services',
     /** تقارير الأقساط → الأنشطة اللي عندها قسم أقساط بس */
     installmentReports: 'reports-installments',
+    /** تقارير المناديب → TRADING بس (نفس شرط قسم مناديب المبيعات) */
+    salesRepsReports: 'reports-sales_reps',
     /** كوبونات الخصم → RESTAURANTS بس */
     coupons: '/coupons',
 } as const;

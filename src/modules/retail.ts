@@ -23,6 +23,7 @@ const retail: ActivityModule = {
         EXCLUSIVE_PAGES.restaurantReports,
         EXCLUSIVE_PAGES.servicesReports,
         EXCLUSIVE_PAGES.installmentReports,
+        EXCLUSIVE_PAGES.salesRepsReports,
         '/settlements',   // تسوية الديون مش من نمط التجزئة
         '/quotations',    // البيع فوري — مفيش عروض أسعار
         '/sales-orders',  // البيع فوري — مفيش أوامر بيع

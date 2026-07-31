@@ -24,6 +24,7 @@ const contracting: ActivityModule = {
         EXCLUSIVE_PAGES.restaurantReports,
         EXCLUSIVE_PAGES.servicesReports,
         EXCLUSIVE_PAGES.installmentReports,
+        EXCLUSIVE_PAGES.salesRepsReports,
         '/sale-returns',  // الأعمال المنفّذة ما بترجّعش
         '/settlements',
     ],
