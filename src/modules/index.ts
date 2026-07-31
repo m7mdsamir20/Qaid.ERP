@@ -17,3 +17,9 @@ export {
 } from './registry';
 
 export { CORE_SECTIONS, CORE_MODULES } from './shared';
+
+export {
+    ruleForPath,
+    isExemptPath,
+    isPathAllowedForActivity,
+} from './routes';
