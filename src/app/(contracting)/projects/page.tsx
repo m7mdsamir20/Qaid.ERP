@@ -13,6 +13,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
+import { useActivity } from '@/modules/useActivity';
 
 interface Project {
     id: string;
@@ -41,9 +42,8 @@ interface Project {
 export default function ProjectsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
     const { fMoney } = useCurrency();
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
+    const { isContracting } = useActivity();
 
     const [projects, setProjects] = useState<Project[]>([]);
     const [stats, setStats] = useState<any>(null);

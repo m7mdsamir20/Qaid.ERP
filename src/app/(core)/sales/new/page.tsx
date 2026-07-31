@@ -14,7 +14,7 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
-
+import { useActivity } from '@/modules/useActivity';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
@@ -26,17 +26,13 @@ interface InvoiceLine { itemId: string; itemCode: string; itemName: string; unit
 
 const getUnitName = (u: any) => !u ? '' : typeof u === 'string' ? u : (u.name || u.nameEn || '');
 
-
-
-
 function NewSalePageInner() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isContracting = businessType === 'CONTRACTING';
+    const { isServices, isContracting } = useActivity();
+
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
@@ -61,7 +57,6 @@ function NewSalePageInner() {
     const [fromQuotation, setFromQuotation] = useState<any>(null);
     const workOrderId = searchParams.get('workOrderId');
     const [fromWorkOrder, setFromWorkOrder] = useState<any>(null);
-
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<HTMLInputElement>(null);
@@ -1070,7 +1065,6 @@ function NewSalePageInner() {
                                 </div>
                             )}
                         </div>
-
 
                         {/* Notes */}
                         <div style={SC}>

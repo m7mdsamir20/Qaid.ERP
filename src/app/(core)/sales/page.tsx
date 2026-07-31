@@ -13,6 +13,8 @@ import { useTranslation } from '@/lib/i18n';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 interface Invoice {
     id: string;
@@ -96,17 +98,15 @@ export default function SalesPage() {
         printInvoiceDirectly(inv.id);
     };
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isContracting = businessType === 'CONTRACTING';
+    const { term, key: activityKey, isServices, isContracting } = useActivity();
 
     const columns: TableColumn[] = [
         {
-            header: isContracting ? t("رقم الفاتورة / المستخلص") : t("رقم الفاتورة"),
+            header: t(term('invoiceNumber')),
             type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                    {`${isServices ? 'SRV' : isContracting ? 'CON' : 'SAL'}-${String(inv.invoiceNumber).padStart(5, '0')}`}
+                    {getInvoiceRef(inv.invoiceNumber, 'sale', activityKey)}
                 </span>
             ),
             style: { width: '120px' }
@@ -120,11 +120,11 @@ export default function SalesPage() {
             }
         },
         {
-            header: isContracting ? t("العميل / صاحب المشروع") : t("العميل"),
+            header: t(term('customer')),
             type: 'text',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                    {inv.customer ? inv.customer.name : isContracting ? t("صاحب مشروع نقدي") : t("عميل نقدي")}
+                    {inv.customer ? inv.customer.name : t(term('customerCash'))}
                 </span>
             )
         },

@@ -14,7 +14,7 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
-
+import { useActivity } from '@/modules/useActivity';
 
 /* ── Types ── */
 interface Customer { id: string; name: string; phone?: string; balance: number; }
@@ -54,8 +54,6 @@ interface SaleInvoice {
     }[];
 }
 
-
-
 const t = (s: string) => s;
 
 const RETURN_REASONS = [
@@ -75,14 +73,13 @@ const fmt = (v: any) => {
     return formatNumber(n);
 };
 
-
 export default function NewReturnPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
+
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
@@ -222,8 +219,6 @@ export default function NewReturnPage() {
             })
             .catch(() => setLines([]));
     }, [form.originalInvoiceId]);
-
-
 
     /* ── Toggle line selection ── */
     const toggleLine = (idx: number) => {
@@ -625,7 +620,6 @@ export default function NewReturnPage() {
                                     <span style={{ fontSize: '12px', color: C.textSecondary }}>{isServices ? t('عدد الخدمات الملغاة') : t('عدد الأصناف المرتجعة')}</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('بند')}</span>
                                 </div>
-
 
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '14px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>

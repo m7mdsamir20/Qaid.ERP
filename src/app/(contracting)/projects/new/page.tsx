@@ -10,13 +10,13 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import CustomSelect from '@/components/CustomSelect';
+import { useActivity } from '@/modules/useActivity';
 
 export default function NewProjectPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
+    const { isContracting } = useActivity();
 
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState('');

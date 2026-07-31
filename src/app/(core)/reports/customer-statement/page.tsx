@@ -16,6 +16,7 @@ import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -58,8 +59,7 @@ interface CustomerStatementData {
 export default function CustomerStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
-    const isServices = (session?.user as any)?.businessType === 'SERVICES';
+    const { isServices } = useActivity();
     const { fMoney, symbol, currency } = useCurrency();
 
     const [customers, setCustomers] = useState<Customer[]>([]);

@@ -11,7 +11,7 @@ import { DataTable } from '@/components/DataTable';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
-
+import { useActivity } from '@/modules/useActivity';
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -36,8 +36,7 @@ export default function SaleReturnsListPage() {
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
 
     const isAdmin = session?.user?.role === 'admin';
     const perms = (session?.user as any)?.permissions || {};

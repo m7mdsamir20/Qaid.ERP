@@ -7,13 +7,12 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { ArrowRight, ArrowLeft, Printer, ScrollText, Calendar, Loader2, TrendingUp, TrendingDown, History, FileText, User, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { useActivity } from '@/modules/useActivity';
 
 export default function CustomerLedgerPage({ params }: { params: Promise<{ id: string }> }) {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
 
     const resolvedParams = use(params);
     const customerId = resolvedParams.id;

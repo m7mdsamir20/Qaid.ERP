@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { generateZatcaTLV, generateQRSVG } from '@/lib/printInvoices';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 
@@ -220,9 +221,8 @@ export default function POSPage() {
     const userRole = (session?.user as any)?.role?.toLowerCase();
     const isSuperAdmin = userRole === 'super-admin';
     const isAdmin = userRole === 'admin';
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isRestaurants = businessType === 'RESTAURANTS';
-    const isRetail = businessType === 'RETAIL';
+    const { isRestaurants, isRetail } = useActivity();
+
     const userPerms = (session?.user as any)?.permissions || {};
     const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
 
@@ -265,7 +265,6 @@ export default function POSPage() {
             } catch (e) { }
         }
     }, [isRetail]);
-
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
@@ -1425,7 +1424,8 @@ export default function POSPage() {
                                 )}
                             </button>
                         </div>
-                        </div>
+
+                        </div>
 
                     {/* السلة */}
                     <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>

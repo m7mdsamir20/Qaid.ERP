@@ -14,7 +14,7 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import PriceInput from '@/components/PriceInput';
-
+import { useActivity } from '@/modules/useActivity';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; }
 interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; }
@@ -33,8 +33,8 @@ export default function NewQuotationPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
+
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;

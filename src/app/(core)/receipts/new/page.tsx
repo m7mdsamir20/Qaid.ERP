@@ -12,7 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { formatNumber } from '@/lib/currency';
-
+import { useActivity } from '@/modules/useActivity';
 
 /* ── Types ── */
 interface Customer { id: string; name: string; balance: number; }
@@ -23,8 +23,7 @@ export default function NewReceiptPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
-    const { data: session } = useSession();
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
+    const { isContracting } = useActivity();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [partners, setPartners] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -76,7 +75,6 @@ export default function NewReceiptPage() {
                 const tData = await treaRes.json();
                 const tArray = Array.isArray(tData) ? tData : [];
                 setTreasuries(tArray);
-
 
                 const defaultCash = tArray.find((t: any) => t.type !== 'bank');
                 if (defaultCash) setForm((f: any) => ({ ...f, treasuryId: defaultCash.id }));

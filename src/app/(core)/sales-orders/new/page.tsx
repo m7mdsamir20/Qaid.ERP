@@ -12,6 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
+import { useActivity } from '@/modules/useActivity';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; }
 interface Warehouse { id: string; name: string; }
@@ -27,8 +28,7 @@ export default function NewSalesOrderPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isContracting = businessType === 'CONTRACTING';
+    const { isContracting } = useActivity();
 
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];

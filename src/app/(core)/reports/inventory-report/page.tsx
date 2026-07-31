@@ -7,7 +7,6 @@ import { formatNumber, getCurrencySymbol } from '@/lib/currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 
-
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
@@ -17,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { Package, Search, Activity, Box, DollarSign, Loader2, TrendingUp } from 'lucide-react';
 import { SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useActivity } from '@/modules/useActivity';
 
 interface BranchOption {
     id: string;
@@ -41,8 +41,8 @@ export default function InventoryReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = session?.user?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
+
     const currency = session?.user?.currency || 'EGP';
     const { fMoneyJSX } = useCurrency();
 

@@ -15,6 +15,7 @@ import { C, CAIRO, OUTFIT, IS, PAGE_BASE } from '@/constants/theme';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import StatCard, { StatCardGrid } from '@/components/StatCard';
+import { useActivity } from '@/modules/useActivity';
 
 interface Invoice {
     id: string;
@@ -44,8 +45,8 @@ export default function SalesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = session?.user?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
+
     const { symbol: sym } = useCurrency();
     const fmt = (n: number) => formatNumber(n);
     const [data, setData] = useState<ReportData | null>(null);

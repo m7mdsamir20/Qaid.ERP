@@ -12,14 +12,13 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, TABLE_STYLE, SC, STitle } from '@/cons
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { printQuotationDirectly, downloadQuotationPDF } from '@/lib/printDirectly';
-
+import { useActivity } from '@/modules/useActivity';
 
 export default function QuotationViewPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const params = useParams();
     const router = useRouter();
-    const { data: session } = useSession();
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [quotation, setQuotation] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -38,8 +37,7 @@ export default function QuotationViewPage() {
         }
     };
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
 
     const fetchData = useCallback(async () => {
         setLoading(true);

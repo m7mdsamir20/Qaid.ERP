@@ -12,6 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
+import { useActivity } from '@/modules/useActivity';
 
 interface ReturnInvoice {
     id: string;
@@ -47,7 +48,6 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
     const params = use(props.params);
     const router = useRouter();
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
-    const { data: session } = useSession();
     const [invoice, setInvoice] = useState<ReturnInvoice | null>(null);
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
@@ -87,7 +87,7 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
 
     const fmt = (v: number) => formatNumber(v);
 
-    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
+    const { isServices } = useActivity();
     const invLabel = isServices ? t('إلغاء خدمة / مرتجع') : t('مرتجع مبيعات');
     const invPrefix = isServices ? 'SRV-RET' : 'SRET';
     const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;

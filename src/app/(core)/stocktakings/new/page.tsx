@@ -9,6 +9,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { ClipboardList, ListChecks, Loader2, Printer, Building2, ArrowRight, Save, CheckCircle2, FileText, AlertTriangle } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { useActivity } from '@/modules/useActivity';
 
 interface Warehouse { id: string; name: string }
 interface Item { id: string; name: string }
@@ -24,8 +25,7 @@ export default function NewStocktakingPage() {
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     
-    const { data: session } = useSession();
-    const isRestaurants = (session?.user as any)?.businessType?.toUpperCase() === 'RESTAURANTS';
+    const { isRestaurants } = useActivity();
 
     const [form, setForm] = useState({
         date: new Date().toISOString().split('T')[0],

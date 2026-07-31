@@ -22,6 +22,7 @@ import BranchesTab from './_tabs/BranchesTab';
 import DatabaseTab from './_tabs/DatabaseTab';
 import RestaurantTab from './_tabs/RestaurantTab';
 import ApiTab from './_tabs/ApiTab';
+import { useActivity } from '@/modules/useActivity';
 
 /* ══════════════════════════════════════════
    MAIN PAGE
@@ -53,13 +54,9 @@ function SettingsContent() {
     const [showBranchModal, setShowBranchModal] = useState(false);
     const [isSavingBranch, setIsSavingBranch] = useState(false);
 
-
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isRestaurants = businessType === 'RESTAURANTS';
-    const isContracting = businessType === 'CONTRACTING';
+    const { key: businessType, isServices, isRestaurants, isContracting } = useActivity();
 
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -650,7 +647,6 @@ function SettingsContent() {
         } finally { setIsSaving(false); }
     };
 
-
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault(); setIsSaving(true);
         try {
@@ -760,7 +756,6 @@ function SettingsContent() {
             { id: 'api', icon: Key, label: t('ربط API خارجي'), featureKey: 'settings', pageId: '/settings/api' },
         ] : []),
     ].filter(tab => hasPage(tab.featureKey, tab.pageId));
-
 
     /* ══════════════════════════════════════════
        RENDER

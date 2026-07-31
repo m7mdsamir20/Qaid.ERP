@@ -19,6 +19,7 @@ import Link from 'next/link';
 import CustomSelect from '@/components/CustomSelect';
 import { getCountryPlaceholders } from '@/lib/placeholders';
 import { getAddressConfig } from '@/lib/addressConfig';
+import { useActivity } from '@/modules/useActivity';
 
 interface Customer {
     id: string;
@@ -46,9 +47,8 @@ export default function CustomersPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isContracting = businessType === 'CONTRACTING';
+    const { key: businessType, isServices, isContracting } = useActivity();
+
     const ph = getCountryPlaceholders((session?.user as any)?.countryCode);
     const countryCode = (session?.user as any)?.countryCode || 'EG';
     const addrCfg = getAddressConfig(countryCode);

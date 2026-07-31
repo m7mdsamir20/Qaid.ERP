@@ -9,6 +9,7 @@ import type { LucideIcon } from 'lucide-react';
 import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2, Award, CalendarCheck, UserCheck, HandCoins, Target, FileCheck, Wrench } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
+import { useActivity } from '@/modules/useActivity';
 
 /* ── Report Link Types ── */
 interface ReportLink {
@@ -39,9 +40,7 @@ function ReportsHubPageInner() {
     const { data: session } = useSession();
     const router = useRouter();
 
-    const businessType = session?.user?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isContracting = businessType === 'CONTRACTING';
+    const { key: businessType, isServices, isContracting } = useActivity();
 
     const userPermissions = session?.user?.permissions || {};
     const isAdmin = session?.user?.role === 'admin' || session?.user?.isSuperAdmin;

@@ -7,6 +7,7 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 import { QrCode, Printer, Download, RefreshCw, Loader2, Table2 } from 'lucide-react';
 
 import { useSession } from 'next-auth/react';
+import { useActivity } from '@/modules/useActivity';
 
 export default function BarcodePage() {
     const { t, lang } = useTranslation();
@@ -19,8 +20,7 @@ export default function BarcodePage() {
     const [baseUrl, setBaseUrl] = useState('');
     const canvasRefs = useRef<Record<string, HTMLCanvasElement | null>>({});
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isRestaurants = businessType === 'RESTAURANTS';
+    const { isRestaurants } = useActivity();
 
     useEffect(() => {
         if (typeof window !== 'undefined') setBaseUrl(window.location.origin);

@@ -10,6 +10,7 @@ import { C, CAIRO, OUTFIT, IS, TABLE_STYLE } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
 import { generateZatcaTLV, generateQRSVG } from '@/lib/printInvoices';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 
@@ -34,9 +35,7 @@ export default function OrdersHistoryPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
     const { fMoneyJSX } = useCurrency();
-    const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isRetail = businessType === 'RETAIL';
+    const { isRetail } = useActivity();
 
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

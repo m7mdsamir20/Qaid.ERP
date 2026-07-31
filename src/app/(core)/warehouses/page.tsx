@@ -12,6 +12,7 @@ import AppModal from '@/components/AppModal';
 import { useSession } from 'next-auth/react';
 import { DataTable } from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import { useActivity } from '@/modules/useActivity';
 
 interface WarehouseItem {
     id: string;
@@ -34,10 +35,8 @@ export default function WarehousesPage() {
     const [deleteItem, setDeleteItem] = useState<WarehouseItem | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 15;
-    const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isRestaurant = businessType === 'RESTAURANTS';
-    const isContracting = businessType === 'CONTRACTING';
+    const { isRestaurants: isRestaurant, isContracting } = useActivity();
+
     
     const [form, setForm] = useState({ name: '', address: '', code: '' });
 

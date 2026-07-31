@@ -7,6 +7,7 @@ import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut, 
 
 import PageHeader from '@/components/PageHeader';
 import { useSession } from 'next-auth/react';
+import { useActivity } from '@/modules/useActivity';
 
 export default function KDSPage() {
     const { t, lang } = useTranslation();
@@ -22,8 +23,8 @@ export default function KDSPage() {
     const userRole = (session?.user as any)?.role?.toLowerCase();
     const isSuperAdmin = userRole === 'super-admin';
     const isAdmin = userRole === 'admin';
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isRestaurants = businessType === 'RESTAURANTS';
+    const { isRestaurants } = useActivity();
+
     const userPerms = (session?.user as any)?.permissions || {};
     const hasKDSPerm = userPerms['/kds']?.view || userRole === 'chef' || isSuperAdmin || isAdmin;
 
@@ -104,8 +105,6 @@ export default function KDSPage() {
             setUpdatingId(null);
         }
     };
-
-
 
     const formatElapsedTime = (dateString: string) => {
         const diffMs = Math.max(0, now - new Date(dateString).getTime());

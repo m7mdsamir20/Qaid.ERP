@@ -13,8 +13,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Package, TrendingUp, Search, Activity } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-
-
+import { useActivity } from '@/modules/useActivity';
 
 interface TopSellingItem {
     id: string;
@@ -31,8 +30,8 @@ export default function TopSellingReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = session?.user?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const { isServices } = useActivity();
+
     const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<TopSellingItem[]>([]);

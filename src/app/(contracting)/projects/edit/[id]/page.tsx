@@ -11,14 +11,14 @@ import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
+import { useActivity } from '@/modules/useActivity';
 
 export default function EditProjectPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const params = useParams();
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
+    const { isContracting } = useActivity();
     const id = params.id as string;
 
     const [loading, setLoading] = useState(true);

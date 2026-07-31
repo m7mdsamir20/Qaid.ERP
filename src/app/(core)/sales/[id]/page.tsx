@@ -15,7 +15,7 @@ import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
-
+import { useActivity } from '@/modules/useActivity';
 
 interface ReturnInvoice {
     id: string;
@@ -166,7 +166,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     const status = getStatus();
 
-    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
+    const { isServices } = useActivity();
     const invLabel = isServices ? t('فاتورة خدمات') : t('فاتورة مبيعات');
     const invPrefix = isServices ? 'SRV' : 'SAL';
     const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;

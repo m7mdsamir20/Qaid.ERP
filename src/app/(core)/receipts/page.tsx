@@ -13,7 +13,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { printVoucherDirectly, downloadVoucherPDF } from '@/lib/printDirectly';
 import { DataTable } from '@/components/DataTable';
-
+import { useActivity } from '@/modules/useActivity';
 
 /* ── Types ── */
 interface Voucher {
@@ -29,7 +29,7 @@ export default function ReceiptVouchersPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING';
+    const { isContracting } = useActivity();
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [vouchers, setVouchers] = useState<Voucher[]>([]);

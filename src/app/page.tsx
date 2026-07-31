@@ -16,6 +16,7 @@ import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 
@@ -179,8 +180,6 @@ function ChartTooltip({ active, payload, label, fMoneyJSX, t }: any) {
   );
 }
 
-
-
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
   const { fMoneyJSX } = useCurrency();
@@ -190,10 +189,8 @@ export default function DashboardPage() {
   const userRole = (session?.user as any)?.role;
   const userPerms = (session?.user as any)?.permissions || {};
   const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
-  const businessType = (session?.user as any)?.businessType?.toUpperCase();
-  const isServices = businessType === 'SERVICES';
-  const isRestaurants = businessType === 'RESTAURANTS';
-  const isContracting = businessType === 'CONTRACTING';
+  const { key: businessType, isServices, isRestaurants, isContracting } = useActivity();
+
   const isUserAdmin = userRole === 'admin';
 
   // Get subscription features for admin checks
@@ -242,7 +239,6 @@ export default function DashboardPage() {
   };
 
   const canViewDashboard = hasPage('/', 'dashboard');
-
 
   // Redirect if no permission
   useEffect(() => {
@@ -341,7 +337,6 @@ export default function DashboardPage() {
   const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
   const renderCurrency = (n: number) => fMoneyJSX(n);
 
-
   if (!canViewDashboard) return (
     <DashboardLayout>
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
@@ -350,7 +345,6 @@ export default function DashboardPage() {
       </div>
     </DashboardLayout>
   );
-
 
   const getVisibleActions = () => {
     const serviceActions = [
@@ -451,7 +445,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
 
         {/* ── KPI Cards Grid (Dynamic) ── */}
         <div className="kpi-grid" style={{

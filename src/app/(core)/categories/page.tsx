@@ -9,6 +9,7 @@ import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY, focusIn, focusOut, TA
 import { useSession } from 'next-auth/react';
 import { DataTable } from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import { useActivity } from '@/modules/useActivity';
 
 interface Category {
     id: string;
@@ -36,10 +37,7 @@ export default function CategoriesPage() {
     const canCreate = true;
     const canEdit = true;
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
-    const isRestaurant = businessType === 'RESTAURANTS';
-    const isContracting = businessType === 'CONTRACTING';
+    const { isServices, isRestaurants: isRestaurant, isContracting } = useActivity();
 
     const [form, setForm] = useState({ id: '', name: '', code: '' });
 
