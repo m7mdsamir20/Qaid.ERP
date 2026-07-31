@@ -16,8 +16,29 @@
 | `types.ts` | شكل الـ `ActivityModule` |
 | `shared.ts` | الأقسام والباقات المشتركة بين كل الأنشطة |
 | `registry.ts` | بيجمع الأنشطة + دوال الاستعلام |
+| `routes.ts` | خريطة المسار → القسم، عشان حماية الـ middleware |
 | `index.ts` | نقطة الدخول — استورد من `@/modules` بس |
 | `trading.ts` `retail.ts` `services.ts` `restaurants.ts` `contracting.ts` | نشاط لكل ملف |
+
+## تنظيم الصفحات (Route Groups)
+
+صفحات كل نشاط متجمّعة في مجلد بين قوسين. **الأقواس مش بتظهر في الـ URL** —
+`src/app/(restaurants)/kds/page.tsx` لسه بيتفتح على `/kds` بالظبط.
+
+```
+src/app/
+  (core)/         الصفحات المشتركة بين كل الأنشطة (المبيعات، المشتريات، المخزون، الحسابات، HR…)
+  (pos)/          pos — مشترك بين التجزئة والمطاعم
+  (restaurants)/  tables shifts kds kitchen modifiers delivery barcode restaurant menu
+  (contracting)/  projects progress-bills subcontractors sub-contracts material-requests daily-site-reports
+  (services)/     service-contracts work-orders service-catalog
+  (retail)/       loyalty serial-numbers
+  (trading)/      sales-reps installments due-installments overdue-installments
+  api/
+```
+
+⚠️ لو ضفت أو نقلت صفحة نشاط، حدّث `ROUTE_RULES` في `routes.ts` كمان —
+الجروبات تنظيم بصري بس، الحماية الفعلية من الخريطة دي.
 
 ## الطبقات الثلاثة
 
@@ -66,7 +87,9 @@ export default clinics;
 
 ## الحالة الحالية
 
-اتعمل: `Sidebar` · `DashboardLayout` · `Header` · صفحة التسجيل · السوبر أدمن (إنشاء/تعديل)
+اتعمل:
+- `Sidebar` · `DashboardLayout` · `Header` · صفحة التسجيل · السوبر أدمن (إنشاء/تعديل)
+- حماية المسارات على مستوى السيرفر في `middleware.ts`
+- تجميع الصفحات في route groups
 
-لسه: ~45 ملف فيهم شروط `businessType` متفرقة (فواتير، طباعة، تقارير، POS)،
-وحماية المسارات على مستوى `middleware.ts`.
+لسه: ~45 ملف فيهم شروط `businessType` متفرقة (الفواتير، الطباعة، التقارير، POS).
