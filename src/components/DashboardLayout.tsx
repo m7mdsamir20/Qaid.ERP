@@ -9,6 +9,7 @@ import TrialBanner from '@/components/TrialBanner';
 import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';
+import { getActivity, activityHasPage } from '@/modules';
 import { useMemo, useCallback } from 'react';
 
 export default function DashboardLayout({
@@ -67,6 +68,7 @@ export default function DashboardLayout({
     }, [status, session, pathname]);
 
     const user = session?.user as any;
+    const activity = getActivity(user?.businessType);
     const isSuperAdmin = !!user?.isSuperAdmin;
     const userRole = user?.role;
     const featuresRaw = user?.subscription?.features;
@@ -105,17 +107,9 @@ export default function DashboardLayout({
         try {
             if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
-            const businessType = user?.businessType?.toUpperCase() || 'TRADING';
-            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
-            const contractingFeatures = ['projects', 'subcontractors'];
-
-            if (restaurantFeatures.includes(featureKey) && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return false;
-            if (['tables', 'kitchen', 'delivery', 'barcode'].includes(featureKey) && businessType !== 'RESTAURANTS') return false;
-            if (contractingFeatures.includes(featureKey) && businessType !== 'CONTRACTING') return false;
-            if (pageId === 'reports-restaurant' && businessType !== 'RESTAURANTS') return false;
-            if (pageId === 'reports-installments' && businessType === 'CONTRACTING') return false;
-            if (pageId === '/settlements' && (businessType === 'CONTRACTING' || businessType === 'RETAIL')) return false;
-            if (['/quotations', '/sales-orders'].includes(pageId) && businessType === 'RETAIL') return false;
+            // طبقة النشاط — نفس المصدر اللي بيستخدمه السايدبار بالظبط،
+            // عشان ما يحصلش إن لينك يبان في القائمة وبعدين الجارد يرميك على /
+            if (!activityHasPage(activity, featureKey, pageId)) return false;
 
             // 1. فحص الاشتراك (يطبق على الجميع بما فيهم الأدمن، باستثناء ميزة الإعدادات)
             if (hasSubscription && Object.keys(enabledFeatures).length > 0 && featureKey !== 'settings') {
@@ -136,7 +130,7 @@ export default function DashboardLayout({
             if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
         } catch { return true; }
-    }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, user]);
+    }, [activity, isSuperAdmin, userRole, hasSubscription, enabledFeatures, user]);
 
     useEffect(() => {
         if (status !== 'authenticated' || !user) return;

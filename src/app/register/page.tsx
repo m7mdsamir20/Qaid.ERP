@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Eye, EyeOff, Loader2, ChevronDown, Search, Check, Sun, Moon } from 'lucide-react';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
 import { getCountryPlaceholders } from '@/lib/placeholders';
+import { ACTIVITY_LIST } from '@/modules';
 import { useTheme } from '@/components/Providers';
 
 const t = (s: string) => s;
@@ -31,13 +32,8 @@ const COUNTRIES = [
     { code: 'SD', dial: '+249', name: t('السودان'), flag: '🇸🇩', currency: 'SDG', timezone: 'Africa/Khartoum' },
 ];
 
-const BUSINESS_TYPES = (t: any) => [
-    { value: "TRADING",     label: t('نشاط تجارة الجملة') },
-    { value: "RETAIL",      label: t('نشاط تجارة التجزئة') },
-    { value: "SERVICES",    label: t('نشاط خدمات (استشارات، صيانة، إلخ)') },
-    { value: "RESTAURANTS", label: t('مطاعم وكافيهات') },
-    { value: "CONTRACTING", label: t('مقاولات وإنشاءات') },
-];
+const BUSINESS_TYPES = (t: any) =>
+    ACTIVITY_LIST.map(a => ({ value: a.key, label: t(a.label) }));
 
 export default function RegisterPage() {
     const { lang, t, toggleLang } = useTranslation();

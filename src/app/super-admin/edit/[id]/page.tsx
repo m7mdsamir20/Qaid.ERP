@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
+import { ACTIVITY_LIST } from '@/modules';
 import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
 import CustomSelect from '@/components/CustomSelect';
@@ -18,35 +19,12 @@ const PLANS = {
     custom: { label: t_s('مخصص'), color: '#34d399', days: 0 },
 };
 
-// الـ featureKeys الصحيحة من navSections:
-// dashboard, sales, installments, purchases, inventory, accounting, treasury, hr, partners, fixed_assets, reports, settings
-const BUSINESS_TYPES = [
-    {
-        value: "TRADING",
-        label: t_s("نشاط تجارة الجملة"),
-        modules: ['sales', 'sales_reps', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'fixed_assets', 'reports']
-    },
-    {
-        value: "RETAIL",
-        label: t_s("نشاط تجارة التجزئة"),
-        modules: ['sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'loyalty', 'reports', 'pos', 'barcode']
-    },
-    {
-        value: "SERVICES",
-        label: t_s("نشاط خدمات (استشارات، صيانة، إلخ)"),
-        modules: ['sales', 'services', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'partners', 'reports']
-    },
-    {
-        value: "RESTAURANTS",
-        label: t_s("مطاعم وكافيهات"),
-        modules: ['sales', 'pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'loyalty', 'reports']
-    },
-    {
-        value: "CONTRACTING",
-        label: t_s("مقاولات وإنشاءات"),
-        modules: ['projects', 'subcontractors', 'site_management', 'sales', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
-    },
-];
+// الأنشطة وباقاتها الافتراضية بتيجي من سجل الأنشطة الموحّد — src/modules/
+const BUSINESS_TYPES = ACTIVITY_LIST.map(a => ({
+    value: a.key,
+    label: a.label,
+    modules: a.defaultModules,
+}));
 
 const COUNTRIES = [
     { value: 'EG', label: t_s('🇪🇬 مصر') },
