@@ -109,7 +109,9 @@ export default function DashboardLayout({
 
             // طبقة النشاط — نفس المصدر اللي بيستخدمه السايدبار بالظبط،
             // عشان ما يحصلش إن لينك يبان في القائمة وبعدين الجارد يرميك على /
-            if (!activityHasPage(activity, featureKey, pageId)) return false;
+            // السوبر أدمن مستثنى: يقدر يفتح أي صفحة باللينك المباشر حتى لو
+            // نشاط شركته ما بيدعمهاش (زي الـ middleware بالظبط).
+            if (!isSuperAdmin && !activityHasPage(activity, featureKey, pageId)) return false;
 
             // 1. فحص الاشتراك (يطبق على الجميع بما فيهم الأدمن، باستثناء ميزة الإعدادات)
             if (hasSubscription && Object.keys(enabledFeatures).length > 0 && featureKey !== 'settings') {

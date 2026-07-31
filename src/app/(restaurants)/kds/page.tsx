@@ -21,7 +21,8 @@ export default function KDSPage() {
     const [updatingId, setUpdatingId] = useState<string | null>(null);
 
     const userRole = (session?.user as any)?.role?.toLowerCase();
-    const isSuperAdmin = userRole === 'super-admin';
+    // الـ session بتحدد السوبر أدمن بـ isSuperAdmin مش بـ role
+    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin || userRole === 'super-admin';
     const isAdmin = userRole === 'admin';
     const { isRestaurants } = useActivity();
 
@@ -57,7 +58,7 @@ export default function KDSPage() {
 
     if (status === 'loading') { return <StandaloneSkeleton isRtl={isRtl} />; }
 
-    if (status === 'unauthenticated' || !isRestaurants || !hasKDSPerm) {
+    if (status === 'unauthenticated' || (!isRestaurants && !isSuperAdmin) || !hasKDSPerm) {
         return (
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0f172a', gap: '16px', fontFamily: CAIRO }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>

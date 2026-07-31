@@ -219,9 +219,12 @@ export default function POSPage() {
     const [activeVariantItem, setActiveVariantItem] = useState<any>(null);
 
     const userRole = (session?.user as any)?.role?.toLowerCase();
-    const isSuperAdmin = userRole === 'super-admin';
+    // الـ session بتحدد السوبر أدمن بـ isSuperAdmin مش بـ role — الدور بيفضل 'admin'
+    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin || userRole === 'super-admin';
     const isAdmin = userRole === 'admin';
     const { isRestaurants, isRetail } = useActivity();
+    // السوبر أدمن يفتح الكاشير باللينك المباشر مهما كان نشاط شركته
+    const activityAllowsPos = isRestaurants || isRetail || isSuperAdmin;
 
     const userPerms = (session?.user as any)?.permissions || {};
     const hasPosPerm = userPerms['/pos']?.view || userRole === 'cashier' || isSuperAdmin || isAdmin;
@@ -252,10 +255,10 @@ export default function POSPage() {
     };
 
     useEffect(() => { 
-        if (status === 'authenticated' && (isRestaurants || isRetail) && hasPosPerm) {
+        if (status === 'authenticated' && activityAllowsPos && hasPosPerm) {
             load(); 
         }
-    }, [load, status, isRestaurants, isRetail, hasPosPerm]);
+    }, [load, status, activityAllowsPos, hasPosPerm]);
 
     useEffect(() => {
         if (isRetail) {
@@ -1250,7 +1253,7 @@ export default function POSPage() {
         return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, color: C.textPrimary }}><Loader2 size={48} style={{ animation: 'spin 1s linear infinite' }} /></div>;
     }
 
-    if (status === 'unauthenticated' || (!isRestaurants && !isRetail) || !hasPosPerm) {
+    if (status === 'unauthenticated' || !activityAllowsPos || !hasPosPerm) {
         return (
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, gap: '16px', fontFamily: CAIRO }}>
                 <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>

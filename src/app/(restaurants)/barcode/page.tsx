@@ -21,6 +21,8 @@ export default function BarcodePage() {
     const canvasRefs = useRef<Record<string, HTMLCanvasElement | null>>({});
 
     const { isRestaurants } = useActivity();
+    // السوبر أدمن يفتح الصفحة باللينك المباشر مهما كان نشاط شركته
+    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
 
     useEffect(() => {
         if (typeof window !== 'undefined') setBaseUrl(window.location.origin);
@@ -45,7 +47,7 @@ export default function BarcodePage() {
         return <DashboardLayout><div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div></DashboardLayout>;
     }
 
-    if (status === 'unauthenticated' || !isRestaurants) {
+    if (status === 'unauthenticated' || (!isRestaurants && !isSuperAdmin)) {
         return (
             <DashboardLayout>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '16px', fontFamily: CAIRO }}>
