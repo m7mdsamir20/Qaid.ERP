@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getActivity } from '@/modules';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -29,7 +30,7 @@ export const GET = withProtection(async (request, session) => {
         chartStart.setDate(chartStart.getDate() - 6);
         chartStart.setHours(0, 0, 0, 0);
 
-        const isServices = user.businessType === 'SERVICES';
+        const isServices = getActivity(user.businessType).key === 'SERVICES';
 
         const safeQuery = async (fn: any, fallback: any) => {
             try { return await fn(); }

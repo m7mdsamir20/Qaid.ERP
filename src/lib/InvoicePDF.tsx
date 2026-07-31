@@ -3,6 +3,7 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import { getCurrencySymbol } from '@/lib/currency';
 import { generateZatcaTLV } from '@/lib/printInvoices';
+import { getActivity } from '@/modules';
 
 /* ── Font registration ──────────────────────────────────────────── */
 let _fontsReady = false;
@@ -150,8 +151,8 @@ interface Props { invoice: any; company: any; type: string; partyBalance?: numbe
 function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
     const sym            = getCurrencySymbol(company?.currency || 'EGP');
     const country        = (company?.countryCode || 'EG').toUpperCase();
-    const isServicesComp = company?.businessType?.toUpperCase() === 'SERVICES';
-    const isTrading      = company?.businessType?.toUpperCase() === 'TRADING';
+    const isServicesComp = getActivity(company?.businessType).key === 'SERVICES';
+    const isTrading      = getActivity(company?.businessType).key === 'TRADING';
     const isSaudi        = country === 'SA';
     const isEgypt        = country === 'EG';
     const isBilingual    = country !== 'EG' || isServicesComp;
@@ -159,6 +160,7 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
 
     const rawLines  = invoice?.lines || invoice?.items || [];
     const lines: any[] = Array.isArray(rawLines) ? rawLines : [];
+    // ⚠️ الشق التاني ميت — نفس الملاحظة اللي في printInvoices.ts
     const isServicesLine = isServicesComp || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
 
     const party        = isSale ? (invoice.customer || invoice.supplier || null) : (invoice.supplier || invoice.customer || null);

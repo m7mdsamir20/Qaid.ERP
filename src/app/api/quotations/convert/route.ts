@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { getActivity } from '@/modules';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const branchId = (session.user as any).activeBranchId === 'all' ? null : (session.user as any).activeBranchId;
-        const isServices = (session.user as any).businessType === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
         const { quotationId, invoiceId } = body;
 
         // If invoiceId is provided, we just want to link and mark as converted

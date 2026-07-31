@@ -744,7 +744,7 @@ function NewSalePageInner() {
                                         </div>
                                     )}
                                 </div>
-                                {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                {!isServices && (
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                             <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الصرف')}</label>
@@ -941,7 +941,7 @@ function NewSalePageInner() {
                                 </button>
                             </div>
 
-                            {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
+                            {isServices && entryItemId && (
                                 <div style={{ animation: 'slideDown 0.2s ease', marginTop: '14px' }}>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الوصف (يتم سحبه تلقائياً ويمكن التعديل)')}</label>
                                     <textarea

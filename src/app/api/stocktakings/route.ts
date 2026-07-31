@@ -2,6 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { generateNextCode } from '@/lib/autoId';
+import { getActivity } from '@/modules';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -22,7 +23,7 @@ export const GET = withProtection(async (request, session) => {
 });
 
 export const POST = withProtection(async (request, session, body) => {
-    if ((session.user as any).businessType === 'SERVICES')
+    if (getActivity((session.user as any).businessType).key === 'SERVICES')
         return NextResponse.json({ error: 'النشاط الخدمي لا يدعم جرد المخازن' }, { status: 403 });
 
     try {

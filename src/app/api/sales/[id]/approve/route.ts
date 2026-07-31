@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getActivity } from '@/modules';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const POST = withProtection(async (request, session, body, context) => {
     try {
@@ -47,7 +49,7 @@ export const POST = withProtection(async (request, session, body, context) => {
             return NextResponse.json({ error: "الرجاء تحديد الخزينة أو الحساب البنكي لاستلام المبلغ المدفوع" }, { status: 400 });
         }
 
-        const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
 
         // 2. Stock Check (prevent negative stock on approval)
         if (invoice.warehouseId) {
@@ -339,8 +341,7 @@ export const POST = withProtection(async (request, session, body, context) => {
             return updatedInv;
         });
 
-        const prefix = (session.user as any).businessType?.toUpperCase() === 'SERVICES' ? 'SRV' : 'SAL';
-        const invCode = `${prefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+        const invCode = getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType);
         await logActivity({
             ...extractLogContext(session, request),
             action: 'approve',

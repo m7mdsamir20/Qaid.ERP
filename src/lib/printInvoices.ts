@@ -1,5 +1,6 @@
 import { getCurrencySymbol, formatMoney } from './currency';
 import QRCode from 'qrcode';
+import { getActivity } from '@/modules';
 
 export interface CompanyInfo {
     name?: string;
@@ -202,7 +203,7 @@ export function generateA4HTML(
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
-    const isServicesCompany = company.businessType?.toUpperCase() === 'SERVICES';
+    const isServicesCompany = getActivity(company.businessType).key === 'SERVICES';
     const isSaudi = country === 'SA';
     const isBilingual = country !== 'EG' || isServicesCompany; // كل الدول العربية ماعدا مصر + شركات الخدمات
     const addrLabels = {
@@ -234,7 +235,7 @@ export function generateA4HTML(
     const prefix = PREFIXES[type];
     const isReturn = type.includes('return');
     const isSale = type === 'sale' || type === 'sale-return' || type === 'sales-order';
-    const isTrading = company.businessType?.toUpperCase() === 'TRADING';
+    const isTrading = getActivity(company.businessType).key === 'TRADING';
 
     // Try all possible ways to find the party name and details
     const party = isSale
@@ -265,6 +266,11 @@ export function generateA4HTML(
     const invoiceNum = String(invoice.invoiceNumber || invoice.orderNumber || 1).padStart(5, '0');
 
     // تحديد ما إذا كان النشاط خدمياً
+    // ⚠️ الشق التاني ميت: Item مالهاش عمود businessType في prisma/schema.prisma
+    // (العمود ده على Company بس)، فـ l.item?.businessType دايماً undefined.
+    // المقصود على الأغلب كان l.item?.type === 'service' عشان شركة تجارية
+    // تبيع بند خدمي تطلع عمود "الخدمة". اتساب زي ما هو عشان ما نغيّرش
+    // شكل فاتورة بتروح للعميل من غير قرار.
     const isServicesLine = isServicesCompany || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
 
     // ضريبة على مستوى الفاتورة
@@ -1026,7 +1032,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <thead>
             <tr>
                 <th style="width:5%">${bl('م', '#')}</th>
-                <th style="width:35%;text-align:right">${company.businessType?.toUpperCase() === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
+                <th style="width:35%;text-align:right">${getActivity(company.businessType).key === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
                 <th style="width:8%">${bl('الوحدة', 'Unit')}</th>
                 <th style="width:8%">${bl('الكمية', 'Qty')}</th>
                 <th style="width:12%">${bl('السعر', 'Price')}</th>

@@ -14,6 +14,8 @@ import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
+import { useActivity } from '@/modules/useActivity';
+import { getActivity } from '@/modules';
 
 
 interface Supplier { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
@@ -37,7 +39,7 @@ export default function NewPurchasePage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
+    const { isServices, isContracting: isContractingUser } = useActivity();
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -45,7 +47,8 @@ export default function NewPurchasePage() {
     const [items, setItems] = useState<Item[]>([]);
     const [nextNum, setNextNum] = useState(1);
     const [company, setCompany] = useState<CompanyInfo>({});
-    const isContracting = (session?.user as any)?.businessType?.toUpperCase() === 'CONTRACTING' || company?.businessType?.toUpperCase() === 'CONTRACTING';
+    // بيتفحص من الاتنين لأن بيانات الشركة بتوصل بعد الـ session بشوية
+    const isContracting = isContractingUser || getActivity(company?.businessType).key === 'CONTRACTING';
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -147,7 +150,7 @@ export default function NewPurchasePage() {
             setTreasuries(Array.isArray(trs) ? trs : []);
 
             let fetchedItems = Array.isArray(its) ? its : (its.items || []);
-            if (companyData?.businessType?.toUpperCase() === 'RESTAURANTS') {
+            if (getActivity(companyData?.businessType).key === 'RESTAURANTS') {
                 fetchedItems = fetchedItems.filter((i: any) => i.type === 'raw');
             }
             setItems(fetchedItems);

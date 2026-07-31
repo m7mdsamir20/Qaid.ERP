@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getActivity } from '@/modules';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -151,7 +152,7 @@ export const POST = withProtection(async (request, session, body) => {
         // Use bankId if treasuryId is missing
         const effectiveTreasuryId = treasuryId || bankId;
 
-        const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
 
         // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط إذا كانت الفاتورة معتمدة وليست قيد الاعتماد)
         // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط إذا كانت الفاتورة معتمدة وليست قيد الاعتماد)

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getActivity } from '@/modules';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -25,7 +26,7 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         const branchId = (session.user as any).activeBranchId;
-        const isServices = (session.user as any).businessType === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
         const { customerId, warehouseId, originalInvoiceId, lines, discount, paidAmount, notes, treasuryId, bankId } = body;
 
         const effectiveTreasuryId = treasuryId || bankId;
