@@ -7,13 +7,8 @@ import { ChevronDown, ChevronUp, Loader2, Menu } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { navSections } from '@/constants/navigation';
-import {
-    getActivity,
-    activityHasSection,
-    activityHasPage,
-    activitySectionTitle,
-    activityPageLabel,
-} from '@/modules';
+import { getActivity } from '@/modules';
+import { buildNavForActivity } from '@/modules/nav';
 import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
@@ -154,28 +149,13 @@ export default function Sidebar({
     }, [pathname, mounted]);
 
     const sidebarItems = useMemo(() => {
-        return navSections.map((sectionOrigin: any) => {
-            const featureKey: string | undefined = sectionOrigin.featureKey;
+        // 1. طبقة النشاط: نفس الشجرة اللي بيستخدمها تاب الصلاحيات بالظبط
+        return buildNavForActivity(activity).map((section) => {
+            const featureKey = section.featureKey;
+            const sectionOrigin = { title: section.originalTitle };
 
-            // 1. طبقة النشاط: القسم متاح أصلاً للنشاط ده؟
-            if (!activityHasSection(activity, featureKey)) return null;
-
-            // 2. تسميات النشاط للقسم وروابطه
-            const section = {
-                ...sectionOrigin,
-                title: activitySectionTitle(activity, featureKey, sectionOrigin.title),
-                links: sectionOrigin.links?.map((l: any) => ({
-                    ...l,
-                    label: activityPageLabel(activity, l.id, l.label),
-                })),
-            };
-
-            // 3. طبقة النشاط للصفحات + طبقة الاشتراك والصلاحيات
-            const visibleLinks = section.links?.filter((l: any) =>
-                activityHasPage(activity, featureKey, l.id)
-                && hasPage(featureKey || '', l.id)
-                && !l.hideFromSidebar
-            ) || [];
+            // 2. طبقة الاشتراك والصلاحيات
+            const visibleLinks = section.links.filter(l => hasPage(featureKey || '', l.id));
 
             if (!hasFeature(featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;

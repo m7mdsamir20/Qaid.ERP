@@ -4,7 +4,8 @@ import { useSession } from 'next-auth/react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
-import { ACTIVITY_LIST } from '@/modules';
+import { ACTIVITY_LIST, getActivity } from '@/modules';
+import { buildNavForActivity } from '@/modules/nav';
 import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
 import CustomSelect from '@/components/CustomSelect';
@@ -187,113 +188,28 @@ export default function EditCompanyPage() {
         features: {} as Record<string, string[]>,
     });
 
+    // شجرة الصلاحيات — من نفس المصدر اللي بيبني السايدبار، عشان اللي
+    // تديه صلاحيته هنا يظهر فعلاً للمستخدم بنفس الاسم بالظبط.
     const uniqueSections = (() => {
+        const activity = getActivity(form.businessType);
+        const allowedModules = BUSINESS_TYPES.find(b => b.value === form.businessType)?.modules || [];
+        const alwaysAllow = ['dashboard', 'settings', 'activity_log'];
+
         const map = new Map<string, any>();
-        const isRestaurants = form.businessType === 'RESTAURANTS';
-        const isRetail = form.businessType === 'RETAIL';
-        const isContracting = form.businessType === 'CONTRACTING';
-        const isServices = form.businessType === 'SERVICES';
+        for (const section of buildNavForActivity(activity, { includeHiddenFromSidebar: true })) {
+            const key = section.featureKey;
+            if (!key || !section.links.length) continue;
+            // طبقة الاشتراك: القسم لازم يكون ضمن باقة النشاط
+            if (!alwaysAllow.includes(key) && !allowedModules.includes(key)) continue;
 
-        navSections.forEach(s => {
-            if (!s.featureKey) return;
-            if (!s.links || s.links.length === 0) return;
-
-            // فلتر عام: يُعرض القسم فقط إذا كان featureKey ضمن الـ modules المسموح بها للنشاط
-            const allowedModules = BUSINESS_TYPES.find(b => b.value === form.businessType)?.modules || [];
-            const alwaysAllow = ['dashboard', 'settings', 'activity_log'];
-            if (!alwaysAllow.includes(s.featureKey) && !allowedModules.includes(s.featureKey)) return;
-
-            let section = { ...s };
-
-            if ((isRetail || isRestaurants) && section.links) {
-                section.links = section.links.filter((l: any) => l.id !== '/settlements');
-            }
-
-            if (isContracting && section.featureKey === 'sales' && section.links) {
-                section.links = section.links.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id));
-            }
-
-            if (isContracting && section.links) {
-                if (section.featureKey === 'treasury') {
-                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
-                }
-                if (section.featureKey === 'reports') {
-                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments');
-                }
-            }
-
-            if (form.businessType === 'SERVICES') {
-                if (section.featureKey === 'sales') {
-                    section.title = t("فواتير الخدمات");
-                    section.links = section.links.filter((l: any) => !['/coupons', '/sales/representatives'].includes(l.id)).map((l: any) => {
-                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t("فواتير الخدمات") };
-                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t("مرتجع خدمات") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t("الخدمات");
-                    section.links = section.links.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
-                        if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
-                        if (l.id === '/warehouses') return { ...l, label: t("مخازن الخدمات") };
-                        if (l.id === '/stocktakings') return { ...l, label: t("جرد الخدمات") };
-                        if (l.id === '/warehouse-transfers') return { ...l, label: t("تحويل المخزون") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'treasury') {
-                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
-                }
-                if (section.featureKey === 'reports') {
-                    section.links = section.links.filter((l: any) => !['reports-restaurant', 'reports-installments'].includes(l.id)).map((l: any) => {
-                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الخدمات والمشتريات") };
-                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير الخدمات") };
-                        return l;
-                    });
-                }
-            } else if (form.businessType !== 'RESTAURANTS') {
-                if (section.featureKey === 'sales') {
-                    section.links = section.links.filter((l: any) => l.id !== '/coupons');
-                }
-                if (section.featureKey === 'reports') {
-                    section.links = section.links.filter((l: any) => !['reports-restaurant', 'reports-services'].includes(l.id));
-                }
-            }
-
-            if (form.businessType === 'RESTAURANTS') {
-                if (section.featureKey === 'sales') {
-                    section.title = t("العملاء والتسويق");
-                    section.links = section.links.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t("المنيو والمخزون");
-                    section.links = section.links.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: t("أصناف المنيو") };
-                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المنيو") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'purchases') section.title = t("المشتريات والموردين");
-                if (section.featureKey === 'reports') {
-                    section.links = section.links
-                        .filter((l: any) => l.id !== 'reports-services')
-                        .map((l: any) => {
-                            if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
-                            return l;
-                        });
-                }
-            }
-
-            if (map.has(s.featureKey)) {
-                const existing = map.get(s.featureKey);
-                const existingIds = existing.links.map((lx: any) => lx.id);
-                const newLinks = section.links.filter((lx: any) => !existingIds.includes(lx.id));
-                existing.links = [...existing.links, ...newLinks];
+            const existing = map.get(key);
+            if (existing) {
+                const ids = existing.links.map((l: any) => l.id);
+                existing.links = [...existing.links, ...section.links.filter((l: any) => !ids.includes(l.id))];
             } else {
-                map.set(s.featureKey, section);
+                map.set(key, { ...section, links: [...section.links] });
             }
-        });
+        }
         return Array.from(map.values());
     })();
 

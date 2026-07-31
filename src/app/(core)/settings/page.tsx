@@ -23,6 +23,7 @@ import DatabaseTab from './_tabs/DatabaseTab';
 import RestaurantTab from './_tabs/RestaurantTab';
 import ApiTab from './_tabs/ApiTab';
 import { useActivity } from '@/modules/useActivity';
+import { buildNavForActivity } from '@/modules/nav';
 
 /* ══════════════════════════════════════════
    MAIN PAGE
@@ -56,7 +57,7 @@ function SettingsContent() {
 
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession();
-    const { key: businessType, isServices, isRestaurants, isContracting } = useActivity();
+    const { activity, key: businessType, isServices, isRestaurants, isContracting } = useActivity();
 
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -398,15 +399,7 @@ function SettingsContent() {
 
     // Helper to check if a page is accessible
     const hasPage = (featureKey: string, pageId: string): boolean => {
-        const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
-        const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
-        const servicesFeatures = ['services'];
-        const retailFeatures = ['loyalty'];
-        if (restaurantFeatures.includes(featureKey) && !isRestaurants) return false;
-        if (contractingFeatures.includes(featureKey) && !isContracting) return false;
-        if (servicesFeatures.includes(featureKey) && !isServices) return false;
-        if (retailFeatures.includes(featureKey) && businessType !== 'RETAIL') return false;
-        if (pageId === 'reports-restaurant' && !isRestaurants) return false;
+        // فحص النشاط بقى في buildNavForActivity — هنا الاشتراك والصلاحيات بس
 
         // 1. Check subscription (granular check) - يطبق على الجميع بما فيهم السوبر أدمن لضمان حجب الميزات غير المشتراة
         if (Object.keys(enabledFeatures).length > 0 && featureKey && featureKey !== 'settings') {
@@ -438,76 +431,17 @@ function SettingsContent() {
         return true;
     };
 
-    // Build the permission hierarchy based on user's actual permissions and subscription
-    const permissionHierarchy = navSections
-        .filter(sectionOrigin => {
-            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
-            const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
-            const servicesFeatures = ['services'];
-            const retailFeatures = ['loyalty'];
-            if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
-            if (contractingFeatures.includes(sectionOrigin.featureKey || '') && !isContracting) return false;
-            if (servicesFeatures.includes(sectionOrigin.featureKey || '') && !isServices) return false;
-            if (retailFeatures.includes(sectionOrigin.featureKey || '') && businessType !== 'RETAIL') return false;
-            if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
-            if (isServices && sectionOrigin.featureKey === 'installments') return false;
-            if (businessType === 'RETAIL' && sectionOrigin.featureKey === 'installments') return false;
-            return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
-        })
-        .map(sectionOrigin => {
-            let section = { ...sectionOrigin };
-            // Apply services terminology to the permission tree
-            if (isServices) {
-                if (section.featureKey === 'sales') {
-                    section.title = t('فواتير الخدمات');
-                    section.links = section.links?.map((l: any) => {
-                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t('فواتير الخدمات') };
-                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t('إلغاء خدمات / مرتجع') };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t('الخدمات');
-                    section.links = [
-                        { id: '/categories', href: '/categories', label: t('تصنيفات الخدمات') },
-                        { id: '/items', href: '/items', label: t('قائمة الخدمات') },
-                        { id: '/units', href: '/units', label: t('الوحدات') },
-                        { id: '/warehouses', href: '/warehouses', label: t('الفروع / مواقع العمل') }
-                    ];
-                }
-            }
-            // Apply restaurants terminology
-            if (isRestaurants) {
-                if (section.featureKey === 'sales') {
-                    section.title = t('إدارة العملاء');
-                    section.links = section.links?.filter((l: any) => l.id === '/customers');
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t('المنيو والمخزون');
-                    section.links = section.links?.map((l: any) => {
-                        if (l.id === '/categories') return { ...l, label: t('تصنيفات المنيو') };
-                        if (l.id === '/items') return { ...l, label: t('أصناف المنيو') };
-                        if (l.id === '/warehouses') return { ...l, label: t('المخازن والمستودعات') };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'purchases') section.title = t('المشتريات والموردين');
-                if (section.featureKey === 'reports') {
-                    section.links = section.links?.map((l: any) => {
-                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t('تقارير الكاشير والمبيعات') };
-                        if (l.label === t("تقارير المخزون")) return { ...l, label: t('تقارير المخزون والمنيو') };
-                        return l;
-                    });
-                }
-            }
-            const filteredLinks = section.links?.filter((link: any) => hasPage(section.featureKey || '', link.id)) || [];
-            return {
-                title: section.title,
-                featureKey: section.featureKey,
-                links: filteredLinks.map((link: any) => ({ id: link.id, label: link.label, ...(link.hasApprove ? { hasApprove: true } : {}) }))
-            };
-        })
-        .filter(section => section.links.length > 0); // Remove empty sections
+    // شجرة الصلاحيات — بتتبني من نفس المصدر اللي بيبني السايدبار،
+    // عشان اللي تديه صلاحيته هنا يظهر فعلاً في القائمة بنفس الاسم.
+    const permissionHierarchy = buildNavForActivity(activity, { includeHiddenFromSidebar: true })
+        .map(section => ({
+            title: section.title,
+            featureKey: section.featureKey,
+            links: section.links
+                .filter(link => hasPage(section.featureKey || '', link.id))
+                .map(link => ({ id: link.id, label: link.label, ...(link.hasApprove ? { hasApprove: true } : {}) })),
+        }))
+        .filter(section => section.links.length > 0);
 
     const handleRoleChange = (roleId: string) => {
         let perms: Record<string, { view: boolean; create: boolean; editDelete: boolean; approve?: boolean }> = {};
