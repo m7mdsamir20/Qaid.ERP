@@ -1,4 +1,4 @@
-import type { ActivityModule } from './types';
+import type { ActivityModule, TermKey } from './types';
 
 /** مُعلِّم ثابت للترجمة — بيخلي scripts/extract-translations.js يلقط النصوص دي */
 export const t_s = (s: string) => s;
@@ -53,4 +53,26 @@ export const CORE_MODULES = [
 /** القيم الافتراضية لأي نشاط — بتتعمل override في الملف نفسه لو محتاج */
 export const DEFAULT_FLAGS: ActivityModule['flags'] = {
     notifications: true,
+};
+
+/**
+ * المصطلحات الافتراضية (لغة التجارة والتجزئة).
+ * أي نشاط ما بيغيّرش مصطلح بياخد القيمة دي.
+ */
+export const DEFAULT_TERMS: Record<TermKey, string> = {
+    customer: t_s('العميل'),
+    customers: t_s('العملاء'),
+    customerCash: t_s('عميل نقدي'),
+
+    item: t_s('الصنف'),
+    items: t_s('الأصناف'),
+    itemCategory: t_s('التصنيف'),
+    itemCategories: t_s('التصنيفات'),
+
+    warehouse: t_s('المخزن'),
+    warehouses: t_s('المخازن'),
+
+    invoice: t_s('الفاتورة'),
+    invoices: t_s('الفواتير'),
+    invoiceNumber: t_s('رقم الفاتورة'),
 };

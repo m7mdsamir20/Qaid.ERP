@@ -44,6 +44,21 @@ const contracting: ActivityModule = {
         'reports-partners': t_s('أصحاب المشاريع والموردين'),
     },
 
+    terms: {
+        customer: t_s('صاحب المشروع'),
+        customers: t_s('أصحاب المشاريع'),
+        customerCash: t_s('صاحب مشروع نقدي'),
+        item: t_s('المادة / بند العمل'),
+        items: t_s('المواد والبنود'),
+        itemCategory: t_s('تصنيف المواد والبنود'),
+        itemCategories: t_s('تصنيفات المواد والبنود'),
+        warehouse: t_s('المخزن / الموقع'),
+        warehouses: t_s('المخازن والمواقع'),
+        invoice: t_s('الفاتورة / المستخلص'),
+        invoices: t_s('الفواتير والمستخلصات'),
+        invoiceNumber: t_s('رقم الفاتورة / المستخلص'),
+    },
+
     defaultModules: [
         ...CORE_MODULES,
         'projects',

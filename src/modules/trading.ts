@@ -27,6 +27,9 @@ const trading: ActivityModule = {
     sectionTitles: {},
     pageLabels: {},
 
+    // بيستخدم المصطلحات الافتراضية (لغة التجارة) — شوف DEFAULT_TERMS
+    terms: {},
+
     defaultModules: [
         ...CORE_MODULES,
         'sales_reps',

@@ -39,6 +39,20 @@ const services: ActivityModule = {
         // /units و /service-catalog أسماءهم الأصلية مناسبة للخدمات أصلاً
     },
 
+    terms: {
+        item: t_s('الخدمة'),
+        items: t_s('الخدمات'),
+        itemCategory: t_s('تصنيف الخدمات'),
+        itemCategories: t_s('تصنيفات الخدمات'),
+        warehouse: t_s('مخزن الخدمات'),
+        warehouses: t_s('مخازن الخدمات'),
+        invoice: t_s('فاتورة الخدمة'),
+        invoices: t_s('فواتير الخدمات'),
+    },
+
+    // فواتير الخدمات بتاخد كود SRV بدل SAL — ده بيتكتب في مرجع القيود كمان
+    salePrefix: 'SRV',
+
     defaultModules: [
         ...CORE_MODULES,
         'services',

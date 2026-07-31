@@ -4,9 +4,7 @@
  * across print, display, and reports.
  */
 
-const SALE_PREFIXES: Record<string, string> = {
-    SERVICES: 'SRV',
-};
+import { getSalePrefix } from '@/modules';
 
 const TYPE_PREFIXES: Record<string, string> = {
     sale: 'SAL',
@@ -27,14 +25,14 @@ export function getInvoiceRef(
     businessType?: string | null,
 ): string {
     const num = String(invoiceNumber).padStart(5, '0');
-    const biz = businessType?.toUpperCase() ?? '';
 
-    let prefix: string;
-    if ((type === 'sale' || type === 'sale_return') && SALE_PREFIXES[biz]) {
-        prefix = SALE_PREFIXES[biz];
-    } else {
-        prefix = TYPE_PREFIXES[type] ?? 'INV';
-    }
+    // بادئة البيع بتيجي من سجل الأنشطة (SRV للخدمات) — نفس المصدر اللي
+    // بتستخدمه الشاشات والطباعة، عشان الكود يبقى واحد في كل مكان.
+    const salePrefix = getSalePrefix(businessType);
+
+    const prefix = (type === 'sale' || type === 'sale_return') && salePrefix
+        ? salePrefix
+        : TYPE_PREFIXES[type] ?? 'INV';
 
     return `${prefix}-${num}`;
 }

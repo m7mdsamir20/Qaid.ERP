@@ -31,6 +31,9 @@ const retail: ActivityModule = {
     sectionTitles: {},
     pageLabels: {},
 
+    // بيستخدم المصطلحات الافتراضية (لغة التجارة) — شوف DEFAULT_TERMS
+    terms: {},
+
     // ملاحظة: 'barcode' كان مدرج في الباقة القديمة للتجزئة لكن السايدبار
     // بيخفيه عن RETAIL — يعني كان بند ميّت في الباقة. اتشال للتوحيد.
     defaultModules: [

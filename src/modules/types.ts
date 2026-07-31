@@ -20,6 +20,23 @@ export type ActivityKey =
     | 'RESTAURANTS'
     | 'CONTRACTING';
 
+/**
+ * المصطلحات اللي بتختلف من نشاط للتاني.
+ * المقاولات بتقول "صاحب المشروع" مش "العميل"، والخدمات بتقول "خدمة" مش "صنف".
+ * بدل ما كل صفحة تعمل الترجمة دي بنفسها، بتيجي من هنا.
+ *
+ * القيم نصوص خام — الصفحة هي اللي بتنادي t() عليها.
+ */
+export type TermKey =
+    // العملاء
+    | 'customer' | 'customers' | 'customerCash'
+    // الأصناف
+    | 'item' | 'items' | 'itemCategory' | 'itemCategories'
+    // المخازن
+    | 'warehouse' | 'warehouses'
+    // الفواتير
+    | 'invoice' | 'invoices' | 'invoiceNumber';
+
 export interface ActivityModule {
     /** المفتاح المخزّن في Company.businessType (بحروف كابيتال) */
     key: ActivityKey;
@@ -51,6 +68,21 @@ export interface ActivityModule {
      * الصفحة بتظهر لما الاتنين يسمحوا بيها.
      */
     defaultModules: string[];
+
+    /**
+     * المصطلحات اللي النشاط بيغيّرها. أي مفتاح مش هنا بياخد القيمة
+     * الافتراضية من DEFAULT_TERMS في shared.ts.
+     */
+    terms: Partial<Record<TermKey, string>>;
+
+    /**
+     * بادئة كود فاتورة البيع (ومرتجعها) للنشاط ده.
+     * فاضية = استخدم البادئة الافتراضية حسب نوع الفاتورة (SAL / SLR / PUR / PRR).
+     *
+     * ⚠️ الكود ده بيتكتب في مرجع القيود المحاسبية وبيتخزن في الداتابيز،
+     * فتغييره لنشاط شغال بيكسر الربط مع القيود القديمة.
+     */
+    salePrefix?: string;
 
     /** فلاجز سلوكية خارج الـ navigation */
     flags: ActivityFlags;

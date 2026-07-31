@@ -48,6 +48,15 @@ const restaurants: ActivityModule = {
         'reports-inventory': t_s('تقارير المخزون والمنيو'),
     },
 
+    terms: {
+        item: t_s('الصنف'),
+        items: t_s('أصناف المنيو'),
+        itemCategory: t_s('تصنيف المنيو'),
+        itemCategories: t_s('تصنيفات المنيو'),
+        warehouse: t_s('المخزن / المستودع'),
+        warehouses: t_s('المخازن والمستودعات'),
+    },
+
     // ملاحظة: 'loyalty' كان مدرج في الباقة القديمة للمطاعم لكن السايدبار
     // بيخفيه عن أي نشاط غير RETAIL — يعني كان بند ميّت. اتشال للتوحيد.
     defaultModules: [

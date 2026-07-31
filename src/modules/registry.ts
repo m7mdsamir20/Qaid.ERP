@@ -1,4 +1,5 @@
-import type { ActivityKey, ActivityModule } from './types';
+import type { ActivityKey, ActivityModule, TermKey } from './types';
+import { DEFAULT_TERMS } from './shared';
 
 import trading from './trading';
 import retail from './retail';
@@ -85,4 +86,21 @@ export function activityPageLabel(
 /** الباقة الافتراضية للنشاط — بيستخدمها السوبر أدمن عند إنشاء/تعديل شركة */
 export function getDefaultModules(businessType?: string | null): string[] {
     return getActivity(businessType).defaultModules;
+}
+
+/**
+ * المصطلح حسب النشاط — نص خام، نادِ t() عليه في الصفحة.
+ *
+ *   term(activity, 'customer')  →  'العميل'  أو  'صاحب المشروع'
+ */
+export function term(activity: ActivityModule, key: TermKey): string {
+    return activity.terms[key] ?? DEFAULT_TERMS[key];
+}
+
+/**
+ * بادئة كود فاتورة البيع للنشاط ('SRV' للخدمات، undefined للباقي).
+ * بيستخدمها getInvoiceRef عشان الكود يبقى واحد في الشاشة والطباعة والقيود.
+ */
+export function getSalePrefix(businessType?: string | null): string | undefined {
+    return getActivity(businessType).salePrefix;
 }
