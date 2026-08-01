@@ -441,7 +441,11 @@ export default function DashboardLayout({
                     .main-header { padding: 0 10px !important; height: 56px !important; }
                     .sidebar-wrapper.collapsed { width: 0 !important; visibility: hidden !important; }
                     .sidebar-wrapper.open { width: min(280px, 88vw) !important; }
-                    .dashboard-content { width: 100% !important; margin: 0 !important; }
+                    /* لازم نفس أولوية .rtl-mode .dashboard-content اللي فوق (كلاسين)،
+                       وإلا القاعدة الأوسع بتكسب وتسيب شريط 70px فاضي —
+                       ده كان 19% من شاشة الموبايل ضايع. */
+                    .rtl-mode .dashboard-content,
+                    .ltr-mode .dashboard-content { width: 100% !important; margin: 0 !important; }
                     main { padding: 70px 12px 16px !important; }
 
                     .mobile-column, .mobile-stack { gap: 10px !important; }
