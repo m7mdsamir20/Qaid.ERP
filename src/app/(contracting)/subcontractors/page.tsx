@@ -200,7 +200,7 @@ export default function SubcontractorsPage() {
                         {
                             header: t('الرقم الضريبي'),
                             type: 'text',
-                            cell: (row: Subcontractor) => <span style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{row.taxNumber || '—'}</span>
+                            cell: (row: Subcontractor) => <span data-no-format style={{ fontFamily: OUTFIT, color: C.textSecondary }}>{row.taxNumber || '—'}</span>
                         },
                         {
                             header: t('المستحقات الحالية'),

@@ -435,7 +435,7 @@ ${tableHtml}
                         {/* يمين — بيانات الشركة */}
                         <div>
                             {companyName   && <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>{companyName}</div>}
-                            {taxNumber     && <div style={{ fontSize: '12px', marginBottom: '2px' }}>{t('الرقم الضريبي')}: {taxNumber}</div>}
+                            {taxNumber     && <div data-no-format style={{ fontSize: '12px', marginBottom: '2px' }}>{t('الرقم الضريبي')}: {taxNumber}</div>}
                             {commercialReg && <div style={{ fontSize: '12px', marginBottom: '2px' }}>{t('السجل التجاري')}: {commercialReg}</div>}
                             {phone         && <div style={{ fontSize: '12px', marginBottom: '2px' }}>{t('هاتف')}: {phone}</div>}
                             {address       && <div style={{ fontSize: '12px', marginBottom: '2px' }}>{t('العنوان')}: {address}</div>}

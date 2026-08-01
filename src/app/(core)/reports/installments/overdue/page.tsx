@@ -185,7 +185,7 @@ export default function OverdueReportPage() {
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
                                     <div style={{ textAlign: 'center'}}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
-                                        {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t("الرقم الضريبي:")} {session?.user?.taxNumber}</div>}
+                                        {session?.user?.taxNumber && <div data-no-format style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t("الرقم الضريبي:")} {session?.user?.taxNumber}</div>}
                                     </div>
                                     <div style={{ textAlign: 'center'}}>
                                         <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{t("الأقساط المستحقة والمتأخرة")}</h3>

@@ -465,7 +465,7 @@ export default function CustomersPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                             <div>
                                                 <label style={LS}>{t('الرقم الضريبي')}</label>
-                                                <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
+                                                <input data-no-format value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
                                             </div>
                                             <div>
                                                 <label style={LS}>{t('السجل التجاري')}</label>

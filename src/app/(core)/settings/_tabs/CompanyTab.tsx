@@ -297,7 +297,7 @@ export default function CompanyTab({
                                             }}
                                         />
                                     ) : (
-                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: OUTFIT }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: OUTFIT }} data-no-format>
                                             {String((companyForm as any)[f.key] || '').replace(/,/g, '') || t('لم يُضف بعد')}
                                         </div>
                                     )}
