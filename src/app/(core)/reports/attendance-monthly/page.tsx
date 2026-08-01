@@ -318,7 +318,7 @@ export default function AttendanceMonthlyPage() {
                 ) : (
                     detailedLoading ? (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary, fontFamily: CAIRO }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginLeft: '12px' }} />
+                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginInlineStart: '12px' }} />
                             {t('جاري التحميل...')}
                         </div>
                     ) : detailedData ? (

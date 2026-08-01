@@ -227,7 +227,7 @@ export default function KDSPage() {
                                     {/* Order Notes */}
                                     {order.notes && (
                                         <div style={{ padding: '8px 12px', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '8px', border: `1px dashed rgba(245, 158, 11, 0.3)`, fontSize: '12px', color: '#f59e0b', fontWeight: 600 }}>
-                                            <AlertCircle size={12} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
+                                            <AlertCircle size={12} style={{ display: 'inline', verticalAlign: 'middle', marginInlineEnd: '4px' }} />
                                             {t("ملاحظة:")} {order.notes}
                                         </div>
                                     )}

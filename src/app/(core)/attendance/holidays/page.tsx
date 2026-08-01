@@ -119,7 +119,7 @@ export default function HolidaysPage() {
                                                     <div style={{ fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary, marginTop: '2px' }}>
                                                         {new Date(h.date).toLocaleDateString('en-ZA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                                                         {h.isRecurring && (
-                                                            <span style={{ marginRight: '8px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                                                            <span style={{ marginInlineEnd: '8px', color: '#10b981', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                                                                 <RefreshCcw size={11} /> سنوية
                                                             </span>
                                                         )}

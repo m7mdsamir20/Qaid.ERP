@@ -107,7 +107,7 @@ export default function CustomerDisplayPage() {
                                                 {item.quantity} × {item.itemName}
                                             </div>
                                             {item.modifiers && Object.entries(item.modifiers).map(([modName, opts]: any) => (
-                                                <div key={modName} style={{ fontSize: '14px', color: C.textSecondary, paddingRight: '12px', borderRight: `2px solid ${C.primary}`, marginBottom: '4px' }}>
+                                                <div key={modName} style={{ fontSize: '14px', color: C.textSecondary, paddingInlineEnd: '12px', borderInlineEnd: `2px solid ${C.primary}`, marginBottom: '4px' }}>
                                                     {opts.map((o: any) => o.name).join(t("، "))}
                                                 </div>
                                             ))}

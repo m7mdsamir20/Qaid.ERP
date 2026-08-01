@@ -271,7 +271,7 @@ export default function LeavesPage() {
                         >
                             {t.label}
                             {t.key !== 'all' && (
-                                <span style={{ marginRight: '6px', fontSize: '11px', background: tab === t.key ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)', padding: '1px 7px', borderRadius: '20px' }}>
+                                <span style={{ marginInlineEnd: '6px', fontSize: '11px', background: tab === t.key ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.07)', padding: '1px 7px', borderRadius: '20px' }}>
                                     {leaves.filter(l => l.status === t.key).length}
                                 </span>
                             )}
@@ -288,7 +288,7 @@ export default function LeavesPage() {
                     isLoading={loading}
                     loadingSkeleton={
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
-                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginLeft: '12px' }} />
+                            <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginInlineStart: '12px' }} />
                             جاري التحميل...
                         </div>
                     }

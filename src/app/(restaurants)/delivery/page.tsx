@@ -254,7 +254,7 @@ export default function DeliveryPage() {
                                              )}
                                             
                                             {fMoneyJSX(order.total, '', { fontWeight: 800, fontSize: '14px', color: C.textPrimary, marginInlineStart: '8px' })}
-                                            <ChevronDown size={15} color={C.textMuted} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', marginLeft: '4px' }} />
+                                            <ChevronDown size={15} color={C.textMuted} style={{ transform: isOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s', marginInlineStart: '4px' }} />
                                         </div>
                                     </div>
 

@@ -116,7 +116,13 @@ export const POST = withProtection(async (request, session, body) => {
                     select: { customRole: { select: { permissions: true } } }
                 });
                 if (dbUser?.customRole?.permissions) perms = JSON.parse(dbUser.customRole.permissions);
-            } catch { }
+            } catch (e) {
+                // فشل قراءة الصلاحيات = رفض، مش سماح.
+                // قبل كده كان الخطأ بيتبلع و perms تفضل فاضية، والشرط اللي
+                // تحت كان بيتخطى — يعني المستخدم يعدي من غير صلاحية.
+                console.error('فشل تحميل صلاحيات المستخدم', e);
+                return NextResponse.json({ error: 'تعذّر التحقق من الصلاحيات، حاول مرة أخرى' }, { status: 503 });
+            }
             if (Object.keys(perms).length > 0 && !perms['/sales']?.create) {
                 return NextResponse.json({ error: 'ليس لديك صلاحية إنشاء فواتير مبيعات' }, { status: 403 });
             }

@@ -208,7 +208,7 @@ export default function AttendancePage() {
                 {/* Table */}
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '80px', color: C.textSecondary }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginLeft: '12px' }} />
+                        <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', marginInlineStart: '12px' }} />
                         جاري التحميل...
                     </div>
                 ) : (
