@@ -2,7 +2,7 @@
  * نقطة الدخول الوحيدة لنظام الأنشطة.
  * استورد من '@/modules' — مش من الملفات الداخلية مباشرة.
  */
-export type { ActivityKey, ActivityModule, ActivityFlags, TermKey, InvoicePrefixes, InvoiceRefType } from './types';
+export type { ActivityKey, ActivityModule, ActivityFlags, TermKey, InvoicePrefixes, InvoiceRefType, InvoiceTitle, InvoiceTitles } from './types';
 
 export {
     ACTIVITIES,
@@ -17,7 +17,7 @@ export {
     term,
 } from './registry';
 
-export { CORE_SECTIONS, CORE_MODULES, DEFAULT_TERMS, DEFAULT_INVOICE_PREFIXES } from './shared';
+export { CORE_SECTIONS, CORE_MODULES, DEFAULT_TERMS, DEFAULT_INVOICE_PREFIXES, DEFAULT_INVOICE_TITLES } from './shared';
 
 // ⚠️ useActivity() مش متصدّر من هنا عن قصد — فيه 'use client' و useSession،
 // والملف ده بيتستورد من middleware.ts اللي بيشتغل على Edge Runtime.

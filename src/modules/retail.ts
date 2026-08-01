@@ -40,6 +40,9 @@ const retail: ActivityModule = {
     // بيستخدم البادئات الافتراضية: SAL للبيع و SLR للمرتجع
     invoicePrefixes: { ...DEFAULT_INVOICE_PREFIXES },
 
+    // العناوين الافتراضية — محل التجزئة بيبيع بضاعة مش خدمات
+    invoiceTitles: {},
+
     defaultModules: [
         ...CORE_MODULES,
         'pos',

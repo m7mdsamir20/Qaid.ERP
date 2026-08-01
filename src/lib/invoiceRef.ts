@@ -13,7 +13,8 @@
  * المراجع القديمة اللي كانت من غير أصفار (SAL-42).
  */
 
-import { ACTIVITY_LIST, getActivity } from '@/modules';
+import { ACTIVITY_LIST, getActivity, DEFAULT_INVOICE_TITLES } from '@/modules';
+import type { InvoiceTitle } from '@/modules';
 
 /** طول رقم الفاتورة بعد إضافة الأصفار */
 const NUM_WIDTH = 5;
@@ -57,6 +58,18 @@ export function getInvoiceRef(
     const key = normalizeType(type);
     if (!key) return `INV-${num}`;
     return `${getActivity(businessType).invoicePrefixes[key]}-${num}`;
+}
+
+/**
+ * عنوان الفاتورة المطبوعة حسب نوعها ونشاط الشركة.
+ *
+ *   getInvoiceTitle('sale', 'CONTRACTING')  →  { ar: 'فاتورة أعمال / مستخلص', en: 'Works Invoice' }
+ *   getInvoiceTitle('sale', 'RETAIL')       →  { ar: 'فاتورة مبيعات', en: 'Sales Invoice' }
+ */
+export function getInvoiceTitle(type: string, businessType?: string | null): InvoiceTitle {
+    const key = normalizeType(type);
+    if (!key) return { ar: 'فاتورة', en: 'Invoice' };
+    return getActivity(businessType).invoiceTitles[key] ?? DEFAULT_INVOICE_TITLES[key];
 }
 
 /** سند قبض / صرف — مالهاش علاقة بالنشاط */

@@ -64,6 +64,11 @@ const services: ActivityModule = {
         saleReturn: 'SRR',
     },
 
+    invoiceTitles: {
+        sale: { ar: t_s('فاتورة خدمات'), en: 'Service Invoice' },
+        saleReturn: { ar: t_s('مرتجع خدمات'), en: 'Service Return' },
+    },
+
     defaultModules: [
         ...CORE_MODULES,
         'services',

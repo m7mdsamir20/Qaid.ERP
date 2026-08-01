@@ -86,6 +86,13 @@ export interface ActivityModule {
      */
     invoicePrefixes: InvoicePrefixes;
 
+    /**
+     * عنوان الفاتورة المطبوعة. فاضي = العنوان الافتراضي.
+     *
+     * ⚠️ ده بيظهر على مستند بيروح للعميل.
+     */
+    invoiceTitles: InvoiceTitles;
+
     /** فلاجز سلوكية خارج الـ navigation */
     flags: ActivityFlags;
 }
@@ -94,6 +101,18 @@ export interface ActivityFlags {
     /** يظهر جرس الإشعارات في الهيدر؟ */
     notifications: boolean;
 }
+
+/** عنوان الفاتورة المطبوعة — عربي وإنجليزي */
+export interface InvoiceTitle {
+    ar: string;
+    en: string;
+}
+
+/**
+ * عناوين الفواتير المطبوعة حسب النشاط.
+ * أي نوع مش موجود بياخد العنوان الافتراضي من DEFAULT_INVOICE_TITLES.
+ */
+export type InvoiceTitles = Partial<Record<keyof InvoicePrefixes, InvoiceTitle>>;
 
 /** بادئة من 3 حروف لكل نوع فاتورة */
 export interface InvoicePrefixes {

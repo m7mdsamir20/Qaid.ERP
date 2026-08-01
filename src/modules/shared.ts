@@ -1,4 +1,4 @@
-import type { ActivityModule, TermKey, InvoicePrefixes } from './types';
+import type { ActivityModule, TermKey, InvoicePrefixes, InvoiceTitle } from './types';
 
 /** مُعلِّم ثابت للترجمة — بيخلي scripts/extract-translations.js يلقط النصوص دي */
 export const t_s = (s: string) => s;
@@ -67,6 +67,18 @@ export const DEFAULT_INVOICE_PREFIXES: InvoicePrefixes = {
     saleReturn: 'SLR',
     purchase: 'PUR',
     purchaseReturn: 'PRR',
+};
+
+/**
+ * عناوين الفواتير المطبوعة الافتراضية.
+ * قبل التوحيد كان أي نشاط غير تجارة الجملة فاتورته مكتوب عليها
+ * "فاتورة خدمات" — حتى محل التجزئة وشركة المقاولات.
+ */
+export const DEFAULT_INVOICE_TITLES: Record<keyof InvoicePrefixes, InvoiceTitle> = {
+    sale: { ar: t_s('فاتورة مبيعات'), en: 'Sales Invoice' },
+    saleReturn: { ar: t_s('مرتجع مبيعات'), en: 'Sales Return' },
+    purchase: { ar: t_s('فاتورة مشتريات'), en: 'Purchase Invoice' },
+    purchaseReturn: { ar: t_s('مرتجع مشتريات'), en: 'Purchase Return' },
 };
 
 /**

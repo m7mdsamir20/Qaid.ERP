@@ -67,6 +67,11 @@ const contracting: ActivityModule = {
         saleReturn: 'CNR',
     },
 
+    invoiceTitles: {
+        sale: { ar: t_s('فاتورة أعمال / مستخلص'), en: 'Works Invoice' },
+        saleReturn: { ar: t_s('مرتجع أعمال'), en: 'Works Return' },
+    },
+
     defaultModules: [
         ...CORE_MODULES,
         'projects',

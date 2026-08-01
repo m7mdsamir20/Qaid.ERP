@@ -63,6 +63,9 @@ const restaurants: ActivityModule = {
     // بيستخدم البادئات الافتراضية: SAL للبيع و SLR للمرتجع
     invoicePrefixes: { ...DEFAULT_INVOICE_PREFIXES },
 
+    // العناوين الافتراضية — المطعم بيبيع أصناف
+    invoiceTitles: {},
+
     defaultModules: [
         ...CORE_MODULES,
         'pos',

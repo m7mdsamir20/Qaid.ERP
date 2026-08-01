@@ -37,6 +37,9 @@ const trading: ActivityModule = {
         saleReturn: 'SLR',
     },
 
+    // العناوين الافتراضية: فاتورة مبيعات / مرتجع مبيعات
+    invoiceTitles: {},
+
     defaultModules: [
         ...CORE_MODULES,
         'sales_reps',

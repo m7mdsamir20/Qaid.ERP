@@ -1,6 +1,6 @@
 import { getCurrencySymbol, formatMoney } from './currency';
 import QRCode from 'qrcode';
-import { getInvoiceRef } from './invoiceRef';
+import { getInvoiceRef, getInvoiceTitle } from './invoiceRef';
 import { getActivity } from '@/modules';
 
 export interface CompanyInfo {
@@ -26,23 +26,18 @@ export interface CompanyInfo {
 type InvoiceType = 'sale' | 'purchase' | 'sale-return' | 'purchase-return' | 'sales-order' | 'purchase-order';
 type VoucherType = 'receipt' | 'payment';
 
-const TITLES: Record<InvoiceType, string> = {
-    'sale': 'فاتورة مبيعات',
-    'purchase': 'فاتورة مشتريات',
-    'sale-return': 'مرتجع مبيعات',
-    'purchase-return': 'مرتجع مشتريات',
-    'sales-order': 'أمر بيع',
-    'purchase-order': 'أمر شراء',
+// أوامر البيع والشراء مالهاش علاقة بالنشاط
+const ORDER_TITLES: Record<string, { ar: string; en: string }> = {
+    'sales-order': { ar: 'أمر بيع', en: 'Sales Order' },
+    'purchase-order': { ar: 'أمر شراء', en: 'Purchase Order' },
 };
 
-const TITLES_EN: Record<InvoiceType, string> = {
-    'sale': 'Sales Invoice',
-    'purchase': 'Purchase Invoice',
-    'sale-return': 'Sales Return',
-    'purchase-return': 'Purchase Return',
-    'sales-order': 'Sales Order',
-    'purchase-order': 'Purchase Order',
-};
+/** عنوان المستند حسب نوعه ونشاط الشركة */
+function docTitle(type: string, businessType?: string | null): { ar: string; en: string } {
+    const order = ORDER_TITLES[type];
+    if (order) return order;
+    return getInvoiceTitle(type, businessType);
+}
 
 // أوامر البيع والشراء مالهاش علاقة بالنشاط — الفواتير بتيجي من getInvoiceRef
 const ORDER_PREFIXES: Record<string, string> = {
@@ -235,11 +230,9 @@ export function generateA4HTML(
         branch: company.branchName || '',
     };
 
-    const title = TITLES[type];
-    const titleEn = TITLES_EN[type];
+    const title = docTitle(type, company.businessType);
     const isReturn = type.includes('return');
     const isSale = type === 'sale' || type === 'sale-return' || type === 'sales-order';
-    const isTrading = getActivity(company.businessType).key === 'TRADING';
 
     // Try all possible ways to find the party name and details
     const party = isSale
@@ -271,12 +264,10 @@ export function generateA4HTML(
     const invoiceRef = docRef(type, invoiceNum, company.businessType);
 
     // تحديد ما إذا كان النشاط خدمياً
-    // ⚠️ الشق التاني ميت: Item مالهاش عمود businessType في prisma/schema.prisma
-    // (العمود ده على Company بس)، فـ l.item?.businessType دايماً undefined.
-    // المقصود على الأغلب كان l.item?.type === 'service' عشان شركة تجارية
-    // تبيع بند خدمي تطلع عمود "الخدمة". اتساب زي ما هو عشان ما نغيّرش
-    // شكل فاتورة بتروح للعميل من غير قرار.
-    const isServicesLine = isServicesCompany || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
+    // عمود "الخدمة" بدل "الصنف" لشركات الخدمات.
+    // (كان فيه شرط تاني بيفحص item.businessType — عمود مش موجود أصلاً
+    //  على Item في الـ schema، فكان دايماً false. اتشال.)
+    const isServicesLine = isServicesCompany;
 
     // ضريبة على مستوى الفاتورة
     const invoiceTaxRate = Number(invoice.taxRate || 0);
@@ -415,8 +406,8 @@ tbody tr:nth-child(even){background: #fff;}
         }
     </div>
     <div class="header-center" style="flex:1; text-align:center">
-        <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
-        ${isBilingual ? `<div class="inv-title-en">${!isTrading || isServicesLine ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : titleEn}</div>` : ''}
+        <div class="inv-title">${title.ar}</div>
+        ${isBilingual ? `<div class="inv-title-en">${title.en}</div>` : ''}
         ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
         <div class="inv-num" style="margin-top:6px; font-size:13px;">${invoiceRef}</div>
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
