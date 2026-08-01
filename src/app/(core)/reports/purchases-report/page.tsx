@@ -14,6 +14,8 @@ import { useEffect, useState } from 'react';
 import { ShoppingCart, Search, Calendar, Loader2, ArrowUpRight, ArrowDownRight, Activity, DollarSign } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import StatCard from '@/components/StatCard';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -50,6 +52,7 @@ interface BranchOption {
 
 export default function PurchasesReportPage() {
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
@@ -86,7 +89,7 @@ export default function PurchasesReportPage() {
     useEffect(() => { fetchReport(); }, [from, to, branchId]);
 
     const filteredInvoices = data ? data.invoices.filter(inv => {
-        const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
+        const code = getInvoiceRef(inv.invoiceNumber, 'purchase', businessType);
         return code.includes(q.toUpperCase()) ||
             String(inv.invoiceNumber).includes(q) ||
             (inv.supplier?.name || t("مورد نقدي")).toLowerCase().includes(q.toLowerCase());
@@ -98,7 +101,7 @@ export default function PurchasesReportPage() {
             type: 'number' as const,
             cell: (row: Invoice) => (
                 <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                    {`PUR-${String(row.invoiceNumber).padStart(5, '0')}`}
+                    {getInvoiceRef(row.invoiceNumber, 'purchase', businessType)}
                 </span>
             )
         },

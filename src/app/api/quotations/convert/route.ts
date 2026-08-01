@@ -278,7 +278,7 @@ export const POST = withProtection(async (request, session, body) => {
                         entryNumber,
                         date:            new Date(),
                         description:     `قيد فاتورة محولة من عرض سعر رقم ${quotation.quotationNumber}`,
-                        reference:       `SAL-${invoiceNumber}`,
+                        reference:       getInvoiceRef(invoiceNumber, 'sale', (session.user as any).businessType),
                         referenceType:   'invoice',
                         referenceId:     invoice.id,
                         financialYearId: financialYear.id,

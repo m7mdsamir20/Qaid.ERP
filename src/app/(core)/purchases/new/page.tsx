@@ -16,6 +16,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 import { useActivity } from '@/modules/useActivity';
 import { getActivity } from '@/modules';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 
 interface Supplier { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
@@ -39,7 +40,7 @@ export default function NewPurchasePage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { isServices, isContracting: isContractingUser } = useActivity();
+    const { key: businessType, isServices, isContracting: isContractingUser } = useActivity();
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -452,7 +453,7 @@ export default function NewPurchasePage() {
                                         display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
                                         fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
                                     }}>
-                                        {`PUR-${String(nextNum).padStart(5, '0')}`}
+                                        {getInvoiceRef(nextNum, 'purchase', businessType)}
                                     </div>
                                 </div>
                                 <div>

@@ -97,10 +97,3 @@ export function term(activity: ActivityModule, key: TermKey): string {
     return activity.terms[key] ?? DEFAULT_TERMS[key];
 }
 
-/**
- * بادئة كود فاتورة البيع للنشاط ('SRV' للخدمات، undefined للباقي).
- * بيستخدمها getInvoiceRef عشان الكود يبقى واحد في الشاشة والطباعة والقيود.
- */
-export function getSalePrefix(businessType?: string | null): string | undefined {
-    return getActivity(businessType).salePrefix;
-}

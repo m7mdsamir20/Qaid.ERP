@@ -13,6 +13,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 interface ReturnInvoice {
     id: string;
@@ -87,10 +88,9 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
 
     const fmt = (v: number) => formatNumber(v);
 
-    const { isServices } = useActivity();
+    const { key: businessType, isServices } = useActivity();
     const invLabel = isServices ? t('إلغاء خدمة / مرتجع') : t('مرتجع مبيعات');
-    const invPrefix = isServices ? 'SRV-RET' : 'SRET';
-    const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+    const invNumFmt = getInvoiceRef(invoice.invoiceNumber, 'sale_return', businessType);
 
     return (
         <DashboardLayout>
@@ -182,7 +182,7 @@ export default function SaleReturnDetailPage(props: { params: Promise<{ id: stri
                                     <div>
                                         <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{isServices ? t("مرجع فاتورة الخدمة") : t("مرجع فاتورة البيع")}</p>
                                         <p style={{ fontSize: '13px', fontWeight: 600, color: '#a855f7', margin: 0, fontFamily: OUTFIT }}>
-                                            {`${isServices ? 'SRV' : 'SAL'}-${String(invoice.originalInvoice.invoiceNumber).padStart(5, '0')}`}
+                                            {getInvoiceRef(invoice.originalInvoice.invoiceNumber, 'sale', businessType)}
                                         </p>
                                     </div>
                                 </div>

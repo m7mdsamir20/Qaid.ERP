@@ -131,8 +131,8 @@ export const POST = withProtection(async (request, session, body, context) => {
                                 itemId: line.itemId,
                                 warehouseId: invoice.warehouseId!,
                                 quantity: -line.quantity,
-                                reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                                notes: `اعتماد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                reference: getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType),
+                                notes: `اعتماد فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                                 companyId,
                                 invoiceId: invoice.id,
                             },
@@ -229,7 +229,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: treasuryAccountId,
                         debit: paid,
                         credit: 0,
-                        description: `مبلغ مقبوض — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `مبلغ مقبوض — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -238,7 +238,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: receivablesAccount.id,
                         debit: remaining,
                         credit: 0,
-                        description: `ذمم عميل — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `ذمم عميل — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -246,7 +246,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                     accountId: salesAccount.id,
                     debit: 0,
                     credit: netRevenue,
-                    description: `فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                    description: `فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                 });
 
                 if ((invoice.taxAmount || 0) > 0 && taxAccount) {
@@ -254,7 +254,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: taxAccount.id,
                         debit: 0,
                         credit: invoice.taxAmount,
-                        description: `ضريبة القيمة المضافة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `ضريبة القيمة المضافة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -297,13 +297,13 @@ export const POST = withProtection(async (request, session, body, context) => {
                                 accountId: cogsAccount.id,
                                 debit: totalCost,
                                 credit: 0,
-                                description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                description: `تكلفة بضاعة مباعة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                             });
                             journalLines.push({
                                 accountId: inventoryAccount.id,
                                 debit: 0,
                                 credit: totalCost,
-                                description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                description: `تكلفة بضاعة مباعة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                             });
                         }
                     }
@@ -315,8 +315,8 @@ export const POST = withProtection(async (request, session, body, context) => {
                             branchId: invoice.branchId,
                             entryNumber,
                             date: invoice.date ? new Date(invoice.date) : new Date(),
-                            description: `اعتماد قيد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                            reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                            description: `اعتماد قيد فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
+                            reference: getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType),
                             referenceType: 'invoice',
                             referenceId: invoice.id,
                             financialYearId: financialYear.id,

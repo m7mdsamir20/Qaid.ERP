@@ -16,6 +16,7 @@ import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 interface ReturnInvoice {
     id: string;
@@ -166,10 +167,9 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     const status = getStatus();
 
-    const { isServices } = useActivity();
+    const { key: businessType, isServices } = useActivity();
     const invLabel = isServices ? t('فاتورة خدمات') : t('فاتورة مبيعات');
-    const invPrefix = isServices ? 'SRV' : 'SAL';
-    const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+    const invNumFmt = getInvoiceRef(invoice.invoiceNumber, 'sale', businessType);
 
     return (
         <DashboardLayout>
@@ -514,7 +514,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             <tr key={ret.id} style={TABLE_STYLE.row(idx === (invoice.returnInvoices?.length ?? 0) - 1)}>
                                                 <td style={TABLE_STYLE.td(true)}>
                                                     <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#f87171', fontFamily: OUTFIT }}>
-                                                        {`SRET-${String(ret.invoiceNumber).padStart(5, '0')}`}
+                                                        {getInvoiceRef(ret.invoiceNumber, 'sale_return', businessType)}
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>

@@ -15,6 +15,8 @@ import { C, CAIRO, OUTFIT, IS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/cons
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import StatCard, { StatCardGrid } from '@/components/StatCard';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 interface CollectionItem {
     id: string;
@@ -43,6 +45,7 @@ interface CollectionItem {
 
 export default function SalesRepsCollectionsReportPage() {
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: sym } = useCurrency();
@@ -128,7 +131,7 @@ export default function SalesRepsCollectionsReportPage() {
                 row.invoice ? (
                     <a href={`/sales/${row.invoice.id}`} style={{ textDecoration: 'none' }}>
                         <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                            {`SAL-${String(row.invoice.invoiceNumber).padStart(5, '0')}`}
+                            {getInvoiceRef(row.invoice.invoiceNumber, 'sale', businessType)}
                         </span>
                     </a>
                 ) : <span style={{ color: C.textMuted }}>—</span>

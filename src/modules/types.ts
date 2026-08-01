@@ -76,13 +76,15 @@ export interface ActivityModule {
     terms: Partial<Record<TermKey, string>>;
 
     /**
-     * بادئة كود فاتورة البيع (ومرتجعها) للنشاط ده.
-     * فاضية = استخدم البادئة الافتراضية حسب نوع الفاتورة (SAL / SLR / PUR / PRR).
+     * بادئات أكواد الفواتير للنشاط ده — 3 حروف لكل نوع فاتورة.
+     * الكود النهائي = البادئة + شرطة + الرقم بـ 5 خانات: CON-00042
      *
-     * ⚠️ الكود ده بيتكتب في مرجع القيود المحاسبية وبيتخزن في الداتابيز،
-     * فتغييره لنشاط شغال بيكسر الربط مع القيود القديمة.
+     * ⚠️ الكود ده بيتكتب في مرجع القيود المحاسبية وبيتخزن في الداتابيز.
+     * تغييره بيخلي الفواتير الجديدة بكود مختلف عن القديمة — عشان كده
+     * أي كود بيقرا المراجع لازم يستخدم parseInvoiceRef اللي بيعرف
+     * البادئات القديمة والجديدة مع بعض.
      */
-    salePrefix?: string;
+    invoicePrefixes: InvoicePrefixes;
 
     /** فلاجز سلوكية خارج الـ navigation */
     flags: ActivityFlags;
@@ -92,3 +94,20 @@ export interface ActivityFlags {
     /** يظهر جرس الإشعارات في الهيدر؟ */
     notifications: boolean;
 }
+
+/** بادئة من 3 حروف لكل نوع فاتورة */
+export interface InvoicePrefixes {
+    /** فاتورة بيع */
+    sale: string;
+    /** مرتجع بيع */
+    saleReturn: string;
+    /** فاتورة شراء */
+    purchase: string;
+    /** مرتجع شراء */
+    purchaseReturn: string;
+}
+
+/** أنواع الفواتير اللي ليها كود — الاسم بيختلف بين prisma والطباعة */
+export type InvoiceRefType =
+    | 'sale' | 'sale_return' | 'sale-return'
+    | 'purchase' | 'purchase_return' | 'purchase-return';

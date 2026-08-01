@@ -1,5 +1,5 @@
 import type { ActivityModule } from './types';
-import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, EXCLUSIVE_PAGES, t_s } from './shared';
+import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, DEFAULT_INVOICE_PREFIXES, EXCLUSIVE_PAGES, t_s } from './shared';
 
 /**
  * 📦 نشاط تجارة الجملة
@@ -29,6 +29,13 @@ const trading: ActivityModule = {
 
     // بيستخدم المصطلحات الافتراضية (لغة التجارة) — شوف DEFAULT_TERMS
     terms: {},
+
+    // تجارة الجملة — دي بادئات البيانات القديمة كلها، ممنوع تتغير
+    invoicePrefixes: {
+        ...DEFAULT_INVOICE_PREFIXES,
+        sale: 'SAL',
+        saleReturn: 'SLR',
+    },
 
     defaultModules: [
         ...CORE_MODULES,

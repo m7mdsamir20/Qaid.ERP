@@ -15,6 +15,7 @@ import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
@@ -31,7 +32,7 @@ function NewSalePageInner() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const { isServices, isContracting } = useActivity();
+    const { key: businessType, isServices, isContracting } = useActivity();
 
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
@@ -689,7 +690,7 @@ function NewSalePageInner() {
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
                                     }}>
-                                        {`${isServices ? 'SRV' : 'SAL'}-${String(nextNum).padStart(5, '0')}`}
+                                        {getInvoiceRef(nextNum, 'sale', businessType)}
                                     </div>
                                 </div>
                                 <div>

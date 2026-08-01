@@ -16,6 +16,8 @@ import { applyExcelMoneyFormat } from '@/lib/excelFormat';
 import CustomSelect from '@/components/CustomSelect';
 import StatCard from '@/components/StatCard';
 import { navSections } from '@/constants/navigation';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 const t = (s: string) => s;
 const getCurrencyName = (code: string) => {
@@ -53,6 +55,7 @@ interface AgingBuckets {
 
 export default function AgingReportPage() {
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
@@ -116,7 +119,7 @@ export default function AgingReportPage() {
     const exportToExcel = () => {
         if (!data.length) return;
         const excelData = data.map(inv => ({
-            [t('رقم الفاتورة')]: `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`,
+            [t('رقم الفاتورة')]: getInvoiceRef(inv.invoiceNumber, 'sale', businessType),
             [t('التاريخ')]: new Date(inv.date).toLocaleDateString('en-ZA'),
             [t('العميل')]: inv.customer,
             [t('عمر الدين (يوم)')]: inv.ageDays,
@@ -146,7 +149,7 @@ export default function AgingReportPage() {
             type: 'number' as const,
             cell: (row: AgingInvoice) => (
                 <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
-                    {`SAL-${String(row.invoiceNumber).padStart(5, '0')}`}
+                    {getInvoiceRef(row.invoiceNumber, 'sale', businessType)}
                 </span>
             )
         },

@@ -1,5 +1,5 @@
 import type { ActivityModule } from './types';
-import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, EXCLUSIVE_PAGES, t_s } from './shared';
+import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, DEFAULT_INVOICE_PREFIXES, EXCLUSIVE_PAGES, t_s } from './shared';
 
 /**
  * 🏗️ نشاط المقاولات والإنشاءات
@@ -58,6 +58,13 @@ const contracting: ActivityModule = {
         invoice: t_s('الفاتورة / المستخلص'),
         invoices: t_s('الفواتير والمستخلصات'),
         invoiceNumber: t_s('رقم الفاتورة / المستخلص'),
+    },
+
+    // Contracting / Contracting Return
+    invoicePrefixes: {
+        ...DEFAULT_INVOICE_PREFIXES,
+        sale: 'CON',
+        saleReturn: 'CNR',
     },
 
     defaultModules: [

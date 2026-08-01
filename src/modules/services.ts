@@ -1,5 +1,5 @@
 import type { ActivityModule } from './types';
-import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, EXCLUSIVE_PAGES, t_s } from './shared';
+import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, DEFAULT_INVOICE_PREFIXES, EXCLUSIVE_PAGES, t_s } from './shared';
 
 /**
  * 🔧 نشاط الخدمات (استشارات، صيانة، إلخ)
@@ -57,8 +57,12 @@ const services: ActivityModule = {
         invoices: t_s('فواتير الخدمات'),
     },
 
-    // فواتير الخدمات بتاخد كود SRV بدل SAL — ده بيتكتب في مرجع القيود كمان
-    salePrefix: 'SRV',
+    // Service / Service Return
+    invoicePrefixes: {
+        ...DEFAULT_INVOICE_PREFIXES,
+        sale: 'SRV',
+        saleReturn: 'SRR',
+    },
 
     defaultModules: [
         ...CORE_MODULES,

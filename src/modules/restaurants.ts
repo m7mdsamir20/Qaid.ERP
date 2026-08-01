@@ -1,5 +1,5 @@
 import type { ActivityModule } from './types';
-import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, EXCLUSIVE_PAGES, t_s } from './shared';
+import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, DEFAULT_INVOICE_PREFIXES, EXCLUSIVE_PAGES, t_s } from './shared';
 
 /**
  * 🍽️ نشاط المطاعم والكافيهات
@@ -60,6 +60,9 @@ const restaurants: ActivityModule = {
 
     // ملاحظة: 'loyalty' كان مدرج في الباقة القديمة للمطاعم لكن السايدبار
     // بيخفيه عن أي نشاط غير RETAIL — يعني كان بند ميّت. اتشال للتوحيد.
+    // بيستخدم البادئات الافتراضية: SAL للبيع و SLR للمرتجع
+    invoicePrefixes: { ...DEFAULT_INVOICE_PREFIXES },
+
     defaultModules: [
         ...CORE_MODULES,
         'pos',

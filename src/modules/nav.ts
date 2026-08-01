@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react';
 import { navSections } from '@/constants/navigation';
 import type { ActivityModule } from './types';
 import { activityHasSection, activityHasPage, activitySectionTitle, activityPageLabel } from './registry';
@@ -32,12 +33,22 @@ export interface ActivityNavLink {
     hideFromSidebar?: boolean;
 }
 
+/** شكل القسم زي ما هو في navigation.ts */
+interface NavSectionShape {
+    featureKey?: string;
+    title: string;
+    icon: ActivityNavSection['icon'];
+    isStandalone?: boolean;
+    href?: string;
+    links?: { id: string; href: string; label: string; hasApprove?: boolean; hideFromSidebar?: boolean }[];
+}
+
 export interface ActivityNavSection {
     featureKey?: string;
     /** العنوان بعد تطبيق مصطلحات النشاط */
     title: string;
     originalTitle: string;
-    icon: any;
+    icon: ComponentType<{ size?: number; style?: object }>;
     isStandalone?: boolean;
     href?: string;
     links: ActivityNavLink[];
@@ -56,14 +67,14 @@ export function buildNavForActivity(
 ): ActivityNavSection[] {
     const out: ActivityNavSection[] = [];
 
-    for (const section of navSections as any[]) {
+    for (const section of navSections as readonly NavSectionShape[]) {
         const featureKey: string | undefined = section.featureKey;
         if (!activityHasSection(activity, featureKey)) continue;
 
         const links: ActivityNavLink[] = (section.links || [])
-            .filter((l: any) => activityHasPage(activity, featureKey, l.id))
-            .filter((l: any) => includeHiddenFromSidebar || !l.hideFromSidebar)
-            .map((l: any) => ({
+            .filter(l => activityHasPage(activity, featureKey, l.id))
+            .filter(l => includeHiddenFromSidebar || !l.hideFromSidebar)
+            .map(l => ({
                 id: l.id,
                 href: l.href,
                 label: activityPageLabel(activity, l.id, l.label),

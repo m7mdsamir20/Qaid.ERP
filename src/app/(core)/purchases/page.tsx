@@ -13,6 +13,8 @@ import { useTranslation } from '@/lib/i18n';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 interface Invoice {
     id: string; invoiceNumber: number; date: string;
@@ -30,6 +32,7 @@ export default function PurchasesListPage() {
     const { data: session } = useSession();
     const { fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [activeYear, setActiveYear] = useState<any>(null);
@@ -85,7 +88,7 @@ export default function PurchasesListPage() {
             type: 'number',
             cell: (inv: Invoice) => (
                 <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
-                    {`PUR-${String(inv.invoiceNumber).padStart(5, '0')}`}
+                    {getInvoiceRef(inv.invoiceNumber, 'purchase', businessType)}
                 </span>
             ),
             style: { width: '120px' }

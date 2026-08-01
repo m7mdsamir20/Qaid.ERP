@@ -4,6 +4,7 @@ import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/
 import { getCurrencySymbol } from '@/lib/currency';
 import { generateZatcaTLV } from '@/lib/printInvoices';
 import { getActivity } from '@/modules';
+import { getInvoiceRef } from './invoiceRef';
 
 /* ── Font registration ──────────────────────────────────────────── */
 let _fontsReady = false;
@@ -32,10 +33,9 @@ const TITLES_EN: Record<string, string> = {
     'sale-return': 'Sales Return', 'purchase-return': 'Purchase Return',
     sale_return: 'Sales Return', purchase_return: 'Purchase Return',
 };
-const PREFIXES: Record<string, string> = {
-    sale: 'SAL', purchase: 'PUR',
-    'sale-return': 'SLR', 'purchase-return': 'PRR',
-    sale_return: 'SLR', purchase_return: 'PRR',
+// أوامر البيع والشراء ثابتة — الفواتير من getInvoiceRef حسب النشاط
+const ORDER_PREFIXES: Record<string, string> = {
+    'sales-order': 'SO', 'purchase-order': 'PO',
 };
 
 /* ── StyleSheet ────────────────────────────────────────────────── */
@@ -191,7 +191,10 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
     const showServicesTitle = !isTrading || isServicesLine;
     const invoiceTitle      = showServicesTitle ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : (TITLES[type] || 'فاتورة');
     const invoiceTitleEn    = showServicesTitle ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : (TITLES_EN[type] || '');
-    const prefix            = isServicesLine ? 'SRV' : (PREFIXES[type] || 'INV');
+    const invNumStr         = String(invoice?.invoiceNumber ?? invoice?.orderNumber ?? 1);
+    const invoiceRef        = ORDER_PREFIXES[type]
+        ? `${ORDER_PREFIXES[type]}-${invNumStr.padStart(5, '0')}`
+        : getInvoiceRef(invNumStr, type, company?.businessType);
 
     // ZATCA QR (Saudi)
     const hasValidTax = !!(isSaudi && company?.taxNumber && company.taxNumber.trim());
@@ -271,7 +274,7 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
                         <Text style={s.titleBox}>{invoiceTitle}</Text>
                         {isBilingual && <Text style={s.titleBoxEn}>{invoiceTitleEn}</Text>}
                         {isSaudi && <Text style={s.zatcaNote}>فاتورة ضريبية مبسطة / Simplified Tax Invoice</Text>}
-                        <Text style={s.invNum}>{prefix}-{invoiceNum}</Text>
+                        <Text style={s.invNum}>{invoiceRef}</Text>
                         <Text style={s.invDate}>{date}</Text>
                         {invoice?.customerPONumber
                             ? <Text style={s.poNum}>{isBilingual ? 'PO: ' : 'رقم الطلب: '}{invoice.customerPONumber}</Text>

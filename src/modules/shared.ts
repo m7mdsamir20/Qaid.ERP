@@ -1,4 +1,4 @@
-import type { ActivityModule, TermKey } from './types';
+import type { ActivityModule, TermKey, InvoicePrefixes } from './types';
 
 /** مُعلِّم ثابت للترجمة — بيخلي scripts/extract-translations.js يلقط النصوص دي */
 export const t_s = (s: string) => s;
@@ -55,6 +55,18 @@ export const CORE_MODULES = [
 /** القيم الافتراضية لأي نشاط — بتتعمل override في الملف نفسه لو محتاج */
 export const DEFAULT_FLAGS: ActivityModule['flags'] = {
     notifications: true,
+};
+
+/**
+ * بادئات أكواد الفواتير الافتراضية (لغة تجارة الجملة).
+ * دي البادئات اللي البيانات القديمة كلها متخزنة بيها — ممنوع تتغير
+ * لـ TRADING عشان ما نكسرش الربط مع القيود الموجودة.
+ */
+export const DEFAULT_INVOICE_PREFIXES: InvoicePrefixes = {
+    sale: 'SAL',
+    saleReturn: 'SLR',
+    purchase: 'PUR',
+    purchaseReturn: 'PRR',
 };
 
 /**

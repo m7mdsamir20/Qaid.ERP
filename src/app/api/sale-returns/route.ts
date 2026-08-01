@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getActivity } from '@/modules';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -128,7 +129,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 itemId: line.itemId,
                                 warehouseId: warehouseId,
                                 quantity: line.quantity,
-                                reference: `SRET-${invoiceNumber}`,
+                                reference: getInvoiceRef(invoiceNumber, 'sale_return', (session.user as any).businessType),
                                 notes: `مرتجع مبيعات رقم ${invoiceNumber}`,
                                 companyId,
                                 invoiceId: invoice.id
@@ -301,7 +302,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 branchId: branchId || null,
                             entryNumber, date: returnDate,
                             description: `قيد مرتجع مبيعات رقم ${invoiceNumber}`,
-                            reference: `SRET-${invoiceNumber}`,
+                            reference: getInvoiceRef(invoiceNumber, 'sale_return', (session.user as any).businessType),
                             referenceType: 'invoice',
                             referenceId: invoice.id,
                             financialYearId: financialYear.id,
@@ -329,7 +330,7 @@ export const POST = withProtection(async (request, session, body) => {
             return invoice;
         });
 
-        const retCode = `SRET-${String(result.invoiceNumber).padStart(5, '0')}`;
+        const retCode = getInvoiceRef(result.invoiceNumber, 'sale_return', (session.user as any).businessType);
         await logActivity({
             ...extractLogContext(session, request),
             action: 'create',

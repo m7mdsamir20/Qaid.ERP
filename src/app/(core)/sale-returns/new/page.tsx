@@ -15,6 +15,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
 import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 /* ── Types ── */
 interface Customer { id: string; name: string; phone?: string; balance: number; }
@@ -78,7 +79,7 @@ export default function NewReturnPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const { isServices } = useActivity();
+    const { key: businessType, isServices } = useActivity();
 
     const activeBranchId = (session?.user as any)?.activeBranchId;
     const allBranches: any[] = (session?.user as any)?.branches || [];
@@ -459,7 +460,7 @@ export default function NewReturnPage() {
                                                 disabled={!form.customerId && !form.supplierId}
                                                 options={customerInvoices.map(i => ({
                                                     value: i.id,
-                                                    label: `${isServices ? 'SRV' : 'INV'}-${String(i.invoiceNumber).padStart(5, '0')}`,
+                                                    label: getInvoiceRef(i.invoiceNumber, 'sale', businessType),
                                                     sub: `${new Date(i.date).toLocaleDateString('en-ZA')} | ${i.total.toLocaleString()} ${cSymbol}`,
                                                 }))}
                                             />

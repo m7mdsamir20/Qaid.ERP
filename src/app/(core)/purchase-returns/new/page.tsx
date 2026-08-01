@@ -13,6 +13,8 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 
 /* ── Types ── */
@@ -68,6 +70,7 @@ const fmt = (v: any) => {
 
 export default function NewPurchaseReturnPage() {
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
@@ -446,7 +449,7 @@ export default function NewPurchaseReturnPage() {
                                                 disabled={!form.supplierId && !form.customerId}
                                                 options={supplierInvoices.map(i => ({
                                                     value: i.id,
-                                                    label: `PUR-${String(i.invoiceNumber).padStart(5, '0')}`,
+                                                    label: getInvoiceRef(i.invoiceNumber, 'purchase', businessType),
                                                     sub: `${new Date(i.date).toLocaleDateString('en-ZA')} | ${i.total.toLocaleString()} ${cSymbol}`,
                                                 }))}
                                             />

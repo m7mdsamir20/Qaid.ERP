@@ -1,5 +1,5 @@
 import type { ActivityModule } from './types';
-import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, EXCLUSIVE_PAGES, t_s } from './shared';
+import { CORE_SECTIONS, CORE_MODULES, DEFAULT_FLAGS, DEFAULT_INVOICE_PREFIXES, EXCLUSIVE_PAGES, t_s } from './shared';
 
 /**
  * 🛒 نشاط تجارة التجزئة
@@ -37,6 +37,9 @@ const retail: ActivityModule = {
 
     // ملاحظة: 'barcode' كان مدرج في الباقة القديمة للتجزئة لكن السايدبار
     // بيخفيه عن RETAIL — يعني كان بند ميّت في الباقة. اتشال للتوحيد.
+    // بيستخدم البادئات الافتراضية: SAL للبيع و SLR للمرتجع
+    invoicePrefixes: { ...DEFAULT_INVOICE_PREFIXES },
+
     defaultModules: [
         ...CORE_MODULES,
         'pos',

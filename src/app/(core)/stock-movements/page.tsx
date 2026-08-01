@@ -10,6 +10,7 @@ import { DataTable } from '@/components/DataTable';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
+import { isSaleRef, isPurchaseRef } from '@/lib/invoiceRef';
 
 interface StockMovement {
     id: string;
@@ -82,10 +83,11 @@ export default function StockMovementsPage() {
         if (ref.startsWith('CANCEL-')) {
             return { label: t('مرتجع إلغاء طلب'), icon: <ArrowDownRight size={15} />, bg: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: 'rgba(167,139,250,0.2)' };
         }
-        if (ref.startsWith('PUR-') || ref.startsWith('PURCH-')) {
+        if (isPurchaseRef(ref)) {
             return { label: t('وارد مشتريات'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
         }
-        if (ref.startsWith('SAL-')) {
+        // بيعرف بادئات كل الأنشطة (SAL/SRV/CON) والقديمة (SRET) كمان
+        if (isSaleRef(ref)) {
             return { label: t('صادر مبيعات'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
         }
         if (ref.startsWith('FIX-STOCK') || ref.startsWith('OP-BAL') || ref.startsWith('OPEN-INV')) {

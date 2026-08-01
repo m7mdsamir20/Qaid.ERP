@@ -16,6 +16,7 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import StatCard, { StatCardGrid } from '@/components/StatCard';
 import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 interface Invoice {
     id: string;
@@ -45,7 +46,7 @@ export default function SalesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const { isServices } = useActivity();
+    const { key: businessType, isServices } = useActivity();
 
     const { symbol: sym } = useCurrency();
     const fmt = (n: number) => formatNumber(n);
@@ -197,7 +198,7 @@ export default function SalesReportPage() {
                                     type: 'number' as const,
                                     cell: (row: Invoice) => (
                                         <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
-                                            {`SAL-${String(row.invoiceNumber).padStart(5, '0')}`}
+                                            {getInvoiceRef(row.invoiceNumber, 'sale', businessType)}
                                         </span>
                                     )
                                 },
@@ -264,7 +265,7 @@ export default function SalesReportPage() {
                             );
 
                             const filteredInvoices = data.invoices.filter(inv => {
-                                const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
+                                const code = getInvoiceRef(inv.invoiceNumber, 'sale', businessType);
                                 return code.includes(q.toUpperCase()) ||
                                     String(inv.invoiceNumber).includes(q) ||
                                     (inv.customer?.name || t("عميل نقدي")).toLowerCase().includes(q.toLowerCase());

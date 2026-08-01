@@ -12,6 +12,8 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
 
 interface PurchaseReturnInvoice {
     id: string;
@@ -43,6 +45,7 @@ interface PurchaseReturnInvoice {
 
 export default function PurchaseReturnDetailPage(props: { params: Promise<{ id: string }> }) {
     const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
     const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
@@ -181,7 +184,7 @@ export default function PurchaseReturnDetailPage(props: { params: Promise<{ id: 
                                     <div>
                                         <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t("مرجع فاتورة الشراء")}</p>
                                         <p style={{ fontSize: '13px', fontWeight: 600, color: '#a855f7', margin: 0, fontFamily: OUTFIT }}>
-                                            {`PUR-${String(invoice.originalInvoice.invoiceNumber).padStart(5, '0')}`}
+                                            {getInvoiceRef(invoice.originalInvoice.invoiceNumber, 'purchase', businessType)}
                                         </p>
                                     </div>
                                 </div>
