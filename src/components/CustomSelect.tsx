@@ -167,10 +167,15 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
     if (flex !== undefined) layoutStyle.flex = flex;
 
     return (
-        <div ref={containerRef} style={{ minWidth, ...layoutStyle, zIndex: isOpen ? 10000 : 10 }}>
+        /* data-no-align: يمنع GlobalAutoAligner من لمس محتوى القائمة.
+           من غيرها أي خيار نصه فيه «لا يوجد» بيتحوّل لأيقونة فراغ. */
+        <div ref={containerRef} data-no-align="true" style={{ minWidth, ...layoutStyle, zIndex: isOpen ? 10000 : 10 }}>
             {/* Trigger Container */}
             <div
                 ref={triggerRef}
+                role="combobox"
+                aria-expanded={isOpen}
+                tabIndex={disabled ? -1 : 0}
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 style={{
                     position: 'relative',

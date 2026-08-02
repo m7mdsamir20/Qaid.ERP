@@ -103,6 +103,13 @@ function checkAndFormatEmptyState(el: HTMLElement) {
     // Do not format elements inside small widgets, layout sections, or explicitly excluded areas
     if (el.closest('[data-no-align="true"]') || el.closest('.kpi-grid') || el.closest('.sidebar') || el.closest('header') || el.closest('.sidebar-wrapper')) return;
 
+    /* ممنوع نلمس أي عنصر تفاعلي.
+       الدالة دي بتستبدل innerHTML، فلو اشتغلت جوه قائمة أو زر بتدمّر
+       DOM بيتحكم فيه React — والنتيجة إما شكل مكسور أو كراش عند
+       إعادة الرندر. حصل فعلاً مع خيار «لا يوجد مندوب (بيع مباشر)»:
+       النص فيه «لا يوجد» فاتحوّل لأيقونة صندوق فاضي جوه الحقل. */
+    if (el.closest('button, a, label, select, [role="button"], [role="option"], [role="combobox"], [role="listbox"], [contenteditable]')) return;
+
     // If already formatted, skip
     if (el.querySelector('.lucide-inbox')) return;
     
