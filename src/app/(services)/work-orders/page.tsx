@@ -4,7 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
-import { ClipboardList, Plus, Search, Loader2 } from 'lucide-react';
+import { ClipboardList, Plus, Search, Loader2, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -40,6 +40,10 @@ const STATUS_BADGE: Record<string, { label: string; bg: string; color: string; b
     assigned:    { label: 'مُسنَد',    bg: 'rgba(37,106,244,0.12)',  color: '#256af4', border: 'rgba(37,106,244,0.22)'  },
     in_progress: { label: 'قيد التنفيذ', bg: 'rgba(251,191,36,0.12)', color: '#fbbf24', border: 'rgba(251,191,36,0.22)' },
     completed:   { label: 'مكتمل',     bg: 'rgba(74,222,128,0.12)', color: '#4ade80', border: 'rgba(74,222,128,0.22)'  },
+    /* api/sales بيحط الحالة دي لما يتعمل فاتورة من أمر العمل.
+       ماكانتش موجودة في الخريطة، فالأمر المفوتر كان بيقع على
+       الافتراضي ويظهر «جديد» بعد ما اتفوتر فعلاً. */
+    invoiced:    { label: 'تمت الفوترة', bg: 'rgba(16,185,129,0.12)', color: '#10b981', border: 'rgba(16,185,129,0.22)' },
     cancelled:   { label: 'ملغى',      bg: 'rgba(239,68,68,0.12)',  color: '#ef4444', border: 'rgba(239,68,68,0.22)'   },
 };
 
@@ -51,6 +55,9 @@ function fmtDate(d: string | null) {
 export default function WorkOrdersPage() {
     const router = useRouter();
     const [orders, setOrders] = useState<WorkOrder[]>([]);
+    /* «مكتمل» معناها الشغل خلص بس لسه مفيش فاتورة —
+       api/sales بيحوّلها لـ 'invoiced' أول ما تتعمل الفاتورة. */
+    const uninvoicedCount = orders.filter(o => o.status === 'completed').length;
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -100,6 +107,27 @@ export default function WorkOrdersPage() {
                     }}
                 />
 
+                {/* شغل اتنفّذ ومحدش فوتره — المواد خرجت من المخزن فعلياً
+                    لكن المخزون والإيراد مش هيتأثروا غير لما تتعمل فاتورة. */}
+                {uninvoicedCount > 0 && statusFilter !== 'completed' && (
+                    <button
+                        onClick={() => setStatusFilter('completed')}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                            marginBottom: '16px', padding: '12px 16px', cursor: 'pointer',
+                            background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)',
+                            borderInlineStart: '3px solid #fbbf24', borderRadius: '12px',
+                            color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px', textAlign: 'start',
+                        }}
+                    >
+                        <AlertTriangle size={16} color="#fbbf24" style={{ flexShrink: 0 }} />
+                        <span>
+                            <b>{uninvoicedCount}</b> أمر عمل مكتمل ولم تصدر له فاتورة —
+                            <span style={{ color: C.textSecondary }}> اضغط للعرض</span>
+                        </span>
+                    </button>
+                )}
+
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
                     <div style={{ flex: 1, minWidth: '200px', position: 'relative' }}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon()} />
@@ -118,6 +146,7 @@ export default function WorkOrdersPage() {
                             { id: 'assigned', label: 'مُسنَد' },
                             { id: 'in_progress', label: 'قيد التنفيذ' },
                             { id: 'completed', label: 'مكتمل' },
+                            { id: 'invoiced', label: 'تمت الفوترة' },
                             { id: 'cancelled', label: 'ملغى' },
                         ].map(f => (
                             <button

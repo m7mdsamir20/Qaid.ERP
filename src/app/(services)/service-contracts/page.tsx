@@ -4,7 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { C, CAIRO, OUTFIT, IS, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
-import { FileText, Plus, Search, Loader2 } from 'lucide-react';
+import { FileText, Plus, Search, Loader2, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -53,6 +53,12 @@ function fmtNum(n: number) {
 export default function ServiceContractsPage() {
     const router = useRouter();
     const [contracts, setContracts] = useState<ServiceContract[]>([]);
+    /* مفيش أي كود بيحوّل العقد لـ 'expired' لما تاريخه يعدّي، فالعقد
+       بيفضل «نشط» للأبد. بنحسبها من التاريخ ونعرضها بدل ما نعدّل
+       الحالة تلقائياً — تغيير حالة عقد قرار المستخدم مش قرارنا. */
+    const expiredActive = contracts.filter(c =>
+        c.status === 'active' && c.endDate && new Date(c.endDate) < new Date()
+    );
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -100,6 +106,24 @@ export default function ServiceContractsPage() {
                 />
 
                 {/* Filters */}
+                {expiredActive.length > 0 && (
+                    <div
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                            marginBottom: '16px', padding: '12px 16px',
+                            background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.22)',
+                            borderInlineStart: '3px solid #ef4444', borderRadius: '12px',
+                            color: C.textPrimary, fontFamily: CAIRO, fontSize: '13px',
+                        }}
+                    >
+                        <AlertTriangle size={16} color="#ef4444" style={{ flexShrink: 0 }} />
+                        <span>
+                            <b>{expiredActive.length}</b> عقد انتهى تاريخه وما زال بحالة «نشط» —
+                            <span style={{ color: C.textSecondary }}> راجعه للتجديد أو الإنهاء</span>
+                        </span>
+                    </div>
+                )}
+
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
                     <div style={{ flex: 1, minWidth: '200px', position: 'relative' }}>
                         <Search size={16} style={SEARCH_STYLE.icon()} />
