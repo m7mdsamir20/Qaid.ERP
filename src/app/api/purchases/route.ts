@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -232,8 +233,8 @@ export const POST = withProtection(async (request, session, body) => {
                                 itemId: line.itemId,
                                 warehouseId,
                                 quantity: line.quantity,
-                                reference: `PUR-${String(invoiceNumber).padStart(5, '0')}`,
-                                notes: `فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                                reference: getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType),
+                                notes: `فاتورة مشتريات رقم ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
                                 companyId,
                                 invoiceId: invoice.id
                             } as any
@@ -315,7 +316,7 @@ export const POST = withProtection(async (request, session, body) => {
                         accountId: inventoryAccount.id,
                         debit: netCost,
                         credit: 0,
-                        description: `فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                        description: `فاتورة مشتريات رقم ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
                     });
 
                     if ((taxAmount || 0) > 0 && taxAccount) {
@@ -323,7 +324,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: taxAccount.id,
                             debit: taxAmount,
                             credit: 0,
-                            description: `ضريبة مدخلات — فاتورة PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                            description: `ضريبة مدخلات — فاتورة ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
                         });
                     }
 
@@ -332,7 +333,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: treasuryAccountId,
                             debit: 0,
                             credit: paid,
-                            description: `دفعة فورية — فاتورة مشتريات PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                            description: `دفعة فورية — فاتورة مشتريات ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
                         });
                     }
 
@@ -341,7 +342,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: supplierAccount.id,
                             debit: 0,
                             credit: remainingAmt,
-                            description: `مستحقات مورد — فاتورة مشتريات PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                            description: `مستحقات مورد — فاتورة مشتريات ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
                         });
                     }
 
@@ -351,8 +352,8 @@ export const POST = withProtection(async (request, session, body) => {
                                 branchId: body?.branchId || null,
                                 entryNumber,
                                 date: invoiceDate,
-                                description: `قيد فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
-                                reference: `PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                                description: `قيد فاتورة مشتريات رقم ${getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType)}`,
+                                reference: getInvoiceRef(invoiceNumber, 'purchase', (session.user as any).businessType),
                                 referenceType: 'invoice',
                                 referenceId: invoice.id,
                                 financialYearId: financialYear.id,
@@ -379,7 +380,7 @@ export const POST = withProtection(async (request, session, body) => {
             return invoice;
         });
 
-        const purCode = `PUR-${String(result.invoiceNumber).padStart(5, '0')}`;
+        const purCode = getInvoiceRef(result.invoiceNumber, 'purchase', (session.user as any).businessType);
         await logActivity({
             ...extractLogContext(session, request),
             action: 'create',

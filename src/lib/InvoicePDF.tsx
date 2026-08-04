@@ -3,6 +3,8 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font, Image } from '@react-pdf/renderer';
 import { getCurrencySymbol } from '@/lib/currency';
 import { generateZatcaTLV } from '@/lib/printInvoices';
+import { getActivity } from '@/modules';
+import { getInvoiceRef, getInvoiceTitle } from './invoiceRef';
 
 /* ── Font registration ──────────────────────────────────────────── */
 let _fontsReady = false;
@@ -21,20 +23,13 @@ function ensureFonts() {
 }
 
 /* ── Lookup tables ─────────────────────────────────────────────── */
-const TITLES: Record<string, string> = {
-    sale: 'فاتورة مبيعات', purchase: 'فاتورة مشتريات',
-    'sale-return': 'مرتجع مبيعات', 'purchase-return': 'مرتجع مشتريات',
-    sale_return: 'مرتجع مبيعات', purchase_return: 'مرتجع مشتريات',
+// أوامر البيع والشراء ثابتة — الفواتير من getInvoiceRef حسب النشاط
+const ORDER_PREFIXES: Record<string, string> = {
+    'sales-order': 'SO', 'purchase-order': 'PO',
 };
-const TITLES_EN: Record<string, string> = {
-    sale: 'Sales Invoice', purchase: 'Purchase Invoice',
-    'sale-return': 'Sales Return', 'purchase-return': 'Purchase Return',
-    sale_return: 'Sales Return', purchase_return: 'Purchase Return',
-};
-const PREFIXES: Record<string, string> = {
-    sale: 'SAL', purchase: 'PUR',
-    'sale-return': 'SLR', 'purchase-return': 'PRR',
-    sale_return: 'SLR', purchase_return: 'PRR',
+const ORDER_TITLES: Record<string, { ar: string; en: string }> = {
+    'sales-order': { ar: 'أمر بيع', en: 'Sales Order' },
+    'purchase-order': { ar: 'أمر شراء', en: 'Purchase Order' },
 };
 
 /* ── StyleSheet ────────────────────────────────────────────────── */
@@ -150,8 +145,7 @@ interface Props { invoice: any; company: any; type: string; partyBalance?: numbe
 function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
     const sym            = getCurrencySymbol(company?.currency || 'EGP');
     const country        = (company?.countryCode || 'EG').toUpperCase();
-    const isServicesComp = company?.businessType?.toUpperCase() === 'SERVICES';
-    const isTrading      = company?.businessType?.toUpperCase() === 'TRADING';
+    const isServicesComp = getActivity(company?.businessType).key === 'SERVICES';
     const isSaudi        = country === 'SA';
     const isEgypt        = country === 'EG';
     const isBilingual    = country !== 'EG' || isServicesComp;
@@ -159,7 +153,9 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
 
     const rawLines  = invoice?.lines || invoice?.items || [];
     const lines: any[] = Array.isArray(rawLines) ? rawLines : [];
-    const isServicesLine = isServicesComp || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
+    // عمود "الخدمة" بدل "الصنف" لشركات الخدمات.
+    // (كان فيه شرط بيفحص item.businessType — عمود مش موجود على Item. اتشال.)
+    const isServicesLine = isServicesComp;
 
     const party        = isSale ? (invoice.customer || invoice.supplier || null) : (invoice.supplier || invoice.customer || null);
     const partyName    = party?.name || (isSale ? 'عميل نقدي' : 'مورد نقدي');
@@ -186,10 +182,13 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
     const invoiceNum  = String(invoice?.invoiceNumber || 1).padStart(5, '0');
 
     // Title — mirrors HTML logic exactly
-    const showServicesTitle = !isTrading || isServicesLine;
-    const invoiceTitle      = showServicesTitle ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : (TITLES[type] || 'فاتورة');
-    const invoiceTitleEn    = showServicesTitle ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : (TITLES_EN[type] || '');
-    const prefix            = isServicesLine ? 'SRV' : (PREFIXES[type] || 'INV');
+    const docTitle          = ORDER_TITLES[type] ?? getInvoiceTitle(type, company?.businessType);
+    const invoiceTitle      = docTitle.ar;
+    const invoiceTitleEn    = docTitle.en;
+    const invNumStr         = String(invoice?.invoiceNumber ?? invoice?.orderNumber ?? 1);
+    const invoiceRef        = ORDER_PREFIXES[type]
+        ? `${ORDER_PREFIXES[type]}-${invNumStr.padStart(5, '0')}`
+        : getInvoiceRef(invNumStr, type, company?.businessType);
 
     // ZATCA QR (Saudi)
     const hasValidTax = !!(isSaudi && company?.taxNumber && company.taxNumber.trim());
@@ -269,7 +268,7 @@ function InvoicePDF({ invoice, company, type, partyBalance: pb }: Props) {
                         <Text style={s.titleBox}>{invoiceTitle}</Text>
                         {isBilingual && <Text style={s.titleBoxEn}>{invoiceTitleEn}</Text>}
                         {isSaudi && <Text style={s.zatcaNote}>فاتورة ضريبية مبسطة / Simplified Tax Invoice</Text>}
-                        <Text style={s.invNum}>{prefix}-{invoiceNum}</Text>
+                        <Text style={s.invNum}>{invoiceRef}</Text>
                         <Text style={s.invDate}>{date}</Text>
                         {invoice?.customerPONumber
                             ? <Text style={s.poNum}>{isBilingual ? 'PO: ' : 'رقم الطلب: '}{invoice.customerPONumber}</Text>

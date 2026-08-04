@@ -38,6 +38,36 @@ function isDate(text: string): boolean {
     return dateRegex.test(clean);
 }
 
+/**
+ * أرقام هوية مش مبالغ — ممنوع يتحط عليها فواصل الآلاف.
+ * زي الرقم الضريبي والسجل التجاري والباركود وأكواد الأصناف.
+ *
+ * القاعدة:
+ *  - أي رقم بيبدأ بصفر → كود (00042، 007). الفرمتة بتاكل الأصفار.
+ *  - أي رقم صحيح 10 خانات أو أكتر → معرّف مش مبلغ
+ *    (رقم ضريبي سعودي 15 خانة، باركود EAN-13، رقم قومي).
+ *
+ * الأرقام اللي بين 9 و10 خانات (زي السجل التجاري والهاتف السعودي من
+ * غير صفر) مش ممكن نفرّقها عن مبلغ بالشكل، فدي محتاجة data-no-format
+ * على العنصر نفسه.
+ */
+function isIdentifierNumber(text: string): boolean {
+    const clean = text.trim();
+    if (!/^\d+$/.test(clean)) return false;      // فيه كسور أو إشارة → مبلغ
+    if (clean.length > 1 && clean.startsWith('0')) return true;
+    return clean.length >= 10;
+}
+
+/** بيدوّر على data-no-format في العنصر أو أي أب ليه */
+function isFormattingDisabled(node: Node): boolean {
+    let el = node.parentElement;
+    while (el) {
+        if (el.hasAttribute?.('data-no-format')) return true;
+        el = el.parentElement;
+    }
+    return false;
+}
+
 function applyAlignment(node: Node, type: 'center' | 'start') {
     let target: HTMLElement | null = null;
     
@@ -72,6 +102,13 @@ function checkAndFormatEmptyState(el: HTMLElement) {
     
     // Do not format elements inside small widgets, layout sections, or explicitly excluded areas
     if (el.closest('[data-no-align="true"]') || el.closest('.kpi-grid') || el.closest('.sidebar') || el.closest('header') || el.closest('.sidebar-wrapper')) return;
+
+    /* ممنوع نلمس أي عنصر تفاعلي.
+       الدالة دي بتستبدل innerHTML، فلو اشتغلت جوه قائمة أو زر بتدمّر
+       DOM بيتحكم فيه React — والنتيجة إما شكل مكسور أو كراش عند
+       إعادة الرندر. حصل فعلاً مع خيار «لا يوجد مندوب (بيع مباشر)»:
+       النص فيه «لا يوجد» فاتحوّل لأيقونة صندوق فاضي جوه الحقل. */
+    if (el.closest('button, a, label, select, [role="button"], [role="option"], [role="combobox"], [role="listbox"], [contenteditable]')) return;
 
     // If already formatted, skip
     if (el.querySelector('.lucide-inbox')) return;
@@ -160,7 +197,8 @@ function classifyAndProcessTextNode(node: Node) {
         applyAlignment(node, 'center');
         
         // If it is a plain number, format it with commas
-        if (isPlainNumber) {
+        // — إلا لو كان معرّف (رقم ضريبي/سجل/باركود) أو العنصر عليه data-no-format
+        if (isPlainNumber && !isIdentifierNumber(cleanedText) && !isFormattingDisabled(node)) {
             const num = parseFloat(cleanedText);
             if (!isNaN(num)) {
                 const formattedNum = formatNumber(num);

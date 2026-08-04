@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef, getVoucherRef } from '@/lib/invoiceRef';
+import { getActivity } from '@/modules';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -35,7 +36,7 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: "العميل غير موجود" }, { status: 404 });
         }
 
-        const isServices = (session.user as any).businessType === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
 
         const branchId = searchParams.get('branchId');
         const invoiceWhere: any = { customerId, companyId, type: { in: ['sale', 'sale_return'] } };

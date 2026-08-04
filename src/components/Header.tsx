@@ -6,6 +6,7 @@ import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { Search, Bell, ChevronDown, User, Settings, KeyRound, LogOut, FileText, Package, Users, Receipt, Loader2, Globe, AlertTriangle, GitBranch, Menu, Sun, Moon, X } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
+import { getActivity } from '@/modules';
 import { Avatar } from '@/components/UserAvatar';
 
 /* ══════════════════════════════════════════
@@ -49,7 +50,6 @@ const getRoleLabel = (role: string, t: any) => {
 
 function SearchBox() {
     const { t } = useTranslation();
-    const { data: session } = useSession();
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -84,9 +84,6 @@ function SearchBox() {
         }, 400);
         return () => clearTimeout(t);
     }, [query]);
-
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
 
     return (
         <div ref={boxRef} className="search-box-container" style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
@@ -225,8 +222,7 @@ function Actions() {
         } catch (error) { console.error('Mark read failed:', error); }
     };
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const activity = getActivity((session?.user as any)?.businessType);
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -265,7 +261,7 @@ function Actions() {
             </button>
 
             {/* Notifications */}
-            {!isServices && (
+            {activity.flags.notifications && (
             <div ref={notifRef} style={{ position: 'relative' }}>
                 <button
                     onClick={() => setOpenNotif(!openNotif)}

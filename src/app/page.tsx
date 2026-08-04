@@ -16,23 +16,31 @@ import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';
+import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 const t = (s: string) => s;
 
 const toEnDigits = (str: string) => str.replace(/[\u0660-\u0669]/g, d => '0123456789'['\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669'.indexOf(d)]);
 // Local fmt removed in favor of fMoney
 
-const getInvoicePrefix = (type: string) => {
+/**
+ * كود المستند. الفواتير بتيجي من getInvoiceRef عشان تتماشى مع النشاط
+ * (SAL / SRV / CON)، والباقي بادئات ثابتة مالهاش علاقة بالنشاط.
+ */
+const getDocRef = (type: string, num: number | string, businessType?: string | null) => {
+  const padded = String(num).padStart(5, '0');
   switch (type) {
-    case 'sale': return 'SAL-';
-    case 'purchase': return 'PUR-';
-    case 'receipt': return 'RCP-';
-    case 'payment': return 'PMT-';
-    case 'installment': return 'PLN-';
-    case 'installment_receipt': return 'INS-';
-    case 'sale_return': return 'SRET-';
-    case 'purchase_return': return 'PRET-';
-    default: return 'INV-';
+    case 'sale':
+    case 'purchase':
+    case 'sale_return':
+    case 'purchase_return':
+      return getInvoiceRef(num, type, businessType);
+    case 'receipt': return `RCP-${padded}`;
+    case 'payment': return `PMT-${padded}`;
+    case 'installment': return `PLN-${padded}`;
+    case 'installment_receipt': return `INS-${padded}`;
+    default: return `INV-${padded}`;
   }
 };
 
@@ -179,8 +187,6 @@ function ChartTooltip({ active, payload, label, fMoneyJSX, t }: any) {
   );
 }
 
-
-
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
   const { fMoneyJSX } = useCurrency();
@@ -190,10 +196,8 @@ export default function DashboardPage() {
   const userRole = (session?.user as any)?.role;
   const userPerms = (session?.user as any)?.permissions || {};
   const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
-  const businessType = (session?.user as any)?.businessType?.toUpperCase();
-  const isServices = businessType === 'SERVICES';
-  const isRestaurants = businessType === 'RESTAURANTS';
-  const isContracting = businessType === 'CONTRACTING';
+  const { key: businessType, isServices, isRestaurants, isContracting } = useActivity();
+
   const isUserAdmin = userRole === 'admin';
 
   // Get subscription features for admin checks
@@ -242,7 +246,6 @@ export default function DashboardPage() {
   };
 
   const canViewDashboard = hasPage('/', 'dashboard');
-
 
   // Redirect if no permission
   useEffect(() => {
@@ -341,7 +344,6 @@ export default function DashboardPage() {
   const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
   const renderCurrency = (n: number) => fMoneyJSX(n);
 
-
   if (!canViewDashboard) return (
     <DashboardLayout>
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
@@ -350,7 +352,6 @@ export default function DashboardPage() {
       </div>
     </DashboardLayout>
   );
-
 
   const getVisibleActions = () => {
     const serviceActions = [
@@ -451,7 +452,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
 
         {/* ── KPI Cards Grid (Dynamic) ── */}
         <div className="kpi-grid" style={{
@@ -774,7 +774,9 @@ export default function DashboardPage() {
                               <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '3px 10px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO, whiteSpace: 'nowrap', display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(s.label)}</span>
                             </td>
                             <td style={{ padding: '12px 8px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }}>
-                              {`${inv._isPosOrder ? 'POS-' : getInvoicePrefix(inv.type)}${String(inv.invoiceNumber).padStart(5, '0')}`}
+                              {inv._isPosOrder
+                                ? `POS-${String(inv.invoiceNumber).padStart(5, '0')}`
+                                : getDocRef(inv.type, inv.invoiceNumber, businessType)}
                             </td>
                           </tr>
                         );

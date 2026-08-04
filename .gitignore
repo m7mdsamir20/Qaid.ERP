@@ -53,3 +53,11 @@ prisma/*.db
 prisma/*.db-journal
 
 .vercel
+
+# مخرجات سكريبت تدقيق الترجمة (بتتولد مع npm run dev)
+/src/app/brain/
+
+# سكيلز الوكيل (محلية — مش جزء من التطبيق)
+/.agents/
+/.claude/skills/
+/skills-lock.json

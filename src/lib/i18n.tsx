@@ -5252,6 +5252,24 @@ export const dictionaries = {
 
         // --- Auto-synced Keys (Missing in Code) ---
         "عقد": "a contract",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "تعذّر العثور على السند": "Voucher not found",
+        "هذا السند ليس سند صرف": "This voucher is not a payment voucher",
+        "جاري تحميل بيانات السند...": "Loading voucher data...",
+        "السند غير موجود": "Voucher not found",
+        "العودة لقائمة سندات الصرف": "Back to payment vouchers",
+        "تفاصيل سند الصرف": "Payment Voucher Details",
+        "طباعة السند": "Print Voucher",
+        "إجمالي المبلغ المصروف": "Total Paid Amount",
+        "بيانات السند": "Voucher Details",
+        "هذا السند ليس سند قبض": "This voucher is not a receipt voucher",
+        "العودة لقائمة سندات القبض": "Back to receipt vouchers",
+        "تفاصيل سند القبض": "Receipt Voucher Details",
+        "إجمالي المبلغ المستلم": "Total Received Amount",
+        "طريقة الاستلام": "Receipt Method",
+        "النظام المحاسبي المتكامل": "Integrated Accounting System",
 }
 };
 

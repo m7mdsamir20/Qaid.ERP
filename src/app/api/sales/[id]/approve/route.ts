@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { getActivity } from '@/modules';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const POST = withProtection(async (request, session, body, context) => {
     try {
@@ -47,7 +49,7 @@ export const POST = withProtection(async (request, session, body, context) => {
             return NextResponse.json({ error: "الرجاء تحديد الخزينة أو الحساب البنكي لاستلام المبلغ المدفوع" }, { status: 400 });
         }
 
-        const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
+        const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
 
         // 2. Stock Check (prevent negative stock on approval)
         if (invoice.warehouseId) {
@@ -129,8 +131,8 @@ export const POST = withProtection(async (request, session, body, context) => {
                                 itemId: line.itemId,
                                 warehouseId: invoice.warehouseId!,
                                 quantity: -line.quantity,
-                                reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                                notes: `اعتماد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                reference: getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType),
+                                notes: `اعتماد فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                                 companyId,
                                 invoiceId: invoice.id,
                             },
@@ -227,7 +229,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: treasuryAccountId,
                         debit: paid,
                         credit: 0,
-                        description: `مبلغ مقبوض — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `مبلغ مقبوض — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -236,7 +238,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: receivablesAccount.id,
                         debit: remaining,
                         credit: 0,
-                        description: `ذمم عميل — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `ذمم عميل — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -244,7 +246,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                     accountId: salesAccount.id,
                     debit: 0,
                     credit: netRevenue,
-                    description: `فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                    description: `فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                 });
 
                 if ((invoice.taxAmount || 0) > 0 && taxAccount) {
@@ -252,7 +254,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                         accountId: taxAccount.id,
                         debit: 0,
                         credit: invoice.taxAmount,
-                        description: `ضريبة القيمة المضافة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                        description: `ضريبة القيمة المضافة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                     });
                 }
 
@@ -295,13 +297,13 @@ export const POST = withProtection(async (request, session, body, context) => {
                                 accountId: cogsAccount.id,
                                 debit: totalCost,
                                 credit: 0,
-                                description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                description: `تكلفة بضاعة مباعة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                             });
                             journalLines.push({
                                 accountId: inventoryAccount.id,
                                 debit: 0,
                                 credit: totalCost,
-                                description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                                description: `تكلفة بضاعة مباعة — فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
                             });
                         }
                     }
@@ -313,8 +315,8 @@ export const POST = withProtection(async (request, session, body, context) => {
                             branchId: invoice.branchId,
                             entryNumber,
                             date: invoice.date ? new Date(invoice.date) : new Date(),
-                            description: `اعتماد قيد فاتورة مبيعات رقم SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
-                            reference: `SAL-${String(invoice.invoiceNumber).padStart(5, '0')}`,
+                            description: `اعتماد قيد فاتورة مبيعات رقم ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`,
+                            reference: getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType),
                             referenceType: 'invoice',
                             referenceId: invoice.id,
                             financialYearId: financialYear.id,
@@ -339,8 +341,7 @@ export const POST = withProtection(async (request, session, body, context) => {
             return updatedInv;
         });
 
-        const prefix = (session.user as any).businessType?.toUpperCase() === 'SERVICES' ? 'SRV' : 'SAL';
-        const invCode = `${prefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+        const invCode = getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType);
         await logActivity({
             ...extractLogContext(session, request),
             action: 'approve',

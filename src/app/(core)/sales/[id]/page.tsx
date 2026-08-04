@@ -1,0 +1,682 @@
+'use client';
+import ContentSkeleton from '@/components/ContentSkeleton';
+import { formatNumber } from '@/lib/currency';
+
+import React, { useState, useEffect, useCallback, use } from 'react';
+import { useTranslation } from '@/lib/i18n';
+import DashboardLayout from '@/components/DashboardLayout';
+import { useRouter } from 'next/navigation';
+import { Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw, FileDown } from 'lucide-react';
+import { CompanyInfo } from '@/lib/printInvoices';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useSession } from 'next-auth/react';
+import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
+import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
+import { useActivity } from '@/modules/useActivity';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+
+interface ReturnInvoice {
+    id: string;
+    invoiceNumber: number;
+    date: string;
+    total: number;
+}
+
+interface SaleInvoice {
+    id: string;
+    invoiceNumber: number;
+    date: string;
+    customer: { name: string; phone?: string; balance: number } | null;
+    supplier: { name: string; phone?: string; balance: number } | null;
+    warehouse: { name: string } | null;
+    subtotal: number;
+    discount: number;
+    total: number;
+    paidAmount: number;
+    remaining: number;
+    paymentMethod: 'cash' | 'bank' | 'credit' | 'installment_plan';
+    taxAmount?: number;
+    taxRate?: number;
+    notes?: string;
+    customerPONumber?: string;
+    lines: {
+        id: string;
+        item: { name: string; code: string; unit?: { name: string } };
+        quantity: number;
+        price: number;
+        total: number;
+        taxRate?: number;
+        taxAmount?: number;
+        description?: string;
+    }[];
+    returnInvoices?: ReturnInvoice[];
+}
+
+export default function SaleDetailPage(props: { params: Promise<{ id: string }> }) {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
+    const params = use(props.params);
+    const router = useRouter();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
+    const { data: session } = useSession();
+    const [invoice, setInvoice] = useState<SaleInvoice | null>(null);
+    const [company, setCompany] = useState<CompanyInfo>({});
+    const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
+
+    const userRole = (session?.user as any)?.role;
+    const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
+    const canApprove = isSuperAdmin || userRole === 'admin' || userRole === 'accountant';
+
+    const [showApproveModal, setShowApproveModal] = useState(false);
+    const [treasuries, setTreasuries] = useState<any[]>([]);
+    const [selectedTreasuryId, setSelectedTreasuryId] = useState('');
+    const [approving, setApproving] = useState(false);
+    const [approveError, setApproveError] = useState('');
+
+    useEffect(() => {
+        if (canApprove) {
+            fetch('/api/treasuries')
+                .then(res => res.json())
+                .then(data => setTreasuries(Array.isArray(data) ? data : []))
+                .catch(err => console.error(err));
+        }
+    }, [canApprove]);
+
+    const handleApprove = async () => {
+        if (invoice && invoice.paidAmount > 0 && !selectedTreasuryId) {
+            setApproveError(t('الرجاء اختيار الخزينة أو الحساب البنكي'));
+            return;
+        }
+        setApproving(true);
+        setApproveError('');
+        try {
+            const res = await fetch(`/api/sales/${params.id}/approve`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    treasuryId: selectedTreasuryId
+                })
+            });
+            if (res.ok) {
+                setShowApproveModal(false);
+                fetchDetail();
+            } else {
+                const errData = await res.json();
+                setApproveError(errData.error || t('حدث خطأ أثناء الاعتماد'));
+            }
+        } catch (error) {
+            setApproveError(t('خطأ في الاتصال بالسيرفر'));
+        } finally {
+            setApproving(false);
+        }
+    };
+
+    const fetchDetail = useCallback(async () => {
+        try {
+            const [invR, coR] = await Promise.all([
+                fetch(`/api/sales/${params.id}`),
+                fetch('/api/company')
+            ]);
+            if (invR.ok) {
+                const data = await invR.json();
+                setInvoice(data);
+            }
+            if (coR.ok) setCompany(await coR.json());
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [params.id]);
+
+    useEffect(() => { fetchDetail(); }, [fetchDetail]);
+
+    const handleDownloadPDF = async () => {
+        if (!invoice) return;
+        setDownloading(true);
+        try {
+            await downloadInvoicePDF(invoice.id);
+        } catch (err: any) {
+            alert(t('فشل تحميل PDF') + ': ' + (err?.message || ''));
+        } finally {
+            setDownloading(false);
+        }
+    };
+
+    if (loading) { return <DashboardLayout><ContentSkeleton /></DashboardLayout>; }
+
+    if (!invoice) return (
+        <DashboardLayout>
+            <div style={{  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
+        </DashboardLayout>
+    );
+
+    const fmt = (v: number) => formatNumber(v);
+
+    const getStatus = () => {
+        if ((invoice as any).status === 'pending') return { label: t('قيد الاعتماد'), color: '#f59e0b', icon: Clock, bg: 'rgba(245,158,11,0.1)' };
+        if (invoice.paymentMethod === 'installment_plan') return { label: t('مُقسطة'), color: '#a78bfa', icon: Clock, bg: 'rgba(167,139,250,0.1)' };
+        if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
+        if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
+        return { label: t('غير مدفوعة (آجل)'), color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
+    };
+
+    const status = getStatus();
+
+    const { key: businessType, isServices } = useActivity();
+    const invLabel = isServices ? t('فاتورة خدمات') : t('فاتورة مبيعات');
+    const invNumFmt = getInvoiceRef(invoice.invoiceNumber, 'sale', businessType);
+
+    return (
+        <DashboardLayout>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+
+                <PageHeader
+                    title={`${t('تفاصيل')} ${invLabel}`}
+                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString('en-ZA')} — ${t('سجل العميل والتحصيل المالي')}`}
+                    icon={Receipt}
+                    backUrl="/sales"
+                    actions={[
+                        <button
+                            key="download-pdf"
+                            onClick={handleDownloadPDF}
+                            disabled={downloading}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '8px',
+                                height: '42px',
+                                padding: '0 20px',
+                                borderRadius: '12px',
+                                background: 'rgba(239, 68, 68, 0.1)',
+                                color: '#ef4444',
+                                border: '1px solid rgba(239, 68, 68, 0.2)',
+                                fontSize: '14px',
+                                fontWeight: 700,
+                                cursor: downloading ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.15s',
+                                fontFamily: CAIRO,
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                            }}
+                            onMouseLeave={e => {
+                                if (!downloading) e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                            }}
+                        >
+                            {downloading ? (
+                                <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                            ) : (
+                                <FileDown size={18} />
+                            )}
+                            {t('تحميل PDF')}
+                        </button>
+                    ]}
+                    primaryButton={{
+                        label: t('طباعة الفاتورة'),
+                        onClick: () => {
+                            const branches = (session?.user as any)?.branches || [];
+                            const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
+
+                            if (invoice.notes?.includes(t("POS الكاشير السريع"))) {
+                                const printWindow = window.open('', '_blank', 'width=350,height=600');
+                                if (printWindow) {
+                                    const receiptDate = new Date(invoice.date).toLocaleString('en-ZA', { dateStyle: 'short', timeStyle: 'short' });
+                                    printWindow.document.write(`
+                                        <html>
+                                        <head>
+                                            <title>${t('فاتورة مبيعات')}</title>
+                                            <style>
+                                                body { font-family: 'Tahoma', sans-serif; padding: 10px; margin: 0; background: #fff; color: #000; direction: rtl; text-align: center; }
+                                                .receipt-container { width: 100%; max-width: 300px; margin: 0 auto; text-align: center; }
+                                                .header h2 { margin: 0; font-size: 18px; font-weight: bold; }
+                                                .header p { margin: 2px 0; font-size: 12px; }
+                                                .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
+                                                .item-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; text-align: right; }
+                                                .item-name { flex: 1; padding-insetInlineStart: 5px; }
+                                                .item-qty { width: 30px; text-align: center; }
+                                                .item-total { width: 70px; text-align: left; }
+                                                .totals-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px; font-weight: bold; }
+                                                .footer { font-size: 12px; margin-top: 15px; text-align: center; }
+                                            </style>
+                                        </head>
+                                        <body onload="window.print(); window.close();">
+                                            <div class="receipt-container">
+                                                <div class="header">
+                                                    ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
+                                                    <h2>${company.name || t("الشركة للأنظمة")}</h2>
+                                                    <p>${t('فاتورة كاشير')} POS</p>
+                                                    <p>${t('رقم الفاتورة')}: #${invoice.invoiceNumber}</p>
+                                                    <p>${t('تاريخ')}: ${receiptDate}</p>
+                                                </div>
+                                                <div class="divider"></div>
+                                                <div style="font-weight: bold; font-size:12px; display:flex; margin-bottom: 5px;">
+                                                    <span class="item-name">${t('الصنف')}</span>
+                                                    <span class="item-qty">${t('كمية')}</span>
+                                                    <span class="item-total">${t('إجمالي')}</span>
+                                                </div>
+                                                ${invoice.lines.map(line => `
+                                                    <div class="item-row">
+                                                        <span class="item-name">
+                                                            ${line.item?.name || t("صنف")}
+                                                            ${line.description ? `<br/><small style="font-size: 10px; opacity: 0.8; font-weight: normal">${line.description}</small>` : ''}
+                                                        </span>
+                                                        <span class="item-qty">${line.quantity}</span>
+                                                        <span class="item-total">${fmt(line.total)}</span>
+                                                    </div>
+                                                `).join('')}
+                                                <div class="divider"></div>
+                                                <div class="totals-row">
+                                                    <span>${t('المجموع')}:</span>
+                                                    <span>${fmt(invoice.subtotal)} ${cSymbol}</span>
+                                                </div>
+                                                ${invoice.discount > 0 ? `
+                                                <div class="totals-row">
+                                                    <span>${t('الخصم')}:</span>
+                                                    <span>- ${fmt(invoice.discount)} ${cSymbol}</span>
+                                                </div>` : ''}
+                                                <div class="totals-row" style="font-size: 18px; margin-top: 10px; border-top: 1px solid #000; padding-top: 5px;">
+                                                    <span>${t('الإجمالي')}:</span>
+                                                    <span>${fmt(invoice.total)} ${cSymbol}</span>
+                                                </div>
+                                                <div class="footer">
+                                                    <p>${t('شكراً لزيارتكم!')}</p>
+                                                    <p style="font-size: 10px; color: #555;">Powered By ERP</p>
+                                                </div>
+                                            </div>
+                                        </body>
+                                        </html>
+                                    `);
+                                    printWindow.document.close();
+                                }
+                                return;
+                            }
+
+                            printInvoiceDirectly(invoice.id)
+                        },
+                        icon: Printer
+                    }}
+                />
+
+                {/* Pending Approval Banner */}
+                {(invoice as any).status === 'pending' && (
+                    <div style={{
+                        background: 'rgba(245, 158, 11, 0.08)',
+                        border: '1px solid rgba(245, 158, 11, 0.2)',
+                        borderRadius: '12px',
+                        padding: '16px 20px',
+                        marginBottom: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '15px'
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <AlertCircle size={22} style={{ color: '#f59e0b', flexShrink: 0 }} />
+                            <div>
+                                <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#f59e0b' }}>{t('فاتورة معلقة قيد الاعتماد')}</h4>
+                                <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary }}>
+                                    {t('هذه الفاتورة محفوظة كمسودة معلقة. لن تؤثر على المخزون أو الحسابات المالية أو أرصدة العملاء والخزائن حتى يتم اعتمادها.')}
+                                </p>
+                            </div>
+                        </div>
+                        {canApprove && (
+                            <button
+                                onClick={() => {
+                                    setApproveError('');
+                                    setSelectedTreasuryId('');
+                                    setShowApproveModal(true);
+                                }}
+                                style={{
+                                    padding: '0 20px',
+                                    height: '38px',
+                                    background: '#f59e0b',
+                                    color: '#000',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    fontFamily: CAIRO,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    transition: 'all 0.2s',
+                                    whiteSpace: 'nowrap'
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = '#d97706'; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = '#f59e0b'; }}
+                            >
+                                <CheckCircle2 size={16} />
+                                {t('اعتماد الفاتورة الآن')}
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+                        {/* ── Metadata Icons ── */}
+                        <div className="stats-grid" style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '15px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <User size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('العميل / المستلم')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Receipt size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('رقم الفاتورة')}</p>
+                                    <div style={{ color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{invNumFmt}</div>
+                                </div>
+                            </div>
+
+                            {!isServices && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Building2 size={18} />
+                                    </div>
+                                    <div>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('المستودع / المخزن')}</p>
+                                        <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: status.bg, color: status.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <status.icon size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('حالة التحصيل')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
+                                </div>
+                            </div>
+
+                            {(invoice as any).salesRepresentative && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(139, 92, 246, 0.1)', color: '#8b5cf6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <User size={18} />
+                                    </div>
+                                    <div>
+                                        <p style={{ fontSize: '10px', color: C.textSecondary, margin: 0 }}>{t('مندوب المبيعات')}</p>
+                                        <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{(invoice as any).salesRepresentative.name}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* ── Items Table ── */}
+                        <div style={TABLE_STYLE.container}>
+                            <div style={{ padding: '16px 20px',  borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={STitle}><Package size={14} /> {t('بنود الفاتورة')}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
+                            </div>
+                            <div className="scroll-table">
+                                <table style={TABLE_STYLE.table}>
+                                    <thead>
+                                        <tr style={TABLE_STYLE.thead}>
+                                            <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
+                                            <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                            {(invoice.taxRate || 0) > 0 ? (
+                                                <>
+                                                    <th style={TABLE_STYLE.th(false, true)}>{t('نسبة الضريبة')}</th>
+                                                    <th style={TABLE_STYLE.th(false, true)}>{t('قيمة الضريبة')}</th>
+                                                </>
+                                            ) : null}
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {invoice.lines.map((l, idx) => (
+                                            <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
+                                                <td style={{...TABLE_STYLE.td(true)}}>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
+                                                    {l.description
+                                                        ? <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
+                                                        : <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, opacity: 0.5 }}>{l.item.code}</div>
+                                                    }
+                                                </td>
+                                                {!isServices && (
+                                                    <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
+                                                )}
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                {(() => {
+                                                    const invTaxRate = invoice.taxRate || 0;
+                                                    const lineTaxRate = l.taxRate || invTaxRate;
+                                                    const lineBase = l.quantity * l.price;
+                                                    const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
+                                                    if (invTaxRate > 0) return (
+                                                        <>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{lineTaxRate}%</td>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT }}>{lineTaxAmt.toLocaleString()}</td>
+                                                        </>
+                                                    );
+                                                    return null;
+                                                })()}
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.primary }}>{fmt(l.total)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {invoice.customerPONumber && (
+                            <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}>{t('رقم طلب الشراء')}</div>
+                                <p style={{ fontSize: '13px', color: C.textPrimary, margin: '8px 0 0', fontWeight: 700, fontFamily: 'monospace', direction: 'ltr', textAlign: 'start' }}>{invoice.customerPONumber}</p>
+                            </div>
+                        )}
+
+                        {invoice.notes && (
+                            <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textSecondary }}><Info size={12} /> {t('ملاحظات')}</div>
+                                <p style={{ fontSize: '13px', color: C.textSecondary, margin: '8px 0 0', lineHeight: 1.6 }}>{invoice.notes}</p>
+                            </div>
+                        )}
+
+                        {invoice.returnInvoices && invoice.returnInvoices.length > 0 && (
+                            <div style={TABLE_STYLE.container}>
+                                <div style={{ padding: '16px 20px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(239,68,68,0.04)' }}>
+                                    <div style={{ ...STitle, color: C.danger }}><RotateCcw size={14} /> {t('مرتجعات هذه الفاتورة')}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: C.danger }}>{invoice.returnInvoices.length} {t('مرتجع')}</div>
+                                </div>
+                                <div className="scroll-table">
+                                    <table style={TABLE_STYLE.table}>
+                                    <thead>
+                                        <tr style={TABLE_STYLE.thead}>
+                                            <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('قيمة المرتجع')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {invoice.returnInvoices.map((ret, idx) => (
+                                            <tr key={ret.id} style={TABLE_STYLE.row(idx === (invoice.returnInvoices?.length ?? 0) - 1)}>
+                                                <td style={TABLE_STYLE.td(true)}>
+                                                    <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#f87171', fontFamily: OUTFIT }}>
+                                                        {getInvoiceRef(ret.invoiceNumber, 'sale_return', businessType)}
+                                                    </span>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
+                                                    {new Date(ret.date).toLocaleDateString('en-ZA')}
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false) }}>
+                                                    {fMoneyJSX(ret.total, '', { color: C.danger })}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ── Side Summary ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div style={SC}>
+                            <div style={STitle}><Wallet size={14} /> {t('ملخص الحساب')}</div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي القيمة')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.subtotal)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الخصم')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.danger }}>- {fMoneyJSX(invoice.discount)}</span>
+                                </div>
+                                {(invoice.taxAmount || 0) > 0 && (
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                        <span style={{ color: C.textSecondary }}>{t('إجمالي الضريبة')}</span>
+                                        <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: '#f87171' }}>+ {fMoneyJSX(invoice.taxAmount || 0)}</span>
+                                    </div>
+                                )}
+                                <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
+                                    <span style={{ fontWeight: 600, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={SC}>
+                            <div style={STitle}><CreditCard size={14} /> {t('تفاصيل السداد')}</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('نوع البيع')}</span>
+                                    <span style={{ fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
+                                        {invoice.paymentMethod === 'cash' ? t('نقدي') : invoice.paymentMethod === 'bank' ? t('بنكي') : t('آجل')}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('المقبوض فعلياً')}</span>
+                                    <span style={{ fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('المتبقي (مدين)')}</span>
+                                    <span style={{ fontWeight: 600, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
+
+            {/* Approval Dialog */}
+            <AppModal
+                show={showApproveModal}
+                onClose={() => { setShowApproveModal(false); setApproveError(''); }}
+                title={t('اعتماد فاتورة المبيعات')}
+                icon={CheckCircle2}
+                maxWidth="480px"
+            >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, margin: 0 }}>
+                        {t('هل أنت متأكد من رغبتك في اعتماد هذه الفاتورة؟ بعد الاعتماد سيتم ترحيل تأثيراتها على المخزون وحسابات الأستاذ العام وأرصدة العملاء نهائياً، ولا يمكن تعديل الفاتورة أو حذفها بعد ذلك.')}
+                    </p>
+
+                    {invoice && invoice.paidAmount > 0 && (
+                        <div style={{ padding: '14px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px' }}>
+                                <span style={{ color: C.textSecondary }}>{t('المبلغ المدفوع المقبوض:')}</span>
+                                <span style={{ fontWeight: 700, color: C.success, fontFamily: OUTFIT }}>{invoice.paidAmount.toLocaleString()} {cSymbol}</span>
+                            </div>
+                            
+                            <div>
+                                <label style={LS}>{t('الحساب المالي المستلم (الخزينة / البنك)')} <span style={{ color: C.danger }}>*</span></label>
+                                <CustomSelect
+                                    value={selectedTreasuryId}
+                                    onChange={val => setSelectedTreasuryId(val)}
+                                    placeholder={t('اختر الخزينة أو الحساب البنكي لاستلام الكاش...')}
+                                    hideSearch={true}
+                                    options={treasuries.map(treas => ({
+                                        value: treas.id,
+                                        label: `${treas.name} (${treas.type === 'bank' ? 'بنك' : 'خزينة'})`
+                                    }))}
+                                    style={{ height: '42px', width: '100%', marginTop: '6px' }}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {approveError && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', color: '#fb7185', fontSize: '12px' }}>
+                            <AlertCircle size={16} />
+                            <span>{approveError}</span>
+                        </div>
+                    )}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '10px' }}>
+                        <button
+                            type="button"
+                            disabled={approving}
+                            onClick={handleApprove}
+                            style={{
+                                height: '44px',
+                                borderRadius: '10px',
+                                background: C.success,
+                                color: '#fff',
+                                border: 'none',
+                                fontWeight: 600,
+                                fontSize: '13px',
+                                fontFamily: CAIRO,
+                                cursor: approving ? 'not-allowed' : 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '6px'
+                            }}
+                        >
+                            {approving ? (
+                                <>
+                                    <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                                    {t('جاري الاعتماد والترحيل...')}
+                                </>
+                            ) : (
+                                t('اعتماد الفاتورة الآن')
+                            )}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { setShowApproveModal(false); setApproveError(''); }}
+                            style={{
+                                height: '44px',
+                                borderRadius: '10px',
+                                background: 'transparent',
+                                border: `1px solid ${C.border}`,
+                                color: C.textSecondary,
+                                fontWeight: 700,
+                                fontFamily: CAIRO,
+                                cursor: 'pointer'
+                            }}
+                        >
+                            {t('إلغاء')}
+                        </button>
+                    </div>
+                </div>
+            </AppModal>
+        </DashboardLayout>
+    );
+}

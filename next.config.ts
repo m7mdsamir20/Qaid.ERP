@@ -26,11 +26,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
     serverExternalPackages: ['@prisma/client', 'prisma', 'puppeteer-core', '@sparticuz/chromium'],
 
-    experimental: {
-        outputFileTracingIncludes: {
-            '**/*': ['./node_modules/@sparticuz/chromium/bin/**/*'],
-        },
-    } as any,
+    // اتنقلت من experimental في Next 16 — كانت بتتجاهَل وهي جواها،
+    // يعني ملفات chromium ماكانتش بتتحزم مع الديبلوي (طباعة PDF على السيرفر)
+    outputFileTracingIncludes: {
+        '**/*': ['./node_modules/@sparticuz/chromium/bin/**/*'],
+    },
 
     // تسريع: ضغط الملفات
     compress: true,

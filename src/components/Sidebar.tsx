@@ -7,6 +7,8 @@ import { ChevronDown, ChevronUp, Loader2, Menu } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { navSections } from '@/constants/navigation';
+import { getActivity } from '@/modules';
+import { buildNavForActivity } from '@/modules/nav';
 import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
@@ -25,7 +27,7 @@ export default function Sidebar({
     const { theme } = useTheme();
 
     const user = session?.user as any;
-    const businessType = user?.businessType?.toUpperCase() || 'TRADING';
+    const activity = getActivity(user?.businessType);
     const isSuperAdmin = !!user?.isSuperAdmin;
     const userRole = user?.role;
     const featuresRaw = user?.subscription?.features;
@@ -147,137 +149,16 @@ export default function Sidebar({
     }, [pathname, mounted]);
 
     const sidebarItems = useMemo(() => {
-        return navSections.map((sectionOrigin: any) => {
-            let section = { ...sectionOrigin };
-            if (businessType === 'SERVICES') {
-                if (section.featureKey === 'installments') return null;
-                if (section.featureKey === 'sales') {
-                    section.title = t("فواتير الخدمات");
-                    section.links = section.links?.filter((l: any) => l.id !== '/coupons').map((l: any) => {
-                        if (l.label === t("فواتير المبيعات")) return { ...l, label: t("فواتير الخدمات") };
-                        if (l.label === t("مرتجع مبيعات")) return { ...l, label: t("إلغاء خدمات / مرتجع") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t("الخدمات");
-                    section.links = section.links?.map((l: any) => {
-                        if (l.id === '/categories') return { ...l, label: t("تصنيفات الخدمات") };
-                        if (l.id === '/items') return { ...l, label: t("قائمة الخدمات") };
-                        if (l.id === '/warehouses') return { ...l, label: t("مخازن الخدمات") };
-                        if (l.id === '/stocktakings') return { ...l, label: t("جرد الخدمات") };
-                        if (l.id === '/warehouse-transfers') return { ...l, label: t("تحويل المخزون") };
-                        if (l.id === '/units') return { ...l, label: t("الوحدات") };
-                        if (l.id === '/service-catalog') return { ...l, label: t("كتالوج الخدمات") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'reports' && section.links) {
-                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments');
-                }
-            } else if (businessType !== 'RESTAURANTS') {
-                if (section.featureKey === 'sales') {
-                    section.links = section.links?.filter((l: any) => l.id !== '/coupons');
-                }
-            }
+        // 1. طبقة النشاط: نفس الشجرة اللي بيستخدمها تاب الصلاحيات بالظبط
+        return buildNavForActivity(activity).map((section) => {
+            const featureKey = section.featureKey;
+            const sectionOrigin = { title: section.originalTitle };
 
-            if (businessType !== 'SERVICES') {
-                if (section.featureKey === 'inventory') {
-                    section.links = section.links?.filter((l: any) => l.id !== '/service-catalog');
-                }
-                if (section.featureKey === 'services') return null;
-            }
+            // 2. طبقة الاشتراك والصلاحيات
+            const visibleLinks = section.links.filter(l => hasPage(featureKey || '', l.id));
 
-            if (businessType === 'RETAIL') {
-                if (section.featureKey === 'installments') return null;
-                if (section.links) {
-                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
-                }
-            }
-
-            if (businessType === 'CONTRACTING') {
-                if (section.featureKey === 'installments') return null;
-                if (section.featureKey === 'sales') {
-                    section.title = t("الأعمال والمبيعات");
-                    section.links = section.links?.filter((l: any) => !['/coupons', '/sale-returns'].includes(l.id)).map((l: any) => {
-                        if (l.id === '/sales') return { ...l, label: t("فواتير الأعمال والخدمات") };
-                        if (l.id === '/customers') return { ...l, label: t("العملاء / أصحاب المشاريع") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t("المخازن والمواد");
-                    section.links = section.links?.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: t("المواد والبنود") };
-                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المواد والبنود") };
-                        if (l.id === '/warehouses') return { ...l, label: t("المخازن والمواقع") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'treasury' && section.links) {
-                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
-                }
-                if (section.featureKey === 'reports' && section.links) {
-                    section.links = section.links.filter((l: any) => l.id !== 'reports-installments').map((l: any) => {
-                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("الأعمال والمبيعات والمشتريات") };
-                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير المواد والمواقع") };
-                        if (l.label === t("العملاء والموردين")) return { ...l, label: t("أصحاب المشاريع والموردين") };
-                        return l;
-                    });
-                }
-            }
-
-            if (businessType === 'RESTAURANTS') {
-                if (section.featureKey === 'installments') return null;
-                if (section.featureKey === 'treasury' && section.links) {
-                    section.links = section.links.filter((l: any) => l.id !== '/settlements');
-                }
-
-                if (section.featureKey === 'sales') {
-                    section.title = t("العملاء والتسويق");
-                    section.links = section.links?.filter((l: any) => ['/customers', '/coupons'].includes(l.id));
-                }
-                if (section.featureKey === 'inventory') {
-                    section.title = t("المنيو والمخزون");
-                    section.links = section.links?.map((l: any) => {
-                        if (l.id === '/categories') return { ...l, label: t("تصنيفات المنيو") };
-                        if (l.id === '/items') return { ...l, label: t("أصناف المنيو") };
-                        if (l.id === '/warehouses') return { ...l, label: t("المخازن والمستودعات") };
-                        return l;
-                    });
-                }
-                if (section.featureKey === 'purchases') {
-                    section.title = t("المشتريات والموردين");
-                }
-                if (section.featureKey === 'reports') {
-                    section.links = section.links?.map((l: any) => {
-                        if (l.label === t("المبيعات والمشتريات")) return { ...l, label: t("تقارير الكاشير والمبيعات") };
-                        if (l.label === t("تقارير المخزون")) return { ...l, label: t("تقارير المخزون والمنيو") };
-                        return l;
-                    });
-                }
-            }
-
-            if (section.featureKey === 'reports' && businessType !== 'RESTAURANTS') {
-                section.links = section.links?.filter((l: any) => l.id !== 'reports-restaurant');
-            }
-
-            const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id) && !l.hideFromSidebar) || [];
-            if (!hasFeature(section.featureKey)) return null;
+            if (!hasFeature(featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;
-
-            // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
-            const restaurantFeatures = ['tables', 'kitchen', 'delivery'];
-            const posFeatures = ['pos', 'barcode'];
-            const contractingFeatures = ['projects', 'subcontractors', 'site_management'];
-            if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
-            if (posFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS' && businessType !== 'RETAIL') return null;
-            if (section.featureKey === 'barcode' && businessType === 'RETAIL') return null;
-            if (contractingFeatures.includes(section.featureKey || '') && businessType !== 'CONTRACTING') return null;
-            if (section.featureKey === 'sales_reps' && businessType !== 'TRADING') return null;
-            if (section.featureKey === 'services' && businessType !== 'SERVICES') return null;
-            if (section.featureKey === 'loyalty' && businessType !== 'RETAIL') return null;
-
 
             const SectionIcon = section.icon;
             if (section.isStandalone && section.href) {
@@ -327,7 +208,7 @@ export default function Sidebar({
                 </div>
             );
         });
-    }, [businessType, pathname, hasPage, hasFeature, openSections, onLinkClick, t, isCollapsed, onToggle]);
+    }, [activity, pathname, hasPage, hasFeature, openSections, onLinkClick, t, isCollapsed, onToggle]);
 
     const isSidebarEmpty = useMemo(() => sidebarItems.every(i => i === null), [sidebarItems]);
 

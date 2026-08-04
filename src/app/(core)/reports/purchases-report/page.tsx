@@ -1,0 +1,278 @@
+'use client';
+import DataTable from '@/components/DataTable';
+import { TableColumn } from '@/components/EmptyTableState';
+import TableSkeleton from '@/components/TableSkeleton';
+import { formatNumber } from '@/lib/currency';
+import { Currency } from '@/components/Currency';
+
+import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
+import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, OUTFIT, IS } from '@/constants/theme';
+import { useSession } from 'next-auth/react';
+import ReportHeader from '@/components/ReportHeader';
+import { useEffect, useState } from 'react';
+import { ShoppingCart, Search, Calendar, Loader2, ArrowUpRight, ArrowDownRight, Activity, DollarSign } from 'lucide-react';
+import CustomSelect from '@/components/CustomSelect';
+import StatCard from '@/components/StatCard';
+import { getInvoiceRef } from '@/lib/invoiceRef';
+import { useActivity } from '@/modules/useActivity';
+
+const t = (s: string) => s;
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
+    return map[code] || code;
+};
+
+const fmt = (n: number) => formatNumber(n);
+
+interface Invoice {
+    id: string;
+    invoiceNumber: number;
+    date: string;
+    total: number;
+    discount: number;
+    paidAmount: number;
+    remaining: number;
+    supplier: { name: string } | null;
+    customer: { name: string } | null;
+}
+
+interface ReportData {
+    invoices: Invoice[];
+    totalPurchases: number;
+    totalDiscount: number;
+    totalPaid: number;
+    totalRemaining: number;
+}
+
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
+export default function PurchasesReportPage() {
+    const { lang, t } = useTranslation();
+    const { key: businessType } = useActivity();
+    const isRtl = lang === 'ar';
+    const { data: session } = useSession();
+    const currency = session?.user?.currency || 'EGP';
+
+    const [data, setData] = useState<ReportData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [from, setFrom] = useState('');
+    const [to, setTo] = useState('');
+    const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<BranchOption[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => { });
+    }, []);
+
+    const fetchReport = async () => {
+        setLoading(true);
+        try {
+            const params = new URLSearchParams();
+            if (from) params.set('from', from);
+            if (to) params.set('to', to);
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            const res = await fetch(`/api/reports/purchases-report?${params}`);
+            if (res.ok) setData(await res.json());
+        } catch { } finally { setLoading(false); }
+    };
+
+    const exportToPDF = () => window.print();
+    const sym = t(getCurrencyName(currency));
+
+    useEffect(() => { fetchReport(); }, [from, to, branchId]);
+
+    const filteredInvoices = data ? data.invoices.filter(inv => {
+        const code = getInvoiceRef(inv.invoiceNumber, 'purchase', businessType);
+        return code.includes(q.toUpperCase()) ||
+            String(inv.invoiceNumber).includes(q) ||
+            (inv.supplier?.name || t("مورد نقدي")).toLowerCase().includes(q.toLowerCase());
+    }) : [];
+
+    const columns: TableColumn[] = [
+        {
+            header: t('رقم الفاتورة'),
+            type: 'number' as const,
+            cell: (row: Invoice) => (
+                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
+                    {getInvoiceRef(row.invoiceNumber, 'purchase', businessType)}
+                </span>
+            )
+        },
+        {
+            header: t('التاريخ'),
+            cell: (row: Invoice) => new Date(row.date).toLocaleDateString('en-ZA'),
+            style: { fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }
+        },
+        {
+            header: t('اسم المورد'),
+            cell: (row: Invoice) => row.supplier?.name || row.customer?.name || t('مورد نقدي'),
+            style: { fontWeight: 600, fontFamily: CAIRO, fontSize: '13px', color: C.textPrimary }
+        },
+        {
+            header: t('إجمالي القيمة'),
+            type: 'number',
+            cell: (row: Invoice) => <Currency amount={row.total} />,
+            style: { textAlign: 'center' } as React.CSSProperties
+        },
+        {
+            header: t('الخصم'),
+            type: 'number',
+            cell: (row: Invoice) => row.discount > 0 ? <Currency amount={row.discount} /> : '—',
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }
+        },
+        {
+            header: t('المسدد'),
+            type: 'number',
+            cell: (row: Invoice) => <Currency amount={row.paidAmount} />,
+            style: { fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px', color: '#10b981' }
+        },
+        {
+            header: t('المتبقي'),
+            type: 'number',
+            cell: (row: Invoice) => (
+                <span style={{ fontSize: '13px', fontWeight: 600, color: row.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={row.remaining} /></span>
+            ),
+            style: { textAlign: 'center' } as React.CSSProperties
+        }
+    ];
+
+    const footerElement = data && (
+        <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
+            <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات المشتريات للفترة')}</td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPurchases} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
+            <td style={{ padding: '18px', fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
+        </tr>
+    );
+
+    const selectedBranchName = branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '');
+
+    return (
+        <DashboardLayout>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
+                <ReportHeader
+                    title={t("تقرير المشتريات")}
+                    subtitle={t("تحليل تفصيلي لجميع عمليات الشراء الواردة، الخصومات، والمبالغ المدفوعة والمتبقية.")}
+                    backTab="sales-purchases"
+                    printTitle={t("تقرير المشتريات")}
+                    printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
+                    branchName={selectedBranchName}
+                />
+
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    {/* Branch Filter (Placed before dates) */}
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                        <div style={{ minWidth: '180px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={v => setBranchId(v)}
+                                placeholder={t("كل الفروع")}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    )}
+
+                    <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
+                            <input type="date" value={from} onChange={e => setFrom(e.target.value)}
+                                style={{
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', direction: 'inherit',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
+                        </div>
+                        <span className="date-label-desktop" style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
+                            <input type="date" value={to} onChange={e => setTo(e.target.value)}
+                                style={{
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', direction: 'inherit',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
+                                }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {loading ? ( <TableSkeleton /> ) : (
+                    <>
+                        {data && data.invoices.length > 0 && (
+                            <div data-print-stats style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '24px' }}>
+                                <StatCard
+                                    label={t('إجمالي المشتريات')}
+                                    value={fmt(data.totalPurchases)}
+                                    suffix={sym}
+                                    icon={<ShoppingCart size={18} />}
+                                    color="#256af4"
+                                />
+                                <StatCard
+                                    label={t('إجمالي الخصومات')}
+                                    value={fmt(data.totalDiscount)}
+                                    suffix={sym}
+                                    icon={<ArrowDownRight size={18} />}
+                                    color="#fb923c"
+                                />
+                                <StatCard
+                                    label={t('المبالغ المسددة')}
+                                    value={fmt(data.totalPaid)}
+                                    suffix={sym}
+                                    icon={<ArrowUpRight size={18} />}
+                                    color="#10b981"
+                                />
+                                <StatCard
+                                    label={t('الأرصدة المستحقة')}
+                                    value={fmt(data.totalRemaining)}
+                                    suffix={sym}
+                                    icon={<DollarSign size={18} />}
+                                    color={data.totalRemaining > 0 ? '#fb7185' : '#10b981'}
+                                />
+                            </div>
+                        )}
+
+                        {data && data.invoices.length > 0 && (
+                            <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
+                                <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, }} />
+                                <input
+                                    placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
+                                    value={q} onChange={e => setQ(e.target.value)}
+                                    style={{
+                                        ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px',
+                                        background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        fontWeight: 500
+                                    }}
+                                />
+                            </div>
+                        )}
+
+                        <DataTable
+                            columns={columns}
+                            data={filteredInvoices}
+                            emptyIcon={ShoppingCart}
+                            emptyMessage={t('لا توجد فواتير شراء حالياً')}
+                            footer={footerElement}
+                        />
+                    </>
+                )}
+            </div>
+        </DashboardLayout>
+    );
+}

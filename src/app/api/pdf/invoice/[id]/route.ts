@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { generateA4HTML } from '@/lib/printInvoices';
+import { getInvoiceRef } from '@/lib/invoiceRef';
 
 export const maxDuration = 60;
 
@@ -85,18 +86,14 @@ export const GET = withProtection(async (_request, session, _body, context) => {
             preferCSSPageSize: true,
         });
 
-        const prefix =
-            type === 'sale' ? 'SAL' :
-            type === 'sale_return' ? 'SRET' :
-            type === 'purchase' ? 'PUR' :
-            type === 'purchase_return' ? 'PRET' : 'INV';
         const invNum = String((invoice as any).invoiceNumber || '').padStart(5, '0');
+        const invRef = getInvoiceRef(invNum, type, (company as any)?.businessType);
 
         return new NextResponse(pdfBuffer as any, {
             status: 200,
             headers: {
                 'Content-Type': 'application/pdf',
-                'Content-Disposition': `attachment; filename="${prefix}-${invNum}.pdf"`,
+                'Content-Disposition': `attachment; filename="${invRef}.pdf"`,
                 'Cache-Control': 'no-store',
             },
         });

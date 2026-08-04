@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getActivity } from '@/modules';
 
 export const POST = withProtection(async (request, session) => {
     try {
@@ -33,7 +34,7 @@ export const POST = withProtection(async (request, session) => {
 
         // ① Low Stock Notifications
         if (settings.lowStock?.enabled) {
-            const isRestaurants = company.businessType === 'RESTAURANTS';
+            const isRestaurants = getActivity(company.businessType).key === 'RESTAURANTS';
             const items = await prisma.item.findMany({
                 where: {
                     companyId,

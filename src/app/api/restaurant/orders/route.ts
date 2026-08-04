@@ -1,6 +1,7 @@
 ﻿import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
+import { getActivity } from '@/modules';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,7 +60,7 @@ export const POST = withProtection(async (request, session, body) => {
             where: { id: companyId },
             select: { businessType: true }
         });
-        const isRetail = company?.businessType?.toUpperCase() === 'RETAIL';
+        const isRetail = getActivity(company?.businessType).key === 'RETAIL';
 
         // Get next order number for today
         const startOfDay = new Date();
@@ -537,7 +538,7 @@ export const PUT = withProtection(async (request, session, body) => {
             where: { id: companyId },
             select: { businessType: true }
         });
-        const isRetail = company?.businessType?.toUpperCase() === 'RETAIL';
+        const isRetail = getActivity(company?.businessType).key === 'RETAIL';
         if (!body.id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
 
         if (body.action === 'pay_and_close') {

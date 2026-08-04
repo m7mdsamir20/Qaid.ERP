@@ -1,5 +1,6 @@
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
+import { getActivity, isPathAllowedForActivity } from "@/modules";
 
 export default withAuth(
     function middleware(req: NextRequestWithAuth) {
@@ -9,6 +10,16 @@ export default withAuth(
         // لو مسجل دخول وفتح login أو register → روح للداشبورد
         if (token && (path === '/login' || path === '/register')) {
             return NextResponse.redirect(new URL('/', req.url));
+        }
+
+        // فحص النشاط (Activity-Based Access Control)
+        // بيمنع إن عميل نشاطه تجارة يكتب /kds أو /projects في المتصفح ويدخل.
+        // قبل كده الإخفاء كان في السايدبار بس — إخفاء بصري مش حماية.
+        if (token && !token.isSuperAdmin) {
+            const activity = getActivity(token.businessType);
+            if (!isPathAllowedForActivity(activity, path)) {
+                return NextResponse.redirect(new URL('/', req.url));
+            }
         }
 
         // فحص الصلاحيات (Role-Based Access Control)

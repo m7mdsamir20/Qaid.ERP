@@ -1,0 +1,694 @@
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useTranslation } from '@/lib/i18n';
+import { useRouter } from 'next/navigation';
+import { navSections } from '@/constants/navigation';
+import { ACTIVITY_LIST, getActivity } from '@/modules';
+import { buildNavForActivity } from '@/modules/nav';
+import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, CheckCircle, Phone, Mail, Lock, UserCircle, Briefcase, Calendar, Globe, MapPin, X, Activity, Search } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
+
+// We'll use theme constants instead of these local ones
+const t = (s: string) => s;
+
+const PLANS = {
+    trial: { label: t('تجريبي 14 يوم'), color: '#fb923c', days: 14 },
+    basic: { label: t('أساسي'), color: '#60a5fa', days: 365 },
+    pro: { label: t('متقدم'), color: '#a78bfa', days: 365 },
+    premium: { label: t('بريميوم'), color: '#fbbf24', days: 365 },
+    custom: { label: t('مخصص'), color: '#34d399', days: 0 },
+};
+
+// الأنشطة وباقاتها الافتراضية بتيجي من سجل الأنشطة الموحّد — src/modules/
+const BUSINESS_TYPES = ACTIVITY_LIST.map(a => ({
+    value: a.key,
+    label: a.label,
+    modules: a.defaultModules,
+}));
+
+const COUNTRIES = [
+    { value: 'EG', label: t('🇪🇬 مصر') },
+    { value: 'SA', label: t('🇸🇦 السعودية') },
+    { value: 'AE', label: t('🇦🇪 الإمارات') },
+    { value: 'KW', label: t('🇰🇼 الكويت') },
+    { value: 'QA', label: t('🇶🇦 قطر') },
+    { value: 'BH', label: t('🇧🇭 البحرين') },
+    { value: 'OM', label: t('🇴🇲 عمان') },
+    { value: 'JO', label: t('🇯🇴 الأردن') },
+    { value: 'IQ', label: t('🇮🇶 العراق') },
+    { value: 'LY', label: t('🇱🇾 ليبيا') },
+    { value: 'SD', label: t('🇸🇩 السودان') },
+    { value: 'LB', label: t('🇱🇧 لبنان') },
+    { value: 'SY', label: t('🇸🇾 سوريا') },
+    { value: 'YE', label: t('🇾🇪 اليمن') },
+    { value: 'TN', label: t('🇹🇳 تونس') },
+    { value: 'DZ', label: t('🇩🇿 الجزائر') },
+    { value: 'MA', label: t('🇲🇦 المغرب') },
+];
+
+const PHONE_CODES = [
+    { code: 'EG', dial: '+20',  flag: '🇪🇬', name: 'مصر' },
+    { code: 'SA', dial: '+966', flag: '🇸🇦', name: 'السعودية' },
+    { code: 'AE', dial: '+971', flag: '🇦🇪', name: 'الإمارات' },
+    { code: 'KW', dial: '+965', flag: '🇰🇼', name: 'الكويت' },
+    { code: 'QA', dial: '+974', flag: '🇶🇦', name: 'قطر' },
+    { code: 'BH', dial: '+973', flag: '🇧🇭', name: 'البحرين' },
+    { code: 'OM', dial: '+968', flag: '🇴🇲', name: 'عُمان' },
+    { code: 'JO', dial: '+962', flag: '🇯🇴', name: 'الأردن' },
+    { code: 'LB', dial: '+961', flag: '🇱🇧', name: 'لبنان' },
+    { code: 'IQ', dial: '+964', flag: '🇮🇶', name: 'العراق' },
+    { code: 'SY', dial: '+963', flag: '🇸🇾', name: 'سوريا' },
+    { code: 'YE', dial: '+967', flag: '🇾🇪', name: 'اليمن' },
+    { code: 'LY', dial: '+218', flag: '🇱🇾', name: 'ليبيا' },
+    { code: 'TN', dial: '+216', flag: '🇹🇳', name: 'تونس' },
+    { code: 'DZ', dial: '+213', flag: '🇩🇿', name: 'الجزائر' },
+    { code: 'MA', dial: '+212', flag: '🇲🇦', name: 'المغرب' },
+    { code: 'SD', dial: '+249', flag: '🇸🇩', name: 'السودان' },
+];
+
+// بناء features لكل الأقسام المتاحة من navSections (بغض النظر عن نوع النشاط)
+const buildAllFeatures = (): Record<string, string[]> => {
+    const map = new Map<string, string[]>();
+    navSections.forEach(s => {
+        if (!s.featureKey || s.featureKey === 'dashboard' || s.featureKey === 'settings') return;
+        if (!s.links || s.links.length === 0) return;
+        if (!map.has(s.featureKey)) map.set(s.featureKey, []);
+        s.links.forEach((l: any) => {
+            if (!map.get(s.featureKey)!.includes(l.id))
+                map.get(s.featureKey)!.push(l.id);
+        });
+    });
+    return Object.fromEntries(map);
+};
+
+export default function NewCompanyPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
+    const router = useRouter();
+    const { data: session, status } = useSession();
+
+    const [step, setStep] = useState(1); // 1: شركة, 2: مدير, 3: اشتراك, 4: صلاحيات
+    const [submitting, setSubmitting] = useState(false);
+    const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
+    const [companyPhoneCode, setCompanyPhoneCode] = useState(PHONE_CODES[0]);
+    const [adminPhoneCode, setAdminPhoneCode] = useState(PHONE_CODES[0]);
+
+    useEffect(() => {
+        if (status === 'loading') return;
+        if (!session) {
+            router.push('/login?callbackUrl=/super-admin/new');
+            return;
+        }
+        if (!(session?.user as any)?.isSuperAdmin) {
+            router.push('/');
+        }
+    }, [session, status, router]);
+
+    const [form, setForm] = useState({
+        // الشركة
+        name: '', nameEn: '', phone: '', email: '', address: '', businessType: 'TRADING', countryCode: 'EG',
+        // المدير
+        adminName: '', adminUsername: '', adminEmail: '', adminPhone: '', adminPassword: '', adminPasswordConfirm: '',
+        // الاشتراك
+        plan: 'trial',
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        maxUsers: '5',
+        maxBranches: '1',
+        // الصلاحيات
+        features: {} as Record<string, string[]>,
+    });
+
+    // بناء الـ features بناءً على نوع النشاط مع الـ featureKeys الصحيحة
+    const buildDefaultFeatures = (bType: string): Record<string, string[]> => {
+        const allowedModules = BUSINESS_TYPES.find(b => b.value === bType)?.modules
+            || BUSINESS_TYPES.find(b => b.value === 'TRADING')!.modules;
+        const features: Record<string, string[]> = {};
+        const map = new Map<string, string[]>();
+        navSections.forEach(s => {
+            if (!s.featureKey || s.featureKey === 'dashboard' || s.featureKey === 'settings') return;
+            if (!s.links || s.links.length === 0) return;
+            if (!allowedModules.includes(s.featureKey)) return;
+            if (!map.has(s.featureKey)) map.set(s.featureKey, []);
+            s.links.forEach((l: any) => {
+                if (!map.get(s.featureKey)!.includes(l.id))
+                    map.get(s.featureKey)!.push(l.id);
+            });
+        });
+        return Object.fromEntries(map);
+    };
+
+    // تعيين الصلاحيات الافتراضية عند تغيير نوع النشاط
+    useEffect(() => {
+        setForm(f => ({ ...f, features: buildDefaultFeatures(f.businessType) }));
+    }, [form.businessType]);
+
+    // مزامنة كود هاتف الشركة مع الدولة المختارة
+    useEffect(() => {
+        const detected = PHONE_CODES.find(p => p.code === form.countryCode);
+        if (detected) { setCompanyPhoneCode(detected); setAdminPhoneCode(detected); }
+    }, [form.countryCode]);
+
+    /* ─── Helpers ─── */
+    const updatePlan = (plan: string) => {
+        const days = PLANS[plan as keyof typeof PLANS]?.days || 365;
+        const end = plan === 'custom' ? form.endDate
+            : new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        setForm(f => ({ ...f, plan, endDate: end }));
+    };
+
+    const toggleSection = (featureKey: string, links: any[]) => {
+        setForm(f => {
+            const current = f.features[featureKey] || [];
+            const allIds = links.map((l: any) => l.id);
+            const hasAll = allIds.every(id => current.includes(id));
+            return {
+                ...f,
+                features: {
+                    ...f.features,
+                    [featureKey]: hasAll ? [] : allIds,
+                },
+            };
+        });
+    };
+
+    const togglePage = (featureKey: string, pageId: string) => {
+        setForm(f => {
+            const current = f.features[featureKey] || [];
+            return {
+                ...f,
+                features: {
+                    ...f.features,
+                    [featureKey]: current.includes(pageId)
+                        ? current.filter(id => id !== pageId)
+                        : [...current, pageId],
+                },
+            };
+        });
+    };
+
+    const isSectionActive = (featureKey: string, links: any[]) => {
+        const current = form.features[featureKey] || [];
+        return links.every((l: any) => current.includes(l.id));
+    };
+
+    const isSectionPartial = (featureKey: string, links: any[]) => {
+        const current = form.features[featureKey] || [];
+        return links.some((l: any) => current.includes(l.id)) && !links.every((l: any) => current.includes(l.id));
+    };
+
+    const handleSubmit = async () => {
+        if (form.adminPassword !== form.adminPasswordConfirm) {
+            alert(t("كلمات المرور غير متطابقة"));
+            return;
+        }
+        setSubmitting(true);
+        try {
+            const res = await fetch('/api/super-admin/companies', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    ...form,
+                    features: form.features,
+                }),
+            });
+            if (res.ok) {
+                router.push('/super-admin');
+            } else {
+                const d = await res.json();
+                alert(d.error || t("فشل في إنشاء الحساب"));
+            }
+        } finally { setSubmitting(false); }
+    };
+
+    /* ─── Steps Config ─── */
+    const steps = [
+        { num: 1, label: t("بيانات الشركة"), icon: <Building2 size={16} /> },
+        { num: 2, label: t("بيانات المدير"), icon: <User size={16} /> },
+        { num: 3, label: t("الاشتراك"), icon: <CreditCard size={16} /> },
+        { num: 4, label: t("الصلاحيات"), icon: <Shield size={16} /> },
+    ];
+
+    // شجرة الصلاحيات — من نفس المصدر اللي بيبني السايدبار، عشان اللي
+    // تديه صلاحيته هنا يظهر فعلاً للمستخدم بنفس الاسم بالظبط.
+    const uniqueSections = (() => {
+        const activity = getActivity(form.businessType);
+        const allowedModules = BUSINESS_TYPES.find(b => b.value === form.businessType)?.modules || [];
+        const alwaysAllow = ['dashboard', 'settings', 'activity_log'];
+
+        const map = new Map<string, any>();
+        for (const section of buildNavForActivity(activity, { includeHiddenFromSidebar: true })) {
+            const key = section.featureKey;
+            if (!key || !section.links.length) continue;
+            // طبقة الاشتراك: القسم لازم يكون ضمن باقة النشاط
+            if (!alwaysAllow.includes(key) && !allowedModules.includes(key)) continue;
+
+            const existing = map.get(key);
+            if (existing) {
+                const ids = existing.links.map((l: any) => l.id);
+                existing.links = [...existing.links, ...section.links.filter((l: any) => !ids.includes(l.id))];
+            } else {
+                map.set(key, { ...section, links: [...section.links] });
+            }
+        }
+        return Array.from(map.values());
+    })();
+
+    return (
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: '#080f1a', color: '#e2e8f0' }}>
+
+            {/* Header */}
+            <div style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button onClick={() => router.push('/super-admin')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>
+                        {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} {t("العودة للوحة التحكم")}
+                    </button>
+                    <span style={{ color: '#334155' }}>|</span>
+                    <span style={{ fontSize: '15px', fontWeight: 600, color: '#e2e8f0' }}>{t("إنشاء حساب جديد")}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: 28, height: 28, borderRadius: '8px', background: 'linear-gradient(135deg,#6366f1,#4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Shield size={14} style={{ color: '#fff' }} />
+                    </div>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#818cf8' }}>{t("قيد — السوبر أدمن")}</span>
+                </div>
+            </div>
+
+            <div style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 24px' }}>
+
+                {/* Steps */}
+                <div className="steps-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '36px' }}>
+                    {steps.map((s, i) => (
+                        <React.Fragment key={s.num}>
+                            <div onClick={() => s.num < step && setStep(s.num)}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: s.num < step ? 'pointer' : 'default' }}>
+                                <div style={{
+                                    width: 36, height: 36, borderRadius: '10px',
+                                    background: step === s.num
+                                        ? 'linear-gradient(135deg,#6366f1,#4f46e5)'
+                                        : step > s.num
+                                            ? 'rgba(52,211,153,0.15)'
+                                            : 'rgba(255,255,255,0.04)',
+                                    border: `1px solid ${step === s.num ? 'rgba(99,102,241,0.5)' : step > s.num ? 'rgba(52,211,153,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: step === s.num ? '#fff' : step > s.num ? '#34d399' : '#475569',
+                                    transition: 'all 0.2s',
+                                }}>
+                                    {step > s.num ? <Check size={16} /> : s.icon}
+                                </div>
+                                <span style={{ fontSize: '13px', fontWeight: 700, color: step === s.num ? '#e2e8f0' : step > s.num ? '#34d399' : '#475569' }}>
+                                    {s.label}
+                                </span>
+                            </div>
+                            {i < steps.length - 1 && (
+                                <div style={{ flex: 1, height: '1px', background: step > s.num ? 'rgba(52,211,153,0.3)' : 'rgba(255,255,255,0.06)', margin: '0 12px' }} />
+                            )}
+                        </React.Fragment>
+                    ))}
+                </div>
+
+                {/* ══ Step 1: بيانات الشركة ══ */}
+                {step === 1 && (
+                    <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                <Building2 size={22} />
+                            </div>
+                            {t("بيانات الشركة")}
+                        </h2>
+                        <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
+                                <label style={LS}>{t("اسم الشركة (بالعربية)")} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="text" placeholder={t("مثال: شركة النيل للتجارة")}
+                                    value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={IS} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("الاسم بالإنجليزية")}</label>
+                                <input type="text" placeholder="Nile Trading Co."
+                                    value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("رقم هاتف الشركة")}</label>
+                                <div style={{ display: 'flex', gap: '6px' }}>
+                                    <select value={companyPhoneCode.code} onChange={e => { const c = PHONE_CODES.find(p => p.code === e.target.value); if (c) setCompanyPhoneCode(c); }}
+                                        style={{ height: '48px', padding: '0 8px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', fontFamily: OUTFIT, flexShrink: 0 }}>
+                                        {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.dial}</option>)}
+                                    </select>
+                                    <input type="tel" placeholder="1XXXXXXXXX"
+                                        value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '') }))}
+                                        onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone"
+                                        style={{ ...IS, direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT, flex: 1 }} />
+                                </div>
+                            </div>
+                            <div>
+                                <label style={LS}>{t("البريد الإلكتروني للشركة")}</label>
+                                <input type="email" placeholder="info@company.com"
+                                    value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("العنوان")}</label>
+                                <input type="text" placeholder={t("القاهرة، مصر")}
+                                    value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={IS} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("الدولة")} <span style={{ color: C.danger }}>*</span></label>
+                                <CustomSelect
+                                    value={form.countryCode}
+                                    onChange={val => setForm(f => ({ ...f, countryCode: val }))}
+                                    options={COUNTRIES}
+                                    placeholder={t("اختر الدولة...")}
+                                    icon={Globe}
+                                    maxHeight="160px"
+                                    openUp={true}
+                                />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("نوع النشاط")} <span style={{ color: C.danger }}>*</span></label>
+                                <CustomSelect
+                                    value={form.businessType}
+                                    onChange={val => setForm(f => ({ ...f, businessType: val }))}
+                                    options={BUSINESS_TYPES.map(b => ({ value: b.value, label: b.label }))}
+                                    placeholder={t("اختر النشاط...")}
+                                    icon={Activity}
+                                    maxHeight="160px"
+                                    openUp={true}
+                                />
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '32px' }}>
+                            <button onClick={() => { if (!form.name.trim()) { alert(t("اسم الشركة مطلوب")); return; } setStep(2); }}
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
+                                {t("التالي")} {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '8px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '8px' }} />}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ══ Step 2: بيانات المدير ══ */}
+                {step === 2 && (
+                    <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
+                                <User size={22} />
+                            </div>
+                            {t("بيانات مدير الشركة")}
+                        </h2>
+                        <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
+                                <label style={LS}>{t("اسم المدير")} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="text" placeholder={t("مثال: أحمد محمد")}
+                                    value={form.adminName} onChange={e => setForm(f => ({ ...f, adminName: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={IS} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("اسم المستخدم للمدير (Login)")} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="text" placeholder="admin123"
+                                    value={form.adminUsername} onChange={e => setForm(f => ({ ...f, adminUsername: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    autoComplete="username"
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("البريد الإلكتروني للمدير")}</label>
+                                <input type="email" placeholder="admin@company.com"
+                                    value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut} spellCheck={false}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("رقم هاتف المدير")}</label>
+                                <div style={{ display: 'flex', gap: '6px' }}>
+                                    <select value={adminPhoneCode.code} onChange={e => { const c = PHONE_CODES.find(p => p.code === e.target.value); if (c) setAdminPhoneCode(c); }}
+                                        style={{ height: '48px', padding: '0 8px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', fontFamily: OUTFIT, flexShrink: 0 }}>
+                                        {PHONE_CODES.map(p => <option key={p.code} value={p.code}>{p.flag} {p.dial}</option>)}
+                                    </select>
+                                    <input type="tel" placeholder="1XXXXXXXXX"
+                                        value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value.replace(/\D/g, '') }))}
+                                        onFocus={focusIn} onBlur={focusOut} autoComplete="tel"
+                                        style={{ ...IS, direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT, flex: 1 }} />
+                                </div>
+                            </div>
+                            <div>
+                                <label style={LS}>{t("كلمة المرور")} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="password" placeholder="••••••••"
+                                    value={form.adminPassword} onChange={e => setForm(f => ({ ...f, adminPassword: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("تأكيد كلمة المرور")} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="password" placeholder="••••••••"
+                                    value={form.adminPasswordConfirm} onChange={e => setForm(f => ({ ...f, adminPasswordConfirm: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT, borderColor: form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm ? C.danger : undefined }} />
+                                {form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm && (
+                                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: CAIRO }}>{t("كلمات المرور غير متطابقة")}</p>
+                                )}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '32px' }}>
+                            <button onClick={() => setStep(1)}
+                                style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                {t("السابق")}
+                            </button>
+                            <button onClick={() => { if (!form.adminName || !form.adminUsername || !form.adminPassword) { alert(t("كل الحقول المطلوبة يجب ملؤها")); return; } if (form.adminPassword !== form.adminPasswordConfirm) { alert(t("كلمات المرور غير متطابقة")); return; } setStep(3); }}
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
+                                {t("التالي")} {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '8px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '8px' }} />}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ══ Step 3: الاشتراك ══ */}
+                {step === 3 && (
+                    <div className="step-container" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px' }}>
+                        <h2 style={{ margin: '0 0 24px', fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <CreditCard size={20} style={{ color: '#818cf8' }} /> {t("بيانات الاشتراك")}
+                        </h2>
+
+                        {/* الباقة */}
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={LS}>{t("الباقة")}</label>
+                            <div className="responsive-grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
+                                {Object.entries(PLANS).map(([key, p]) => (
+                                    <button key={key} type="button" onClick={() => updatePlan(key)}
+                                        style={{ height: '52px', borderRadius: '10px', border: `1px solid ${form.plan === key ? p.color + '60' : 'rgba(255,255,255,0.08)'}`, background: form.plan === key ? p.color + '15' : 'rgba(255,255,255,0.03)', color: form.plan === key ? p.color : '#64748b', fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px' }}>
+                                        {p.label}
+                                        {p.days > 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{p.days} {t("يوم")}</span>}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={LS}>{t("تاريخ البداية")} <span style={{ color: '#f87171' }}>*</span></label>
+                                <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
+                                    style={{ ...IS, colorScheme: 'dark' }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("تاريخ الانتهاء")} <span style={{ color: '#f87171' }}>*</span></label>
+                                <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
+                                    style={{ ...IS, colorScheme: 'dark' }} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("عدد المستخدمين")}</label>
+                                <input type="number" min="1" value={form.maxUsers} onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))}
+                                    style={IS} />
+                            </div>
+                            <div>
+                                <label style={LS}>{t("عدد الفروع المسموح")}</label>
+                                <input type="number" min="1" value={form.maxBranches} onChange={e => setForm(f => ({ ...f, maxBranches: e.target.value }))}
+                                    style={IS} />
+                            </div>
+                        </div>
+
+                        {/* ملخص */}
+                        <div style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '10px', padding: '14px 18px', marginBottom: '20px' }}>
+                            <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '8px' }}>{t("ملخص الاشتراك")}</div>
+                            <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
+                                {[
+                                    { label: t("الباقة"), value: PLANS[form.plan as keyof typeof PLANS]?.label },
+                                    { label: t("مدة الاشتراك"), value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000 * 60 * 60 * 24))} ${t("يوم")}` },
+                                    { label: t("عدد المستخدمين"), value: form.maxUsers },
+                                    { label: t("عدد الفروع"), value: form.maxBranches },
+                                ].map((item, i) => (
+                                    <div key={i} style={{ }}>
+                                        <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '3px' }}>{item.label}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8f0' }}>{item.value}</div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
+                            <button onClick={() => setStep(2)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                                {t("السابق")}
+                            </button>
+                            <button onClick={() => setStep(4)}
+                                style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                {t("التالي — تحديد الصلاحيات")} {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ══ Step 4: الصلاحيات ══ */}
+                {step === 4 && (
+                    <div>
+                        <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+                                <h2 style={{ margin: 0, fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                    <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                        <Shield size={24} />
+                                    </div>
+                                    {t("تحديد الصلاحيات والمزايا")}
+                                </h2>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button onClick={() => setForm(f => ({ ...f, features: buildAllFeatures() }))}
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.success}30`, background: `${C.success}10`, color: C.success, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
+                                        {t("تحديد الكل")}
+                                    </button>
+                                    <button onClick={() => setForm(f => ({ ...f, features: {} }))}
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.danger}30`, background: `${C.danger}10`, color: C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
+                                        {t("إلغاء الكل")}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {uniqueSections.map(section => {
+                                    const fk = section.featureKey!;
+                                    const isCore = fk === 'dashboard' || fk === 'settings';
+                                    const isActive = isCore || isSectionActive(fk, section.links);
+                                    const isPartial = !isCore && isSectionPartial(fk, section.links);
+                                    const isExpanded = expandedSections[fk];
+                                    const SectionIcon = section.icon;
+
+                                    return (
+                                        <div key={fk} style={{ border: `1px solid ${isActive ? (isCore ? `${C.success}30` : `${C.primary}30`) : isPartial ? `${C.warning}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', background: isActive ? (isCore ? `${C.success}05` : `${C.primary}05`) : 'transparent', transition: 'all 0.2s' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '16px' }}>
+                                                <button type="button" onClick={() => { if (!isCore) toggleSection(fk, section.links); }}
+                                                    style={{ background: 'none', border: 'none', cursor: isCore ? 'default' : 'pointer', padding: 0, color: isActive ? (isCore ? C.success : C.primary) : isPartial ? C.warning : C.textMuted, display: 'flex' }}>
+                                                    {isActive ? <CheckSquare size={22} /> : isPartial ? <CheckSquare size={22} style={{ opacity: 0.6 }} /> : <Square size={22} />}
+                                                </button>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                                                    <div style={{ color: isActive ? (isCore ? C.success : C.primary) : C.textMuted }}><SectionIcon size={18} /></div>
+                                                    <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
+                                                        {section.title}
+                                                    </span>
+                                                    {isCore ? (
+                                                        <span style={{ fontSize: '10px', color: C.success, background: `${C.success}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t("أساسي")}</span>
+                                                    ) : (
+                                                        <div dir="ltr" style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                            {(form.features[fk] || []).filter((id: string) => section.links.some((l: any) => l.id === id)).length} / {section.links.length}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}
+                                                    style={{ border: 'none', cursor: 'pointer', color: C.textMuted, height: '32px', width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
+                                                    {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                                                </button>
+                                            </div>
+
+                                            {isExpanded && (
+                                                <div className="features-grid" style={{ borderTop: `1px solid ${C.border}`, padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
+                                                    {section.links.map((link: any) => {
+                                                        const active = isCore || (form.features[fk] || []).includes(link.id);
+                                                        return (
+                                                            <button key={link.id} type="button" onClick={() => { if (!isCore) togglePage(fk, link.id); }}
+                                                                style={{ height: '38px', borderRadius: '10px', border: `1px solid ${active ? (isCore ? `${C.success}30` : `${C.primary}30`) : C.border}`, background: active ? (isCore ? `${C.success}10` : `${C.primary}10`) : 'transparent', color: active ? (isCore ? C.success : C.primary) : C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: isCore ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', transition: 'all 0.1s' }}>
+                                                                {active ? <Check size={14} /> : <div style={{ width: 14, height: 14, borderRadius: '4px', border: `1px solid ${C.border}` }} />}
+                                                                {link.label}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* ملخص سفلي للاختيارات */}
+                        <div style={{ background: `${C.primary}05`, border: `1px solid ${C.primary}15`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px' }}>
+                            <div style={{ fontSize: '13px', color: C.primary, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Activity size={16} /> {t("الموديولات المفعلة حالياً")}
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                {Object.entries(form.features).map(([key, pages]) => {
+                                    if (!pages || pages.length === 0) return null;
+                                    const section = uniqueSections.find(s => s.featureKey === key);
+                                    return (
+                                        <span key={key} style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}20`, fontWeight: 600 }}>
+                                            {section?.title} <span style={{ opacity: 0.6, marginInlineEnd: '4px' }}>({pages.length})</span>
+                                        </span>
+                                    );
+                                })}
+                                {Object.values(form.features).flat().length === 0 && (
+                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{t("لم يتم اختيار أي صلاحيات بعد")}</span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
+                            <button onClick={() => setStep(3)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
+                                {t("السابق")}
+                            </button>
+                            <button onClick={handleSubmit} disabled={submitting}
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 48px', height: '52px', borderRadius: '16px', boxShadow: submitting ? 'none' : `0 10px 25px -5px ${C.primary}50` }}>
+                                {submitting
+                                    ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t("جاري الإنشاء...")}</>
+                                    : <><Check size={18} /> {t("إنشاء الحساب")}</>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                input:-webkit-autofill,
+                input:-webkit-autofill:hover,
+                input:-webkit-autofill:active {
+                    -webkit-box-shadow: 0 0 0 1000px ${C.card} inset !important;
+                    box-shadow: 0 0 0 1000px ${C.card} inset !important;
+                    -webkit-text-fill-color: ${C.textPrimary} !important;
+                    color: ${C.textPrimary} !important;
+                    caret-color: ${C.textPrimary} !important;
+                    border: 1px solid ${C.border} !important;
+                    border-radius: 12px !important;
+                    transition: background-color 5000s ease-in-out 0s;
+                }
+                input:-webkit-autofill:focus {
+                    border-color: ${C.primary} !important;
+                    -webkit-box-shadow: 0 0 0 1000px ${C.card} inset, 0 0 0 1px ${C.primary}, 0 0 0 4px ${C.primary}20 !important;
+                    box-shadow: 0 0 0 1000px ${C.card} inset, 0 0 0 1px ${C.primary}, 0 0 0 4px ${C.primary}20 !important;
+                }
+                
+                @media (max-width: 768px) {
+                    .responsive-grid-2 { grid-template-columns: 1fr !important; }
+                    .responsive-grid-3 { grid-template-columns: 1fr !important; }
+                    .responsive-grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
+                    .features-grid { grid-template-columns: 1fr !important; }
+                    .step-container { padding: 20px 16px !important; }
+                    .steps-header { flex-wrap: wrap !important; gap: 12px; }
+                    .full-width-mobile { grid-column: span 1 !important; }
+                }
+            `}</style>
+        </div>
+    );
+}

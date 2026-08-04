@@ -14,6 +14,8 @@ const cairo = Cairo({
 const t = (s: string) => s;
 
 export const metadata: Metadata = {
+  // من غيرها Next بيستخدم localhost:3000 في صور المشاركة على السوشيال
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://qaid-erp.vercel.app'),
   title: t("قيد - QAID | نظام إدارة موارد المؤسسات"),
   description: t("نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة."),
   openGraph: {

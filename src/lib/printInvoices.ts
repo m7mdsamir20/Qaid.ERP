@@ -1,5 +1,7 @@
 import { getCurrencySymbol, formatMoney } from './currency';
 import QRCode from 'qrcode';
+import { getInvoiceRef, getInvoiceTitle } from './invoiceRef';
+import { getActivity } from '@/modules';
 
 export interface CompanyInfo {
     name?: string;
@@ -24,32 +26,31 @@ export interface CompanyInfo {
 type InvoiceType = 'sale' | 'purchase' | 'sale-return' | 'purchase-return' | 'sales-order' | 'purchase-order';
 type VoucherType = 'receipt' | 'payment';
 
-const TITLES: Record<InvoiceType, string> = {
-    'sale': 'فاتورة مبيعات',
-    'purchase': 'فاتورة مشتريات',
-    'sale-return': 'مرتجع مبيعات',
-    'purchase-return': 'مرتجع مشتريات',
-    'sales-order': 'أمر بيع',
-    'purchase-order': 'أمر شراء',
+// أوامر البيع والشراء مالهاش علاقة بالنشاط
+const ORDER_TITLES: Record<string, { ar: string; en: string }> = {
+    'sales-order': { ar: 'أمر بيع', en: 'Sales Order' },
+    'purchase-order': { ar: 'أمر شراء', en: 'Purchase Order' },
 };
 
-const TITLES_EN: Record<InvoiceType, string> = {
-    'sale': 'Sales Invoice',
-    'purchase': 'Purchase Invoice',
-    'sale-return': 'Sales Return',
-    'purchase-return': 'Purchase Return',
-    'sales-order': 'Sales Order',
-    'purchase-order': 'Purchase Order',
-};
+/** عنوان المستند حسب نوعه ونشاط الشركة */
+function docTitle(type: string, businessType?: string | null): { ar: string; en: string } {
+    const order = ORDER_TITLES[type];
+    if (order) return order;
+    return getInvoiceTitle(type, businessType);
+}
 
-const PREFIXES: Record<InvoiceType, string> = {
-    'sale': 'SAL',
-    'purchase': 'PUR',
-    'sale-return': 'SLR',
-    'purchase-return': 'PRR',
+// أوامر البيع والشراء مالهاش علاقة بالنشاط — الفواتير بتيجي من getInvoiceRef
+const ORDER_PREFIXES: Record<string, string> = {
     'sales-order': 'SO',
     'purchase-order': 'PO',
 };
+
+/** كود المستند حسب نوعه ونشاط الشركة */
+function docRef(type: string, num: string, businessType?: string | null): string {
+    const orderPrefix = ORDER_PREFIXES[type];
+    if (orderPrefix) return `${orderPrefix}-${num}`;
+    return getInvoiceRef(num, type, businessType);
+}
 
 // ═══════════════════════════════════════════════
 //  ZATCA QR Code TLV Generator (Saudi Arabia)
@@ -202,7 +203,7 @@ export function generateA4HTML(
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
-    const isServicesCompany = company.businessType?.toUpperCase() === 'SERVICES';
+    const isServicesCompany = getActivity(company.businessType).key === 'SERVICES';
     const isSaudi = country === 'SA';
     const isBilingual = country !== 'EG' || isServicesCompany; // كل الدول العربية ماعدا مصر + شركات الخدمات
     const addrLabels = {
@@ -229,12 +230,9 @@ export function generateA4HTML(
         branch: company.branchName || '',
     };
 
-    const title = TITLES[type];
-    const titleEn = TITLES_EN[type];
-    const prefix = PREFIXES[type];
+    const title = docTitle(type, company.businessType);
     const isReturn = type.includes('return');
     const isSale = type === 'sale' || type === 'sale-return' || type === 'sales-order';
-    const isTrading = company.businessType?.toUpperCase() === 'TRADING';
 
     // Try all possible ways to find the party name and details
     const party = isSale
@@ -263,9 +261,13 @@ export function generateA4HTML(
     const dateISO = invoiceDate.toISOString();
 
     const invoiceNum = String(invoice.invoiceNumber || invoice.orderNumber || 1).padStart(5, '0');
+    const invoiceRef = docRef(type, invoiceNum, company.businessType);
 
     // تحديد ما إذا كان النشاط خدمياً
-    const isServicesLine = isServicesCompany || lines.some((l: any) => l.item?.businessType?.toUpperCase() === 'SERVICES');
+    // عمود "الخدمة" بدل "الصنف" لشركات الخدمات.
+    // (كان فيه شرط تاني بيفحص item.businessType — عمود مش موجود أصلاً
+    //  على Item في الـ schema، فكان دايماً false. اتشال.)
+    const isServicesLine = isServicesCompany;
 
     // ضريبة على مستوى الفاتورة
     const invoiceTaxRate = Number(invoice.taxRate || 0);
@@ -302,7 +304,7 @@ export function generateA4HTML(
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<title>${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</title>
+<title>${invoiceRef}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -404,10 +406,10 @@ tbody tr:nth-child(even){background: #fff;}
         }
     </div>
     <div class="header-center" style="flex:1; text-align:center">
-        <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
-        ${isBilingual ? `<div class="inv-title-en">${!isTrading || isServicesLine ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : titleEn}</div>` : ''}
+        <div class="inv-title">${title.ar}</div>
+        ${isBilingual ? `<div class="inv-title-en">${title.en}</div>` : ''}
         ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
-        <div class="inv-num" style="margin-top:6px; font-size:13px;">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
+        <div class="inv-num" style="margin-top:6px; font-size:13px;">${invoiceRef}</div>
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
         ${invoice.customerPONumber ? `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${invoice.customerPONumber}</div>` : ''}
     </div>
@@ -1026,7 +1028,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <thead>
             <tr>
                 <th style="width:5%">${bl('م', '#')}</th>
-                <th style="width:35%;text-align:right">${company.businessType?.toUpperCase() === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
+                <th style="width:35%;text-align:right">${getActivity(company.businessType).key === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
                 <th style="width:8%">${bl('الوحدة', 'Unit')}</th>
                 <th style="width:8%">${bl('الكمية', 'Qty')}</th>
                 <th style="width:12%">${bl('السعر', 'Price')}</th>
