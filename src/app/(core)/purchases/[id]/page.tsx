@@ -12,6 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
+import { isFullyPaid } from '@/lib/invoiceStatus';
 
 interface PurchaseInvoice {
     id: string;
@@ -88,7 +89,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
     const fmt = (v: number) => formatNumber(v);
 
     const getStatus = () => {
-        if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
+        if (isFullyPaid(invoice.total, invoice.paidAmount)) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
         if (invoice.paidAmount > 0) return { label: t('دفع جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
         return { label: t('غير مدفوعة (آجل)'), color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
     };

@@ -12,6 +12,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { formatNumber } from '@/lib/currency';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
 import { useActivity } from '@/modules/useActivity';
+import { isFullyPaid } from '@/lib/invoiceStatus';
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -65,7 +66,7 @@ export default function SaleReturnsListPage() {
     };
 
     const getStatusStyle = (r: ReturnInvoice) => {
-        if (r.paidAmount >= r.total && r.total > 0) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: t('مكتمل') };
+        if (isFullyPaid(r.total, r.paidAmount)) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: t('مكتمل') };
         if (r.paidAmount > 0) return { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', text: t('جزئي') };
         return { bg: 'rgba(37, 106, 244,0.1)', color: '#256af4', text: t('تسوية رصيد') };
     };

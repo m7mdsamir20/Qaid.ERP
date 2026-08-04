@@ -15,6 +15,7 @@ import DataTable from '@/components/DataTable';
 import { TableColumn } from '@/components/EmptyTableState';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 import { useActivity } from '@/modules/useActivity';
+import { getPaymentState } from '@/lib/invoiceStatus';
 
 interface Invoice {
     id: string; invoiceNumber: number; date: string;
@@ -73,8 +74,9 @@ export default function PurchasesListPage() {
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
     const getStatusStyle = (total: number, paid: number) => {
-        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
-        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('دفع جزئي'), icon: Clock };
+        const state = getPaymentState(total, paid);
+        if (state === 'paid') return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
+        if (state === 'partial') return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('دفع جزئي'), icon: Clock };
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 

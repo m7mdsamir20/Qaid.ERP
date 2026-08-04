@@ -12,6 +12,7 @@ import PageHeader from '@/components/PageHeader';
 import { DataTable } from '@/components/DataTable';
 import { useCurrency } from '@/hooks/useCurrency';
 import { printInvoiceDirectly, downloadInvoicePDF } from '@/lib/printDirectly';
+import { getPaymentState } from '@/lib/invoiceStatus';
 
 
 interface PurchaseReturn {
@@ -60,8 +61,9 @@ export default function PurchaseReturnsListPage() {
     });
 
     const getStatusStyle = (total: number, paid: number) => {
-        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
-        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('جزئي'), icon: Clock };
+        const state = getPaymentState(total, paid);
+        if (state === 'paid') return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
+        if (state === 'partial') return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('جزئي'), icon: Clock };
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 

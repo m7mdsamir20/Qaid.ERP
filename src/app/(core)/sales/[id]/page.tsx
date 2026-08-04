@@ -17,6 +17,7 @@ import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { useActivity } from '@/modules/useActivity';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { isFullyPaid } from '@/lib/invoiceStatus';
 
 interface ReturnInvoice {
     id: string;
@@ -160,7 +161,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const getStatus = () => {
         if ((invoice as any).status === 'pending') return { label: t('قيد الاعتماد'), color: '#f59e0b', icon: Clock, bg: 'rgba(245,158,11,0.1)' };
         if (invoice.paymentMethod === 'installment_plan') return { label: t('مُقسطة'), color: '#a78bfa', icon: Clock, bg: 'rgba(167,139,250,0.1)' };
-        if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
+        if (isFullyPaid(invoice.total, invoice.paidAmount)) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
         if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
         return { label: t('غير مدفوعة (آجل)'), color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
     };

@@ -11,6 +11,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { Loader2, Package, Truck, History, CheckCircle2, XCircle, TrendingUp, Globe, Printer, Search, FileText, Check, X, RotateCcw, AlertCircle, ShoppingBag, Utensils, ChevronDown } from 'lucide-react';
 import { generateZatcaTLV, generateQRSVG } from '@/lib/printInvoices';
 import { useActivity } from '@/modules/useActivity';
+import { isFullyPaid } from '@/lib/invoiceStatus';
 
 const t = (s: string) => s;
 
@@ -508,7 +509,7 @@ export default function OrdersHistoryPage() {
                             header: t('المدفوعات'),
                             type: 'number',
                             cell: (row) => {
-                                const isPaid = row.paidAmount >= row.total && row.total > 0;
+                                const isPaid = isFullyPaid(row.total, row.paidAmount);
                                 return (
                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>
                                         {isPaid ? t('مدفوع') : t('غير مدفوع')}
@@ -761,7 +762,7 @@ export default function OrdersHistoryPage() {
                                             </button>
                                         )}
 
-                                        {(selectedOrder.status === 'ready' && selectedOrder.paidAmount >= selectedOrder.total) && (
+                                        {(selectedOrder.status === 'ready' && isFullyPaid(selectedOrder.total, selectedOrder.paidAmount)) && (
                                             <div style={{ padding: '6px 14px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, borderRadius: '8px', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, border: `1px solid ${C.border}` }}>
                                                 <Check size={14} /> {t('مكتمل')}
                                             </div>
