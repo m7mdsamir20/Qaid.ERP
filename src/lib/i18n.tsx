@@ -5270,6 +5270,13 @@ export const dictionaries = {
         "إجمالي المبلغ المستلم": "Total Received Amount",
         "طريقة الاستلام": "Receipt Method",
         "النظام المحاسبي المتكامل": "Integrated Accounting System",
+
+
+        // --- Auto-synced Keys (Missing in Code) ---
+        "فواتير اليوم": "Invoiced Today",
+        "قيمة الخدمات المفوترة اليوم": "The value of services billed today",
+        "المحصّل اليوم": "Collected today",
+        "سندات القبض المستلمة اليوم": "Receipt vouchers collected today",
 }
 };
 
