@@ -477,10 +477,14 @@ export default function DashboardPage() {
             </>
           ) : isServices ? (
             <>
-              <KpiCard label={t("إيرادات اليوم")} value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
-              <KpiCard label={t("عدد الخدمات")} value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={60} />
-              <KpiCard label={t("عدد العملاء")} value={stats.customers} sub={t("قاعدة العملاء الحالية")} color={C.success} icon={Users} delay={120} />
-              <KpiCard label={t("مواعيد اليوم")} value="0" sub={t("لا يوجد مواعيد مسجلة حالياً")} color={C.warning} icon={Clock} delay={180} />
+              {/* الرقمين دول بيقولوا حاجتين مختلفتين:
+                  «فواتير اليوم» = شغل اتعمل النهاردة (بتاريخ الفاتورة)
+                  «المحصّل اليوم» = فلوس دخلت النهاردة (سندات القبض)
+                  شركة الخدمات بتفوتر شهرياً وتحصّل بعدين، فلازم تشوف الاتنين. */}
+              <KpiCard label={t("فواتير اليوم")} value={fMoneyJSX(stats.salesTodayTotal)} sub={t("قيمة الخدمات المفوترة اليوم")} color={C.primary} icon={Receipt} delay={0} />
+              <KpiCard label={t("المحصّل اليوم")} value={fMoneyJSX(stats.collectedTotal || 0)} sub={t("سندات القبض المستلمة اليوم")} color={C.success} icon={Wallet} delay={60} />
+              <KpiCard label={t("عدد الخدمات")} value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={120} />
+              <KpiCard label={t("عدد العملاء")} value={stats.customers} sub={t("قاعدة العملاء الحالية")} color={C.blue} icon={Users} delay={180} />
               <KpiCard label={t("المصروفات")} value={fMoneyJSX(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
               <KpiCard label={t("صافي الأرباح")} value={fMoneyJSX(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
             </>

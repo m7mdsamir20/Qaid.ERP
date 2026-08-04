@@ -99,6 +99,15 @@ export const GET = withProtection(async (request, session) => {
                         where: { companyId, type: 'payment', ...dateFilter, ...branchFilter },
                         _sum: { total: true }
                     }), { _sum: { total: 0 } }),
+                /* المحصّل خلال الفترة — سندات القبض.
+                   ده غير «المبيعات»: المبيعات بتتحسب بتاريخ الفاتورة
+                   (أساس استحقاقي)، والمحصّل بتاريخ استلام الفلوس.
+                   شركة خدمات بتفوتر شهرياً وتحصّل بعدين، فالرقمين
+                   بيختلفوا وكل واحد بيقول حاجة تانية. */
+                safeQuery(() => prisma.voucher.aggregate({
+                    where: { companyId, type: 'receipt', ...dateFilter, ...branchFilter },
+                    _sum: { amount: true }
+                }), { _sum: { amount: 0 } }),
             ]),
             // Alerts & Data (Fixed to match reorderLevel and aggregate per item)
             safeQuery(async () => {
@@ -281,6 +290,8 @@ export const GET = withProtection(async (request, session) => {
         const installmentSalesTotal = (installmentPlansKpi._sum?.totalAmount || 0) + (installmentPlansKpi._sum?.totalInterest || 0);
         const salesTotal = invoiceSalesTotal + posSalesTotal + installmentSalesTotal;
         const purchasesTotal = kpis[1]._sum?.total || 0;
+        // المحصّل فعلياً خلال الفترة (سندات القبض)
+        const collectedTotal = kpis[3]?._sum?.amount || 0;
         const expensesTotal = isServices
             ? (kpis[2]._sum?.debit || 0)
             : (kpis[2]._sum?.total || 0);
@@ -305,6 +316,7 @@ export const GET = withProtection(async (request, session) => {
             treasuryList: treasuryBalanceData[1],
             salesTodayTotal: salesTotal,
             salesTotal: salesTotal,
+            collectedTotal,
             purchasesTotal: purchasesTotal,
             lowStockItems,
             topDebtors,
