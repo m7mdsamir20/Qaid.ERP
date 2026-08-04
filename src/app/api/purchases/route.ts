@@ -4,6 +4,7 @@ import { withProtection } from '@/lib/apiHandler';
 import { getBranchFilter } from '@/lib/apiAuth';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { assertBalanced } from '@/lib/journalGuard';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -346,7 +347,7 @@ export const POST = withProtection(async (request, session, body) => {
                         });
                     }
 
-                    if (journalLines.length >= 2) {
+                    if (assertBalanced(journalLines, `فاتورة مشتريات رقم ${invoiceNumber}`)) {
                         await tx.journalEntry.create({
                             data: {
                                 branchId: body?.branchId || null,

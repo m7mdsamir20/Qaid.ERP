@@ -4,6 +4,7 @@ import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getActivity } from '@/modules';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { assertBalanced } from '@/lib/journalGuard';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -297,6 +298,7 @@ export const POST = withProtection(async (request, session, body) => {
                         }
                     }
 
+                    assertBalanced(journalLines, `مرتجع مبيعات رقم ${invoiceNumber}`);
                     await tx.journalEntry.create({
                         data: {
                                 branchId: branchId || null,

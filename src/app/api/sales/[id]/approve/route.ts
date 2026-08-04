@@ -4,6 +4,7 @@ import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getActivity } from '@/modules';
 import { getInvoiceRef } from '@/lib/invoiceRef';
+import { assertBalanced } from '@/lib/journalGuard';
 
 export const POST = withProtection(async (request, session, body, context) => {
     try {
@@ -309,7 +310,7 @@ export const POST = withProtection(async (request, session, body, context) => {
                     }
                 }
 
-                if (journalLines.length >= 2) {
+                if (assertBalanced(journalLines, `اعتماد فاتورة ${getInvoiceRef(invoice.invoiceNumber, 'sale', (session.user as any).businessType)}`)) {
                     await tx.journalEntry.create({
                         data: {
                             branchId: invoice.branchId,

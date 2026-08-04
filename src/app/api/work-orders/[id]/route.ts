@@ -39,6 +39,41 @@ export const PUT = withProtection(async (request, session, body, { params }) => 
             return NextResponse.json({ error: 'أمر العمل غير موجود' }, { status: 404 });
         }
 
+        /* فحص الصلاحية على السيرفر.
+           قبل كده أي مستخدم عنده وصول لأوامر العمل كان يقدر يعدّل أي
+           أمر ويغيّر أي حالة — يبدأ، يكمّل، يلغي — من غير أي فحص.
+           نفس نمط التحقق المستخدم في اعتماد الفواتير. */
+        const user = session.user as any;
+        if (!user.isSuperAdmin && user.role !== 'admin') {
+            let canEdit = false;
+            try {
+                const dbUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { customRole: { select: { permissions: true } } },
+                });
+                const perms = dbUser?.customRole?.permissions
+                    ? JSON.parse(dbUser.customRole.permissions)
+                    : {};
+                // مفيش صلاحيات مخصصة = الدور الافتراضي، بيتسمح له
+                canEdit = Object.keys(perms).length === 0
+                    ? true
+                    : perms['/work-orders']?.editDelete === true;
+            } catch (e) {
+                // فشل قراءة الصلاحيات = رفض، مش سماح
+                console.error('فشل تحميل صلاحيات المستخدم', e);
+                return NextResponse.json(
+                    { error: 'تعذّر التحقق من الصلاحيات، حاول مرة أخرى' },
+                    { status: 503 },
+                );
+            }
+            if (!canEdit) {
+                return NextResponse.json(
+                    { error: 'ليس لديك صلاحية تعديل أوامر العمل' },
+                    { status: 403 },
+                );
+            }
+        }
+
         const { status, customerId, contractId, customerPONumber, assignedTo, type, priority, scheduledDate, description, notes, resolution, materials } = body;
 
         // Status transition timestamps

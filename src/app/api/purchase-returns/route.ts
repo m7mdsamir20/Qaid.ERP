@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 import { logActivity, extractLogContext } from '@/lib/activityLog';
+import { assertBalanced } from '@/lib/journalGuard';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -277,6 +278,7 @@ export const POST = withProtection(async (request, session, body) => {
                         journalLines[0][supplierId ? 'debit' : 'credit'] = total - (paidAmount || 0);
                     }
 
+                    assertBalanced(journalLines, `مرتجع مشتريات رقم ${invoiceNumber}`);
                     await tx.journalEntry.create({
                         data: {
                                 branchId: body?.branchId || null,
