@@ -372,10 +372,12 @@ tbody td{padding:${isA5 ? '4px 3px' : '7px 4px'};font-size:${isA5 ? '8.5px' : '1
 tbody tr{border-bottom:${rowBorder}; background: #fff;}
 tbody tr:nth-child(even){background: #fff;}
 .item-name{font-weight:800;font-size:10px}
-/* خلية الصنف بتلغي nowrap اللي على tbody td.
-   pre-wrap بيحافظ على الأسطر اللي المستخدم كتبها،
-   و anywhere بيكسر أكواد القطع الطويلة بدل ما تطلع برّه الصفحة. */
-td.item-cell{white-space:pre-wrap!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
+/* الخلية: بتلغي nowrap عشان النص يلتف — لكن **مش** pre-wrap،
+   لأن ده كان بيعرض المسافات والأسطر اللي بين الوسوم في القالب
+   نفسه كمساحة فاضية، فالصفوف طلعت مرتفعة بلا داعي.
+   pre-wrap مكانها النص الداخلي بس، عشان تحافظ على أسطر المستخدم. */
+td.item-cell{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
+.item-name{white-space:pre-wrap}
 .item-desc{font-size:11px;color:#444;margin-top:2px;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
 
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-top:3px}
@@ -956,7 +958,7 @@ table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:5px}
 thead{background:#f0f0f0}
 thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:1px solid #999;white-space:nowrap}
 tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle;white-space:nowrap}
-td.item-cell{white-space:pre-wrap!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
+td.item-cell{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
 .item-desc{white-space:pre-wrap;overflow-wrap:anywhere;color:#444;margin-top:2px}
 .summary-wrap{width: 100%; text-align: left; margin-top: 8px; clear: both;}
 .totals{width: 310px; display: inline-block; text-align: right; border: 1px solid #999; border-radius: 0; overflow: hidden}
