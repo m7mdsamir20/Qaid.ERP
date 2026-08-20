@@ -785,7 +785,7 @@ function NewSalePageInner() {
                                 <div style={{ marginTop: '12px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px', display: 'grid', gridTemplateColumns: '1fr 1.2fr 1.2fr', gap: '10px' }}>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: '6px', display: 'block' }}>{t('رقم طلب الشراء (PO)')}</label>
-                                        <input type="text" value={form.customerPONumber} onChange={e => setForm((f: any) => ({ ...f, customerPONumber: e.target.value }))} style={{ ...IS, fontSize: '13px', fontFamily: OUTFIT, direction: 'ltr' }} placeholder="PO-00001" onFocus={focusIn} onBlur={focusOut} />
+                                        <input type="text" inputMode="numeric" value={form.customerPONumber} onChange={e => setForm((f: any) => ({ ...f, customerPONumber: e.target.value.replace(/\D/g, '') }))} style={{ ...IS, fontSize: '13px', fontFamily: OUTFIT, direction: 'ltr' }} placeholder="5010177" onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: '6px', display: 'block' }}>{t('نوع الخدمة')}</label>

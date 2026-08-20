@@ -217,7 +217,7 @@ function NewWorkOrderForm() {
 
                                     <div>
                                         <label style={LS}>رقم أمر الشراء</label>
-                                        <input type="text" placeholder="اختياري" value={form.customerPONumber} onChange={e => setForm(f => ({ ...f, customerPONumber: e.target.value }))} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                        <input type="text" inputMode="numeric" placeholder="أرقام فقط — اختياري" value={form.customerPONumber} onChange={e => setForm(f => ({ ...f, customerPONumber: e.target.value.replace(/\D/g, '') }))} style={{ ...IS, fontFamily: OUTFIT, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
 
                                     <div>

@@ -1,6 +1,16 @@
 import { getCurrencySymbol, formatMoney } from './currency';
 import QRCode from 'qrcode';
 import { getInvoiceRef, getInvoiceTitle } from './invoiceRef';
+
+/**
+ * بيهرب الحروف الخاصة قبل ما تتحط في HTML.
+ * الوصف بيكتبه المستخدم، فلو فيه < أو & كان بيكسر الجدول.
+ */
+function escapeHtml(v: unknown): string {
+    return String(v ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 import { getActivity } from '@/modules';
 
 export interface CompanyInfo {
@@ -362,6 +372,11 @@ tbody td{padding:${isA5 ? '4px 3px' : '7px 4px'};font-size:${isA5 ? '8.5px' : '1
 tbody tr{border-bottom:${rowBorder}; background: #fff;}
 tbody tr:nth-child(even){background: #fff;}
 .item-name{font-weight:800;font-size:10px}
+/* خلية الصنف بتلغي nowrap اللي على tbody td.
+   pre-wrap بيحافظ على الأسطر اللي المستخدم كتبها،
+   و anywhere بيكسر أكواد القطع الطويلة بدل ما تطلع برّه الصفحة. */
+td.item-cell{white-space:pre-wrap!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
+.item-desc{font-size:11px;color:#444;margin-top:2px;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
 
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-top:3px}
 .totals{min-width:${isA5 ? '180px' : '260px'};border:1px solid #333;border-radius:6px;overflow:hidden;background:#fff}
@@ -411,7 +426,14 @@ tbody tr:nth-child(even){background: #fff;}
         ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
         <div class="inv-num" style="margin-top:6px; font-size:13px;">${invoiceRef}</div>
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
-        ${invoice.customerPONumber ? `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${invoice.customerPONumber}</div>` : ''}
+        ${(() => {
+            /* الحروف بتتطبع من الليبل («PO:» أو «رقم الطلب:»)، فلو المستخدم
+               كتب «PO 5010177» كان بيطلع «PO: PO 5010177» مكرر.
+               الحقل بقى أرقام فقط، وده بينضّف البيانات القديمة المحفوظة. */
+            const poDigits = String(invoice.customerPONumber ?? '').replace(/\D/g, '');
+            if (!poDigits) return '';
+            return `<div style="font-size:10px; color:#444; margin-top:3px; font-family:monospace; direction:ltr; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:2px 8px; display:inline-block;">${isBilingual ? 'PO: ' : 'رقم الطلب: '}${poDigits}</div>`;
+        })()}
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
         ${hasValidTax ? generateQRSVG(zatcaQR, 80, 80) : ''}
@@ -494,9 +516,9 @@ tbody tr:nth-child(even){background: #fff;}
 
             return `<tr>
                 <td>${i + 1}</td>
-                <td style="text-align:right">
-                    <div class="item-name">${name}</div>
-                    ${desc ? `<div style="font-size:11px;color:#444;margin-top:2px;font-weight:700">${desc}</div>` : ''}
+                <td class="item-cell">
+                    <div class="item-name">${escapeHtml(name)}</div>
+                    ${desc ? `<div class="item-desc">${escapeHtml(desc)}</div>` : ''}
                 </td>
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
                 <td><strong>${qty.toLocaleString('en-US')}</strong></td>
@@ -934,6 +956,8 @@ table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:5px}
 thead{background:#f0f0f0}
 thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:1px solid #999;white-space:nowrap}
 tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle;white-space:nowrap}
+td.item-cell{white-space:pre-wrap!important;overflow-wrap:anywhere;word-break:break-word;text-align:right}
+.item-desc{white-space:pre-wrap;overflow-wrap:anywhere;color:#444;margin-top:2px}
 .summary-wrap{width: 100%; text-align: left; margin-top: 8px; clear: both;}
 .totals{width: 310px; display: inline-block; text-align: right; border: 1px solid #999; border-radius: 0; overflow: hidden}
 .t-row{display:flex;justify-content:space-between;padding:2px 10px;border-bottom:1px solid #999;font-size:13px; height: 30px; align-items: center;}
@@ -1050,9 +1074,9 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
             return `
             <tr>
                 <td>${i + 1}</td>
-                <td style="text-align:right">
-                    <div style="font-weight:800">${l.item?.name || l.itemName || ''}</div>
-                    ${l.description ? `<div style="font-size:10px;color:#444;margin-top:2px">${l.description}</div>` : ''}
+                <td class="item-cell">
+                    <div style="font-weight:800">${escapeHtml(l.item?.name || l.itemName || '')}</div>
+                    ${l.description ? `<div class="item-desc" style="font-size:10px">${escapeHtml(l.description)}</div>` : ''}
                 </td>
                 <td>${l.item?.unit?.name || l.unit?.name || l.unit || '—'}</td>
                 <td><strong>${Number(l.quantity).toLocaleString('en-US')}</strong></td>
