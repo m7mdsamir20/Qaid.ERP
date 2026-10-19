@@ -78,24 +78,27 @@ export const GET = withProtection(async (request, session) => {
             totalNetTransacted += plan.grandTotal;
             if (plan.downPayment > 0) totalNetTransacted -= plan.downPayment; // يتم خصم المقدم لأنه يُسجل كسند قبض أو حركة منفصلة
         });
-        // تقريب لأقرب هللة — يمنع بواقي الكسور العشرية (زي 0.0000001) تظهر كرصيد
-        const r2 = (n: number) => { const v = Math.round((n + Number.EPSILON) * 100) / 100; return Object.is(v, -0) ? 0 : v; };
-        const initialSystemOpeningBalance = customer.balance - totalNetTransacted;
+        // تقريب لأقرب هللة — الفواتير القديمة متخزنة بكسور أكتر من خانتين (زي 14190.765)
+        // فبنقرّب مبلغ كل حركة قبل التجميع عشان الرصيد الجاري يطابق المبالغ المطبوعة
+        // التقريب عن طريق النص العشري عشان 4881.745 تبقى 4881.75 (الضرب في 100 بيطلعها 4881.74)
+        const r2 = (n: number) => { const v = Math.sign(n) * Math.round(Number(`${Math.abs(n).toFixed(8)}e2`)) / 100; return Object.is(v, -0) ? 0 : v; };
+        // الرصيد الافتتاحي للنظام بيتحسب بالمبالغ الخام لأن customer.balance اتجمّع بيها
+        const initialSystemOpeningBalance = r2(customer.balance - totalNetTransacted);
 
         // Balance at Start of Period
         let balanceAtStartOfPeriod = initialSystemOpeningBalance;
         if (dateFrom) {
             const df = new Date(dateFrom);
             allInvoices.filter(i => new Date(i.date) < df).forEach(inv => {
-                if (inv.type === 'sale') balanceAtStartOfPeriod += inv.total;
-                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= inv.total;
+                if (inv.type === 'sale') balanceAtStartOfPeriod += r2(inv.total);
+                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= r2(inv.total);
             });
             allVouchers.filter(v => new Date(v.date) < df).forEach(v => {
-                if (v.type === 'receipt') balanceAtStartOfPeriod -= v.amount;
-                if (v.type === 'payment') balanceAtStartOfPeriod += v.amount;
+                if (v.type === 'receipt') balanceAtStartOfPeriod -= r2(v.amount);
+                if (v.type === 'payment') balanceAtStartOfPeriod += r2(v.amount);
             });
             allPlans.filter(p => new Date(p.startDate) < df).forEach(p => {
-                balanceAtStartOfPeriod += p.grandTotal - p.downPayment;
+                balanceAtStartOfPeriod += r2(p.grandTotal - p.downPayment);
             });
         }
         balanceAtStartOfPeriod = r2(balanceAtStartOfPeriod);
@@ -152,8 +155,9 @@ export const GET = withProtection(async (request, session) => {
 
         let rb = balanceAtStartOfPeriod;
         const statement = periodEntries.map(e => {
-            rb = r2(rb + e.debit - e.credit);
-            return { ...e, debit: r2(e.debit), credit: r2(e.credit), balance: rb };
+            const debit = r2(e.debit), credit = r2(e.credit);
+            rb = r2(rb + debit - credit);
+            return { ...e, debit, credit, balance: rb };
         });
 
         return NextResponse.json({
