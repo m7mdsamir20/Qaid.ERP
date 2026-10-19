@@ -61,3 +61,7 @@ prisma/*.db-journal
 /.agents/
 /.claude/skills/
 /skills-lock.json
+
+# backups
+/backups/
+
