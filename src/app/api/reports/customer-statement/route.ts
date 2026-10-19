@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef, getVoucherRef } from '@/lib/invoiceRef';
 import { getActivity } from '@/modules';
+import { roundMoney } from '@/lib/currency';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -39,7 +40,8 @@ export const GET = withProtection(async (request, session) => {
         const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
 
         const branchId = searchParams.get('branchId');
-        const invoiceWhere: any = { customerId, companyId, type: { in: ['sale', 'sale_return'] } };
+        // الفواتير المعلّقة (قيد الاعتماد) مالهاش أثر على رصيد العميل لحد ما تتعتمد
+        const invoiceWhere: any = { customerId, companyId, type: { in: ['sale', 'sale_return'] }, status: { not: 'pending' } };
         const voucherWhere: any = { customerId, companyId, type: { in: ['receipt', 'payment'] } };
         const planWhere: any = { customerId, companyId };
 
@@ -80,8 +82,7 @@ export const GET = withProtection(async (request, session) => {
         });
         // تقريب لأقرب هللة — الفواتير القديمة متخزنة بكسور أكتر من خانتين (زي 14190.765)
         // فبنقرّب مبلغ كل حركة قبل التجميع عشان الرصيد الجاري يطابق المبالغ المطبوعة
-        // التقريب عن طريق النص العشري عشان 4881.745 تبقى 4881.75 (الضرب في 100 بيطلعها 4881.74)
-        const r2 = (n: number) => { const v = Math.sign(n) * Math.round(Number(`${Math.abs(n).toFixed(8)}e2`)) / 100; return Object.is(v, -0) ? 0 : v; };
+        const r2 = roundMoney;
         // الرصيد الافتتاحي للنظام بيتحسب بالمبالغ الخام لأن customer.balance اتجمّع بيها
         const initialSystemOpeningBalance = r2(customer.balance - totalNetTransacted);
 

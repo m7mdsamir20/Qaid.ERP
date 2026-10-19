@@ -151,13 +151,13 @@ export default function CustomerStatementPage() {
         if (!data) return '';
         const dir = isRtl ? 'rtl' : 'ltr';
         const start = isRtl ? 'right' : 'left';
-        const end = isRtl ? 'left' : 'right';
         const esc = (v: any) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         const money = (n: number) => Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('en-ZA') : '—';
         const amountCell = (n: number) => n > 0.004 ? money(n) : '<span class="muted">—</span>';
         const side = (n: number) => n > 0.004 ? t('عليه') : n < -0.004 ? t('له') : '';
-        const balanceCell = (n: number) => `${money(n)}${side(n) ? ` <span class="tag ${n > 0 ? 'dr' : 'cr'}">${side(n)}</span>` : ''}`;
+        // الرصيد المدين (عليه) بيظهر رقم بس — العلامة بتظهر للرصيد الدائن (له) عشان يتميّز
+        const balanceCell = (n: number) => `${money(n)}${n < -0.004 ? ` <span class="tag cr">${t('له')}</span>` : ''}`;
 
         const sym = getCurrencyName(currency);
         const now = new Date();
@@ -215,14 +215,15 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:
 .num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 .muted{color:#94a3b8}
 
-.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:10px;border-bottom:3px solid #0f3d6e}
-.co{display:flex;align-items:center;gap:12px;min-width:0}
-.co img{max-height:58px;max-width:130px;object-fit:contain}
+.top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding-bottom:10px;border-bottom:3px solid #0f3d6e}
+.co{text-align:${start};min-width:0}
 .co-name{font-size:14px;font-weight:900;color:#0f3d6e;line-height:1.3}
 .co-sub{font-size:8.5px;color:#475569;margin-top:2px}
-.doc{text-align:${end};flex-shrink:0}
+.doc{text-align:center}
 .doc-title{font-size:19px;font-weight:900;color:#0f3d6e;line-height:1.2}
 .doc-sub{font-size:9px;color:#64748b;margin-top:3px}
+.logo{display:flex;justify-content:flex-end;align-items:center}
+.logo img{max-height:62px;max-width:140px;object-fit:contain}
 
 .info{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin:12px 0}
 .box{border:1px solid #cbd5e1;border-radius:6px;overflow:hidden}
@@ -255,7 +256,6 @@ td.bal{font-weight:800}
 tr.opening td{background:#eef2f7!important;font-weight:800;color:#0f172a}
 tr.total td{background:#e2e8f0!important;font-weight:900;border-top:2px solid #0f3d6e;font-size:10px}
 .tag{display:inline-block;font-size:7.5px;font-weight:800;padding:0 5px;border-radius:3px;margin-${start}:3px;vertical-align:middle;line-height:1.6}
-.tag.dr{background:#fee2e2;color:#b91c1c}
 .tag.cr{background:#dcfce7;color:#15803d}
 
 .closing{margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:2px solid #0f3d6e;border-radius:6px;padding:8px 14px;break-inside:avoid}
@@ -275,17 +275,15 @@ tr.total td{background:#e2e8f0!important;font-weight:900;border-top:2px solid #0
 
 <div class="top">
   <div class="co">
-    ${company.logo ? `<img src="${esc(company.logo)}" alt=""/>` : ''}
-    <div>
-      <div class="co-name">${esc(coName)}</div>
-      ${coLines ? `<div class="co-sub">${coLines}</div>` : ''}
-      ${coContact ? `<div class="co-sub">${coContact}</div>` : ''}
-    </div>
+    <div class="co-name">${esc(coName)}</div>
+    ${coLines ? `<div class="co-sub">${coLines}</div>` : ''}
+    ${coContact ? `<div class="co-sub">${coContact}</div>` : ''}
   </div>
   <div class="doc">
     <div class="doc-title">${t('كشف حساب عميل')}</div>
     <div class="doc-sub">${isRtl ? 'Customer Account Statement' : ''}</div>
   </div>
+  <div class="logo">${company.logo ? `<img src="${esc(company.logo)}" alt=""/>` : ''}</div>
 </div>
 
 <div class="info">

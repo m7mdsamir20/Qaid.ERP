@@ -13,7 +13,7 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
-import { getCurrencySymbol, formatNumber } from '@/lib/currency';
+import { getCurrencySymbol, formatNumber, roundMoney } from '@/lib/currency';
 import { useActivity } from '@/modules/useActivity';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 
@@ -106,7 +106,7 @@ function NewSalePageInner() {
             } else {
                 amt = afterDisc * (form.taxRate / 100);
             }
-            setForm((f: any) => ({ ...f, taxAmount: amt }));
+            setForm((f: any) => ({ ...f, taxAmount: roundMoney(amt) }));
         } else {
             setForm((f: any) => ({ ...f, taxAmount: 0 }));
         }

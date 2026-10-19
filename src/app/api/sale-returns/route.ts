@@ -5,6 +5,7 @@ import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getActivity } from '@/modules';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 import { assertBalanced } from '@/lib/journalGuard';
+import { roundMoney } from '@/lib/currency';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -29,14 +30,18 @@ export const POST = withProtection(async (request, session, body) => {
         const companyId = (session.user as any).companyId;
         const branchId = (session.user as any).activeBranchId;
         const isServices = getActivity((session.user as any).businessType).key === 'SERVICES';
-        const { customerId, warehouseId, originalInvoiceId, lines, discount, paidAmount, notes, treasuryId, bankId } = body;
+        const { customerId, warehouseId, originalInvoiceId, lines, discount: rawDiscount, paidAmount: rawPaidAmount, notes, treasuryId, bankId } = body;
+        // كل المبالغ بتتقرّب لأقرب هللة قبل الحفظ
+        const discount = roundMoney(rawDiscount);
+        const paidAmount = roundMoney(rawPaidAmount);
+        const bodyTaxAmount = roundMoney(body.taxAmount);
 
         const effectiveTreasuryId = treasuryId || bankId;
 
-        const subtotal = lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0);
-        const taxAmount = body.taxEnabled && !body.taxInclusive ? (body.taxAmount || 0) : 0;
-        const total = (subtotal - (discount || 0)) + taxAmount;
-        const remaining = total - (paidAmount || 0);
+        const subtotal = roundMoney(lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0));
+        const taxAmount = body.taxEnabled && !body.taxInclusive ? bodyTaxAmount : 0;
+        const total = roundMoney((subtotal - (discount || 0)) + taxAmount);
+        const remaining = roundMoney(total - (paidAmount || 0));
 
         const financialYear = await prisma.financialYear.findFirst({
             where: { companyId, isOpen: true },
@@ -57,7 +62,7 @@ export const POST = withProtection(async (request, session, body) => {
             const customerSnapshot = await tx.customer.findUnique({ where: { id: customerId, companyId }, select: { balance: true } });
             if (!customerSnapshot) throw new Error('العميل غير موجود أو لا ينتمي لهذه الشركة');
             const customerPrevBalance = customerSnapshot.balance;
-            const customerNewBalance = customerPrevBalance - remaining;
+            const customerNewBalance = roundMoney(customerPrevBalance - remaining);
 
             const lastEntry = financialYear ? await tx.journalEntry.findFirst({
                 where: { companyId, financialYearId: financialYear.id },
@@ -77,10 +82,11 @@ export const POST = withProtection(async (request, session, body) => {
                 discount: discount || 0,
                 taxEnabled: body.taxEnabled ?? false,
                 taxRate: body.taxRate ?? 0,
-                taxAmount: body.taxAmount ?? 0,
+                taxAmount: bodyTaxAmount,
                 taxInclusive: body.taxInclusive ?? false,
                 taxLabel: body.taxLabel ?? null,
-                total: subtotal - (discount || 0),
+                // الإجمالي شامل الضريبة زي فاتورة البيع — رصيد العميل بيقل بالمبلغ ده (remaining)
+                total,
                 paidAmount: paidAmount || 0,
                 remaining,
                 paymentMethod,
@@ -96,7 +102,7 @@ export const POST = withProtection(async (request, session, body) => {
                         quantity: line.quantity,
                         price: line.price,
                         discount: line.discount || 0,
-                        total: (line.quantity * line.price) - (line.discount || 0),
+                        total: roundMoney((line.quantity * line.price) - (line.discount || 0)),
                     })),
                 },
             };
@@ -169,10 +175,10 @@ export const POST = withProtection(async (request, session, body) => {
                 });
 
                 if (salesAccount && receivablesAcc) {
-                    const taxAmtVal = Number(body.taxAmount || 0);
-                    const netTotal = total - taxAmtVal;
-                    const paidAmt = Number(paidAmount || 0);
-                    const remainingAmt = total - paidAmt;
+                    const taxAmtVal = bodyTaxAmount;
+                    const netTotal = roundMoney(total - taxAmtVal);
+                    const paidAmt = paidAmount;
+                    const remainingAmt = roundMoney(total - paidAmt);
 
                     // بناء القيد بشكل متوازن دائماً:
                     // مدين: حساب المبيعات (netTotal) + ضريبة (taxAmtVal إن وجدت) = total

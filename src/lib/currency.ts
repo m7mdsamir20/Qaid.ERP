@@ -89,5 +89,15 @@ export function parseNumber(value: string): number {
     return isNaN(num) ? 0 : num;
 }
 
+/**
+ * Rounds a money amount to 2 decimals (nearest halala/piaster) before saving or summing.
+ * Goes through the decimal string so 4881.745 → 4881.75 (Math.round(x * 100) gives 4881.74).
+ */
+export function roundMoney(value: number | string | undefined | null): number {
+    const n = Number(value) || 0;
+    const v = Math.sign(n) * Math.round(Number(`${Math.abs(n).toFixed(8)}e2`)) / 100;
+    return Object.is(v, -0) ? 0 : v;
+}
+
 // Backward compatibility
 export const formatCurrency = formatMoney;

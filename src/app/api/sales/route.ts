@@ -6,6 +6,7 @@ import { logActivity, extractLogContext } from '@/lib/activityLog';
 import { getActivity } from '@/modules';
 import { getInvoiceRef } from '@/lib/invoiceRef';
 import { assertBalanced } from '@/lib/journalGuard';
+import { roundMoney } from '@/lib/currency';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -131,10 +132,15 @@ export const POST = withProtection(async (request, session, body) => {
 
         const {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,
-            paidAmount, warehouseId, notes, attachments,
-            financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount, projectId,
+            paidAmount: rawPaidAmount, warehouseId, notes, attachments,
+            financialYearId, dueDate, lines, discount: rawDiscount, treasuryId, bankId, taxAmount: rawTaxAmount, projectId,
             customerPONumber, workOrderId, serviceType, serviceContractId
         } = body;
+
+        // كل المبالغ بتتقرّب لأقرب هللة قبل الحفظ — الضريبة جاية من الشاشة بكسور (زي 636.7425)
+        const paidAmount = roundMoney(rawPaidAmount);
+        const discount = roundMoney(rawDiscount);
+        const taxAmount = roundMoney(rawTaxAmount);
 
         // Load items details to verify types
         const itemIds = lines.map((l: any) => l.itemId);
@@ -184,14 +190,14 @@ export const POST = withProtection(async (request, session, body) => {
         }
 
         // Calculate totals
-        const subtotal = lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0);
-        const afterDiscount = subtotal - (discount || 0);
+        const subtotal = roundMoney(lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0));
+        const afterDiscount = roundMoney(subtotal - (discount || 0));
 
         // Logic for Tax: 
         // If inclusive: total = afterDiscount (tax is hidden inside)
         // If exclusive: total = afterDiscount + taxAmount
-        const total = taxInclusive ? afterDiscount : afterDiscount + (taxAmount || 0);
-        const remaining = total - (paidAmount || 0);
+        const total = roundMoney(taxInclusive ? afterDiscount : afterDiscount + (taxAmount || 0));
+        const remaining = roundMoney(total - (paidAmount || 0));
 
         // Get the open financial year
         const financialYear = await prisma.financialYear.findFirst({
@@ -223,11 +229,11 @@ export const POST = withProtection(async (request, session, body) => {
             if (customerId) {
                 const customer = await tx.customer.findFirst({ where: { id: customerId, companyId }, select: { balance: true } });
                 customerPrevBalance = customer?.balance || 0;
-                customerNewBalance = customerPrevBalance + remaining;
+                customerNewBalance = roundMoney(customerPrevBalance + remaining);
             } else if (supplierId) {
                 const supplier = await tx.supplier.findFirst({ where: { id: supplierId, companyId }, select: { balance: true } });
                 supplierPrevBalance = supplier?.balance || 0;
-                supplierNewBalance = supplierPrevBalance - remaining; // Sale to supplier reduces their credit (or increases our debit)
+                supplierNewBalance = roundMoney(supplierPrevBalance - remaining); // Sale to supplier reduces their credit (or increases our debit)
             }
 
             const lastEntry = await tx.journalEntry.findFirst({
@@ -278,13 +284,13 @@ export const POST = withProtection(async (request, session, body) => {
                         quantity: line.quantity,
                         price: line.price,
                         discount: line.discount || 0,
-                        total: (line.quantity * line.price) - (line.discount || 0) + (line.taxAmount || 0),
+                        total: roundMoney((line.quantity * line.price) - (line.discount || 0) + (line.taxAmount || 0)),
                         unit: line.unit || null,
                         netPrice: line.price - ((line.discount || 0) / line.quantity),
                         unitCost: line.unitCost || 0,
                         description: line.description || null,
                         taxRate: line.taxRate || 0,
-                        taxAmount: line.taxAmount || 0,
+                        taxAmount: roundMoney(line.taxAmount),
                     })),
                 },
             };
@@ -410,8 +416,8 @@ export const POST = withProtection(async (request, session, body) => {
                 if (salesAccount) {
                     const journalLines: any[] = [];
                     const paid = paidAmount || 0;
-                    const remaining = total - paid;
-                    const netRevenue = taxInclusive ? (total - (taxAmount || 0)) : afterDiscount;
+                    const remaining = roundMoney(total - paid);
+                    const netRevenue = roundMoney(taxInclusive ? (total - (taxAmount || 0)) : afterDiscount);
 
                     // مدين: الصندوق/البنك لو في دفع فوري
                     if (paid > 0 && treasuryAccountId) {
