@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
+import { roundMoney } from '@/lib/currency';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -10,7 +11,7 @@ export const POST = withProtection(async (request, session, body) => {
         if (!installmentId || !paidAmount || !treasuryId)
             return NextResponse.json({ error: 'بيانات ناقصة' }, { status: 400 });
 
-        const paid = parseFloat(paidAmount);
+        const paid = roundMoney(parseFloat(paidAmount));
         if (isNaN(paid) || paid <= 0)
             return NextResponse.json({ error: 'المبلغ يجب أن يكون رقماً موجباً' }, { status: 400 });
 
@@ -38,8 +39,8 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: 'لا توجد سنة مالية مفتوحة' }, { status: 400 });
 
         const result = await prisma.$transaction(async (tx) => {
-            const newPaid      = installment.paidAmount + paid;
-            const newRemaining = installment.amount - newPaid;
+            const newPaid      = roundMoney(installment.paidAmount + paid);
+            const newRemaining = roundMoney(installment.amount - newPaid);
             const isPaid       = newRemaining <= 0.01;
 
             // ① تحديث القسط
@@ -117,16 +118,6 @@ export const POST = withProtection(async (request, session, body) => {
                 },
             });
 
-            const interestRevenueAcc = await tx.account.findFirst({
-                where: {
-                    companyId, type: 'revenue', accountCategory: 'detail',
-                    OR: [
-                        { name: { contains: 'فوائد'        } },
-                        { name: { contains: 'إيرادات فوائد'} },
-                    ],
-                },
-            });
-
             if (!treasury?.accountId) {
                 throw new Error("الخزينة المختارة غير مرتبطة بحساب محاسبي. يرجى ربط الخزينة بحساب في دليل الحسابات.");
             }
@@ -140,10 +131,8 @@ export const POST = withProtection(async (request, session, body) => {
                 select:  { entryNumber: true },
             });
 
-            const interestRatio    = installment.amount > 0 ? installment.interest / installment.amount : 0;
-            const interestPortion  = paid * interestRatio;
-            const principalPortion = paid - interestPortion;
-
+            // الفوائد اتسجلت إيراد بالكامل في قيد إنشاء الخطة (والعميل اتحمّلها في الذمم)،
+            // فالتحصيل بيقفل الذمم بالمبلغ كله — تسجيلها إيراد تاني كان بيكررها ويسيب الذمم مفتوحة
             const journalLines: any[] = [
                 // مدين: الخزينة
                 {
@@ -152,29 +141,14 @@ export const POST = withProtection(async (request, session, body) => {
                     credit:      0,
                     description: `تحصيل قسط ${installment.installmentNo} — خطة ${installment.plan.planNumber}`,
                 },
-                // دائن: ذمم العملاء (الأصل)
+                // دائن: ذمم العملاء
                 {
                     accountId:   receivablesAcc.id,
                     debit:       0,
-                    credit:      principalPortion,
-                    description: `أصل قسط ${installment.installmentNo}`,
+                    credit:      paid,
+                    description: `تحصيل قسط ${installment.installmentNo}`,
                 },
             ];
-
-            // دائن: إيرادات الفوائد
-            if (interestPortion > 0) {
-                if (interestRevenueAcc) {
-                    journalLines.push({
-                        accountId:   interestRevenueAcc.id,
-                        debit:       0,
-                        credit:      interestPortion,
-                        description: `فوائد قسط ${installment.installmentNo}`,
-                    });
-                } else {
-                    // لو مفيش حساب فوائد — أضفها لذمم العملاء
-                    journalLines[1].credit += interestPortion;
-                }
-            }
 
             await tx.journalEntry.create({
                 data: {

@@ -197,7 +197,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                         </td>
                                         <td style={{ padding: '14px 20px',  }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(37, 106, 244,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 600 }}>
-                                                {row.type === 'invoice' ? (isServices ? t('فاتورة خدمة') : t('فاتورة مبيعات')) : row.type === 'receipt' ? t('سند تحصيل') : row.type === 'return' ? (isServices ? t('مرتجع خدمة') : t('مرتجع بيع')) : row.type === 'payment' ? t('سند صرف') : row.type === 'refund' ? t('استرداد') : t('حركة محاسبية')}
+                                                {row.type === 'invoice' ? (isServices ? t('فاتورة خدمة') : t('فاتورة مبيعات')) : row.type === 'receipt' ? t('سند تحصيل') : row.type === 'return' ? (isServices ? t('مرتجع خدمة') : t('مرتجع بيع')) : row.type === 'payment' ? t('سند صرف') : row.type === 'refund' ? t('استرداد') : row.type === 'installment' ? t('خطة تقسيط') : t('حركة محاسبية')}
                                             </span>
                                         </td>
                                         <td style={{ padding: '14px 20px',  }}>

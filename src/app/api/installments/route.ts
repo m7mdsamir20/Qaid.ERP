@@ -2,6 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 import { getActivity } from '@/modules';
+import { roundMoney } from '@/lib/currency';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -42,22 +43,32 @@ export const POST = withProtection(async (request, session, body) => {
         if (cart.length === 0)
             return NextResponse.json({ error: 'لا توجد منتجات' }, { status: 400 });
 
-        const total         = parseFloat(totalAmount);
+        const total         = roundMoney(parseFloat(totalAmount));
         if (isNaN(total) || total <= 0)
             return NextResponse.json({ error: 'المبلغ الإجمالي يجب أن يكون رقماً موجباً' }, { status: 400 });
-        const down          = parseFloat(downPayment)  || 0;
+        const down          = roundMoney(parseFloat(downPayment)  || 0);
         const rate          = parseFloat(interestRate) || 0;
         const taxRate       = parseFloat(taxR) || 0;
-        const taxAmount     = parseFloat(taxA) || 0;
+        const taxAmount     = roundMoney(parseFloat(taxA) || 0);
         
         // Final total including tax for calculations
-        const priceWithTax  = total + taxAmount;
-        const remaining     = priceWithTax - down;
-        const totalInterest = (remaining * rate) / 100;
-        const grandTotal    = remaining + totalInterest;
-        const installAmt    = grandTotal / monthsCount;
-        const principalAmt  = remaining  / monthsCount;
-        const interestAmt   = totalInterest / monthsCount;
+        const priceWithTax  = roundMoney(total + taxAmount);
+        const remaining     = roundMoney(priceWithTax - down);
+        const totalInterest = roundMoney((remaining * rate) / 100);
+        const grandTotal    = roundMoney(remaining + totalInterest);
+        // الأقساط بتتقرّب لأقرب هللة، والقسط الأخير بياخد فرق التقريب عشان المجموع يساوي العقد بالظبط
+        const installAmt    = roundMoney(grandTotal / monthsCount);
+        const principalAmt  = roundMoney(remaining  / monthsCount);
+        const interestAmt   = roundMoney(installAmt - principalAmt);
+        const lastInstallAmt   = roundMoney(grandTotal - installAmt * (monthsCount - 1));
+        const lastPrincipalAmt = roundMoney(remaining - principalAmt * (monthsCount - 1));
+
+        // الدفعة المقدمة لازم تدخل خزينة مربوطة بحساب — وإلا تتخصم من العميل من غير ما تتسجل
+        if (down > 0) {
+            const downTreasury = treasuryId ? await prisma.treasury.findFirst({ where: { id: treasuryId, companyId }, select: { accountId: true } }) : null;
+            if (!downTreasury?.accountId)
+                return NextResponse.json({ error: 'اختر الخزينة أو البنك لاستلام الدفعة المقدمة (ولازم تكون مربوطة بحساب في دليل الحسابات)' }, { status: 400 });
+        }
 
         const lastPlan = await prisma.installmentPlan.findFirst({
             where:   { companyId },
@@ -207,10 +218,11 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             }
 
-            // 4. Update customer balance with Principal + Interest
+            // 4. العميل عليه قيمة العقد كاملة (شامل المقدم والفوائد) — المقدم بيتخصم تحت في خطوة 7
+            // (كان بيزيد بـ grandTotal اللي هو أصلاً من غير المقدم، فالمقدم كان بيتخصم مرتين)
             await tx.customer.update({
                 where: { id: customerId, companyId },
-                data:  { balance: { increment: grandTotal } },
+                data:  { balance: { increment: roundMoney(grandTotal + down) } },
             });
 
             // 5. Create Installments
@@ -230,14 +242,17 @@ export const POST = withProtection(async (request, session, body) => {
                     dDate.setMonth(dDate.getMonth() + i);
                 }
 
+                const isLast = i === Number(monthsCount);
+                const amt = isLast ? lastInstallAmt : installAmt;
+                const prin = isLast ? lastPrincipalAmt : principalAmt;
                 generated.push({
                     planId:            plan.id,
                     installmentNo:     i,
                     dueDate:           dDate,
-                    amount:            installAmt,
-                    principal:   principalAmt,
-                    interest:    interestAmt,
-                    remaining:         installAmt,
+                    amount:            amt,
+                    principal:   prin,
+                    interest:    isLast ? roundMoney(amt - prin) : interestAmt,
+                    remaining:         amt,
                     paidAmount:        0,
                     status:            'unpaid',
                     companyId,
@@ -299,7 +314,7 @@ export const POST = withProtection(async (request, session, body) => {
                                 create: [
                                     {
                                         accountId:   receivablesAcc.id,
-                                        debit:       remaining + totalInterest,
+                                        debit:       roundMoney(grandTotal + down),
                                         credit:      0,
                                         description: `قيمة عقد تقسيط رقم ${planNumber}`,
                                     },
@@ -423,13 +438,30 @@ export const DELETE = withProtection(async (request, session) => {
 
         await prisma.$transaction(async (tx) => {
             
-            const addedToBalance = plan.grandTotal;
-            const netBalance = addedToBalance - plan.downPayment;
-            if (netBalance > 0) {
+            // العميل زاد بقيمة العقد (grandTotal + المقدم) واتخصم منه المقدم → صافي الأثر = grandTotal
+            if (plan.grandTotal > 0) {
                 await tx.customer.update({
                     where: { id: plan.customerId },
-                    data: { balance: { decrement: netBalance } },
+                    data: { balance: { decrement: plan.grandTotal } },
                 });
+            }
+
+            // رجّع الدفعة المقدمة من الخزينة اللي استلمتها (سطر الخزينة في قيد المقدم)
+            if (plan.downPayment > 0) {
+                const downEntries = await tx.journalEntry.findMany({
+                    where: { companyId, referenceType: 'installment_plan', referenceId: id },
+                    select: { lines: { select: { accountId: true, debit: true } } },
+                });
+                const accountIds = downEntries.flatMap(e => e.lines.filter(l => l.debit > 0).map(l => l.accountId));
+                const downTreasury = accountIds.length
+                    ? await tx.treasury.findFirst({ where: { companyId, accountId: { in: accountIds } }, select: { id: true } })
+                    : null;
+                if (downTreasury) {
+                    await tx.treasury.update({
+                        where: { id: downTreasury.id },
+                        data: { balance: { decrement: plan.downPayment } },
+                    });
+                }
             }
 
             if (plan.invoiceId) {
