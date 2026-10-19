@@ -2165,6 +2165,8 @@ export const dictionaries = {
         "بانتظار اختيار العميل": "Waiting for customer selection",
         "يرجى اختيار العميل وتحديد الفترة الزمنية لعرض كشف الحساب التفصيلي.": "Please select a customer and period to view the detailed statement.",
         "رقم المستند": "Document No.",
+        "دفعة مع الفاتورة": "Payment with Invoice",
+        "مبلغ مسترد": "Refund",
         "العملة": "Currency",
         "تاريخ الطباعة": "Printed On",
         "الفترة": "Period",

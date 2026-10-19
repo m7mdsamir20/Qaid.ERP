@@ -4,6 +4,7 @@ import { withProtection } from '@/lib/apiHandler';
 import { getInvoiceRef, getVoucherRef } from '@/lib/invoiceRef';
 import { getActivity } from '@/modules';
 import { roundMoney } from '@/lib/currency';
+import { getPaidAtCreation } from '@/lib/invoicePayments';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -66,11 +67,15 @@ export const GET = withProtection(async (request, session) => {
             })
         ]);
 
+        // المدفوع/المسترد مع الفاتورة وقت إنشائها — رصيد العميل اتغيّر بالفاتورة ناقصه
+        const paidAtCreation = await getPaidAtCreation(prisma, companyId, allInvoices);
+        const paidOf = (id: string) => paidAtCreation.get(id) || 0;
+
         // Calculate System Opening Balance (Current Balance - Net Transactions)
         let totalNetTransacted = 0;
         allInvoices.forEach(inv => {
-            if (inv.type === 'sale') totalNetTransacted += inv.total;
-            if (inv.type === 'sale_return') totalNetTransacted -= inv.total;
+            if (inv.type === 'sale') totalNetTransacted += inv.total - paidOf(inv.id);
+            if (inv.type === 'sale_return') totalNetTransacted -= inv.total - paidOf(inv.id);
         });
         allVouchers.forEach(v => {
             if (v.type === 'receipt') totalNetTransacted -= v.amount;
@@ -91,8 +96,8 @@ export const GET = withProtection(async (request, session) => {
         if (dateFrom) {
             const df = new Date(dateFrom);
             allInvoices.filter(i => new Date(i.date) < df).forEach(inv => {
-                if (inv.type === 'sale') balanceAtStartOfPeriod += r2(inv.total);
-                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= r2(inv.total);
+                if (inv.type === 'sale') balanceAtStartOfPeriod += r2(inv.total) - paidOf(inv.id);
+                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= r2(inv.total) - paidOf(inv.id);
             });
             allVouchers.filter(v => new Date(v.date) < df).forEach(v => {
                 if (v.type === 'receipt') balanceAtStartOfPeriod -= r2(v.amount);
@@ -110,7 +115,7 @@ export const GET = withProtection(async (request, session) => {
                 if (dateFrom && d < new Date(dateFrom)) return false;
                 if (dateTo && d > new Date(new Date(dateTo).setHours(23, 59, 59, 999))) return false;
                 return true;
-            }).map(inv => ({
+            }).flatMap(inv => [{
                 id: inv.id,
                 date: inv.date,
                 type: inv.type === 'sale'
@@ -123,7 +128,18 @@ export const GET = withProtection(async (request, session) => {
                     + (inv.customerPONumber ? ` - PO: ${inv.customerPONumber}` : ''),
                 debit: inv.type === 'sale' ? inv.total : 0,
                 credit: inv.type === 'sale_return' ? inv.total : 0,
-            })),
+            },
+            // سطر الدفعة اللي اتدفعت مع الفاتورة (أو المبلغ اللي اترد مع المرتجع)
+            ...(paidOf(inv.id) > 0 ? [{
+                id: `${inv.id}-paid`,
+                date: inv.date,
+                type: inv.type === 'sale' ? 'دفعة مع الفاتورة' : 'مبلغ مسترد',
+                ref: getInvoiceRef(inv.invoiceNumber, inv.type, (session.user as any).businessType),
+                description: inv.type === 'sale' ? 'سداد مع الفاتورة' : 'رد مبلغ للعميل مع المرتجع',
+                debit: inv.type === 'sale_return' ? paidOf(inv.id) : 0,
+                credit: inv.type === 'sale' ? paidOf(inv.id) : 0,
+            }] : []),
+            ]),
             ...allVouchers.filter(v => {
                 const d = new Date(v.date);
                 if (dateFrom && d < new Date(dateFrom)) return false;

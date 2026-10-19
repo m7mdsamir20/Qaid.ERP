@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { roundMoney } from '@/lib/currency';
+import { getPaidAtCreation } from '@/lib/invoicePayments';
 
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -30,7 +32,7 @@ export const GET = withProtection(async (request, session, body, context) => {
 
         const [invoices, vouchers] = await Promise.all([
             prisma.invoice.findMany({
-                where: { customerId, companyId, ...dateFilter },
+                where: { customerId, companyId, status: { not: 'pending' }, ...dateFilter },
                 orderBy: { date: 'asc' }
             }),
             prisma.voucher.findMany({
@@ -46,13 +48,24 @@ export const GET = withProtection(async (request, session, body, context) => {
         if (dateFrom) {
             [priorInvoices, priorVouchers] = await Promise.all([
                 prisma.invoice.findMany({
-                    where: { customerId, companyId, date: { lt: new Date(dateFrom) } }
+                    where: { customerId, companyId, status: { not: 'pending' }, date: { lt: new Date(dateFrom) } }
                 }),
                 prisma.voucher.findMany({
                     where: { customerId, companyId, date: { lt: new Date(dateFrom) } }
                 })
             ]);
         }
+
+        // Work backwards from current balance to find initial opening balance
+        const [allInvoices, allVouchers] = await Promise.all([
+            prisma.invoice.findMany({ where: { customerId, companyId, status: { not: 'pending' } } }),
+            prisma.voucher.findMany({ where: { customerId, companyId } })
+        ]);
+
+        // المدفوع مع الفاتورة وقت إنشائها بس — paidAmount بيزيد كمان بسندات القبض
+        // اللي اتوزعت على الفاتورة، والسندات ظاهرة لوحدها في الكشف
+        const paidAtCreation = await getPaidAtCreation(prisma, companyId, allInvoices);
+        const paidOf = (id: string) => paidAtCreation.get(id) || 0;
 
         const transactions: any[] = [];
 
@@ -65,10 +78,10 @@ export const GET = withProtection(async (request, session, body, context) => {
                     type: 'invoice',
                     ref: inv.invoiceNumber,
                     description: `فاتورة مبيعات رقم ${inv.invoiceNumber}`,
-                    debit: inv.total,
+                    debit: roundMoney(inv.total),
                     credit: 0,
                 });
-                if (inv.paidAmount > 0) {
+                if (paidOf(inv.id) > 0) {
                     transactions.push({
                         id: inv.id + '_paid',
                         date: inv.date,
@@ -76,7 +89,7 @@ export const GET = withProtection(async (request, session, body, context) => {
                         ref: inv.invoiceNumber,
                         description: `دفعة نقدية مع فاتورة ${inv.invoiceNumber}`,
                         debit: 0,
-                        credit: inv.paidAmount,
+                        credit: paidOf(inv.id),
                     });
                 }
             } else if (inv.type === 'sale_return') {
@@ -87,16 +100,16 @@ export const GET = withProtection(async (request, session, body, context) => {
                     ref: inv.invoiceNumber,
                     description: `مرتجع مبيعات رقم ${inv.invoiceNumber}`,
                     debit: 0,
-                    credit: inv.total,
+                    credit: roundMoney(inv.total),
                 });
-                if (inv.paidAmount > 0) {
+                if (paidOf(inv.id) > 0) {
                     transactions.push({
                         id: inv.id + '_paid_return',
                         date: inv.date,
                         type: 'refund',
                         ref: inv.invoiceNumber,
                         description: `دفعة مستردة لمعاملة مرتجع ${inv.invoiceNumber}`,
-                        debit: inv.paidAmount,
+                        debit: paidOf(inv.id),
                         credit: 0,
                     });
                 }
@@ -128,29 +141,23 @@ export const GET = withProtection(async (request, session, body, context) => {
             }
         });
 
-        // Work backwards from current balance to find initial opening balance
-        const [allInvoices, allVouchers] = await Promise.all([
-            prisma.invoice.findMany({ where: { customerId, companyId } }),
-            prisma.voucher.findMany({ where: { customerId, companyId } })
-        ]);
-
         let totalNetTransacted = 0;
         allInvoices.forEach(inv => {
-            if (inv.type === 'sale') totalNetTransacted += (inv.total - inv.paidAmount);
-            if (inv.type === 'sale_return') totalNetTransacted -= (inv.total - inv.paidAmount);
+            if (inv.type === 'sale') totalNetTransacted += (inv.total - paidOf(inv.id));
+            if (inv.type === 'sale_return') totalNetTransacted -= (inv.total - paidOf(inv.id));
         });
         allVouchers.forEach(v => {
             if (v.type === 'receipt') totalNetTransacted -= v.amount;
             if (v.type === 'payment') totalNetTransacted += v.amount;
         });
 
-        const initialSystemOpeningBalance = customer.balance - totalNetTransacted;
+        const initialSystemOpeningBalance = roundMoney(customer.balance - totalNetTransacted);
 
         // Calculate balance at start of requested period
         let balanceAtStartOfPeriod = initialSystemOpeningBalance;
         priorInvoices.forEach(inv => {
-            if (inv.type === 'sale') balanceAtStartOfPeriod += (inv.total - inv.paidAmount);
-            if (inv.type === 'sale_return') balanceAtStartOfPeriod -= (inv.total - inv.paidAmount);
+            if (inv.type === 'sale') balanceAtStartOfPeriod += (roundMoney(inv.total) - paidOf(inv.id));
+            if (inv.type === 'sale_return') balanceAtStartOfPeriod -= (roundMoney(inv.total) - paidOf(inv.id));
         });
         priorVouchers.forEach(v => {
             if (v.type === 'receipt') balanceAtStartOfPeriod -= v.amount;
@@ -160,9 +167,10 @@ export const GET = withProtection(async (request, session, body, context) => {
         // Sort and calculate running balances
         transactions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
+        balanceAtStartOfPeriod = roundMoney(balanceAtStartOfPeriod);
         let runningBalance = balanceAtStartOfPeriod;
         const ledger = transactions.map(t => {
-            runningBalance += (t.debit - t.credit);
+            runningBalance = roundMoney(runningBalance + roundMoney(t.debit) - roundMoney(t.credit));
             return {
                 ...t,
                 balance: runningBalance
