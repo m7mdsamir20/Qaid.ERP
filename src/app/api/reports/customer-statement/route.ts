@@ -5,6 +5,7 @@ import { getInvoiceRef, getVoucherRef } from '@/lib/invoiceRef';
 import { getActivity } from '@/modules';
 import { roundMoney } from '@/lib/currency';
 import { getPaidAtCreation } from '@/lib/invoicePayments';
+import { getInstallmentPlanEntries, getPlanInvoiceIds } from '@/lib/installmentEntries';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -44,15 +45,15 @@ export const GET = withProtection(async (request, session) => {
         // الفواتير المعلّقة (قيد الاعتماد) مالهاش أثر على رصيد العميل لحد ما تتعتمد
         const invoiceWhere: any = { customerId, companyId, type: { in: ['sale', 'sale_return'] }, status: { not: 'pending' } };
         const voucherWhere: any = { customerId, companyId, type: { in: ['receipt', 'payment'] } };
+        // خطط التقسيط مالهاش فرع (InstallmentPlan مفيهوش branchId)
         const planWhere: any = { customerId, companyId };
 
         if (branchId && branchId !== 'all') {
             invoiceWhere.branchId = branchId;
             voucherWhere.branchId = branchId;
-            planWhere.branchId = branchId;
         }
 
-        const [allInvoices, allVouchers, allPlans] = await Promise.all([
+        const [rawInvoices, allVouchers, allPlans] = await Promise.all([
             prisma.invoice.findMany({
                 where: invoiceWhere,
                 orderBy: { date: 'asc' },
@@ -64,8 +65,14 @@ export const GET = withProtection(async (request, session) => {
             prisma.installmentPlan.findMany({
                 where: planWhere,
                 orderBy: { startDate: 'asc' },
+                include: { installments: true },
             })
         ]);
+
+        // فاتورة خطة التقسيط المخفية مابتتعرضش — الخطة نفسها بتظهر بقيمة العقد (وإلا تتحسب مرتين)
+        const planInvoiceIds = getPlanInvoiceIds(allPlans);
+        const allInvoices = rawInvoices.filter(inv => !planInvoiceIds.has(inv.id) && inv.paymentMethod !== 'installment_plan');
+        const planEntries = getInstallmentPlanEntries(allPlans);
 
         // المدفوع/المسترد مع الفاتورة وقت إنشائها — رصيد العميل اتغيّر بالفاتورة ناقصه
         const paidAtCreation = await getPaidAtCreation(prisma, companyId, allInvoices);
@@ -81,10 +88,7 @@ export const GET = withProtection(async (request, session) => {
             if (v.type === 'receipt') totalNetTransacted -= v.amount;
             if (v.type === 'payment') totalNetTransacted += v.amount;
         });
-        allPlans.forEach(plan => {
-            totalNetTransacted += plan.grandTotal;
-            if (plan.downPayment > 0) totalNetTransacted -= plan.downPayment; // يتم خصم المقدم لأنه يُسجل كسند قبض أو حركة منفصلة
-        });
+        planEntries.forEach(e => { totalNetTransacted += e.debit - e.credit; });
         // تقريب لأقرب هللة — الفواتير القديمة متخزنة بكسور أكتر من خانتين (زي 14190.765)
         // فبنقرّب مبلغ كل حركة قبل التجميع عشان الرصيد الجاري يطابق المبالغ المطبوعة
         const r2 = roundMoney;
@@ -103,8 +107,8 @@ export const GET = withProtection(async (request, session) => {
                 if (v.type === 'receipt') balanceAtStartOfPeriod -= r2(v.amount);
                 if (v.type === 'payment') balanceAtStartOfPeriod += r2(v.amount);
             });
-            allPlans.filter(p => new Date(p.startDate) < df).forEach(p => {
-                balanceAtStartOfPeriod += r2(p.grandTotal - p.downPayment);
+            planEntries.filter(e => new Date(e.date) < df).forEach(e => {
+                balanceAtStartOfPeriod += r2(e.debit) - r2(e.credit);
             });
         }
         balanceAtStartOfPeriod = r2(balanceAtStartOfPeriod);
@@ -154,20 +158,12 @@ export const GET = withProtection(async (request, session) => {
                 debit: v.type === 'payment' ? v.amount : 0,
                 credit: v.type === 'receipt' ? v.amount : 0,
             })),
-            ...allPlans.filter(p => {
-                const d = new Date(p.startDate);
+            ...planEntries.filter(e => {
+                const d = new Date(e.date);
                 if (dateFrom && d < new Date(dateFrom)) return false;
                 if (dateTo && d > new Date(new Date(dateTo).setHours(23, 59, 59, 999))) return false;
                 return true;
-            }).map(p => ({
-                id: p.id,
-                date: p.startDate,
-                type: 'خطة تقسيط',
-                ref: `PLN-${String(p.planNumber).padStart(5, '0')}`,
-                description: `فتح خطة تقسيط: ${p.productName || '—'}`,
-                debit: p.grandTotal - p.downPayment,
-                credit: 0,
-            })),
+            }),
         ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         let rb = balanceAtStartOfPeriod;

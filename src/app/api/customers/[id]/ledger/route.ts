@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 import { roundMoney } from '@/lib/currency';
 import { getPaidAtCreation } from '@/lib/invoicePayments';
+import { getInstallmentPlanEntries, getPlanInvoiceIds } from '@/lib/installmentEntries';
 
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -57,10 +58,17 @@ export const GET = withProtection(async (request, session, body, context) => {
         }
 
         // Work backwards from current balance to find initial opening balance
-        const [allInvoices, allVouchers] = await Promise.all([
+        const [rawAllInvoices, allVouchers, allPlans] = await Promise.all([
             prisma.invoice.findMany({ where: { customerId, companyId, status: { not: 'pending' } } }),
-            prisma.voucher.findMany({ where: { customerId, companyId } })
+            prisma.voucher.findMany({ where: { customerId, companyId } }),
+            prisma.installmentPlan.findMany({ where: { customerId, companyId }, include: { installments: true } }),
         ]);
+
+        // فاتورة خطة التقسيط المخفية مابتتعرضش — الخطة بتظهر بحركاتها (قيمة العقد، المقدم، التكييش، الإلغاء)
+        const planInvoiceIds = getPlanInvoiceIds(allPlans);
+        const isShown = (inv: any) => !planInvoiceIds.has(inv.id) && inv.paymentMethod !== 'installment_plan';
+        const allInvoices = rawAllInvoices.filter(isShown);
+        const planEntries = getInstallmentPlanEntries(allPlans);
 
         // المدفوع مع الفاتورة وقت إنشائها بس — paidAmount بيزيد كمان بسندات القبض
         // اللي اتوزعت على الفاتورة، والسندات ظاهرة لوحدها في الكشف
@@ -70,7 +78,7 @@ export const GET = withProtection(async (request, session, body, context) => {
         const transactions: any[] = [];
 
         // Map invoices to transactions
-        invoices.forEach(inv => {
+        invoices.filter(isShown).forEach(inv => {
             if (inv.type === 'sale') {
                 transactions.push({
                     id: inv.id,
@@ -141,7 +149,16 @@ export const GET = withProtection(async (request, session, body, context) => {
             }
         });
 
+        // حركات خطط التقسيط في الفترة
+        const periodEnd = dateTo ? new Date(new Date(dateTo).setHours(23, 59, 59, 999)) : null;
+        planEntries.forEach(e => {
+            const d = new Date(e.date);
+            if (dateFrom && dateTo && (d < new Date(dateFrom) || d > periodEnd!)) return;
+            transactions.push({ ...e, type: 'installment', description: `${e.type} ${e.ref} — ${e.description}` });
+        });
+
         let totalNetTransacted = 0;
+        planEntries.forEach(e => { totalNetTransacted += e.debit - e.credit; });
         allInvoices.forEach(inv => {
             if (inv.type === 'sale') totalNetTransacted += (inv.total - paidOf(inv.id));
             if (inv.type === 'sale_return') totalNetTransacted -= (inv.total - paidOf(inv.id));
@@ -155,7 +172,12 @@ export const GET = withProtection(async (request, session, body, context) => {
 
         // Calculate balance at start of requested period
         let balanceAtStartOfPeriod = initialSystemOpeningBalance;
-        priorInvoices.forEach(inv => {
+        if (dateFrom) {
+            planEntries.filter(e => new Date(e.date) < new Date(dateFrom)).forEach(e => {
+                balanceAtStartOfPeriod += e.debit - e.credit;
+            });
+        }
+        priorInvoices.filter(isShown).forEach(inv => {
             if (inv.type === 'sale') balanceAtStartOfPeriod += (roundMoney(inv.total) - paidOf(inv.id));
             if (inv.type === 'sale_return') balanceAtStartOfPeriod -= (roundMoney(inv.total) - paidOf(inv.id));
         });

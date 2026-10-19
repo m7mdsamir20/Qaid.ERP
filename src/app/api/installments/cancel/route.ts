@@ -1,6 +1,7 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
+import { roundMoney } from '@/lib/currency';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
@@ -24,11 +25,11 @@ export const POST = withProtection(async (request, session, body) => {
         }
 
         // Amount actually paid
-        const totalPaid = plan.installments.reduce(
+        const totalPaid = roundMoney(plan.installments.reduce(
             (s, i) => s + (i.paidAmount || 0), 0
-        );
-        // Remaining amount on customer
-        const remainingOnCustomer = (plan.grandTotal) - totalPaid;
+        ));
+        // المتبقي على العميل من الخطة = الأقساط اللي لسه ماتدفعتش (المقدم والمحصّل اتخصموا قبل كده)
+        const remainingOnCustomer = roundMoney(plan.grandTotal - totalPaid);
 
         await prisma.$transaction(async (tx) => {
             // ① Cancel the plan
@@ -47,12 +48,12 @@ export const POST = withProtection(async (request, session, body) => {
             if (plan.invoiceId) {
                 const inv = await tx.invoice.findUnique({ where: { id: plan.invoiceId } });
                 if (inv) {
+                    // الفاتورة تفضل فاتورة تقسيط ومقفولة — تحويلها لآجل كان بيرجّع مديونيتها على العميل
+                    // تاني (وتظهر في كشف الحساب) مع إن الرصيد اتعكس تحت
                     await tx.invoice.update({
                         where: { id: plan.invoiceId },
                         data: {
-                            remaining: plan.totalAmount,
-                            paidAmount: { decrement: plan.totalAmount },
-                            paymentMethod: 'credit',
+                            remaining: 0,
                             notes: inv.notes?.replace(`تمت جدولتها إلى خطة تقسيط رقم ${plan.planNumber}`, '').trim()
                         }
                     });
@@ -91,9 +92,10 @@ export const POST = withProtection(async (request, session, body) => {
                         where: { companyId }, orderBy: { entryNumber: 'desc' }, select: { entryNumber: true },
                     });
 
+                    // عكس الإيراد بنفس قيمة الذمم المعكوسة عشان القيد يتوازن — الفوائد بنسبتها والباقي من المبيعات
                     const ratio = plan.grandTotal > 0 ? remainingOnCustomer / plan.grandTotal : 1;
-                    const salesCredit = plan.totalAmount * ratio;
-                    const interestCredit = (plan.totalInterest || 0) * ratio;
+                    const interestCredit = roundMoney((plan.totalInterest || 0) * ratio);
+                    const salesCredit = roundMoney(remainingOnCustomer - (interestAcc ? interestCredit : 0));
 
                     const reversalLines: any[] = [
                         {
@@ -118,9 +120,6 @@ export const POST = withProtection(async (request, session, body) => {
                                 credit: 0,
                                 description: `عكس فوائد تقسيط #${plan.planNumber}`,
                             });
-                        } else {
-                            // مفيش حساب فوائد — أضف الفوائد على حساب المبيعات للحفاظ على توازن القيد
-                            reversalLines[0].debit += interestCredit;
                         }
                     }
 
@@ -132,9 +131,11 @@ export const POST = withProtection(async (request, session, body) => {
                         });
 
                         if (treasury?.accountId) {
+                            // رد الأقساط المحصّلة = عكس إيرادها ودفعها من الخزينة، ورصيد العميل مابيتغيرش.
+                            // (كان بيتخصم من رصيده تاني، فيطلع إن ليه فلوس عندنا مع إنها اترجعتله)
                             reversalLines.push(
                                 {
-                                    accountId: receivablesAcc.id,
+                                    accountId: salesAcc.id,
                                     debit: totalPaid,
                                     credit: 0,
                                     description: `رد مبالغ مدفوعة - خطة #${plan.planNumber}`,
@@ -152,10 +153,6 @@ export const POST = withProtection(async (request, session, body) => {
                                 data: { balance: { decrement: totalPaid } },
                             });
 
-                            await tx.customer.update({
-                                where: { id: plan.customerId, companyId },
-                                data: { balance: { decrement: totalPaid } },
-                            });
                         }
                     }
 
