@@ -78,6 +78,8 @@ export const GET = withProtection(async (request, session) => {
             totalNetTransacted += plan.grandTotal;
             if (plan.downPayment > 0) totalNetTransacted -= plan.downPayment; // يتم خصم المقدم لأنه يُسجل كسند قبض أو حركة منفصلة
         });
+        // تقريب لأقرب هللة — يمنع بواقي الكسور العشرية (زي 0.0000001) تظهر كرصيد
+        const r2 = (n: number) => { const v = Math.round((n + Number.EPSILON) * 100) / 100; return Object.is(v, -0) ? 0 : v; };
         const initialSystemOpeningBalance = customer.balance - totalNetTransacted;
 
         // Balance at Start of Period
@@ -92,7 +94,11 @@ export const GET = withProtection(async (request, session) => {
                 if (v.type === 'receipt') balanceAtStartOfPeriod -= v.amount;
                 if (v.type === 'payment') balanceAtStartOfPeriod += v.amount;
             });
+            allPlans.filter(p => new Date(p.startDate) < df).forEach(p => {
+                balanceAtStartOfPeriod += p.grandTotal - p.downPayment;
+            });
         }
+        balanceAtStartOfPeriod = r2(balanceAtStartOfPeriod);
 
         const periodEntries = [
             ...allInvoices.filter(inv => {
@@ -107,9 +113,10 @@ export const GET = withProtection(async (request, session) => {
                     ? (isServices ? 'فاتورة خدمات' : 'فاتورة مبيعات')
                     : (isServices ? 'مرتجع خدمات' : 'مرتجع مبيعات'),
                 ref: getInvoiceRef(inv.invoiceNumber, inv.type, (session.user as any).businessType),
-                description: inv.type === 'sale'
-                    ? (isServices ? 'تقديم خدمة - فاتورة' : 'بيع بضاعة فاتورة')
-                    : (isServices ? 'مرتجع خدمة - فاتورة' : 'مرتجع بضاعة فاتورة'),
+                description: (inv.type === 'sale'
+                    ? (isServices ? 'تقديم خدمات' : 'بيع بضاعة')
+                    : (isServices ? 'مرتجع خدمات' : 'مرتجع بضاعة'))
+                    + (inv.customerPONumber ? ` - PO: ${inv.customerPONumber}` : ''),
                 debit: inv.type === 'sale' ? inv.total : 0,
                 credit: inv.type === 'sale_return' ? inv.total : 0,
             })),
@@ -123,7 +130,7 @@ export const GET = withProtection(async (request, session) => {
                 date: v.date,
                 type: v.type === 'receipt' ? 'سند قبض' : 'سند صرف',
                 ref: getVoucherRef(v.voucherNumber, v.type),
-                description: (v.type === 'receipt' ? 'سند قبض' : 'سند صرف') + (v.description ? ` - ${v.description}` : ''),
+                description: v.description || (v.type === 'receipt' ? 'تحصيل دفعة من العميل' : 'صرف مبلغ للعميل'),
                 debit: v.type === 'payment' ? v.amount : 0,
                 credit: v.type === 'receipt' ? v.amount : 0,
             })),
@@ -145,8 +152,8 @@ export const GET = withProtection(async (request, session) => {
 
         let rb = balanceAtStartOfPeriod;
         const statement = periodEntries.map(e => {
-            rb += (e.debit - e.credit);
-            return { ...e, balance: rb };
+            rb = r2(rb + e.debit - e.credit);
+            return { ...e, debit: r2(e.debit), credit: r2(e.credit), balance: rb };
         });
 
         return NextResponse.json({

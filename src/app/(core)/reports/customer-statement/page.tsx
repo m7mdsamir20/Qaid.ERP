@@ -74,6 +74,7 @@ export default function CustomerStatementPage() {
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [error, setError] = useState('');
+    const [company, setCompany] = useState<any>({});
 
     const fetchLedger = useCallback(async (customerId: string = selectedId) => {
         if (!customerId) { setData(null); return; }
@@ -95,6 +96,13 @@ export default function CustomerStatementPage() {
         fetch('/api/reports/customer-statement')
             .then(res => res.json())
             .then(d => { if (Array.isArray(d.customers)) setCustomers(d.customers); })
+            .catch(() => { });
+    }, []);
+
+    useEffect(() => {
+        fetch('/api/company')
+            .then(res => res.json())
+            .then(d => { if (d && !d.error) setCompany(d); })
             .catch(() => { });
     }, []);
 
@@ -136,6 +144,242 @@ export default function CustomerStatementPage() {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, t('كشف الحساب'));
         XLSX.writeFile(wb, `${t('كشف_حساب')}_${data.customer.name}_${new Date().toLocaleDateString('en-ZA')}.xlsx`);
+    };
+
+    // ── نسخة الطباعة / PDF: تصميم مخصص لكشف الحساب بدل نسخ جدول الشاشة ──
+    const buildStatementHTML = () => {
+        if (!data) return '';
+        const dir = isRtl ? 'rtl' : 'ltr';
+        const start = isRtl ? 'right' : 'left';
+        const end = isRtl ? 'left' : 'right';
+        const esc = (v: any) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        const money = (n: number) => Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const fmtDate = (d?: string) => d ? new Date(d).toLocaleDateString('en-ZA') : '—';
+        const amountCell = (n: number) => n > 0.004 ? money(n) : '<span class="muted">—</span>';
+        const side = (n: number) => n > 0.004 ? t('عليه') : n < -0.004 ? t('له') : '';
+        const balanceCell = (n: number) => `${money(n)}${side(n) ? ` <span class="tag ${n > 0 ? 'dr' : 'cr'}">${side(n)}</span>` : ''}`;
+
+        const sym = getCurrencyName(currency);
+        const now = new Date();
+        const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+        const printedAt = `${now.toLocaleDateString('en-ZA')} — ${toWD(now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: true }))}`;
+        const period = dateFrom || dateTo
+            ? `${dateFrom ? `${t('من')} ${dateFrom.replace(/-/g, '/')}` : ''} ${dateTo ? `${t('إلى')} ${dateTo.replace(/-/g, '/')}` : ''}`.trim()
+            : t('كل الفترات');
+
+        const opening = data.initialBalance;
+        const totalDebit = data.statement.reduce((s, l) => s + l.debit, 0);
+        const totalCredit = data.statement.reduce((s, l) => s + l.credit, 0);
+        const closing = data.finalBalance;
+
+        const cust: any = data.customer;
+        const custAddress = [cust.addressStreet, cust.addressDistrict, cust.addressCity, cust.addressRegion].filter(Boolean).join('، ');
+        const coName = company.name || company.companyName || '';
+        const coAddress = [company.addressStreet, company.addressDistrict, company.addressCity].filter(Boolean).join('، ');
+        const coLines = [
+            company.taxNumber ? `${t('الرقم الضريبي')}: ${esc(company.taxNumber)}` : '',
+            company.commercialRegister ? `${t('السجل التجاري')}: ${esc(company.commercialRegister)}` : '',
+        ].filter(Boolean).join(' &nbsp;|&nbsp; ');
+        const coContact = [coAddress ? esc(coAddress) : '', company.phone ? `<span dir="ltr">${esc(company.phone)}</span>` : ''].filter(Boolean).join(' &nbsp;|&nbsp; ');
+
+        const infoRow = (label: string, value: string) => value ? `<div class="info-row"><span>${label}</span><b>${value}</b></div>` : '';
+
+        const rows = data.statement.map((r, i) => `<tr>
+            <td class="c num">${i + 1}</td>
+            <td class="c num">${fmtDate(r.date)}</td>
+            <td class="c num ref">${esc(r.ref || '—')}</td>
+            <td class="c">${esc(t(r.type))}</td>
+            <td class="desc">${esc(r.description)}</td>
+            <td class="amt">${amountCell(r.debit)}</td>
+            <td class="amt">${amountCell(r.credit)}</td>
+            <td class="amt bal">${balanceCell(r.balance)}</td>
+        </tr>`).join('');
+
+        const closingText = closing > 0.004
+            ? `${t('الرصيد المستحق على العميل')}`
+            : closing < -0.004 ? `${t('الرصيد المستحق للعميل')}` : t('الحساب مسدد بالكامل');
+
+        return `<!DOCTYPE html>
+<html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
+<head>
+<meta charset="UTF-8"/>
+<title>${esc(t('كشف حساب عميل'))} - ${esc(cust.name)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+@page{size:A4 portrait;margin:12mm 10mm 14mm;
+  @bottom-center{content:"${t('صفحة')} " counter(page) " / " counter(pages);font-family:'Cairo',sans-serif;font-size:8.5px;color:#64748b}}
+html,body{background:#fff;color:#0f172a}
+body{font-family:'Cairo',sans-serif;direction:${dir};font-size:10px;line-height:1.55}
+.page{max-width:190mm;margin:0 auto}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.muted{color:#94a3b8}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-bottom:10px;border-bottom:3px solid #0f3d6e}
+.co{display:flex;align-items:center;gap:12px;min-width:0}
+.co img{max-height:58px;max-width:130px;object-fit:contain}
+.co-name{font-size:14px;font-weight:900;color:#0f3d6e;line-height:1.3}
+.co-sub{font-size:8.5px;color:#475569;margin-top:2px}
+.doc{text-align:${end};flex-shrink:0}
+.doc-title{font-size:19px;font-weight:900;color:#0f3d6e;line-height:1.2}
+.doc-sub{font-size:9px;color:#64748b;margin-top:3px}
+
+.info{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin:12px 0}
+.box{border:1px solid #cbd5e1;border-radius:6px;overflow:hidden}
+.box-h{background:#f1f5f9;padding:4px 10px;font-size:9px;font-weight:800;color:#0f3d6e;border-bottom:1px solid #cbd5e1}
+.box-b{padding:6px 10px}
+.info-row{display:flex;gap:6px;padding:1.5px 0;font-size:9.5px}
+.info-row span{color:#64748b;min-width:70px}
+.info-row b{font-weight:700;color:#0f172a}
+.cust-name{font-size:13px;font-weight:900;color:#0f172a;margin-bottom:2px}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.kpi{border:1px solid #cbd5e1;border-radius:6px;padding:7px 10px;text-align:center}
+.kpi .l{font-size:8.5px;color:#64748b;font-weight:700}
+.kpi .v{font-size:13px;font-weight:900;margin-top:2px}
+.kpi .v small{font-size:8.5px;font-weight:700;color:#64748b}
+.kpi.main{background:#0f3d6e;border-color:#0f3d6e}
+.kpi.main .l,.kpi.main .v,.kpi.main .v small{color:#fff}
+
+table{width:100%;border-collapse:collapse;font-size:9.5px}
+thead{display:table-header-group}
+tr{break-inside:avoid;page-break-inside:avoid}
+th{background:#0f3d6e;color:#fff;font-weight:700;padding:6px 5px;border:1px solid #0f3d6e;font-size:9px;text-align:center;white-space:nowrap}
+td{padding:5px 5px;border:1px solid #e2e8f0;vertical-align:middle}
+tbody tr:nth-child(even) td{background:#f8fafc}
+td.c{text-align:center;white-space:nowrap}
+td.ref{font-weight:700}
+td.desc{text-align:${start};color:#334155}
+td.amt{text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums;font-weight:600}
+td.bal{font-weight:800}
+tr.opening td{background:#eef2f7!important;font-weight:800;color:#0f172a}
+tr.total td{background:#e2e8f0!important;font-weight:900;border-top:2px solid #0f3d6e;font-size:10px}
+.tag{display:inline-block;font-size:7.5px;font-weight:800;padding:0 5px;border-radius:3px;margin-${start}:3px;vertical-align:middle;line-height:1.6}
+.tag.dr{background:#fee2e2;color:#b91c1c}
+.tag.cr{background:#dcfce7;color:#15803d}
+
+.closing{margin-top:12px;display:flex;justify-content:space-between;align-items:center;border:2px solid #0f3d6e;border-radius:6px;padding:8px 14px;break-inside:avoid}
+.closing .l{font-size:11px;font-weight:800;color:#0f3d6e}
+.closing .v{font-size:15px;font-weight:900}
+.closing .v small{font-size:9px;color:#64748b;font-weight:700}
+
+.sign{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:34px;break-inside:avoid}
+.sign div{border-top:1px dashed #94a3b8;padding-top:5px;text-align:center;font-size:9px;color:#475569;font-weight:700}
+.foot-note{margin-top:14px;font-size:8px;color:#94a3b8;text-align:center}
+
+@media screen{body{padding:12mm 10mm;background:#fff}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="top">
+  <div class="co">
+    ${company.logo ? `<img src="${esc(company.logo)}" alt=""/>` : ''}
+    <div>
+      <div class="co-name">${esc(coName)}</div>
+      ${coLines ? `<div class="co-sub">${coLines}</div>` : ''}
+      ${coContact ? `<div class="co-sub">${coContact}</div>` : ''}
+    </div>
+  </div>
+  <div class="doc">
+    <div class="doc-title">${t('كشف حساب عميل')}</div>
+    <div class="doc-sub">${isRtl ? 'Customer Account Statement' : ''}</div>
+  </div>
+</div>
+
+<div class="info">
+  <div class="box">
+    <div class="box-h">${t('بيانات العميل')}</div>
+    <div class="box-b">
+      <div class="cust-name">${esc(cust.name)}</div>
+      ${infoRow(t('الهاتف'), cust.phone ? `<span dir="ltr">${esc(cust.phone)}</span>` : '')}
+      ${infoRow(t('الرقم الضريبي'), esc(cust.taxNumber || ''))}
+      ${infoRow(t('السجل التجاري'), esc(cust.crNumber || ''))}
+      ${infoRow(t('العنوان'), esc(custAddress))}
+    </div>
+  </div>
+  <div class="box">
+    <div class="box-h">${t('بيانات الكشف')}</div>
+    <div class="box-b">
+      ${infoRow(t('الفترة'), esc(period))}
+      ${infoRow(t('العملة'), esc(sym))}
+      ${infoRow(t('عدد الحركات'), String(data.statement.length))}
+      ${infoRow(t('تاريخ الطباعة'), printedAt)}
+    </div>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="l">${t('الرصيد الافتتاحي')}</div><div class="v">${money(opening)} <small>${side(opening)}</small></div></div>
+  <div class="kpi"><div class="l">${t('إجمالي المدين (عليه)')}</div><div class="v">${money(totalDebit)}</div></div>
+  <div class="kpi"><div class="l">${t('إجمالي الدائن (له)')}</div><div class="v">${money(totalCredit)}</div></div>
+  <div class="kpi main"><div class="l">${t('الرصيد الختامي')}</div><div class="v">${money(closing)} <small>${side(closing)}</small></div></div>
+</div>
+
+<table>
+  <thead><tr>
+    <th style="width:24px">#</th>
+    <th>${t('التاريخ')}</th>
+    <th>${t('رقم المستند')}</th>
+    <th>${t('نوع الحركة')}</th>
+    <th>${t('البيان')}</th>
+    <th>${t('مدين (عليه)')}</th>
+    <th>${t('دائن (له)')}</th>
+    <th>${t('الرصيد')}</th>
+  </tr></thead>
+  <tbody>
+    <tr class="opening">
+      <td class="c">—</td>
+      <td class="c num">${dateFrom ? dateFrom.replace(/-/g, '/') : '—'}</td>
+      <td class="c">—</td>
+      <td class="c">${t('رصيد افتتاحي')}</td>
+      <td class="desc">${t('رصيد ما قبل فترة التقرير')}</td>
+      <td class="amt">${amountCell(opening)}</td>
+      <td class="amt">${amountCell(-opening)}</td>
+      <td class="amt bal">${balanceCell(opening)}</td>
+    </tr>
+    ${rows || `<tr><td colspan="8" class="c muted" style="padding:14px">${t('لا توجد حركات في الحساب حالياً')}</td></tr>`}
+    <tr class="total">
+      <td colspan="5" style="text-align:${start}">${t('إجمالي حركات الفترة')}</td>
+      <td class="amt">${money(totalDebit)}</td>
+      <td class="amt">${money(totalCredit)}</td>
+      <td class="amt bal">${balanceCell(closing)}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="closing">
+  <span class="l">${closingText}</span>
+  <span class="v">${money(closing)} <small>${esc(sym)}</small></span>
+</div>
+
+<div class="sign">
+  <div>${t('المحاسب')}</div>
+  <div>${t('توقيع وختم العميل')}</div>
+</div>
+
+<div class="foot-note">${t('يرجى مراجعة الكشف وإبلاغنا بأي ملاحظات')}</div>
+
+</div>
+</body>
+</html>`;
+    };
+
+    const statementFileTitle = () => `${t('كشف حساب')} - ${(data?.customer.name || '').replace(/[\\/:*?"<>|]/g, '-')}`;
+
+    const handlePrint = async () => {
+        const html = buildStatementHTML();
+        if (!html) return;
+        const { printReportDirectly } = await import('@/lib/printDirectly');
+        printReportDirectly(html, statementFileTitle());
+    };
+
+    const handleDownloadPDF = async () => {
+        const html = buildStatementHTML();
+        if (!html) return;
+        const { downloadReportPDF } = await import('@/lib/printDirectly');
+        await downloadReportPDF(html, statementFileTitle(), { silent: true });
     };
 
     const tableData: StatementTableItem[] = [];
@@ -249,6 +493,8 @@ export default function CustomerStatementPage() {
                     subtitle={isServices ? t("استخراج بيان بكافة الخدمات المقدمة، المدفوعات، ومرتجعات الخدمات لعميل محدد خلال فترة زمنية مختارة.") : t("استخراج بيان بكافة مبيعات، مدفوعات، ومرتجعات عميل محدد خلال فترة زمنية مختارة.")}
                     backTab="partners"
                     onExportExcel={exportToExcel}
+                    onPrint={data ? handlePrint : undefined}
+                    onExportPdf={data ? handleDownloadPDF : undefined}
                     printTitle={t("كشف حساب عميل تفصيلي")}
                     accountName={data ? data.customer.name : undefined}
                     printLabel={t('العميل:')}

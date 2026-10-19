@@ -235,6 +235,9 @@ td span,td a,td div{font-size:inherit!important;display:inline!important;white-s
 td button{display:none!important}
 td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:65px;white-space:nowrap!important}
 tr.opening-balance td{background:#f0f0f0!important;font-weight:700!important;border-top:1px solid #bbb!important;border-bottom:1px solid #bbb!important}
+/* الإجمالي يظهر مرة واحدة آخر الجدول، مش يتكرر في ذيل كل صفحة */
+tfoot{display:table-row-group}
+tr{break-inside:avoid}
 tfoot tr{background:#e0e0e0!important}
 tfoot tr *{background:#e0e0e0!important}
 tfoot td{font-weight:800;font-size:11.5px;border:1px solid #bbb;padding:8px 7px;white-space:nowrap}

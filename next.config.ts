@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
     // اتنقلت من experimental في Next 16 — كانت بتتجاهَل وهي جواها،
     // يعني ملفات chromium ماكانتش بتتحزم مع الديبلوي (طباعة PDF على السيرفر)
     outputFileTracingIncludes: {
-        '**/*': ['./node_modules/@sparticuz/chromium/bin/**/*'],
+        '**/*': ['./node_modules/@sparticuz/chromium/bin/**/*', './public/fonts/**/*'],
     },
 
     // تسريع: ضغط الملفات

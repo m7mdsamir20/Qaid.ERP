@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { readFile } from 'fs/promises';
+import path from 'path';
 import { withProtection, safeErrorMsg } from '@/lib/apiHandler';
 
 export const maxDuration = 60;
@@ -36,6 +38,26 @@ async function getBrowser() {
     return cachedBrowser;
 }
 
+// Chromium على السيرفر مفيهوش خطوط عربي، ولو Google Fonts متحملتش بيطلع الكلام العربي فاضي في الـ PDF
+// فبنضمّن خط Cairo من public/fonts جوه الـ HTML نفسه
+let cachedFontCSS: string | null = null;
+
+async function getEmbeddedFontCSS(): Promise<string> {
+    if (cachedFontCSS !== null) return cachedFontCSS;
+    const faces: [string, string][] = [['Regular', '100 500'], ['Bold', '600 800'], ['Black', '900']];
+    try {
+        const rules = await Promise.all(faces.map(async ([name, weight]) => {
+            const buf = await readFile(path.join(process.cwd(), 'public', 'fonts', `Cairo-${name}.ttf`));
+            return `@font-face{font-family:'Cairo';font-style:normal;font-weight:${weight};font-display:block;src:url(data:font/ttf;base64,${buf.toString('base64')}) format('truetype')}`;
+        }));
+        cachedFontCSS = `<style>${rules.join('')}</style>`;
+    } catch (e: any) {
+        console.error('[PDF GENERATE] Font embed failed:', e?.message);
+        cachedFontCSS = '';
+    }
+    return cachedFontCSS;
+}
+
 // Matches private/loopback IP ranges to block SSRF via Puppeteer
 const PRIVATE_IP_RE = /^https?:\/\/(127\.|10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.|169\.254\.|localhost|::1)/i;
 
@@ -49,7 +71,12 @@ export const POST = withProtection(async (request, session) => {
         }
 
         // Strip <script> tags to prevent JavaScript execution inside Chromium
-        const sanitizedHtml = (html as string).replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi, '');
+        const strippedHtml = (html as string).replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script\s*>/gi, '');
+        const fontCSS = await getEmbeddedFontCSS();
+        // آخر الـ head عشان يتقدّم على @font-face بتاع Google Fonts (لو فشل تحميله)
+        const sanitizedHtml = /<\/head>/i.test(strippedHtml)
+            ? strippedHtml.replace(/<\/head>/i, m => fontCSS + m)
+            : fontCSS + strippedHtml;
 
         const browser = await getBrowser();
         const page = await browser.newPage();
@@ -69,7 +96,8 @@ export const POST = withProtection(async (request, session) => {
         await page.setViewport({ width: 1200, height: 800 });
         await page.setJavaScriptEnabled(false);
 
-        await page.setContent(sanitizedHtml, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        // 'load' بيستنى الـ stylesheets والصور (اللوجو) — لو الشبكة بطيئة نكمل بالخط المضمَّن
+        await page.setContent(sanitizedHtml, { waitUntil: 'load', timeout: 15000 }).catch(() => { });
         await page.evaluateHandle('document.fonts.ready');
 
         const pdfOptions: any = {
